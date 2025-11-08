@@ -1,0 +1,10 @@
+.base-table::-webkit-scrollbar {
+  display: none;
+}
+
+.base-table .scroll-wrapper::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+.base-table .scroll-wrapper {
+  scrollbar-color: #8b8b8b #ffffff;
+}

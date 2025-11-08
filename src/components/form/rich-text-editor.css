@@ -1,0 +1,23 @@
+.tox .tox-edit-area::before {
+  border-color: transparent !important;
+}
+
+.tox-tinymce {
+  border: 3px solid transparent;
+  transition:
+    box-shadow 0.1s linear,
+    border-color 0.1s linear;
+  cursor: text !important;
+}
+
+.tox-tinymce.tox-edit-focus {
+  border-color: var(--color-dodger-blue);
+}
+
+label[data-error='true'] ~ .tox-tinymce.tox-edit-focus {
+  border-color: red;
+}
+
+.tox-tbtn {
+  cursor: pointer !important;
+}
