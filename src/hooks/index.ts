@@ -8,3 +8,4 @@ export { default as useNavigate } from './use-navigate';
 export { default as useQueryParams } from './use-query-params';
 export { default as useSaveBase } from './use-save-base';
 export { useFileUpload } from './use-file-upload';
+export { default as useValidatePermission } from './use-validate-permission';

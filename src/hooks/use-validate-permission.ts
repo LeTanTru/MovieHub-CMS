@@ -17,7 +17,7 @@ const useValidatePermission = () => {
     requiredKind?: number;
     excludeKind?: string[];
     userKind?: number;
-    path?: { name: string; type: string };
+    path?: string;
     separate?: boolean;
   }) => {
     return validatePermission({

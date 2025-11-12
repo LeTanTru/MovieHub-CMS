@@ -16,6 +16,12 @@ const menuConfig: MenuItem[] = [
         label: 'Nhân viên',
         path: route.employee.getList.path,
         permissionCode: [apiConfig.employee.getList.permissionCode]
+      },
+      {
+        key: 'audience-list',
+        label: 'Khán giả',
+        path: route.audience.getList.path,
+        permissionCode: [apiConfig.user.getList.permissionCode]
       }
     ]
   },
@@ -23,11 +29,7 @@ const menuConfig: MenuItem[] = [
     key: 'system-management',
     label: 'Quản lý hệ thống',
     icon: Settings,
-    permissionCode: [
-      apiConfig.group.getList.permissionCode,
-      apiConfig.groupPermission.getList.permissionCode,
-      apiConfig.permission.getList.permissionCode
-    ],
+    permissionCode: [apiConfig.group.getList.permissionCode],
     children: [
       {
         key: 'permission',

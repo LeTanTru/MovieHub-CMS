@@ -1,6 +1,9 @@
+import { route } from '@/routes';
+import Link from 'next/link';
+
 export default function Unauthorized() {
   return (
-    <div className='mt-20 flex flex-col items-center justify-center gap-12'>
+    <div className='mt-20 flex flex-col items-center justify-center gap-4'>
       <svg
         className='aspect-video h-[50vh]'
         xmlns='http://www.w3.org/2000/svg'
@@ -787,6 +790,12 @@ export default function Unauthorized() {
         <h1 className='text-center text-3xl font-medium'>
           Bạn có không có quyền truy cập vào trang này
         </h1>
+        <Link
+          className='text-dodger-blue text-base transition-all duration-200 ease-linear hover:opacity-80'
+          href={route.home.path}
+        >
+          Quay về trang chủ
+        </Link>
       </div>
     </div>
   );

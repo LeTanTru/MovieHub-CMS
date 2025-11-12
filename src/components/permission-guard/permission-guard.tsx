@@ -86,11 +86,18 @@ export default function PermissionGuard({
 
   // get route permission
   const requiredPermissions = matchedRoute?.permissionCode ?? [];
-
   // check permission
   const hasPermission =
     requiredPermissions.length === 0 ||
-    validatePermission({ requiredPermissions, userPermissions });
+    validatePermission({
+      requiredPermissions,
+      path: pathname.split('/')?.pop(),
+      userPermissions,
+      separate: matchedRoute.separate,
+      excludeKind: matchedRoute.excludeKind,
+      requiredKind: matchedRoute.requiredKind,
+      userKind: matchedRoute.userKind
+    });
 
   // show overlay
   const showOverlay =

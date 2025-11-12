@@ -1,9 +1,8 @@
 'use client';
 
-import { ListPageWrapper } from '@/components/layout';
+import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
-import { Badge } from '@/components/ui/badge';
-import { apiConfig, FieldTypes, groupKinds } from '@/constants';
+import { apiConfig } from '@/constants';
 import { useListBase } from '@/hooks';
 import { groupSearchSchema } from '@/schemaValidations';
 import {
@@ -21,7 +20,7 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
     apiConfig: apiConfig.group,
     options: {
       queryKey,
-      objectName: 'vai trò'
+      objectName: 'quyền'
     }
   });
 
@@ -29,20 +28,6 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
     {
       title: 'Tên',
       dataIndex: 'name'
-    },
-    {
-      title: 'Nhóm',
-      dataIndex: 'kind',
-      render: (value) => {
-        const groupKind = groupKinds.find((gk) => gk.value === value);
-        return (
-          <Badge style={{ backgroundColor: groupKind?.color }}>
-            {groupKind?.label}
-          </Badge>
-        );
-      },
-      width: 120,
-      align: 'center'
     },
     handlers.renderActionColumn({
       actions: {
@@ -53,32 +38,27 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
   ];
 
   const searchFields: SearchFormProps<GroupSearchType>['searchFields'] = [
-    { key: 'name', placeholder: 'Tên quyền' },
-    {
-      key: 'kind',
-      type: FieldTypes.SELECT,
-      options: groupKinds,
-      placeholder: 'Nhóm',
-      submitOnChanged: true
-    }
+    { key: 'name', placeholder: 'Tên quyền' }
   ];
 
   return (
-    <ListPageWrapper
-      searchForm={handlers.renderSearchForm({
-        searchFields,
-        schema: groupSearchSchema
-      })}
-      addButton={handlers.renderAddButton()}
-      reloadButton={handlers.renderReloadButton()}
-    >
-      <BaseTable
-        columns={columns}
-        dataSource={data?.sort((a, b) => a.kind - b.kind)}
-        pagination={pagination}
-        loading={loading}
-        changePagination={handlers.changePagination}
-      />
-    </ListPageWrapper>
+    <PageWrapper breadcrumbs={[{ label: 'Quyền' }]}>
+      <ListPageWrapper
+        searchForm={handlers.renderSearchForm({
+          searchFields,
+          schema: groupSearchSchema
+        })}
+        addButton={handlers.renderAddButton()}
+        reloadButton={handlers.renderReloadButton()}
+      >
+        <BaseTable
+          columns={columns}
+          dataSource={data?.sort((a, b) => a.kind - b.kind)}
+          pagination={pagination}
+          loading={loading}
+          changePagination={handlers.changePagination}
+        />
+      </ListPageWrapper>
+    </PageWrapper>
   );
 }

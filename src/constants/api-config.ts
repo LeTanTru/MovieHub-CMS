@@ -16,8 +16,7 @@ const apiConfig = defineApiConfig({
     loginEmployee: {
       baseUrl: `${AppConstants.tenantApiUrl}/employee/login`,
       method: 'POST',
-      headers: baseHeader,
-      isRequiredTenantId: true
+      headers: baseHeader
     }
   },
   customer: {
@@ -85,96 +84,65 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group/create`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'GR_C',
-      isRequiredTenantId: true
+      permissionCode: 'GR_C'
     },
     getById: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group/get/:id`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'GR_V',
-      isRequiredTenantId: true
+      permissionCode: 'GR_V'
     },
     getList: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'GR_L',
-      isRequiredTenantId: true
+      permissionCode: 'GR_L'
     },
     update: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group/update`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'GR_U',
-      isRequiredTenantId: true
+      permissionCode: 'GR_U'
     }
   },
-  groupPermission: {
-    create: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/group-permission/create`,
-      method: 'POST',
-      headers: baseHeader,
-      permissionCode: 'GR_PER_C',
-      isRequiredTenantId: true
-    },
-    getById: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/group-permission/get/:id`,
-      method: 'GET',
-      headers: baseHeader,
-      permissionCode: 'GR_PER_V',
-      isRequiredTenantId: true
-    },
-    getList: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/group-permission/list`,
-      method: 'GET',
-      headers: baseHeader,
-      permissionCode: 'GR_PER_L',
-      isRequiredTenantId: true
-    },
-    update: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/group-permission/update`,
+  user: {
+    changeStatus: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/user/change-status`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'GR_PER_U',
-      isRequiredTenantId: true
+      permissionCode: 'USR_U'
+    },
+    delete: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/user/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'USR_D'
+    },
+    getById: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/user/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'USR_V'
+    },
+    getList: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/user/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'USR_L'
+    },
+    update: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/user/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'USR_U'
     }
   },
   permission: {
-    create: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/permission/create`,
-      method: 'POST',
-      headers: baseHeader,
-      permissionCode: 'PER_C',
-      isRequiredTenantId: true
-    },
-    delete: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/permission/delete/:id`,
-      method: 'DELETE',
-      headers: baseHeader,
-      permissionCode: 'PER_D',
-      isRequiredTenantId: true
-    },
-    getByIds: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/permission/get/list-by-ids`,
-      method: 'GET',
-      headers: baseHeader,
-      permissionCode: 'PER_V',
-      isRequiredTenantId: true
-    },
     getList: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/permission/list`,
+      baseUrl: `${AppConstants.metaApiUrl}/v1/permission/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'PER_L',
-      isRequiredTenantId: true
-    },
-    update: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/permission/update`,
-      method: 'PUT',
-      headers: baseHeader,
-      permissionCode: 'PER_U',
-      isRequiredTenantId: true
+      permissionCode: 'PER_L'
     }
   },
   file: {

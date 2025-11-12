@@ -20,6 +20,22 @@ const route = defineRoute({
       path: '/employee',
       auth: true,
       permissionCode: [apiConfig.employee.getList.permissionCode]
+    },
+    savePage: {
+      path: '/employee/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.employee.create.permissionCode,
+        apiConfig.employee.update.permissionCode
+      ],
+      separate: true
+    }
+  },
+  audience: {
+    getList: {
+      path: '/audience',
+      auth: true,
+      permissionCode: [apiConfig.user.getList.permissionCode]
     }
   },
   group: {
