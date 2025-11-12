@@ -25,7 +25,6 @@ import { cn } from '@/lib';
 import { logger } from '@/logger';
 import {
   useCreateGroupMutation,
-  useGroupPermissionListQuery,
   useGroupQuery,
   usePermissionListQuery,
   useUpdateGroupMutation
@@ -53,13 +52,8 @@ export default function GroupForm() {
     page: DEFAULT_TABLE_PAGE_START,
     size: MAX_PAGE_SIZE
   });
-  const groupPermissionListQuery = useGroupPermissionListQuery({
-    page: DEFAULT_TABLE_PAGE_START,
-    size: MAX_PAGE_SIZE
-  });
 
   const group = groupQuery.data?.data;
-  const groupPermissions = groupPermissionListQuery.data?.data.content || [];
   const permissions = permissionListQuery.data?.data.content;
 
   const createGroupMutation = useCreateGroupMutation();
@@ -73,14 +67,6 @@ export default function GroupForm() {
     acc[group].push(permission);
     return acc;
   }, {} as any);
-
-  (groupPermissions || [])
-    .map((group) => group.name)
-    .forEach((groupName) => {
-      if (!groupedPermissions[groupName]) {
-        groupedPermissions[groupName] = [];
-      }
-    });
 
   const defaultValues: GroupBodyType = {
     name: '',
