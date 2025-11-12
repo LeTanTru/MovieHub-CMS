@@ -13,11 +13,14 @@ import { CircleLoading } from '@/components/loading';
 import { storageKeys } from '@/constants';
 import { useNavigate } from '@/hooks';
 import { logger } from '@/logger';
-import { useUpdateProfileMutation, useUploadAvatarMutation } from '@/queries';
+import {
+  useManagerUpdateProfileMutation,
+  useUploadAvatarMutation
+} from '@/queries';
 import { route } from '@/routes';
-import { updateProfileSchema } from '@/schemaValidations';
+import { customerSchema, updateProfileSchema } from '@/schemaValidations';
 import { useAuthStore } from '@/store';
-import { ProfileBodyType } from '@/types';
+import { CustomerBodyType } from '@/types';
 import { getData, notify, removeData, renderImageUrl } from '@/utils';
 import { Save } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -27,37 +30,47 @@ export default function ProfileForm() {
   const navigate = useNavigate();
   const { profile } = useAuthStore();
   const fileMutation = useUploadAvatarMutation();
-  const profileMutation = useUpdateProfileMutation();
+  const profileMutation = useManagerUpdateProfileMutation();
   const [avatarPath, setAvatarPath] = useState('');
+  const [logoPath, setLogoPath] = useState('');
 
-  const defaultValues: ProfileBodyType = {
+  const defaultValues: CustomerBodyType = {
     email: '',
     fullName: '',
     avatarPath: '',
     phone: '',
     oldPassword: '',
-    password: '',
-    confirmPassword: ''
+    newPassword: '',
+    confirmPassword: '',
+    logoPath: ''
   };
 
-  const initialValues: ProfileBodyType = useMemo(
+  const initialValues: CustomerBodyType = useMemo(
     () => ({
-      email: profile?.email ?? '',
-      fullName: profile?.fullName ?? '',
-      avatarPath: profile?.avatarPath ?? '',
-      phone: profile?.phone ?? '',
-      oldPassword: ''
+      email: profile?.account?.email ?? '',
+      fullName: profile?.account?.fullName ?? '',
+      avatarPath: profile?.account?.avatarPath ?? '',
+      phone: profile?.account?.phone ?? '',
+      oldPassword: '',
+      logoPath: profile?.logoPath ?? '',
+      confirmPassword: '',
+      newPassword: ''
     }),
-    [profile?.avatarPath, profile?.email, profile?.fullName, profile?.phone]
+    [profile]
   );
 
   useEffect(() => {
-    if (profile?.avatarPath) setAvatarPath(profile?.avatarPath);
-  }, [profile?.avatarPath]);
+    if (profile?.account?.avatarPath)
+      setAvatarPath(profile?.account?.avatarPath);
+  }, [profile?.account?.avatarPath]);
+
+  useEffect(() => {
+    if (profile?.logoPath) setLogoPath(profile?.logoPath);
+  }, [profile?.logoPath]);
 
   const onSubmit = async (
-    values: ProfileBodyType,
-    form: UseFormReturn<ProfileBodyType>
+    values: CustomerBodyType,
+    form: UseFormReturn<CustomerBodyType>
   ) => {
     await profileMutation.mutateAsync(
       { ...values, avatarPath },
@@ -88,8 +101,8 @@ export default function ProfileForm() {
       defaultValues={defaultValues}
       initialValues={initialValues}
       onSubmit={onSubmit}
-      schema={updateProfileSchema}
-      className='mx-auto w-1/2'
+      schema={customerSchema}
+      className='mx-auto w-1/3'
     >
       {(form) => (
         <>
@@ -110,7 +123,27 @@ export default function ProfileForm() {
                   });
                   return res.data?.filePath ?? '';
                 }}
-                label='Tải lên ảnh đại diện'
+                label='Ảnh đại diện'
+              />
+            </Col>
+            <Col span={24}>
+              <UploadImageField
+                value={renderImageUrl(logoPath)}
+                loading={fileMutation.isPending}
+                name='logoPath'
+                control={form.control}
+                onChange={(url) => {
+                  setLogoPath(url);
+                }}
+                size={100}
+                uploadImageFn={async (file: Blob) => {
+                  const res = await fileMutation.mutateAsync({
+                    file
+                  });
+                  return res.data?.filePath ?? '';
+                }}
+                label='Logo'
+                aspect={16 / 9}
               />
             </Col>
           </Row>
@@ -162,7 +195,7 @@ export default function ProfileForm() {
             <Col span={24}>
               <PasswordField
                 control={form.control}
-                name='password'
+                name='newPassword'
                 label='Mật khẩu mới'
                 placeholder='Mật khẩu mới'
               />

@@ -52,7 +52,7 @@ export default function DateRangePickerField({
         <FormItem className={cn('relative flex flex-col', className)}>
           {label && (
             <FormLabel
-              className={cn('ml-1 gap-1.5', labelClassName, {
+              className={cn('ml-2 gap-1.5', labelClassName, {
                 'opacity-50 select-none': disabled
               })}
             >

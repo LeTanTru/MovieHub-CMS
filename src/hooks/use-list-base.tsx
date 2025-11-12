@@ -309,7 +309,7 @@ export default function useListBase<
                 </AlertDialogCancel>
                 <AlertDialogAction
                   onClick={() => handleDeleteClick(record.id)}
-                  className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
+                  className='bg-dodger-blue hover:bg-dodger-blue/80 w-15 cursor-pointer transition-all duration-200 ease-linear'
                 >
                   Có
                 </AlertDialogAction>

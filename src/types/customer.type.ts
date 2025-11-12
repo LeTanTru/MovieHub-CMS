@@ -29,4 +29,4 @@ export type ChangeStatusCustomerBodyType = {
   status: number;
 };
 
-export type CustomerBodyType = z.infer<ReturnType<typeof customerSchema>>;
+export type CustomerBodyType = z.infer<typeof customerSchema>;

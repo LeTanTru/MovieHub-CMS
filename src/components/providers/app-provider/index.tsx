@@ -1,7 +1,7 @@
 'use client';
 
 import { storageKeys } from '@/constants';
-import { useProfileQuery } from '@/queries';
+import { useManagerProfileQuery } from '@/queries';
 import { useAuthStore } from '@/store';
 import { getData } from '@/utils';
 import { useEffect } from 'react';
@@ -12,7 +12,7 @@ export default function AppProvider({
   children: React.ReactNode;
 }) {
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
-  const profileQuery = useProfileQuery();
+  const profileQuery = useManagerProfileQuery();
   const { setProfile, isAuthenticated, setLoading } = useAuthStore();
 
   useEffect(
@@ -25,7 +25,7 @@ export default function AppProvider({
 
     const handleGetProfile = async () => {
       const res = await profileQuery.refetch();
-      if (res.data?.data) {
+      if (res.data?.result && res.data.data) {
         setProfile(res.data.data);
       }
     };
