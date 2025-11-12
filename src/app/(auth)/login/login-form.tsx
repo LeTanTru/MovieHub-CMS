@@ -6,7 +6,7 @@ import { BaseForm } from '@/components/form/base-form';
 import { LOGIN_TYPE_MANAGER, loginOptions, storageKeys } from '@/constants';
 import { logger } from '@/logger';
 import { loginSchema } from '@/schemaValidations';
-import { LoginBodyType } from '@/types/auth.type';
+import { LoginBodyType, LoginResType } from '@/types/auth.type';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
 import PasswordField from '@/components/form/password-field';
@@ -16,6 +16,7 @@ import { useAuthStore } from '@/store';
 import envConfig from '@/config';
 import { route } from '@/routes';
 import { useLoginEmployeeMutation, useLoginManagerMutation } from '@/queries';
+import { omit } from 'lodash';
 
 export default function LoginForm() {
   const loginManagerMutation = useLoginManagerMutation();
@@ -34,22 +35,36 @@ export default function LoginForm() {
     loginType: LOGIN_TYPE_MANAGER
   };
 
+  const handleLoginSuccess = (res: LoginResType) => {
+    notify.success('Đăng nhập thành công');
+    setData(storageKeys.ACCESS_TOKEN, res?.access_token!);
+    setData(storageKeys.REFRESH_TOKEN, res?.refresh_token!);
+    setData(storageKeys.USER_KIND, res?.user_kind?.toString()!);
+    setAuthenticated(true);
+    setLoading(true);
+    navigate(route.home.path);
+  };
+
+  const handleLoginError = (error: Error) => {
+    logger.error('Error while logging in: ', error);
+    notify.error('Đăng nhập thất bại');
+  };
+
   const onSubmit = async (values: LoginBodyType) => {
-    await loginManagerMutation.mutateAsync(values, {
-      onSuccess: (res) => {
-        notify.success('Đăng nhập thành công');
-        setData(storageKeys.ACCESS_TOKEN, res?.access_token!);
-        setData(storageKeys.REFRESH_TOKEN, res?.refresh_token!);
-        setData(storageKeys.USER_KIND, res?.user_kind?.toString()!);
-        setAuthenticated(true);
-        setLoading(true);
-        navigate(route.home.path);
-      },
-      onError: (error) => {
-        logger.error('Error while logging in: ', error);
-        notify.error('Đăng nhập thất bại');
-      }
-    });
+    if (values.loginType === LOGIN_TYPE_MANAGER) {
+      await loginManagerMutation.mutateAsync(
+        { ...omit(values, ['loginType']) } as any,
+        {
+          onSuccess: handleLoginSuccess,
+          onError: handleLoginError
+        }
+      );
+    } else {
+      await loginEmployeeMutation.mutateAsync(values, {
+        onSuccess: handleLoginSuccess,
+        onError: handleLoginError
+      });
+    }
   };
 
   return (

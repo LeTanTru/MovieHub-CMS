@@ -3,43 +3,31 @@
 import { AvatarField } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
-import {
-  apiConfig,
-  FieldTypes,
-  GROUP_KIND_ADMIN,
-  statusOptions
-} from '@/constants';
+import { apiConfig, FieldTypes, statusOptions } from '@/constants';
 import { useListBase } from '@/hooks';
-import { accountSearchSchema } from '@/schemaValidations';
+import { employeeSearchSchema } from '@/schemaValidations';
 import {
-  AccountAutoResType,
-  AccountSearchType,
   Column,
+  EmployeeResType,
+  EmployeeSearchType,
   SearchFormProps
 } from '@/types';
 import { renderImageUrl } from '@/utils';
 import { AiOutlineUser } from 'react-icons/ai';
 
-export default function AdminList({ queryKey }: { queryKey: string }) {
+export default function EmployeeList({ queryKey }: { queryKey: string }) {
   const { data, pagination, loading, handlers } = useListBase<
-    AccountAutoResType,
-    AccountSearchType
+    EmployeeResType,
+    EmployeeSearchType
   >({
-    apiConfig: {
-      ...apiConfig.account,
-      create: apiConfig.account.createAdmin,
-      update: apiConfig.account.updateAdmin
-    },
+    apiConfig: apiConfig.employee,
     options: {
       queryKey,
-      objectName: 'tài khoản',
-      defaultFilters: { kind: GROUP_KIND_ADMIN },
-      notShowFromSearchParams: ['kind']
+      objectName: 'nhân viên'
     }
   });
-  console.log('🚀 ~ AdminList ~ data:', data);
 
-  const columns: Column<AccountAutoResType>[] = [
+  const columns: Column<EmployeeResType>[] = [
     {
       title: '#',
       dataIndex: 'avatarPath',
@@ -82,15 +70,19 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({
-      actions: { edit: true, delete: (record) => !record.isSuperAdmin }
+      actions: { edit: true, delete: true }
     })
   ];
 
-  const searchFields: SearchFormProps<AccountSearchType>['searchFields'] = [
+  const searchFields: SearchFormProps<EmployeeSearchType>['searchFields'] = [
     { key: 'fullName', placeholder: 'Họ tên' },
     {
-      key: 'email',
-      placeholder: 'Email'
+      key: 'phone',
+      placeholder: 'Số điện thoại'
+    },
+    {
+      key: 'kind',
+      placeholder: 'Vai trò'
     },
     {
       key: 'status',
@@ -105,7 +97,7 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: accountSearchSchema
+          schema: employeeSearchSchema
         })}
         addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}

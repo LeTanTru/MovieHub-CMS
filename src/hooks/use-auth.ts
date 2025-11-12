@@ -20,7 +20,7 @@ const useAuth = () => {
   return {
     isAuthenticated: isAuthenticated || !!profile,
     profile,
-    kind: profile?.kind,
+    kind: profile?.account?.kind,
     permissionCode: permissionCode.map((pCode) => pCode),
     loading
   };

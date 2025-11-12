@@ -198,7 +198,7 @@ export default function UploadImageField<T extends FieldValues>({
         {label && (
           <FormLabel
             className={cn(
-              'ml-1 gap-1.5',
+              'ml-2 gap-1.5',
               {
                 'text-destructive': error?.message
               },

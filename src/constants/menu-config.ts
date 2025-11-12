@@ -6,16 +6,16 @@ import { AiOutlineUser } from 'react-icons/ai';
 
 const menuConfig: MenuItem[] = [
   {
-    key: 'account-management',
-    label: 'Quản lý tài khoản',
+    key: 'user-management',
+    label: 'Quản lý người dùng',
     icon: AiOutlineUser,
-    permissionCode: [apiConfig.account.getList.permissionCode],
+    permissionCode: [apiConfig.employee.getList.permissionCode],
     children: [
       {
-        key: 'admin-list',
-        label: 'Quản trị viên',
-        path: route.admin.getList.path,
-        permissionCode: [apiConfig.account.getList.permissionCode]
+        key: 'employee-list',
+        label: 'Nhân viên',
+        path: route.employee.getList.path,
+        permissionCode: [apiConfig.employee.getList.permissionCode]
       }
     ]
   },

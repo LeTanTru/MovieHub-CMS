@@ -1,7 +1,6 @@
 import { SidebarLayout } from '@/components/layout';
-import { Metadata } from 'next';
 
-export default function AdminLayout({
+export default function EmployeeLayout({
   children
 }: {
   children: React.ReactNode;

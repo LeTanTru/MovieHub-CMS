@@ -9,55 +9,74 @@ const defineApiConfig = <T extends ApiConfigGroup>(config: T) => config;
 const apiConfig = defineApiConfig({
   auth: {
     loginManager: {
-      baseUrl: `${AppConstants.tenantApiUrl}/api/token`,
+      baseUrl: `${AppConstants.metaApiUrl}/api/token`,
       method: 'POST',
       headers: baseHeader
     },
     loginEmployee: {
       baseUrl: `${AppConstants.tenantApiUrl}/employee/login`,
       method: 'POST',
+      headers: baseHeader,
+      isRequiredTenantId: true
+    }
+  },
+  customer: {
+    getProfile: {
+      baseUrl: `${AppConstants.metaApiUrl}/v1/customer/profile`,
+      method: 'GET',
+      headers: baseHeader
+    },
+    updateProfile: {
+      baseUrl: `${AppConstants.metaApiUrl}/v1/customer/update-profile`,
+      method: 'PUT',
       headers: baseHeader
     }
   },
-  account: {
-    createAdmin: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/account/create-admin`,
+  employee: {
+    changeStatus: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/employee/change-status`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'EM_U'
+    },
+    create: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/employee/create`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'ACC_C_AD'
+      permissionCode: 'EM_C'
     },
     delete: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/account/delete/:id`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/employee/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
-      permissionCode: 'ACC_D'
+      permissionCode: 'EM_D'
     },
     getById: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/account/get/:id`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/employee/get/:id`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'ACC_V'
+      permissionCode: 'EM_V'
     },
     getList: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/account/list`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/employee/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'ACC_L'
+      permissionCode: 'EM_L'
     },
     getProfile: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/account/profile`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/employee/profile`,
       method: 'GET',
       headers: baseHeader
     },
-    updateAdmin: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/account/update-admin`,
+    update: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/employee/update`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'ACC_U_AD'
+      permissionCode: 'EM_U'
     },
-    updateProfileAdmin: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/account/update-profile-admin`,
-      method: 'PUT',
+    updateProfile: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/employee/update-profile`,
+      method: 'GET',
       headers: baseHeader
     }
   },

@@ -1,4 +1,4 @@
-import { apiConfig } from '@/constants';
+import { apiConfig, queryKeys } from '@/constants';
 import {
   ApiResponse,
   ApiResponseList,
@@ -11,7 +11,7 @@ import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 
 export const useGroupListQuery = (params?: GroupSearchType) => {
   return useQuery({
-    queryKey: ['group-list', params],
+    queryKey: [`${queryKeys.GROUP}-list`, params],
     queryFn: () =>
       http.get<ApiResponseList<GroupResType>>(apiConfig.group.getList, {
         params
@@ -22,7 +22,7 @@ export const useGroupListQuery = (params?: GroupSearchType) => {
 
 export const useGroupQuery = (id: string) => {
   return useQuery({
-    queryKey: ['group', id],
+    queryKey: [queryKeys.GROUP, id],
     queryFn: () =>
       http.get<ApiResponse<GroupResType>>(apiConfig.group.getById, {
         pathParams: { id }
@@ -33,7 +33,7 @@ export const useGroupQuery = (id: string) => {
 
 export const useCreateGroupMutation = () => {
   return useMutation({
-    mutationKey: ['group-create'],
+    mutationKey: [`create-${queryKeys.GROUP}`],
     mutationFn: (body: Omit<GroupBodyType, 'id'>) =>
       http.post<ApiResponse<any>>(apiConfig.group.create, {
         body
@@ -43,7 +43,7 @@ export const useCreateGroupMutation = () => {
 
 export const useUpdateGroupMutation = () => {
   return useMutation({
-    mutationKey: ['group-update'],
+    mutationKey: [`update-${queryKeys.GROUP}`],
     mutationFn: (body: GroupBodyType) =>
       http.put<ApiResponse<any>>(apiConfig.group.update, {
         body

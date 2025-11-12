@@ -12,25 +12,24 @@ import PasswordField from '@/components/form/password-field';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import {
-  adminErrorMaps,
   apiConfig,
-  GROUP_KIND_ADMIN,
+  employeeErrorMaps,
   STATUS_ACTIVE,
   statusOptions
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { useGroupListQuery, useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
-import { accountSchema } from '@/schemaValidations';
-import { AccountBodyType, AccountResType } from '@/types';
+import { employeeSchema } from '@/schemaValidations';
+import { EmployeeBodyType, EmployeeResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-export default function AdminForm({ queryKey }: { queryKey: string }) {
+export default function EmployeeForm({ queryKey }: { queryKey: string }) {
   const [avatarPath, setAvatarPath] = useState<string>('');
-  const groupListQuery = useGroupListQuery({ kind: GROUP_KIND_ADMIN });
+  const groupListQuery = useGroupListQuery();
   const groupList = groupListQuery.data?.data.content || [];
   const groupOptions = groupList.map((item) => ({
     label: item.name,
@@ -40,16 +39,12 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
 
   const { data, loading, isEditing, queryString, handleSubmit, renderActions } =
-    useSaveBase<AccountResType, AccountBodyType>({
-      apiConfig: {
-        create: apiConfig.account.createAdmin,
-        update: apiConfig.account.updateAdmin,
-        getById: apiConfig.account.getById
-      },
+    useSaveBase<EmployeeResType, EmployeeBodyType>({
+      apiConfig: apiConfig.employee,
       options: {
         queryKey,
         objectName: 'nhân viên',
-        listPageUrl: route.admin.getList.path,
+        listPageUrl: route.employee.getList.path,
         pathParams: {
           id
         },
@@ -57,7 +52,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
       }
     });
 
-  const defaultValues: AccountBodyType = {
+  const defaultValues: EmployeeBodyType = {
     username: '',
     email: '',
     fullName: '',
@@ -69,7 +64,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     phone: ''
   };
 
-  const initialValues: AccountBodyType = useMemo(() => {
+  const initialValues: EmployeeBodyType = useMemo(() => {
     return {
       username: data?.username ?? '',
       email: data?.email ?? '',
@@ -81,24 +76,23 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
       confirmPassword: '',
       phone: data?.phone ?? ''
     };
-  }, [data, groupList]);
+  }, [data]);
 
   useEffect(() => {
     if (data?.avatarPath) setAvatarPath(data?.avatarPath);
   }, [data]);
 
   const onSubmit = async (
-    values: AccountBodyType,
-    form: UseFormReturn<AccountBodyType>
+    values: EmployeeBodyType,
+    form: UseFormReturn<EmployeeBodyType>
   ) => {
     await handleSubmit(
       {
         ...values,
-        avatarPath: avatarPath,
-        kind: GROUP_KIND_ADMIN
+        avatarPath: avatarPath
       },
       form,
-      adminErrorMaps
+      employeeErrorMaps
     );
   };
 
@@ -107,15 +101,15 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
       breadcrumbs={[
         {
           label: 'Quản trị viên',
-          href: renderListPageUrl(route.admin.getList.path, queryString)
+          href: renderListPageUrl(route.employee.getList.path, queryString)
         },
-        { label: `${!data ? 'Thêm mới' : 'Cập nhật'} quản trị viên` }
+        { label: `${!data ? 'Thêm mới' : 'Cập nhật'} nhân viên` }
       ]}
     >
       <BaseForm
         onSubmit={onSubmit}
         defaultValues={defaultValues}
-        schema={accountSchema(isEditing)}
+        schema={employeeSchema(isEditing)}
         initialValues={initialValues}
         className='w-200'
       >
@@ -181,52 +175,110 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                 />
               </Col>
             </Row>
-            <Row>
-              <Col>
-                <PasswordField
-                  control={form.control}
-                  name='password'
-                  label='Mật khẩu'
-                  placeholder='Mật khẩu'
-                  required={!isEditing}
-                />
-              </Col>
-              <Col>
-                <PasswordField
-                  control={form.control}
-                  name='confirmPassword'
-                  label='Nhập lại mật khẩu'
-                  placeholder='Nhập lại mật khẩu'
-                  required={!isEditing}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <SelectField
-                  getLabel={(opt) => opt.label}
-                  getValue={(opt) => opt.value}
-                  options={groupOptions || []}
-                  control={form.control}
-                  name='groupId'
-                  label='Nhóm quyền'
-                  placeholder='Nhóm quyền'
-                  required
-                />
-              </Col>
-              <Col>
-                <SelectField
-                  getLabel={(opt) => opt.label}
-                  getValue={(opt) => opt.value}
-                  options={statusOptions || []}
-                  control={form.control}
-                  name='status'
-                  label='Trạng thái'
-                  placeholder='Trạng thái'
-                  required
-                />
-              </Col>
-            </Row>
+            {!isEditing && (
+              <>
+                <Row>
+                  <Col>
+                    <PasswordField
+                      control={form.control}
+                      name='password'
+                      label='Mật khẩu'
+                      placeholder='Mật khẩu'
+                      required={!isEditing}
+                    />
+                  </Col>
+                  <Col>
+                    <PasswordField
+                      control={form.control}
+                      name='confirmPassword'
+                      label='Nhập lại mật khẩu'
+                      placeholder='Nhập lại mật khẩu'
+                      required={!isEditing}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <SelectField
+                      options={groupOptions || []}
+                      control={form.control}
+                      name='groupId'
+                      label='Nhóm quyền'
+                      placeholder='Nhóm quyền'
+                      required
+                    />
+                  </Col>
+                  <Col>
+                    <SelectField
+                      options={statusOptions || []}
+                      control={form.control}
+                      name='status'
+                      label='Trạng thái'
+                      placeholder='Trạng thái'
+                      required
+                    />
+                  </Col>
+                </Row>
+              </>
+            )}
+            {isEditing && (
+              <>
+                <Row>
+                  <Col>
+                    <PasswordField
+                      control={form.control}
+                      name='oldPassword'
+                      label='Mật khẩu cũ'
+                      placeholder='Mật khẩu cũ'
+                      required={!isEditing}
+                    />
+                  </Col>
+                  <Col>
+                    <PasswordField
+                      control={form.control}
+                      name='newPassword'
+                      label='Mật khẩu mới'
+                      placeholder='Mật khẩu mới'
+                      required={!isEditing}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <PasswordField
+                      control={form.control}
+                      name='confirmNewPassword'
+                      label='Nhập lại mật khẩu mới'
+                      placeholder='Nhập lại mật khẩu mới'
+                      required={!isEditing}
+                    />
+                  </Col>
+                  <Col>
+                    <SelectField
+                      options={groupOptions || []}
+                      control={form.control}
+                      name='groupId'
+                      label='Nhóm quyền'
+                      placeholder='Nhóm quyền'
+                      required
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <SelectField
+                      options={statusOptions || []}
+                      control={form.control}
+                      name='status'
+                      label='Trạng thái'
+                      placeholder='Trạng thái'
+                      required
+                    />
+                  </Col>
+                </Row>
+              </>
+            )}
+
             <>{renderActions(form)}</>
             {loading && (
               <div className='absolute inset-0 bg-white/80'>

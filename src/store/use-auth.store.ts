@@ -1,4 +1,4 @@
-import { AuthStoreType, ProfileResType } from '@/types';
+import { AuthStoreType, CustomerResType } from '@/types';
 import { create } from 'zustand';
 
 const useAuthStore = create<AuthStoreType>((set) => ({
@@ -7,7 +7,7 @@ const useAuthStore = create<AuthStoreType>((set) => ({
   loading: true,
   socket: null,
 
-  setProfile: (profile: ProfileResType | null) => set({ profile }),
+  setProfile: (profile: CustomerResType | null) => set({ profile }),
   setAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
   setLoading: (loading: boolean) => set({ loading })
 }));

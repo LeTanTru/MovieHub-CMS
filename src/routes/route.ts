@@ -15,11 +15,11 @@ const route = defineRoute({
   home: {
     path: '/'
   },
-  admin: {
+  employee: {
     getList: {
-      path: '/admin',
+      path: '/employee',
       auth: true,
-      permissionCode: [apiConfig.account.getList.permissionCode]
+      permissionCode: [apiConfig.employee.getList.permissionCode]
     }
   },
   group: {

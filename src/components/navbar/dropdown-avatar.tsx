@@ -51,7 +51,7 @@ export default function DropdownAvatar() {
     >
       <div className='flex cursor-pointer items-center gap-2'>
         <AvatarField
-          src={renderImageUrl(profile?.avatarPath)}
+          src={renderImageUrl(profile?.account?.avatarPath)}
           disablePreview
           size={40}
           icon={
