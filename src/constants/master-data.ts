@@ -9,6 +9,8 @@ import {
   GROUP_KIND_MANAGER,
   GROUP_KIND_USER,
   GROUP_KIND_USER_VIP,
+  LOGIN_TYPE_EMPLOYEE,
+  LOGIN_TYPE_MANAGER,
   STATUS_ACTIVE,
   STATUS_DELETED,
   STATUS_LOCK,
@@ -107,6 +109,7 @@ export const genderOptions: OptionType[] = [
 ];
 
 export const queryKeys = {
+  LOGIN: 'login',
   ACCOUNT: 'account',
   GROUP: 'group',
   CUSTOMER: 'customer',
@@ -125,5 +128,16 @@ export const languageOptions = [
   {
     label: 'Tiếng Anh',
     value: 'en'
+  }
+];
+
+export const loginOptions = [
+  {
+    label: 'Quản lý',
+    value: LOGIN_TYPE_MANAGER
+  },
+  {
+    label: 'Nhân viên',
+    value: LOGIN_TYPE_EMPLOYEE
   }
 ];

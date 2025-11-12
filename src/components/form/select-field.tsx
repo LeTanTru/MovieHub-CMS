@@ -39,25 +39,23 @@ type SelectFieldProps<
   description?: string;
   className?: string;
   required?: boolean;
-  multiple?: boolean;
-  getLabel: (option: TOption) => string | number;
-  getValue: (option: TOption) => string | number;
+  getLabel?: (option: TOption) => string | number;
+  getValue?: (option: TOption) => string | number;
   getPrefix?: (option: TOption) => React.ReactNode;
   allowClear?: boolean;
   searchText?: string;
   notFoundContent?: React.ReactNode;
   labelClassName?: string;
   disabled?: boolean;
-  onValueChange?: (value: string | number | (string | number)[]) => void;
+  onValueChange?: (value: string | number | null) => void;
 };
 
-const normalizeText = (text: string): string => {
-  return text
+const normalizeText = (text: string): string =>
+  text
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .trim();
-};
 
 export default function SelectField<
   TFieldValues extends FieldValues,
@@ -71,10 +69,9 @@ export default function SelectField<
   description,
   className,
   required,
-  multiple = false,
-  getLabel,
-  getValue,
-  getPrefix,
+  getLabel = (opt) => opt.label,
+  getValue = (opt) => opt.value,
+  getPrefix = (opt) => opt.prefix,
   allowClear,
   searchText,
   notFoundContent = 'Không có kết quả nào',
@@ -86,28 +83,14 @@ export default function SelectField<
   const [searchValue, setSearchValue] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
-  function isFuzzyMatch(input: string, target: string): boolean {
-    let i = 0,
-      j = 0;
-    while (i < input.length && j < target.length) {
-      if (input[i] === target[j]) i++;
-      j++;
-    }
-    return i === input.length;
-  }
-
   const normalizedSearch = normalizeText(searchValue);
-
   const filteredOptions = options.filter((option) => {
     const label = String(getLabel(option));
-    const normalizedLabel = normalizeText(label);
-    return isFuzzyMatch(normalizedSearch, normalizedLabel);
+    return normalizeText(label).includes(normalizedSearch);
   });
 
   useEffect(() => {
-    if (!searchValue) {
-      setHighlightedIndex(-1);
-    }
+    if (!searchValue) setHighlightedIndex(-1);
   }, [searchValue]);
 
   return (
@@ -115,29 +98,22 @@ export default function SelectField<
       control={control}
       name={name}
       render={({ field, fieldState }) => {
-        const selectedValues: (string | number)[] =
-          field.value === undefined
-            ? []
-            : multiple
-              ? Array.isArray(field.value)
-                ? field.value
-                : []
-              : [field.value].filter(
-                  (item) => item !== undefined && item !== null
-                );
+        const selectedValue = field.value;
+        const selectedOption = options.find(
+          (o) => getValue(o) === selectedValue
+        );
 
-        const toggleValue = (val: string | number) => {
-          if (multiple) {
-            const next = selectedValues.includes(val)
-              ? selectedValues.filter((v) => v !== val)
-              : [...selectedValues, val];
-            field.onChange(next);
-            onValueChange?.(next);
-          } else {
-            field.onChange(val);
-            onValueChange?.(val);
-            setOpen(false);
-          }
+        const handleSelect = (val: string | number) => {
+          field.onChange(val);
+          onValueChange?.(val);
+          setOpen(false);
+        };
+
+        const handleClear = (e: React.MouseEvent) => {
+          e.stopPropagation();
+          field.onChange(null);
+          onValueChange?.(null);
+          setOpen(false);
         };
 
         return (
@@ -156,6 +132,7 @@ export default function SelectField<
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
             )}
+
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -165,10 +142,9 @@ export default function SelectField<
                   aria-label='Select'
                   disabled={disabled}
                   className={cn(
-                    'w-full flex-wrap justify-between truncate border px-3 py-0 text-black focus:ring-0 focus-visible:shadow-none',
+                    'w-full justify-between border px-3! py-0 text-black focus:ring-0 focus-visible:shadow-none',
                     {
-                      'pl-1!': selectedValues.length > 1,
-                      'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/80 text-gray-500':
+                      'cursor-not-allowed border-gray-300 bg-gray-200/80 text-gray-500':
                         disabled,
                       'border-dodger-blue ring-dodger-blue ring-1': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,
@@ -176,68 +152,21 @@ export default function SelectField<
                     }
                   )}
                 >
-                  {multiple ? (
-                    selectedValues.length > 0 ? (
-                      <div className='flex flex-wrap gap-2'>
-                        {selectedValues.map((val) => {
-                          const opt = options.find((o) => getValue(o) === val);
-                          if (!opt) return null;
-                          return (
-                            <div
-                              key={val}
-                              className='bg-accent text-accent-foreground flex items-center rounded-lg py-1 text-sm'
-                            >
-                              {getPrefix?.(opt) && (
-                                <span className='mr-1 font-mono text-xs opacity-70'>
-                                  {getPrefix(opt)}
-                                </span>
-                              )}
-                              {getLabel(opt)}
-                              <span
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  field.onChange(
-                                    selectedValues.filter((v) => v !== val)
-                                  );
-                                }}
-                                className='hover:text-destructive ml-2 cursor-pointer text-lg leading-none'
-                              >
-                                <X />
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <span className='text-gray-300'>{placeholder}</span>
-                    )
-                  ) : selectedValues.length === 1 ? (
-                    (() => {
-                      const val = selectedValues[0];
-                      const opt = options.find((o) => getValue(o) === val);
-                      return opt ? (
-                        <div className='flex min-w-0 flex-1 items-center gap-2'>
-                          {getPrefix?.(opt)}
-                          <span className='block truncate'>
-                            {getLabel(opt)}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className='text-gray-300'>{placeholder}</span>
-                      );
-                    })()
+                  {selectedOption ? (
+                    <div className='flex min-w-0 flex-1 items-center gap-2'>
+                      {getPrefix?.(selectedOption)}
+                      <span className='block truncate'>
+                        {getLabel(selectedOption)}
+                      </span>
+                    </div>
                   ) : (
                     <span className='text-gray-300'>{placeholder}</span>
                   )}
 
-                  {selectedValues.length > 0 && allowClear ? (
+                  {selectedOption && allowClear ? (
                     <span
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        field.onChange(multiple ? [] : null);
-                        setOpen(false);
-                      }}
-                      className='bg-accent ml-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-full hover:opacity-80'
+                      onClick={handleClear}
+                      className='bg-accent ml-2 flex h-4 w-4 items-center justify-center rounded-full hover:opacity-80'
                     >
                       <X className='size-3' />
                     </span>
@@ -260,7 +189,7 @@ export default function SelectField<
                     value={searchValue}
                     onValueChange={setSearchValue}
                     onKeyDown={(e) => {
-                      if (filteredOptions.length === 0) return;
+                      if (!filteredOptions.length) return;
                       if (e.key === 'ArrowDown') {
                         e.preventDefault();
                         setHighlightedIndex((prev) =>
@@ -274,13 +203,12 @@ export default function SelectField<
                       } else if (e.key === 'Enter') {
                         e.preventDefault();
                         const selected = filteredOptions[highlightedIndex];
-                        if (selected) {
-                          toggleValue(getValue(selected));
-                        }
+                        if (selected) handleSelect(getValue(selected));
                       }
                     }}
                   />
-                  <CommandEmpty className='mx-auto pt-2 pb-2 text-center text-sm'>
+
+                  <CommandEmpty className='mx-auto py-4 text-center text-sm'>
                     <Image
                       src={emptyData.src}
                       width={120}
@@ -290,20 +218,22 @@ export default function SelectField<
                     />
                     {notFoundContent}
                   </CommandEmpty>
-                  <CommandGroup className='max-h-100 overflow-y-auto max-[1560px]:max-h-50'>
+
+                  <CommandGroup className='max-h-100 overflow-y-auto'>
                     {filteredOptions.map((opt, idx) => {
                       const val = getValue(opt);
+                      const isSelected = val === selectedValue;
                       return (
                         <CommandItem
-                          onMouseEnter={() => setHighlightedIndex(idx)}
                           key={val}
-                          onSelect={() => toggleValue(val)}
+                          onMouseEnter={() => setHighlightedIndex(idx)}
+                          onMouseLeave={() => setHighlightedIndex(-1)}
+                          onSelect={() => handleSelect(val)}
                           className={cn(
-                            'block cursor-pointer truncate rounded transition-all',
+                            'block cursor-pointer truncate rounded transition-all data-[state=active]:bg-transparent',
                             {
                               'bg-accent text-accent-foreground':
-                                highlightedIndex === idx ||
-                                selectedValues.includes(val)
+                                highlightedIndex === idx || isSelected
                             }
                           )}
                         >
@@ -312,7 +242,7 @@ export default function SelectField<
                               {getPrefix(opt)}
                             </span>
                           )}
-                          {getLabel(opt) ?? 'Không có kết quả nào'}
+                          {getLabel(opt)}
                         </CommandItem>
                       );
                     })}
@@ -320,8 +250,9 @@ export default function SelectField<
                 </Command>
               </PopoverContent>
             </Popover>
+
             {fieldState.error && (
-              <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+              <div className='animate-in fade-in absolute -bottom-6 left-2 text-sm text-red-500'>
                 <FormMessage />
               </div>
             )}

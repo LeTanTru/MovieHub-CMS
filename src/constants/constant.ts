@@ -40,3 +40,6 @@ export const DATE_DAY_TIME_FORMAT = 'EEEE HH:mm:ss dd/MM/yyyy';
 export const DEFAULT_DATE_FORMAT_UTC = 'MM/dd/yyyy';
 export const DATE_TIME_FORMAT_UTC = 'HH:mm:ss MM/dd/yyyy';
 export const DATE_DAY_TIME_FORMAT_UTC = 'EEEE HH:mm:ss MM/dd/yyyy';
+
+export const LOGIN_TYPE_MANAGER = 1;
+export const LOGIN_TYPE_EMPLOYEE = 2;

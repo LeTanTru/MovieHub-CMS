@@ -16,26 +16,6 @@ const menuConfig: MenuItem[] = [
         label: 'Quản trị viên',
         path: route.admin.getList.path,
         permissionCode: [apiConfig.account.getList.permissionCode]
-      },
-      {
-        key: 'customer-list',
-        label: 'Khách hàng',
-        path: route.customer.getList.path,
-        permissionCode: [apiConfig.customer.getList.permissionCode]
-      }
-    ]
-  },
-  {
-    key: 'business-management',
-    label: 'Quản lý doanh nghiệp',
-    icon: AiOutlineUser,
-    permissionCode: [apiConfig.business.getList.permissionCode],
-    children: [
-      {
-        key: 'business-list',
-        label: 'Doanh nghiệp',
-        path: route.business.getList.path,
-        permissionCode: [apiConfig.business.getList.permissionCode]
       }
     ]
   },
@@ -53,12 +33,6 @@ const menuConfig: MenuItem[] = [
         key: 'permission',
         label: 'Quyền',
         path: route.group.getList.path,
-        permissionCode: [apiConfig.group.getList.permissionCode]
-      },
-      {
-        key: 'server-provider',
-        label: 'Máy chủ',
-        path: route.serverProvider.getList.path,
         permissionCode: [apiConfig.group.getList.permissionCode]
       }
     ]

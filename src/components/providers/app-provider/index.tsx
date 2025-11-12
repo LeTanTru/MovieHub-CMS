@@ -22,6 +22,7 @@ export default function AppProvider({
 
   useEffect(() => {
     if (!accessToken) return;
+
     const handleGetProfile = async () => {
       const res = await profileQuery.refetch();
       if (res.data?.data) {

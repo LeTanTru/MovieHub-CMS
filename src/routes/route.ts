@@ -22,36 +22,6 @@ const route = defineRoute({
       permissionCode: [apiConfig.account.getList.permissionCode]
     }
   },
-  customer: {
-    getList: {
-      path: '/customer',
-      auth: true,
-      permissionCode: [apiConfig.account.getList.permissionCode]
-    },
-    savePage: {
-      path: '/customer/:id',
-      auth: true,
-      permissionCode: [
-        apiConfig.customer.create.permissionCode,
-        apiConfig.customer.update.permissionCode
-      ]
-    },
-    business: {
-      getList: {
-        path: '/customer/:id/business',
-        auth: true,
-        permissionCode: [apiConfig.business.getList.permissionCode]
-      },
-      savePage: {
-        path: '/customer/:id/business/:id',
-        auth: true,
-        permissionCode: [
-          apiConfig.business.create.permissionCode,
-          apiConfig.business.update.permissionCode
-        ]
-      }
-    }
-  },
   group: {
     getList: {
       path: '/group-permission',
@@ -64,36 +34,6 @@ const route = defineRoute({
       permissionCode: [
         apiConfig.group.create.permissionCode,
         apiConfig.group.update.permissionCode
-      ]
-    }
-  },
-  serverProvider: {
-    getList: {
-      path: '/server-provider',
-      auth: true,
-      permissionCode: [apiConfig.serverProvider.autoComplete.permissionCode]
-    },
-    savePage: {
-      path: '/server-provider/:id',
-      auth: true,
-      permissionCode: [
-        apiConfig.serverProvider.create.permissionCode,
-        apiConfig.serverProvider.update.permissionCode
-      ]
-    }
-  },
-  business: {
-    getList: {
-      path: '/business',
-      auth: true,
-      permissionCode: [apiConfig.business.getList.permissionCode]
-    },
-    savePage: {
-      path: '/business/:id',
-      auth: true,
-      permissionCode: [
-        apiConfig.business.create.permissionCode,
-        apiConfig.business.update.permissionCode
       ]
     }
   },

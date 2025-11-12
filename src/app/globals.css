@@ -135,7 +135,7 @@ body {
     @apply border-border outline-ring/50 font-normal focus:outline-none;
   }
   body {
-    @apply bg-background text-foreground overflow-hidden text-sm font-normal;
+    @apply bg-background text-foreground overflow-x-hidden overflow-y-scroll text-sm font-normal;
   }
 }
 *::selection {
