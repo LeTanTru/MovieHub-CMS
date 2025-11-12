@@ -114,19 +114,9 @@ export const queryKeys = {
   GROUP_PERMISSION: 'group-permission',
   SNS_CONFIG: 'sns_config',
   PROFILE: 'profile',
-  EMPLOYEE: 'employee'
+  EMPLOYEE: 'employee',
+  AUDIENCE: 'audience'
 };
-
-export const languageOptions = [
-  {
-    label: 'Tiếng Việt',
-    value: 'vi'
-  },
-  {
-    label: 'Tiếng Anh',
-    value: 'en'
-  }
-];
 
 export const loginOptions = [
   {

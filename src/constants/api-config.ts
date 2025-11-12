@@ -85,25 +85,29 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group/create`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'GR_C'
+      permissionCode: 'GR_C',
+      isRequiredTenantId: true
     },
     getById: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group/get/:id`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'GR_V'
+      permissionCode: 'GR_V',
+      isRequiredTenantId: true
     },
     getList: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'GR_L'
+      permissionCode: 'GR_L',
+      isRequiredTenantId: true
     },
     update: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group/update`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'GR_U'
+      permissionCode: 'GR_U',
+      isRequiredTenantId: true
     }
   },
   groupPermission: {
@@ -111,25 +115,29 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group-permission/create`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'GR_PER_C'
+      permissionCode: 'GR_PER_C',
+      isRequiredTenantId: true
     },
     getById: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group-permission/get/:id`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'GR_PER_V'
+      permissionCode: 'GR_PER_V',
+      isRequiredTenantId: true
     },
     getList: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group-permission/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'GR_PER_L'
+      permissionCode: 'GR_PER_L',
+      isRequiredTenantId: true
     },
     update: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/group-permission/update`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'GR_PER_U'
+      permissionCode: 'GR_PER_U',
+      isRequiredTenantId: true
     }
   },
   permission: {
@@ -137,31 +145,36 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.tenantApiUrl}/v1/permission/create`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'PER_C'
+      permissionCode: 'PER_C',
+      isRequiredTenantId: true
     },
     delete: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/permission/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
-      permissionCode: 'PER_D'
+      permissionCode: 'PER_D',
+      isRequiredTenantId: true
     },
     getByIds: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/permission/get/list-by-ids`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'PER_V'
+      permissionCode: 'PER_V',
+      isRequiredTenantId: true
     },
     getList: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/permission/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'PER_L'
+      permissionCode: 'PER_L',
+      isRequiredTenantId: true
     },
     update: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/permission/update`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'PER_U'
+      permissionCode: 'PER_U',
+      isRequiredTenantId: true
     }
   },
   file: {

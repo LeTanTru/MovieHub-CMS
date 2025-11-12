@@ -248,7 +248,9 @@ export default function useListBase<
     });
   };
 
-  const handleDeleteError = (code: string) => {};
+  const handleDeleteError = (code: string) => {
+    if (code) notify.error('Có lỗi xảy ra');
+  };
 
   const additionalColumns = () => ({});
 

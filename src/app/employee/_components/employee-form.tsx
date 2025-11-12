@@ -1,5 +1,4 @@
 'use client';
-
 import {
   Col,
   InputField,
@@ -14,6 +13,7 @@ import { CircleLoading } from '@/components/loading';
 import {
   apiConfig,
   employeeErrorMaps,
+  ErrorCode,
   STATUS_ACTIVE,
   statusOptions
 } from '@/constants';
@@ -38,19 +38,26 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
   const uploadImageMutation = useUploadAvatarMutation();
   const { id } = useParams<{ id: string }>();
 
-  const { data, loading, isEditing, queryString, handleSubmit, renderActions } =
-    useSaveBase<EmployeeResType, EmployeeBodyType>({
-      apiConfig: apiConfig.employee,
-      options: {
-        queryKey,
-        objectName: 'nhân viên',
-        listPageUrl: route.employee.getList.path,
-        pathParams: {
-          id
-        },
-        mode: id === 'create' ? 'create' : 'edit'
-      }
-    });
+  const {
+    data,
+    loading,
+    isEditing,
+    queryString,
+    responseCode,
+    handleSubmit,
+    renderActions
+  } = useSaveBase<EmployeeResType, EmployeeBodyType>({
+    apiConfig: apiConfig.employee,
+    options: {
+      queryKey,
+      objectName: 'nhân viên',
+      listPageUrl: route.employee.getList.path,
+      pathParams: {
+        id
+      },
+      mode: id === 'create' ? 'create' : 'edit'
+    }
+  });
 
   const defaultValues: EmployeeBodyType = {
     username: '',
@@ -105,6 +112,8 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
         },
         { label: `${!data ? 'Thêm mới' : 'Cập nhật'} nhân viên` }
       ]}
+      notFound={responseCode === ErrorCode.EMPLOYEE_ERROR_NOT_FOUND}
+      notFoundContent={'Không tìm thấy nhân viên này'}
     >
       <BaseForm
         onSubmit={onSubmit}

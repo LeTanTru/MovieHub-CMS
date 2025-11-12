@@ -265,6 +265,7 @@ export default function useSaveBase<
     loading: itemQuery.isLoading || itemQuery.isFetching,
     queryString,
     handleSubmit,
-    renderActions
+    renderActions,
+    responseCode: itemQuery.data?.code
   };
 }
