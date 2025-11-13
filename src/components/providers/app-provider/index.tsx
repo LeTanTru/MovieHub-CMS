@@ -1,7 +1,7 @@
 'use client';
 
-import { storageKeys } from '@/constants';
-import { useManagerProfileQuery } from '@/queries';
+import { KIND_MANAGER, storageKeys } from '@/constants';
+import { useEmployeeProfileQuery, useManagerProfileQuery } from '@/queries';
 import { useAuthStore } from '@/store';
 import { getData } from '@/utils';
 import { useEffect } from 'react';
@@ -12,8 +12,13 @@ export default function AppProvider({
   children: React.ReactNode;
 }) {
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
-  const profileQuery = useManagerProfileQuery();
-  const { setProfile, isAuthenticated, setLoading } = useAuthStore();
+  const managerProfileQuery = useManagerProfileQuery();
+  const employeeProfileQuery = useEmployeeProfileQuery();
+  const { isAuthenticated, setLoading, setProfile } = useAuthStore();
+  const kind = getData(storageKeys.USER_KIND);
+
+  const profileQuery =
+    kind && +kind === KIND_MANAGER ? managerProfileQuery : employeeProfileQuery;
 
   useEffect(
     () => setLoading(profileQuery.isLoading || profileQuery.isFetching),

@@ -1,3 +1,6 @@
+import { profileSchema } from '@/schemaValidations';
+import z from 'zod';
+
 export type ProfileResType = {
   id: string;
   status: number;
@@ -6,6 +9,19 @@ export type ProfileResType = {
   phone: string;
   email: string;
   fullName: string;
+  group: {
+    id: string;
+    status: number;
+    modifiedDate: string;
+    createdDate: string;
+    name: string;
+    description: string;
+    kind: number;
+    subKind: number;
+    isSystemRole: boolean;
+  };
   avatarPath: string;
-  group: { id: string; name: string; kind: number };
+  logoPath: string;
 };
+
+export type ProfileBodyType = z.infer<typeof profileSchema>;

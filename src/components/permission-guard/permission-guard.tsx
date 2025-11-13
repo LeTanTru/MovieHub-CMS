@@ -72,8 +72,8 @@ export default function PermissionGuard({
 
     if (isAuthenticated) {
       if (pathname === route.home.path || pathname === route.login.path) {
-        if (firstActiveRoute && pathname !== firstActiveRoute) {
-          navigate(firstActiveRoute);
+        if (pathname !== firstActiveRoute) {
+          navigate(firstActiveRoute || route.profile.savePage.path);
         }
       }
     }

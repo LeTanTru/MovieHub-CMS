@@ -14,9 +14,10 @@ const apiConfig = defineApiConfig({
       headers: baseHeader
     },
     loginEmployee: {
-      baseUrl: `${AppConstants.tenantApiUrl}/employee/login`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/employee/login`,
       method: 'POST',
-      headers: baseHeader
+      headers: baseHeader,
+      isRequiredTenantId: true
     }
   },
   customer: {
@@ -115,7 +116,7 @@ const apiConfig = defineApiConfig({
     },
     updateProfile: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/employee/update-profile`,
-      method: 'GET',
+      method: 'PUT',
       headers: baseHeader
     }
   },

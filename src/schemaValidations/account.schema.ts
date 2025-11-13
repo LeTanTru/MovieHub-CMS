@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export const updateProfileSchema = z
+export const profileSchema = z
   .object({
     email: z.string().nonempty('Bắt buộc').email('Email không đúng định dạng'),
     fullName: z.string().nonempty('Bắt buộc'),
@@ -10,12 +10,13 @@ export const updateProfileSchema = z
       .regex(/^0\d{9}$/, 'Số điện thoại không hợp lệ')
       .optional(),
     oldPassword: z.string().nonempty('Bắt buộc'),
-    password: z.string().optional().nullable(),
-    confirmPassword: z.string().optional().nullable()
+    newPassword: z.string().optional().nullable(),
+    confirmPassword: z.string().optional().nullable(),
+    logoPath: z.string().optional()
   })
   .refine(
     (data) => {
-      return data.password === data.confirmPassword;
+      return data.newPassword === data.confirmPassword;
     },
     {
       path: ['confirmPassword'],
