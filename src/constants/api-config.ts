@@ -57,7 +57,7 @@ const apiConfig = defineApiConfig({
       permissionCode: 'CA_D'
     },
     update: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/category/update/:id`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/category/update`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'CA_U'
