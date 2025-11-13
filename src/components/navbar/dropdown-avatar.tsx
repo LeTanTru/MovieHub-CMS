@@ -24,6 +24,9 @@ export default function DropdownAvatar() {
     setAuthenticated(false);
     setProfile(null);
     navigate(route.login.path);
+    removeData(storageKeys.ACCESS_TOKEN);
+    removeData(storageKeys.REFRESH_TOKEN);
+    removeData(storageKeys.USER_KIND);
   };
 
   const handleProfileClick = () => {
@@ -51,7 +54,7 @@ export default function DropdownAvatar() {
     >
       <div className='flex cursor-pointer items-center gap-2'>
         <AvatarField
-          src={renderImageUrl(profile?.account?.avatarPath)}
+          src={renderImageUrl(profile?.avatarPath)}
           disablePreview
           size={40}
           icon={

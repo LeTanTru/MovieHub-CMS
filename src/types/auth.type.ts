@@ -1,5 +1,5 @@
 import { loginSchema } from '@/schemaValidations';
-import { CustomerResType } from '@/types/customer.type';
+import { ProfileResType } from '@/types/account.type';
 import z from 'zod';
 
 export type LoginBodyType = z.infer<typeof loginSchema>;
@@ -19,9 +19,9 @@ export type LoginResType = {
 
 export type AuthStoreType = {
   isAuthenticated: boolean;
-  profile: CustomerResType | null;
+  profile: ProfileResType | null;
   loading: boolean;
   setAuthenticated: (isAuthenticated: boolean) => void;
-  setProfile: (profile: CustomerResType | null) => void;
+  setProfile: (profile: ProfileResType | null) => void;
   setLoading: (loading: boolean) => void;
 };

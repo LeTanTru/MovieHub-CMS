@@ -10,17 +10,18 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
 import { CircleLoading } from '@/components/loading';
-import { storageKeys } from '@/constants';
-import { useNavigate } from '@/hooks';
+import { KIND_MANAGER, storageKeys } from '@/constants';
+import { useAuth, useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import {
+  useEmployeeUpdateProfileMutation,
   useManagerUpdateProfileMutation,
   useUploadAvatarMutation
 } from '@/queries';
 import { route } from '@/routes';
-import { customerSchema } from '@/schemaValidations';
+import { profileSchema } from '@/schemaValidations';
 import { useAuthStore } from '@/store';
-import { CustomerBodyType } from '@/types';
+import { ProfileBodyType } from '@/types';
 import { getData, notify, removeData, renderImageUrl } from '@/utils';
 import { Save } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -30,11 +31,17 @@ export default function ProfileForm() {
   const navigate = useNavigate();
   const { profile } = useAuthStore();
   const fileMutation = useUploadAvatarMutation();
-  const profileMutation = useManagerUpdateProfileMutation();
   const [avatarPath, setAvatarPath] = useState('');
   const [logoPath, setLogoPath] = useState('');
+  const { kind } = useAuth();
+  const managerUpdateProfileMutation = useManagerUpdateProfileMutation();
+  const employeeUpdateProfileMutation = useEmployeeUpdateProfileMutation();
+  const profileMutation =
+    kind === KIND_MANAGER
+      ? managerUpdateProfileMutation
+      : employeeUpdateProfileMutation;
 
-  const defaultValues: CustomerBodyType = {
+  const defaultValues: ProfileBodyType = {
     email: '',
     fullName: '',
     avatarPath: '',
@@ -45,12 +52,12 @@ export default function ProfileForm() {
     logoPath: ''
   };
 
-  const initialValues: CustomerBodyType = useMemo(
+  const initialValues: ProfileBodyType = useMemo(
     () => ({
-      email: profile?.account?.email ?? '',
-      fullName: profile?.account?.fullName ?? '',
-      avatarPath: profile?.account?.avatarPath ?? '',
-      phone: profile?.account?.phone ?? '',
+      email: profile?.email ?? '',
+      fullName: profile?.fullName ?? '',
+      avatarPath: profile?.avatarPath ?? '',
+      phone: profile?.phone ?? '',
       oldPassword: '',
       logoPath: profile?.logoPath ?? '',
       confirmPassword: '',
@@ -60,20 +67,19 @@ export default function ProfileForm() {
   );
 
   useEffect(() => {
-    if (profile?.account?.avatarPath)
-      setAvatarPath(profile?.account?.avatarPath);
-  }, [profile?.account?.avatarPath]);
+    if (profile?.avatarPath) setAvatarPath(profile?.avatarPath);
+  }, [profile?.avatarPath]);
 
   useEffect(() => {
     if (profile?.logoPath) setLogoPath(profile?.logoPath);
   }, [profile?.logoPath]);
 
   const onSubmit = async (
-    values: CustomerBodyType,
-    form: UseFormReturn<CustomerBodyType>
+    values: ProfileBodyType,
+    form: UseFormReturn<ProfileBodyType>
   ) => {
     await profileMutation.mutateAsync(
-      { ...values, avatarPath },
+      { ...values, avatarPath, logoPath },
       {
         onSuccess: (res) => {
           if (res.result) {
@@ -101,13 +107,13 @@ export default function ProfileForm() {
       defaultValues={defaultValues}
       initialValues={initialValues}
       onSubmit={onSubmit}
-      schema={customerSchema}
+      schema={profileSchema}
       className='mx-auto w-1/3'
     >
       {(form) => (
         <>
           <Row>
-            <Col span={24}>
+            <Col span={kind === KIND_MANAGER ? 12 : 24}>
               <UploadImageField
                 value={renderImageUrl(avatarPath)}
                 loading={fileMutation.isPending}
@@ -126,26 +132,28 @@ export default function ProfileForm() {
                 label='Ảnh đại diện'
               />
             </Col>
-            <Col span={24}>
-              <UploadImageField
-                value={renderImageUrl(logoPath)}
-                loading={fileMutation.isPending}
-                name='logoPath'
-                control={form.control}
-                onChange={(url) => {
-                  setLogoPath(url);
-                }}
-                size={100}
-                uploadImageFn={async (file: Blob) => {
-                  const res = await fileMutation.mutateAsync({
-                    file
-                  });
-                  return res.data?.filePath ?? '';
-                }}
-                label='Logo'
-                aspect={16 / 9}
-              />
-            </Col>
+            {kind === KIND_MANAGER && (
+              <Col span={12}>
+                <UploadImageField
+                  value={renderImageUrl(logoPath)}
+                  loading={fileMutation.isPending}
+                  name='logoPath'
+                  control={form.control}
+                  onChange={(url) => {
+                    setLogoPath(url);
+                  }}
+                  size={100}
+                  uploadImageFn={async (file: Blob) => {
+                    const res = await fileMutation.mutateAsync({
+                      file
+                    });
+                    return res.data?.filePath ?? '';
+                  }}
+                  label='Logo'
+                  aspect={16 / 9}
+                />
+              </Col>
+            )}
           </Row>
           <Row>
             <Col span={24}>
