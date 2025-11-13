@@ -14,5 +14,6 @@ export default function HasPermission({
   const { hasPermission } = useValidatePermission();
 
   if (!isMounted) return null;
-  return hasPermission({ requiredPermissions }) ? children : <></>;
+
+  return hasPermission({ requiredPermissions }) ? children : null;
 }

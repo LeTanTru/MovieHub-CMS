@@ -1,4 +1,5 @@
 import {
+  CategoryBodyType,
   EmployeeBodyType,
   ErrorMaps,
   GroupBodyType,
@@ -41,7 +42,12 @@ export const ErrorCode = {
   EMPLOYEE_ERROR_PHONE_EXISTED: 'ERROR-EMPLOYEE-ERROR-0003',
   EMPLOYEE_ERROR_EMAIL_EXISTED: 'ERROR-EMPLOYEE-ERROR-0004',
   EMPLOYEE_ERROR_WRONG_PASSWORD: 'ERROR-EMPLOYEE-ERROR-0005',
-  EMPLOYEE_ERROR_NEW_PASSWORD_SAME_OLD_PASSWORD: 'ERROR-EMPLOYEE-ERROR-0006'
+  EMPLOYEE_ERROR_NEW_PASSWORD_SAME_OLD_PASSWORD: 'ERROR-EMPLOYEE-ERROR-0006',
+
+  // === Category error code ===
+  CATEGORY_ERROR_NOT_FOUND: 'ERROR-CATEGORY-ERROR-0000',
+  CATEGORY_ERROR_NAME_EXISTED: 'ERROR-CATEGORY-ERROR-0002',
+  CATEGORY_ERROR_HAS_MOVIE: 'ERROR-CATEGORY-ERROR-0003'
 };
 
 export const groupErrorMaps: ErrorMaps<GroupBodyType> = {
@@ -117,6 +123,18 @@ export const employeeErrorMaps: ErrorMaps<EmployeeBodyType> = {
       {
         type: 'manual',
         message: 'Mật khẩu cũ không chính xác'
+      }
+    ]
+  ]
+};
+
+export const categoryErrorMaps: ErrorMaps<CategoryBodyType> = {
+  [ErrorCode.CATEGORY_ERROR_NAME_EXISTED]: [
+    [
+      'name',
+      {
+        type: 'manual',
+        message: 'Tên danh mục đã tồn tại'
       }
     ]
   ]

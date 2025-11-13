@@ -36,25 +36,31 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.tenantApiUrl}/v1/category/admin/get/:id`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'CAT_V'
+      permissionCode: 'CA_V'
     },
     getList: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/category/admin/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'CAT_L'
+      permissionCode: 'CA_L'
     },
     create: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/category/create`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'CAT_C'
+      permissionCode: 'CA_C'
     },
     delete: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/category/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
-      permissionCode: 'CAT_D'
+      permissionCode: 'CA_D'
+    },
+    update: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/category/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'CA_U'
     }
   },
   comment: {
@@ -62,7 +68,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'CAT_L'
+      permissionCode: 'CA_L'
     }
   },
   employee: {

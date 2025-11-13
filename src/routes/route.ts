@@ -62,6 +62,22 @@ const route = defineRoute({
       path: '/profile',
       auth: true
     }
+  },
+  category: {
+    getList: {
+      path: '/category',
+      auth: true,
+      permissionCode: [apiConfig.category.getList.permissionCode]
+    },
+    savePage: {
+      path: '/category/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.category.create.permissionCode,
+        apiConfig.category.update.permissionCode
+      ],
+      separate: true
+    }
   }
 });
 

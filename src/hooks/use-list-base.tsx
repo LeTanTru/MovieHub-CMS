@@ -23,6 +23,7 @@ import {
 } from '@/constants';
 import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
+import useValidatePermission from '@/hooks/use-validate-permission';
 import { logger } from '@/logger';
 import {
   ApiConfig,
@@ -121,6 +122,7 @@ export default function useListBase<
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const [data, setData] = useState<T[]>([]);
+  const { hasPermission } = useValidatePermission();
 
   const [pagination, setPagination] = useState<PaginationType>({
     current: DEFAULT_TABLE_PAGE_START,
@@ -256,69 +258,79 @@ export default function useListBase<
 
   const actionColumn = () => ({
     edit: (record: T, buttonProps?: Record<string, any>) => {
-      if (!apiConfig.update || !apiConfig.update.permissionCode) return null;
+      if (
+        !apiConfig.update ||
+        !apiConfig.update.permissionCode ||
+        !hasPermission({
+          requiredPermissions: [apiConfig.update.permissionCode]
+        })
+      )
+        return null;
+
       return (
-        <HasPermission
-          requiredPermissions={[apiConfig.update.permissionCode as string]}
-        >
-          <ToolTip title={`Sửa ${objectName}`}>
-            <span>
-              <Button
-                onClick={() => handleEditClick(record.id)}
-                className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
-                {...buttonProps}
-              >
-                <AiOutlineEdit className='text-dodger-blue size-4' />
-              </Button>
-            </span>
-          </ToolTip>
-        </HasPermission>
+        <ToolTip title={`Sửa ${objectName}`}>
+          <span>
+            <Button
+              onClick={() => handleEditClick(record.id)}
+              className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+              {...buttonProps}
+            >
+              <AiOutlineEdit className='text-dodger-blue size-4' />
+            </Button>
+          </span>
+        </ToolTip>
       );
     },
     delete: (record: T, buttonProps?: Record<string, any>) => {
-      if (!apiConfig.delete || !apiConfig.delete.permissionCode) return null;
+      if (
+        !apiConfig.delete ||
+        !apiConfig.delete.permissionCode ||
+        !hasPermission({
+          requiredPermissions: [apiConfig.delete.permissionCode]
+        })
+      )
+        return null;
+
       return (
-        <HasPermission requiredPermissions={[apiConfig.delete.permissionCode]}>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <span>
-                <ToolTip title={`Xóa ${objectName}`}>
-                  <Button
-                    className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
-                    {...buttonProps}
-                  >
-                    <AiOutlineDelete className='text-destructive size-4' />
-                  </Button>
-                </ToolTip>
-              </span>
-            </AlertDialogTrigger>
-            <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-lg p-4'>
-              <AlertDialogHeader>
-                <AlertDialogTitle className='content flex flex-nowrap items-center gap-2 text-sm font-normal'>
-                  <Info className='size-8 fill-orange-500 stroke-white' />
-                  Bạn có chắc chắn muốn xóa {objectName} này không ?
-                </AlertDialogTitle>
-                <AlertDialogDescription></AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel asChild>
-                  <Button
-                    variant='outline'
-                    className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
-                  >
-                    Không
-                  </Button>
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => handleDeleteClick(record.id)}
-                  className='bg-dodger-blue hover:bg-dodger-blue/80 w-15 cursor-pointer transition-all duration-200 ease-linear'
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <span>
+              <ToolTip title={`Xóa ${objectName}`}>
+                <Button
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  {...buttonProps}
                 >
-                  Có
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </HasPermission>
+                  <AiOutlineDelete className='text-destructive size-4' />
+                </Button>
+              </ToolTip>
+            </span>
+          </AlertDialogTrigger>
+          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-lg p-4'>
+            <AlertDialogHeader>
+              <AlertDialogTitle className='content flex flex-nowrap items-center gap-2 text-sm font-normal'>
+                <Info className='size-8 fill-orange-500 stroke-white' />
+                Bạn có chắc chắn muốn xóa {objectName} này không ?
+              </AlertDialogTitle>
+              <AlertDialogDescription></AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel asChild>
+                <Button
+                  variant='outline'
+                  className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
+                >
+                  Không
+                </Button>
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => handleDeleteClick(record.id)}
+                className='bg-dodger-blue hover:bg-dodger-blue/80 w-15 cursor-pointer transition-all duration-200 ease-linear'
+              >
+                Có
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       );
     }
   });

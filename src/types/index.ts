@@ -4,6 +4,7 @@ export * from './audience.type';
 export * from './auth.type';
 export * from './base-table.type';
 export * from './breadcrumb.type';
+export * from './category.type';
 export * from './customer.type';
 export * from './employee.type';
 export * from './file.type';

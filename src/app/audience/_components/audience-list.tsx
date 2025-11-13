@@ -179,7 +179,7 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
   ];
 
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Quản trị viên' }]}>
+    <PageWrapper breadcrumbs={[{ label: 'Khán giả' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,

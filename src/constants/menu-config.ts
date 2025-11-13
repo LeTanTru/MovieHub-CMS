@@ -26,10 +26,19 @@ const menuConfig: MenuItem[] = [
     ]
   },
   {
-    key: 'user-management',
+    key: 'movie-management',
     label: 'Quản lý phim',
     icon: AiOutlineUser,
-    permissionCode: [apiConfig.employee.getList.permissionCode]
+    permissionCode: [apiConfig.employee.getList.permissionCode],
+    children: [
+      {
+        key: 'category-list',
+        label: 'Danh mục phim',
+        path: route.category.getList.path,
+        permissionCode: [apiConfig.user.getList.permissionCode],
+        badge: 1
+      }
+    ]
   },
   {
     key: 'system-management',

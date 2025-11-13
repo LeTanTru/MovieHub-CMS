@@ -111,12 +111,13 @@ export const genderOptions: OptionType[] = [
 ];
 
 export const queryKeys = {
-  LOGIN: 'login',
-  GROUP: 'group',
-  SNS_CONFIG: 'sns_config',
-  PROFILE: 'profile',
+  AUDIENCE: 'audience',
+  CATEGORY: 'category',
   EMPLOYEE: 'employee',
-  AUDIENCE: 'audience'
+  GROUP: 'group',
+  LOGIN: 'login',
+  PROFILE: 'profile',
+  SNS_CONFIG: 'sns_config'
 };
 
 export const loginOptions = [
