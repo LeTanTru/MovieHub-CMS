@@ -5,13 +5,17 @@ import { AnimatePresence, motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib';
 import { createPortal } from 'react-dom';
 import { useIsMounted } from '@/hooks';
+import { X } from 'lucide-react';
+import { Button } from '@/components/form';
 
-export interface ModalProps extends HTMLMotionProps<'div'> {
+export interface ModalProps extends Omit<HTMLMotionProps<'div'>, 'title'> {
   children: ReactNode;
   open: boolean;
   onClose?: () => void;
   backdrop?: boolean;
   closeOnBackdropClick?: boolean;
+  title?: string | ReactNode;
+  showClose?: boolean;
   variants?: {
     initial: Record<string, any>;
     animate: Record<string, any>;
@@ -26,6 +30,8 @@ export default function Modal({
   backdrop = true,
   closeOnBackdropClick = false,
   className,
+  title,
+  showClose = true,
   variants = {
     initial: {
       y: -100,
@@ -72,7 +78,25 @@ export default function Modal({
             transition={{ duration: 0.15, ease: 'linear' }}
             onClick={(e) => e.stopPropagation()}
           >
-            {children}
+            {(title || showClose) && (
+              <div className='flex items-center justify-between border-b border-gray-200 px-4'>
+                <div className='text-base font-semibold text-gray-800'>
+                  {title}
+                </div>
+
+                {showClose && (
+                  <Button
+                    className='p-0! text-gray-500 transition hover:text-black'
+                    onClick={onClose}
+                    variant={'ghost'}
+                  >
+                    <X className='size-5' />
+                  </Button>
+                )}
+              </div>
+            )}
+
+            <div className='p-4'>{children}</div>
           </motion.div>
         </motion.div>
       )}

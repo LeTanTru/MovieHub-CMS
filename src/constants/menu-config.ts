@@ -42,6 +42,12 @@ const menuConfig: MenuItem[] = [
         permissionCode: [apiConfig.category.getList.permissionCode]
       },
       {
+        key: 'video-library-list',
+        label: 'Thư viện video',
+        path: route.videoLibrary.getList.path,
+        permissionCode: [apiConfig.videoLibary.getList.permissionCode]
+      },
+      {
         key: 'person-list',
         label: 'Đạo diễn & diễn viên',
         path: route.person.getList.path,

@@ -9,20 +9,77 @@ export const profileSchema = z
       .string()
       .regex(/^0\d{9}$/, 'Số điện thoại không hợp lệ')
       .optional(),
-    oldPassword: z.string().nonempty('Bắt buộc'),
+
+    oldPassword: z.string().optional().nullable(),
     newPassword: z.string().optional().nullable(),
     confirmPassword: z.string().optional().nullable(),
+
     logoPath: z.string().optional()
   })
-  .refine(
-    (data) => {
-      return data.newPassword === data.confirmPassword;
-    },
-    {
-      path: ['confirmPassword'],
-      message: 'Mật khẩu xác nhận không khớp'
+  .superRefine((data, ctx) => {
+    if (data.oldPassword && !data.newPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['newPassword'],
+        message: 'Vui lòng nhập mật khẩu mới'
+      });
+      return;
     }
-  );
+
+    if (data.newPassword) {
+      const pwd = data.newPassword;
+
+      if (pwd.length < 8) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['newPassword'],
+          message: 'Mật khẩu tối thiểu 8 ký tự'
+        });
+      }
+
+      if (!/[A-Z]/.test(pwd)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['newPassword'],
+          message: 'Mật khẩu phải có ít nhất 1 chữ hoa'
+        });
+      }
+
+      if (!/[a-z]/.test(pwd)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['newPassword'],
+          message: 'Mật khẩu phải có ít nhất 1 chữ thường'
+        });
+      }
+
+      if (!/[0-9]/.test(pwd)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['newPassword'],
+          message: 'Mật khẩu phải có ít nhất 1 chữ số'
+        });
+      }
+
+      if (!/[^A-Za-z0-9]/.test(pwd)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['newPassword'],
+          message: 'Mật khẩu phải có ít nhất 1 ký tự đặc biệt'
+        });
+      }
+    }
+
+    if (data.newPassword || data.confirmPassword) {
+      if (data.newPassword !== data.confirmPassword) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['confirmPassword'],
+          message: 'Mật khẩu xác nhận không khớp'
+        });
+      }
+    }
+  });
 
 export const accountSearchSchema = z.object({
   email: z.string().optional().nullable(),
@@ -44,10 +101,10 @@ export const accountSchema = (isEditing: boolean) =>
             .string()
             .nonempty('Bắt buộc')
             .min(8, 'Mật khẩu tối thiểu 8 ký tự')
-            .regex(/[A-Z]/, 'Phải có ít nhất 1 chữ hoa')
-            .regex(/[a-z]/, 'Phải có ít nhất 1 chữ thường')
-            .regex(/[0-9]/, 'Phải có ít nhất 1 chữ số')
-            .regex(/[^A-Za-z0-9]/, 'Phải có ít nhất 1 ký tự đặc biệt'),
+            .regex(/[A-Z]/, 'Mật khẩu phải có ít nhất 1 chữ hoa')
+            .regex(/[a-z]/, 'Mật khẩu phải có ít nhất 1 chữ thường')
+            .regex(/[0-9]/, 'Mật khẩu phải có ít nhất 1 chữ số')
+            .regex(/[^A-Za-z0-9]/, 'Mật khẩu phải có ít nhất 1 ký tự đặc biệt'),
       confirmPassword: isEditing
         ? z.string().optional()
         : z.string().nonempty('Bắt buộc'),

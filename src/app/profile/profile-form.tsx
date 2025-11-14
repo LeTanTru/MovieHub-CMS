@@ -110,7 +110,7 @@ export default function ProfileForm() {
       initialValues={initialValues}
       onSubmit={onSubmit}
       schema={profileSchema}
-      className='mx-auto w-1/3'
+      className='mx-auto w-1/2'
     >
       {(form) => (
         <>
@@ -197,7 +197,6 @@ export default function ProfileForm() {
                 name='oldPassword'
                 label='Mật khẩu hiện tại'
                 placeholder='Mật khẩu hiện tại'
-                required
               />
             </Col>
           </Row>

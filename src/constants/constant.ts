@@ -49,3 +49,6 @@ export const PERSON_KIND_DIRECTOR = 2;
 
 export const TAB_PERSON_KIND_ACTOR = 'actor_tab';
 export const TAB_PERSON_KIND_DIRECTOR = 'director_tab';
+
+export const VIDEO_LIBRARY_STATE_PROCESSING = 0;
+export const VIDEO_LIBRARY_STATE_COMPLETE = 1;

@@ -395,31 +395,31 @@ const apiConfig = defineApiConfig({
   },
   videoLibary: {
     getById: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/video-libary/get/:id`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/video-library/get/:id`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'VID_L_V'
     },
     getList: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/video-libary/list`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/video-library/list`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'VID_L_L'
     },
     create: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/video-libary/create`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/video-library/create`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'VID_L_C'
     },
     delete: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/video-libary/delete/:id`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/video-library/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'VID_L_D'
     },
     update: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/video-libary/update`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/video-library/update`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'VID_L_U'

@@ -1,30 +1,38 @@
-import {
-  employeeProfileSchema,
-  employeeSchema,
-  employeeSearchSchema
-} from '@/schemaValidations';
+import { employeeSchema, employeeSearchSchema } from '@/schemaValidations';
 import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type EmployeeResType = {
-  id: string;
-  status: number;
-  kind: number;
-  username: string;
-  phone: string;
+  avatarPath: string;
+  createdDate: string;
   email: string;
   fullName: string;
-  avatarPath: string;
   group: {
+    createdDate: string;
+    description: string;
     id: string;
-    name: string;
+    isSystemRole: boolean;
     kind: number;
+    modifiedDate: string;
+    name: string;
+    permissions: {
+      createdDate: string;
+      id: string;
+      modifiedDate: string;
+      permissionCode: string;
+      status: number;
+    }[];
+    status: number;
   };
+  id: string;
+  kind: number;
+  modifiedDate: string;
+  phone: string;
+  status: number;
+  username: string;
 };
 
 export type EmployeeSearchType = z.infer<typeof employeeSearchSchema> &
   BaseSearchType;
 
 export type EmployeeBodyType = z.infer<ReturnType<typeof employeeSchema>>;
-
-export type EmployeeProfileBodyType = z.infer<typeof employeeProfileSchema>;

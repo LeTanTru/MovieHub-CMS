@@ -1,3 +1,5 @@
+import { AppConstants } from '@/constants';
+
 export function renderListPageUrl(path: string, queryString: string) {
   if (queryString) {
     return `${path}?${queryString}`;
@@ -15,4 +17,9 @@ export function generatePath(
     }
     return encodeURIComponent(params[key]);
   });
+}
+
+export function renderVideoUrl(url?: string) {
+  if (!url) return '';
+  return url.startsWith('https') ? url : `${AppConstants.videoRootUrl}/${url}`;
 }

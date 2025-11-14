@@ -3,18 +3,18 @@ import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type PersonResType = {
-  id: string;
-  status: number;
-  modifiedDate: string;
-  createdDate: string;
-  name: string;
-  otherName: string;
   avatarPath: string;
   bio: string;
-  gender: number;
-  dateOfBirth: string;
   country: string;
+  createdDate: string;
+  dateOfBirth: string;
+  gender: number;
+  id: string;
   kinds: number[];
+  modifiedDate: string;
+  name: string;
+  otherName: string;
+  status: number;
 };
 
 export type PersonBodyType = z.infer<typeof personSchema>;

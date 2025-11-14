@@ -20,7 +20,9 @@ import {
   STATUS_LOCK,
   STATUS_PENDING,
   UPLOAD_AVATAR,
-  UPLOAD_LOGO
+  UPLOAD_LOGO,
+  VIDEO_LIBRARY_STATE_COMPLETE,
+  VIDEO_LIBRARY_STATE_PROCESSING
 } from '@/constants/constant';
 
 export const uploadOptions = {
@@ -118,9 +120,10 @@ export const queryKeys = {
   EMPLOYEE: 'employee',
   GROUP: 'group',
   LOGIN: 'login',
+  PERSON: 'person',
   PROFILE: 'profile',
   SNS_CONFIG: 'sns_config',
-  PERSON: 'person'
+  VIDEO_LIBRARY: 'video_library'
 };
 
 export const loginOptions = [
@@ -1448,4 +1451,12 @@ export const personKinds = [
     label: 'Đạo diễn',
     value: PERSON_KIND_DIRECTOR
   }
+];
+
+export const videoLibraryStateOptions = [
+  {
+    label: 'Đang xử lý',
+    value: VIDEO_LIBRARY_STATE_PROCESSING
+  },
+  { label: 'Đã hoàn thành', value: VIDEO_LIBRARY_STATE_COMPLETE }
 ];

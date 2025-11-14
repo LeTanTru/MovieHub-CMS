@@ -50,25 +50,25 @@ export const employeeSchema = (isEditing: boolean) =>
             ctx.addIssue({
               code: 'custom',
               path: ['password'],
-              message: 'Phải có ít nhất 1 chữ hoa'
+              message: 'Mật khẩu phải có ít nhất 1 chữ hoa'
             });
           if (!/[a-z]/.test(data.password))
             ctx.addIssue({
               code: 'custom',
               path: ['password'],
-              message: 'Phải có ít nhất 1 chữ thường'
+              message: 'Mật khẩu phải có ít nhất 1 chữ thường'
             });
           if (!/[0-9]/.test(data.password))
             ctx.addIssue({
               code: 'custom',
               path: ['password'],
-              message: 'Phải có ít nhất 1 chữ số'
+              message: 'Mật khẩu phải có ít nhất 1 chữ số'
             });
           if (!/[^A-Za-z0-9]/.test(data.password))
             ctx.addIssue({
               code: 'custom',
               path: ['password'],
-              message: 'Phải có ít nhất 1 ký tự đặc biệt'
+              message: 'Mật khẩu phải có ít nhất 1 ký tự đặc biệt'
             });
         }
 
@@ -108,25 +108,25 @@ export const employeeSchema = (isEditing: boolean) =>
               ctx.addIssue({
                 code: 'custom',
                 path: ['newPassword'],
-                message: 'Phải có ít nhất 1 chữ hoa'
+                message: 'Mật khẩu phải có ít nhất 1 chữ hoa'
               });
             if (!/[a-z]/.test(data.newPassword))
               ctx.addIssue({
                 code: 'custom',
                 path: ['newPassword'],
-                message: 'Phải có ít nhất 1 chữ thường'
+                message: 'Mật khẩu phải có ít nhất 1 chữ thường'
               });
             if (!/[0-9]/.test(data.newPassword))
               ctx.addIssue({
                 code: 'custom',
                 path: ['newPassword'],
-                message: 'Phải có ít nhất 1 chữ số'
+                message: 'Mật khẩu phải có ít nhất 1 chữ số'
               });
             if (!/[^A-Za-z0-9]/.test(data.newPassword))
               ctx.addIssue({
                 code: 'custom',
                 path: ['newPassword'],
-                message: 'Phải có ít nhất 1 ký tự đặc biệt'
+                message: 'Mật khẩu phải có ít nhất 1 ký tự đặc biệt'
               });
 
             if (!data.confirmNewPassword) {
@@ -146,13 +146,3 @@ export const employeeSchema = (isEditing: boolean) =>
         }
       }
     });
-
-export const employeeProfileSchema = z.object({
-  avatarPath: z.string().nonempty().optional(),
-  email: z.string().nonempty('Bắt buộc').email('Email không hợp lệ'),
-  fullName: z.string().nonempty('Bắt buộc'),
-  newPassword: z.string().optional().nonoptional(),
-  oldPassword: z.string().optional().nonoptional(),
-  phone: z.string().nonempty('Bắt buộc'),
-  username: z.string().nonempty('Bắt buộc')
-});

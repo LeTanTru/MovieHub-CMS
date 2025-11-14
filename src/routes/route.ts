@@ -94,6 +94,22 @@ const route = defineRoute({
       ],
       separate: true
     }
+  },
+  videoLibrary: {
+    getList: {
+      path: '/video-library',
+      auth: true,
+      permissionCode: [apiConfig.videoLibary.getList.permissionCode]
+    },
+    savePage: {
+      path: '/video-library/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.videoLibary.create.permissionCode,
+        apiConfig.videoLibary.update.permissionCode
+      ],
+      separate: true
+    }
   }
 });
 

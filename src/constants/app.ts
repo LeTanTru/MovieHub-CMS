@@ -9,7 +9,8 @@ const AppConstants = {
   tenantApiUrl: `${tenantApiUrl}`,
   mediaUrl: `${mediaUrl}`,
   contentRootUrl: `${mediaUrl}/v1/file/download`,
-  publicContentUrl: `${mediaUrl}/v1/file/public-download`
+  publicContentUrl: `${mediaUrl}/v1/file/public-download`,
+  videoRootUrl: `${mediaUrl}/v1/file/download-video-resource`
 };
 
 export default AppConstants;
