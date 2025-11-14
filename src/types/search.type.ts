@@ -22,7 +22,7 @@ export type OptionType<V = string | number> = {
 
 export type SearchFormProps<S extends FieldValues> = {
   searchFields: {
-    key: keyof S;
+    key: keyof S | number[];
     type?: string;
     colSpan?: number;
     placeholder: string;

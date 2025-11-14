@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   DEFAULT_TABLE_PAGE_START,
+  ErrorCode,
   groupErrorMaps,
   groupKinds,
   MAX_PAGE_SIZE
@@ -122,6 +123,8 @@ export default function GroupForm() {
         { label: 'Nhóm quyền', href: route.group.getList.path },
         { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} quyền` }
       ]}
+      notFound={groupQuery?.data?.code === ErrorCode.GROUP_ERROR_NOT_FOUND}
+      notFoundContent='Không tìm thấy nhóm này'
     >
       <BaseForm
         defaultValues={defaultValues}

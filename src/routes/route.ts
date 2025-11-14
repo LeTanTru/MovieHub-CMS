@@ -78,6 +78,22 @@ const route = defineRoute({
       ],
       separate: true
     }
+  },
+  person: {
+    getList: {
+      path: '/person',
+      auth: true,
+      permissionCode: [apiConfig.person.getList.permissionCode]
+    },
+    savePage: {
+      path: '/person/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.person.create.permissionCode,
+        apiConfig.person.update.permissionCode
+      ],
+      separate: true
+    }
   }
 });
 

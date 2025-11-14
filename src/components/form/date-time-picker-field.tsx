@@ -131,7 +131,7 @@ export default function DateTimePickerField({
                     disabled={disabled}
                     variant='outline'
                     className={cn(
-                      'w-full justify-start text-left font-normal text-black opacity-100',
+                      'w-full justify-between text-left font-normal text-black opacity-100',
                       'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
                       'data-[state=open]:border-dodger-blue data-[state=open]:ring-dodger-blue data-[state=open]:ring-1',
                       {
@@ -141,7 +141,6 @@ export default function DateTimePickerField({
                       }
                     )}
                   >
-                    <CalendarIcon className='mr-2 h-4 w-4' />
                     <span suppressHydrationWarning>
                       {(() => {
                         const parsed = parseDate(field.value);
@@ -150,6 +149,7 @@ export default function DateTimePickerField({
                           : (placeholder ?? 'Chọn ngày');
                       })()}
                     </span>
+                    <CalendarIcon className='mr-2 h-4 w-4' />
                   </Button>
                 </FormControl>
               </PopoverTrigger>

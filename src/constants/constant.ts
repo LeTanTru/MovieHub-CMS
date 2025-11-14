@@ -43,3 +43,9 @@ export const DATE_DAY_TIME_FORMAT_UTC = 'EEEE HH:mm:ss MM/dd/yyyy';
 
 export const LOGIN_TYPE_MANAGER = 1;
 export const LOGIN_TYPE_EMPLOYEE = 2;
+
+export const PERSON_KIND_ACTOR = 1;
+export const PERSON_KIND_DIRECTOR = 2;
+
+export const TAB_PERSON_KIND_ACTOR = 'actor_tab';
+export const TAB_PERSON_KIND_DIRECTOR = 'director_tab';

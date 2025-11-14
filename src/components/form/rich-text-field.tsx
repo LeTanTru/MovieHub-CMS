@@ -50,7 +50,7 @@ export default function RichTextField<T extends FieldValues>({
       render={({ field, fieldState }) => (
         <FormItem className={cn('relative flex flex-col gap-1', className)}>
           {label && (
-            <FormLabel className='ml-1'>
+            <FormLabel className='ml-2'>
               {label} {required && <span className='text-destructive'>*</span>}
             </FormLabel>
           )}

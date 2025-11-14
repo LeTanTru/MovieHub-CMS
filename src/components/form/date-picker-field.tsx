@@ -1,7 +1,7 @@
 'use client';
 
 import { Control } from 'react-hook-form';
-import { format, Locale } from 'date-fns';
+import { format, isValid, Locale, parse } from 'date-fns';
 import {
   FormControl,
   FormDescription,
@@ -68,13 +68,20 @@ export default function DatePickerField({
   //   }
   // }, [open]);
 
+  const parseDate = (value: string) => {
+    if (!value) return undefined;
+    const parsed = parse(value, DEFAULT_DATE_FORMAT, new Date(), {
+      locale: vi
+    });
+    return isValid(parsed) ? parsed : new Date(value);
+  };
+
   return (
     <FormField
       control={control}
       name={name}
       render={({ field, fieldState }) => {
-        const parsedValue =
-          typeof field.value === 'string' ? new Date(field.value) : field.value;
+        const parsedValue = parseDate(field.value);
 
         return (
           <FormItem
@@ -99,10 +106,10 @@ export default function DatePickerField({
                     ref={triggerRef}
                     variant='outline'
                     className={cn(
-                      'w-full justify-start text-left font-normal text-black opacity-100',
+                      'w-full justify-between text-left font-normal text-black opacity-100',
                       'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
-                      'data-[state=open]:border-dodger-blue data-[state=open]:ring-dodger-blue data-[state=open]:ring-1',
-                      !field.value && 'text-muted-foreground',
+                      'data-[state=open]:border-dodger-blue data-[state=open]:ring-dodger-blue px-3! data-[state=open]:ring-1',
+                      !field.value && 'text-gray-300',
                       {
                         'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
                           fieldState.error
@@ -110,12 +117,15 @@ export default function DatePickerField({
                     )}
                     disabled={disabled}
                   >
+                    <span suppressHydrationWarning>
+                      {(() => {
+                        const parsed = parseDate(field.value);
+                        return parsed && !isNaN(parsed.getTime())
+                          ? format(parsed, dateFormat)
+                          : (placeholder ?? 'Chọn ngày');
+                      })()}
+                    </span>
                     <CalendarIcon className='mr-1 h-4 w-4' />
-                    {field.value
-                      ? format(parsedValue, dateFormat, {
-                          locale: calendarLocale
-                        })
-                      : placeholder}
                   </Button>
                 </FormControl>
               </PopoverTrigger>
@@ -130,7 +140,7 @@ export default function DatePickerField({
                   selected={parsedValue}
                   onSelect={(date) => {
                     if (date) {
-                      field.onChange(date);
+                      field.onChange(format(date, dateFormat));
                       setOpen(false);
                     }
                   }}
@@ -143,7 +153,7 @@ export default function DatePickerField({
                       'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -ml-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-dodger-blue'
                   }}
                   captionLayout='dropdown'
-                  defaultMonth={new Date(field.value)}
+                  defaultMonth={parsedValue ?? new Date()}
                   startMonth={new Date(1700, 0)}
                   endMonth={new Date(2050, 12)}
                   components={{ Dropdown: CustomSelectDropdown }}
@@ -157,7 +167,7 @@ export default function DatePickerField({
                       month.getMonth(),
                       1
                     );
-                    field.onChange(firstDay);
+                    field.onChange(format(firstDay, dateFormat));
                   }}
                 />
                 <Button
@@ -166,7 +176,7 @@ export default function DatePickerField({
                   className='w-full'
                   onClick={() => {
                     const today = new Date();
-                    field.onChange(today);
+                    field.onChange(format(today, dateFormat));
                     setOpen(false);
                   }}
                 >

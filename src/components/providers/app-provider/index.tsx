@@ -1,9 +1,9 @@
 'use client';
 
-import { KIND_MANAGER, storageKeys } from '@/constants';
+import { KIND_EMPLOYEE, KIND_MANAGER, storageKeys } from '@/constants';
 import { useEmployeeProfileQuery, useManagerProfileQuery } from '@/queries';
 import { useAuthStore } from '@/store';
-import { getData } from '@/utils';
+import { getData, removeData } from '@/utils';
 import { useEffect } from 'react';
 
 export default function AppProvider({
@@ -28,6 +28,15 @@ export default function AppProvider({
   useEffect(() => {
     if (!accessToken) return;
 
+    if (!kind) return;
+
+    if (+kind !== KIND_MANAGER && +kind !== KIND_EMPLOYEE) {
+      removeData(storageKeys.ACCESS_TOKEN);
+      removeData(storageKeys.REFRESH_TOKEN);
+      removeData(storageKeys.USER_KIND);
+      return;
+    }
+
     const handleGetProfile = async () => {
       const res = await profileQuery.refetch();
       if (res.data?.result && res.data.data) {
@@ -36,7 +45,7 @@ export default function AppProvider({
     };
 
     handleGetProfile();
-  }, [accessToken, isAuthenticated]);
+  }, [accessToken, isAuthenticated, kind]);
 
   return <>{children}</>;
 }

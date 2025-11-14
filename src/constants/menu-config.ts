@@ -3,6 +3,7 @@ import { route } from '@/routes';
 import { MenuItem } from '@/types';
 import { Settings } from 'lucide-react';
 import { AiOutlineUser } from 'react-icons/ai';
+import { RiMovie2Fill } from 'react-icons/ri';
 
 const menuConfig: MenuItem[] = [
   {
@@ -28,15 +29,23 @@ const menuConfig: MenuItem[] = [
   {
     key: 'movie-management',
     label: 'Quản lý phim',
-    icon: AiOutlineUser,
-    permissionCode: [apiConfig.employee.getList.permissionCode],
+    icon: RiMovie2Fill,
+    permissionCode: [
+      apiConfig.category.getList.permissionCode,
+      apiConfig.person.getList.permissionCode
+    ],
     children: [
       {
         key: 'category-list',
         label: 'Danh mục phim',
         path: route.category.getList.path,
-        permissionCode: [apiConfig.user.getList.permissionCode],
-        badge: 1
+        permissionCode: [apiConfig.category.getList.permissionCode]
+      },
+      {
+        key: 'person-list',
+        label: 'Đạo diễn & diễn viên',
+        path: route.person.getList.path,
+        permissionCode: [apiConfig.person.getList.permissionCode]
       }
     ]
   },

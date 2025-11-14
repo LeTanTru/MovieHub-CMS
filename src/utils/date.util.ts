@@ -3,7 +3,7 @@ import { logger } from '@/logger';
 import { format as formatFn, isValid, parse } from 'date-fns';
 
 export const formatDate = (
-  date: string | null,
+  date: string | null | undefined,
   outputFormat: string = DATE_TIME_FORMAT,
   inputFormat: string = DATE_TIME_FORMAT
 ) => {

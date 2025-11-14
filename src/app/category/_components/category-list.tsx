@@ -36,7 +36,11 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
     {
       title: 'Tên',
       dataIndex: 'name',
-      render: (value) => value ?? '---'
+      render: (value) => (
+        <span className='line-clamp-1 block truncate' title={value}>
+          {value ?? '------'}
+        </span>
+      )
     },
     handlers.renderActionColumn({
       actions: { edit: true, delete: true }

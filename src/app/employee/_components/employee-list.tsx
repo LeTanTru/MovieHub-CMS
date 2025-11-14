@@ -114,7 +114,11 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
     {
       title: 'Tên',
       dataIndex: 'fullName',
-      render: (value) => value ?? '---'
+      render: (value) => (
+        <span className='line-clamp-1 block truncate' title={value}>
+          {value ?? '------'}
+        </span>
+      )
     },
     {
       title: 'Email',
@@ -122,7 +126,7 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
       width: 220,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '----'}
+          {value ?? '------'}
         </span>
       )
     },
@@ -131,8 +135,8 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
       dataIndex: 'phone',
       width: 120,
       render: (value) => (
-        <span className='line-clamp-1' title={value}>
-          {value ?? '-----'}
+        <span className='line-clamp-1 block truncate' title={value}>
+          {value ?? '------'}
         </span>
       ),
       align: 'center'

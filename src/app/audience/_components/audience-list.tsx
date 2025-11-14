@@ -115,7 +115,11 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
     {
       title: 'Tên',
       dataIndex: 'fullName',
-      render: (value) => value ?? '---'
+      render: (value) => (
+        <span className='line-clamp-1 block truncate' title={value}>
+          {value ?? '------'}
+        </span>
+      )
     },
     {
       title: 'Email',
@@ -123,7 +127,7 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
       width: 220,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '----'}
+          {value ?? '------'}
         </span>
       )
     },
@@ -132,8 +136,8 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
       dataIndex: 'phone',
       width: 120,
       render: (value) => (
-        <span className='line-clamp-1' title={value}>
-          {value ?? '-----'}
+        <span className='line-clamp-1 block truncate' title={value}>
+          {value ?? '------'}
         </span>
       ),
       align: 'center'
@@ -145,8 +149,8 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
       render: (value) => {
         const label = userKinds.find((kind) => kind.value === value)?.label;
         return (
-          <span className='line-clamp-1' title={label}>
-            {label ?? '-----'}
+          <span className='line-clamp-1 block truncate' title={label}>
+            {label ?? '------'}
           </span>
         );
       },

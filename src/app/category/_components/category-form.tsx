@@ -71,7 +71,7 @@ export default function CategoryForm({ queryKey }: { queryKey: string }) {
     <PageWrapper
       breadcrumbs={[
         {
-          label: 'Quản trị viên',
+          label: 'Danh mục',
           href: renderListPageUrl(route.employee.getList.path, queryString)
         },
         { label: `${!data ? 'Thêm mới' : 'Cập nhật'} danh mục` }

@@ -3,28 +3,19 @@ import {
   EmployeeBodyType,
   ErrorMaps,
   GroupBodyType,
-  PermissionBodyType
+  PermissionBodyType,
+  PersonBodyType
 } from '@/types';
-import { GroupPermissionBodyType } from '@/types/group-permission.type';
 
 export const ErrorCode = {
   // === Group error code ===
-  GROUP_ERROR_NAME_EXIST: 'ERROR-GROUP-000',
-  GROUP_ERROR_NOT_FOUND: 'ERROR-GROUP-001',
-  GROUP_ERROR_INVALID_TENANT_ID: 'ERROR-GROUP-002',
-  GROUP_ERROR_NOT_ALLOWED_CREATE: 'ERROR-GROUP-003',
-  GROUP_ERROR_NOT_ALLOWED_DELETE: 'ERROR-GROUP-004',
-  GROUP_ERROR_KIND_EXISTED: 'ERROR-GROUP-005',
-  GROUP_ERROR_SUB_KIND_EXISTED: 'ERROR-GROUP-006',
+  GROUP_ERROR_NAME_EXIST: 'ERROR-GROUP-ERROR-0002',
+  GROUP_ERROR_NOT_FOUND: 'ERROR-GROUP-ERROR-0001',
 
   // === Permission error code ===
   PERMISSION_ERROR_NAME_EXIST: 'ERROR-PERMISSION-000',
   PERMISSION_ERROR_CODE_EXIST: 'ERROR-PERMISSION-001',
   PERMISSION_ERROR_NOT_FOUND: 'ERROR-PERMISSION-002',
-
-  // === GroupPermission error code ===
-  GROUP_PERMISSION_ERROR_NOT_FOUND: 'ERROR-GROUP-PERMISSION-000',
-  GROUP_PERMISSION_ERROR_NAME_EXIST: 'ERROR-GROUP-PERMISSION-001',
 
   // === Account error code ===
   ACCOUNT_ERROR_NOT_FOUND: 'ERROR-ACCOUNT-ERROR-0000',
@@ -47,7 +38,11 @@ export const ErrorCode = {
   // === Category error code ===
   CATEGORY_ERROR_NOT_FOUND: 'ERROR-CATEGORY-ERROR-0000',
   CATEGORY_ERROR_NAME_EXISTED: 'ERROR-CATEGORY-ERROR-0002',
-  CATEGORY_ERROR_HAS_MOVIE: 'ERROR-CATEGORY-ERROR-0003'
+  CATEGORY_ERROR_HAS_MOVIE: 'ERROR-CATEGORY-ERROR-0003',
+
+  PERSON_ERROR_NOT_FOUND: 'ERROR-PERSON-ERROR-0000',
+  PERSON_ERROR_MOVIE_PERSON_EXISTED: 'ERROR-PERSON-ERROR-0001',
+  PERSON_ERROR_NOT_HAVE_KIND: 'ERROR-PERSON-ERROR-0002'
 };
 
 export const groupErrorMaps: ErrorMaps<GroupBodyType> = {
@@ -56,21 +51,6 @@ export const groupErrorMaps: ErrorMaps<GroupBodyType> = {
   ],
   [ErrorCode.GROUP_ERROR_NOT_FOUND]: [
     ['name', { type: 'manual', message: 'Tên nhóm không tồn tại' }]
-  ],
-  [ErrorCode.GROUP_ERROR_NOT_ALLOWED_CREATE]: [
-    ['name', { type: 'manual', message: 'Bạn không có quyền tạo nhóm mới' }]
-  ],
-  [ErrorCode.GROUP_ERROR_NOT_ALLOWED_DELETE]: [
-    ['name', { type: 'manual', message: 'Bạn không có quyền xóa nhóm này' }]
-  ],
-  [ErrorCode.GROUP_ERROR_KIND_EXISTED]: [
-    ['kind', { type: 'manual', message: 'Loại nhóm đã tồn tại' }]
-  ]
-};
-
-export const groupPermissionErrorMaps: ErrorMaps<GroupPermissionBodyType> = {
-  [ErrorCode.GROUP_PERMISSION_ERROR_NAME_EXIST]: [
-    ['name', { type: 'manual', message: 'Tên nhóm quyền đã tồn tại' }]
   ]
 };
 
@@ -139,3 +119,5 @@ export const categoryErrorMaps: ErrorMaps<CategoryBodyType> = {
     ]
   ]
 };
+
+export const personErrorMaps: ErrorMaps<PersonBodyType> = {};

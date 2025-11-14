@@ -16,7 +16,8 @@ import { logger } from '@/logger';
 import {
   useEmployeeUpdateProfileMutation,
   useManagerUpdateProfileMutation,
-  useUploadAvatarMutation
+  useUploadAvatarMutation,
+  useUploadLogoMutation
 } from '@/queries';
 import { route } from '@/routes';
 import { profileSchema } from '@/schemaValidations';
@@ -30,7 +31,8 @@ import { UseFormReturn } from 'react-hook-form';
 export default function ProfileForm() {
   const navigate = useNavigate();
   const { profile } = useAuthStore();
-  const fileMutation = useUploadAvatarMutation();
+  const uploadAvatarMutation = useUploadAvatarMutation();
+  const uploadLogoMutation = useUploadLogoMutation();
   const [avatarPath, setAvatarPath] = useState('');
   const [logoPath, setLogoPath] = useState('');
   const { kind } = useAuth();
@@ -116,7 +118,7 @@ export default function ProfileForm() {
             <Col span={kind === KIND_MANAGER ? 12 : 24}>
               <UploadImageField
                 value={renderImageUrl(avatarPath)}
-                loading={fileMutation.isPending}
+                loading={uploadAvatarMutation.isPending}
                 name='avatarPath'
                 control={form.control}
                 onChange={(url) => {
@@ -124,7 +126,7 @@ export default function ProfileForm() {
                 }}
                 size={100}
                 uploadImageFn={async (file: Blob) => {
-                  const res = await fileMutation.mutateAsync({
+                  const res = await uploadAvatarMutation.mutateAsync({
                     file
                   });
                   return res.data?.filePath ?? '';
@@ -136,7 +138,7 @@ export default function ProfileForm() {
               <Col span={12}>
                 <UploadImageField
                   value={renderImageUrl(logoPath)}
-                  loading={fileMutation.isPending}
+                  loading={uploadLogoMutation.isPending}
                   name='logoPath'
                   control={form.control}
                   onChange={(url) => {
@@ -144,7 +146,7 @@ export default function ProfileForm() {
                   }}
                   size={100}
                   uploadImageFn={async (file: Blob) => {
-                    const res = await fileMutation.mutateAsync({
+                    const res = await uploadLogoMutation.mutateAsync({
                       file
                     });
                     return res.data?.filePath ?? '';

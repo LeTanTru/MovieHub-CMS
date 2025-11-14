@@ -24,7 +24,7 @@ type AvatarFieldProps = {
 
 export default function AvatarField({
   size = 80,
-  zoomSize = 300,
+  zoomSize = 400,
   icon,
   src,
   className,
@@ -86,7 +86,7 @@ export default function AvatarField({
           >
             <motion.div
               className={cn(
-                'relative overflow-hidden rounded-full select-none',
+                'relative overflow-hidden rounded select-none',
                 previewClassName
               )}
               style={{ width: width, height: height }}
@@ -103,7 +103,7 @@ export default function AvatarField({
                     alt='Avatar preview'
                     fill
                     className={cn(
-                      'rounded-full object-cover',
+                      'rounded object-cover',
                       imagePreviewClassName
                     )}
                   />
@@ -113,10 +113,7 @@ export default function AvatarField({
                     alt='Avatar preview'
                     width={zoomSize}
                     height={zoomSize}
-                    className={cn(
-                      'rounded-full object-cover',
-                      previewClassName
-                    )}
+                    className={cn('rounded object-cover', previewClassName)}
                   />
                 ))}
             </motion.div>

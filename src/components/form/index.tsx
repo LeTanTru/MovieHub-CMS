@@ -12,6 +12,7 @@ export { default as DateRangePickerField } from './date-range-picker-field';
 export { default as DateTimePickerField } from './date-time-picker-field';
 export { default as FieldSet } from './field-set';
 export { default as InputField } from './input-field';
+export { default as MultiSelectField } from './multi-select-field';
 export { default as NumberField } from './number-field';
 export { default as RadioField } from './radio-group-field';
 export { default as RadioGroupField } from './radio-group-field';
