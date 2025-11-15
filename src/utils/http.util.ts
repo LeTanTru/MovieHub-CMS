@@ -86,12 +86,7 @@ export const sendRequest = async <T>(
       const formData = new FormData();
       Object.keys(body).forEach((key) => {
         const value = body[key];
-        if (value instanceof Blob) {
-          const filename = 'upload.jpg';
-          formData.append(key, value, filename);
-        } else {
-          formData.append(key, value);
-        }
+        formData.append(key, value);
       });
       axiosConfig.data = formData;
       delete axiosConfig.headers!['Content-Type'];
