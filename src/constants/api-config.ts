@@ -339,7 +339,16 @@ const apiConfig = defineApiConfig({
       method: 'POST',
       headers: multipartHeader,
       permissionCode: 'FILE_U',
-      isUpload: true
+      isUpload: true,
+      isRequiredTenantId: true
+    },
+    uploadVideo: {
+      baseUrl: `${AppConstants.mediaUrl}/v1/file/upload-video`,
+      method: 'POST',
+      headers: multipartHeader,
+      permissionCode: 'FILE_U_V',
+      isUpload: true,
+      isRequiredTenantId: true
     }
   },
   sns: {
@@ -408,7 +417,7 @@ const apiConfig = defineApiConfig({
     },
     create: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/video-library/create`,
-      method: 'GET',
+      method: 'POST',
       headers: baseHeader,
       permissionCode: 'VID_L_C'
     },

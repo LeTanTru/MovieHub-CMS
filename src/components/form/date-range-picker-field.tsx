@@ -67,7 +67,7 @@ export default function DateRangePickerField({
                   disabled={disabled}
                   variant='outline'
                   className={cn(
-                    'w-full justify-between text-left font-normal',
+                    'w-full justify-between text-left font-normal shadow-none',
                     !field.value && 'text-muted-foreground',
                     {
                       'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':

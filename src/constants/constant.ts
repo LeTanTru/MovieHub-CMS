@@ -4,6 +4,7 @@ export const MAX_PAGE_SIZE = 1_000_000;
 
 export const UPLOAD_LOGO = 'LOGO';
 export const UPLOAD_AVATAR = 'AVATAR';
+export const UPLOAD_VIDEO = 'VIDEO';
 
 export const KIND_ADMIN = 1;
 export const KIND_MANAGER = 2;

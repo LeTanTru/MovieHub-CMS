@@ -7,6 +7,7 @@ import {
   apiConfig,
   ErrorCode,
   FieldTypes,
+  VIDEO_LIBRARY_STATE_COMPLETE,
   VIDEO_LIBRARY_STATE_PROCESSING,
   videoLibraryStateOptions
 } from '@/constants';
@@ -51,6 +52,7 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
           <ToolTip title={`Xem video`}>
             <span>
               <Button
+                disabled={record.state !== VIDEO_LIBRARY_STATE_COMPLETE}
                 onClick={() => handleOpenVideoLibraryPreviewModal(record)}
                 className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                 {...buttonProps}
@@ -118,7 +120,11 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
       align: 'center'
     },
     handlers.renderActionColumn({
-      actions: { watchVideo: true, edit: true, delete: true }
+      actions: {
+        watchVideo: true,
+        edit: true,
+        delete: true
+      }
     })
   ];
 

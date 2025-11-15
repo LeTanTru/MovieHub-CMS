@@ -4,7 +4,8 @@ import {
   ErrorMaps,
   GroupBodyType,
   PermissionBodyType,
-  PersonBodyType
+  PersonBodyType,
+  VideoLibraryBodyType
 } from '@/types';
 
 export const ErrorCode = {
@@ -127,3 +128,15 @@ export const categoryErrorMaps: ErrorMaps<CategoryBodyType> = {
 };
 
 export const personErrorMaps: ErrorMaps<PersonBodyType> = {};
+
+export const videoLibraryErrorMaps: ErrorMaps<VideoLibraryBodyType> = {
+  [ErrorCode.VIDEO_LIBRARY_ERROR_NAME_EXISTED]: [
+    [
+      'name',
+      {
+        type: 'manual',
+        message: 'Tên danh mục đã tồn tại'
+      }
+    ]
+  ]
+};

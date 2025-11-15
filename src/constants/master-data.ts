@@ -21,13 +21,15 @@ import {
   STATUS_PENDING,
   UPLOAD_AVATAR,
   UPLOAD_LOGO,
+  UPLOAD_VIDEO,
   VIDEO_LIBRARY_STATE_COMPLETE,
   VIDEO_LIBRARY_STATE_PROCESSING
 } from '@/constants/constant';
 
 export const uploadOptions = {
   LOGO: UPLOAD_LOGO,
-  AVATAR: UPLOAD_AVATAR
+  AVATAR: UPLOAD_AVATAR,
+  UPLOAD_VIDEO: UPLOAD_VIDEO
 };
 
 export const groupKinds = [

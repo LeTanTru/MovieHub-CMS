@@ -1,0 +1,202 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import { XIcon, VideoIcon } from 'lucide-react';
+import {
+  Control,
+  FieldPath,
+  FieldValues,
+  useController
+} from 'react-hook-form';
+
+import { Button } from '@/components/form';
+import { FormLabel } from '@/components/ui/form';
+import { cn } from '@/lib';
+import { useFileUpload } from '@/hooks';
+import { CircleLoading } from '@/components/loading';
+import { logger } from '@/logger';
+
+type UploadVideoFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: FieldPath<T>;
+  label?: React.ReactNode;
+  onChange?: (url: string) => void;
+  required?: boolean;
+  className?: string;
+
+  /** Hàm upload video, trả về URL */
+  uploadVideoFn: (
+    file: File,
+    onProgress: (progress: number) => void
+  ) => Promise<string>;
+};
+
+export default function UploadVideoField<T extends FieldValues>({
+  control,
+  name,
+  label,
+  onChange,
+  required,
+  className,
+  uploadVideoFn
+}: UploadVideoFieldProps<T>) {
+  const {
+    field: { value, onChange: fieldOnChange },
+    fieldState: { error }
+  } = useController({ name, control });
+
+  const [
+    { files, isDragging },
+    {
+      openFileDialog,
+      getInputProps,
+      handleDragEnter,
+      handleDragLeave,
+      handleDragOver,
+      handleDrop,
+      clearFiles
+    }
+  ] = useFileUpload({ accept: 'video/*' });
+
+  const file = files[0]?.file as File | undefined;
+  const previewUrl = files[0]?.preview;
+  const fileId = files[0]?.id;
+
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const prevFileId = useRef<string | null>(null);
+
+  /** Khi người dùng chọn file mới */
+  useEffect(() => {
+    if (!fileId || fileId === prevFileId.current) return;
+
+    if (file) startUpload(file);
+    prevFileId.current = fileId;
+  }, [fileId]);
+
+  /** Upload video + progress */
+  const startUpload = async (file: File) => {
+    try {
+      setUploading(true);
+      setProgress(0);
+
+      const url = await uploadVideoFn(file, setProgress);
+
+      fieldOnChange(url);
+      onChange?.(url);
+    } catch (error) {
+      logger.error('Upload video error:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  /** Xóa video */
+  const handleRemove = () => {
+    fieldOnChange('');
+    onChange?.('');
+    clearFiles();
+    setProgress(0);
+  };
+
+  return (
+    <div className='space-y-2'>
+      {label && (
+        <FormLabel
+          className={cn(
+            'flex items-center gap-1',
+            error && 'text-destructive',
+            className
+          )}
+        >
+          {label}
+          {required && <span className='text-destructive'>*</span>}
+        </FormLabel>
+      )}
+
+      <div
+        className={cn(
+          'bg-muted/30 hover:bg-accent/50 mb-0 flex cursor-pointer items-center gap-3 rounded-md border-2 border-dashed p-4 transition-all duration-200 ease-linear',
+          isDragging && 'border-primary bg-primary/10',
+          {
+            'border-2 border-solid border-red-500': !!error && !uploading
+          }
+        )}
+        onClick={openFileDialog}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
+        <input {...getInputProps()} className='hidden' />
+
+        <VideoIcon
+          className={cn('', {
+            'text-destructive': !!error && !uploading
+          })}
+        />
+
+        <div className='flex flex-col'>
+          <span className='text-sm'>
+            {file ? (
+              file.name
+            ) : value ? (
+              <span>Đã tải video</span>
+            ) : (
+              <span
+                className={cn('font-medium', {
+                  'text-destructive': !!error && !uploading
+                })}
+              >
+                Chọn video để tải lên
+              </span>
+            )}
+          </span>
+          {file && (
+            <span className='text-xs opacity-60'>
+              {(file.size / 1024 / 1024).toFixed(1)} MB
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* {previewUrl && (
+        <video src={previewUrl} controls className='w-full rounded-md border' />
+      )} */}
+
+      {uploading && (
+        <div className='mt-2 h-2 w-full overflow-hidden rounded-full'>
+          <div
+            className='bg-dodger-blue! skeleton h-full transition-all'
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      )}
+
+      <div className='flex items-center gap-2'>
+        {uploading && (
+          <div className='flex items-center gap-2 text-sm'>
+            <CircleLoading className='stroke-dodger-blue' />
+            {progress}% đang tải...
+          </div>
+        )}
+
+        {value && !uploading && (
+          <Button
+            variant='destructive'
+            type='button'
+            onClick={handleRemove}
+            className='mt-2 ml-auto'
+          >
+            Xóa video
+          </Button>
+        )}
+      </div>
+
+      {error?.message && !uploading && (
+        <p className='text-destructive ml-2 text-sm'>{error.message}</p>
+      )}
+    </div>
+  );
+}

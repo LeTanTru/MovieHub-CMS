@@ -15,12 +15,11 @@ import {
   VolumeToggleButton
 } from '@/components/video-player';
 import { VideoLibraryResType } from '@/types';
-import { MediaPlayer, MediaProvider, Poster, Track } from '@vidstack/react';
+import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
 import {
   DefaultVideoLayout,
   defaultLayoutIcons
 } from '@vidstack/react/player/layouts/default';
-import { AppConstants } from '@/constants';
 import { renderImageUrl, renderVideoUrl, renderVttUrl } from '@/utils';
 
 export default function VideoLibraryPreviewModal({

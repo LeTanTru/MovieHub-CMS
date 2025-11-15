@@ -142,7 +142,7 @@ export default function SelectField<
                   aria-label='Select'
                   disabled={disabled}
                   className={cn(
-                    'focus-visible:border-dodger-blue w-full justify-between border px-3! py-0 text-black focus:ring-0 focus-visible:border-2 focus-visible:shadow-none',
+                    'focus-visible:border-dodger-blue w-full justify-between border px-3! py-0 text-black shadow-none focus:ring-0 focus-visible:border-2',
                     {
                       'cursor-not-allowed border-gray-300 bg-gray-200/80 text-gray-500':
                         disabled,

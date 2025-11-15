@@ -171,16 +171,20 @@ export default function NumberField<T extends FieldValues>({
                       decrement();
                     }
                   }}
-                  className={cn(className, 'pt-0! pb-0 font-normal', {
-                    'pl-10': prefixIcon,
-                    'pr-10': suffixIcon,
-                    'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/80 text-gray-500':
-                      disabled,
-                    'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500':
-                      fieldState.error,
-                    'focus-visible:ring-dodger-blue focus-visible:border-transparent focus-visible:ring-2':
-                      !fieldState.error
-                  })}
+                  className={cn(
+                    className,
+                    'pt-0! pb-0 font-normal shadow-none',
+                    {
+                      'pl-10': prefixIcon,
+                      'pr-10': suffixIcon,
+                      'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/80 text-gray-500':
+                        disabled,
+                      'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500':
+                        fieldState.error,
+                      'focus-visible:ring-dodger-blue focus-visible:border-transparent focus-visible:ring-2':
+                        !fieldState.error
+                    }
+                  )}
                 />
                 {suffixIcon && (
                   <div className='text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2'>

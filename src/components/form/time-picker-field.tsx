@@ -54,12 +54,21 @@ export default function TimePickerField({
       name={name}
       control={control}
       render={({ field, fieldState }) => {
-        const [h, m, s] = field.value
-          ?.split(':')
-          .map((v: string) => parseInt(v)) ?? [0, 0, 0];
-        const hour = isNaN(h) ? 0 : h;
-        const minute = isNaN(m) ? 0 : m;
-        const second = isNaN(s) ? 0 : s;
+        // Xử lý giá trị: number (giây) hoặc string "HH:mm:ss"
+        let hour = 0,
+          minute = 0,
+          second = 0;
+
+        if (typeof field.value === 'number') {
+          hour = Math.floor(field.value / 3600);
+          minute = Math.floor((field.value % 3600) / 60);
+          second = field.value % 60;
+        } else if (typeof field.value === 'string') {
+          const parts = field.value.split(':').map((v) => parseInt(v));
+          hour = isNaN(parts[0]) ? 0 : parts[0];
+          minute = isNaN(parts[1]) ? 0 : parts[1];
+          second = isNaN(parts[2]) ? 0 : parts[2];
+        }
 
         const updateTime = (
           type: 'hour' | 'minute' | 'second',
@@ -70,14 +79,15 @@ export default function TimePickerField({
           const ss = type === 'second' ? val : second;
 
           let result = '';
-          if (timeFormat === 'HH:mm:ss') {
+          if (timeFormat === 'HH:mm:ss')
             result = `${pad(hh)}:${pad(mm)}:${pad(ss)}`;
-          } else if (timeFormat === 'HH:mm') {
-            result = `${pad(hh)}:${pad(mm)}`;
-          } else if (timeFormat === 'mm:ss') {
-            result = `${pad(mm)}:${pad(ss)}`;
-          }
+          else if (timeFormat === 'HH:mm') result = `${pad(hh)}:${pad(mm)}`;
+          else if (timeFormat === 'mm:ss') result = `${pad(mm)}:${pad(ss)}`;
+
+          // Cập nhật field: có thể lưu chuỗi hoặc số giây
           field.onChange(result);
+          // Nếu muốn lưu số giây thay vì chuỗi, dùng:
+          // field.onChange(hh * 3600 + mm * 60 + ss);
         };
 
         return (
@@ -110,14 +120,15 @@ export default function TimePickerField({
                     className={cn(
                       'w-full justify-start text-left font-normal',
                       !field.value && 'text-muted-foreground',
+                      'data-[state=open]:border-dodger-blue data-[state=open]:ring-dodger-blue px-3! shadow-none data-[state=open]:ring-1',
                       {
                         'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
                           fieldState.error
                       }
                     )}
                   >
-                    <span suppressHydrationWarning>
-                      {field.value || placeholder || timeFormat}
+                    <span suppressHydrationWarning className='text-gray-300'>
+                      {formatDisplay(hour, minute, second)}
                     </span>
                   </Button>
                 </FormControl>
@@ -135,7 +146,7 @@ export default function TimePickerField({
                           <Button
                             key={h}
                             size='icon'
-                            variant={hour === h ? 'default' : 'ghost'}
+                            variant={hour === h ? 'primary' : 'ghost'}
                             className='aspect-square shrink-0 sm:w-full'
                             onClick={() => updateTime('hour', h)}
                           >
@@ -156,7 +167,7 @@ export default function TimePickerField({
                           <Button
                             key={m}
                             size='icon'
-                            variant={minute === m ? 'default' : 'ghost'}
+                            variant={minute === m ? 'primary' : 'ghost'}
                             className='aspect-square shrink-0 sm:w-full'
                             onClick={() => updateTime('minute', m)}
                           >
@@ -177,7 +188,7 @@ export default function TimePickerField({
                           <Button
                             key={s}
                             size='icon'
-                            variant={second === s ? 'default' : 'ghost'}
+                            variant={second === s ? 'primary' : 'ghost'}
                             className='aspect-square shrink-0 sm:w-full'
                             onClick={() => updateTime('second', s)}
                           >
@@ -208,4 +219,8 @@ export default function TimePickerField({
 
 function pad(n: number): string {
   return String(n).padStart(2, '0');
+}
+
+function formatDisplay(h: number, m: number, s: number) {
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
