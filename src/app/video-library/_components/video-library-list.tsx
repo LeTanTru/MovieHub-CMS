@@ -22,7 +22,7 @@ import {
 import { notify, renderImageUrl } from '@/utils';
 import { PlayCircle } from 'lucide-react';
 import { useState } from 'react';
-import { AiOutlineUser } from 'react-icons/ai';
+import { AiFillWarning, AiOutlineUser } from 'react-icons/ai';
 import { RiCheckboxCircleFill, RiLoader2Fill } from 'react-icons/ri';
 
 export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
@@ -109,10 +109,16 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
               <RiLoader2Fill className='mx-auto size-5 animate-spin' />
             </div>
           </ToolTip>
-        ) : (
+        ) : value === VIDEO_LIBRARY_STATE_COMPLETE ? (
           <ToolTip title='Đang xử lý' sideOffset={4}>
             <div>
               <RiCheckboxCircleFill className='mx-auto size-5 text-green-600' />
+            </div>
+          </ToolTip>
+        ) : (
+          <ToolTip title='Lỗi' sideOffset={4}>
+            <div>
+              <AiFillWarning className='text-destructive mx-auto size-5' />
             </div>
           </ToolTip>
         ),

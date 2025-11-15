@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { XIcon, VideoIcon } from 'lucide-react';
+import { VideoIcon } from 'lucide-react';
 import {
   Control,
   FieldPath,
@@ -24,7 +24,6 @@ type UploadVideoFieldProps<T extends FieldValues> = {
   required?: boolean;
   className?: string;
 
-  /** Hàm upload video, trả về URL */
   uploadVideoFn: (
     file: File,
     onProgress: (progress: number) => void
@@ -67,7 +66,6 @@ export default function UploadVideoField<T extends FieldValues>({
 
   const prevFileId = useRef<string | null>(null);
 
-  /** Khi người dùng chọn file mới */
   useEffect(() => {
     if (!fileId || fileId === prevFileId.current) return;
 
@@ -75,7 +73,6 @@ export default function UploadVideoField<T extends FieldValues>({
     prevFileId.current = fileId;
   }, [fileId]);
 
-  /** Upload video + progress */
   const startUpload = async (file: File) => {
     try {
       setUploading(true);
@@ -92,7 +89,6 @@ export default function UploadVideoField<T extends FieldValues>({
     }
   };
 
-  /** Xóa video */
   const handleRemove = () => {
     fieldOnChange('');
     onChange?.('');
