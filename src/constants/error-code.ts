@@ -5,6 +5,7 @@ import {
   GroupBodyType,
   PermissionBodyType,
   PersonBodyType,
+  ProfileBodyType,
   VideoLibraryBodyType
 } from '@/types';
 
@@ -23,8 +24,8 @@ export const ErrorCode = {
   ACCOUNT_ERROR_USERNAME_EXISTED: 'ERROR-ACCOUNT-ERROR-0002',
   ACCOUNT_ERROR_PHONE_EXISTED: 'ERROR-ACCOUNT-ERROR-0003',
   ACCOUNT_ERROR_EMAIL_EXISTED: 'ERROR-ACCOUNT-ERROR-0004',
-  ACCOUNT_ERROR_WRONG_PASSWORD: 'ERROR-ACCOUNT-ERROR-0005',
-  ACCOUNT_ERROR_NEW_PASSWORD_SAME_OLD_PASSWORD: 'ERROR-ACCOUNT-ERROR-0006',
+  ACCOUNT_ERROR_WRONG_PASSWORD: 'ERROR-ACCOUNT-0003',
+  ACCOUNT_ERROR_NEW_PASSWORD_SAME_OLD_PASSWORD: 'ERROR-ACCOUNT-00017',
   ACCOUNT_ERROR_LOCKED: 'ERROR-ACCOUNT-ERROR-0007',
   ACCOUNT_ERROR_SOCIAL_LOGIN_FAIL: 'ERROR-ACCOUNT-ERROR-0008',
 
@@ -136,6 +137,21 @@ export const videoLibraryErrorMaps: ErrorMaps<VideoLibraryBodyType> = {
       {
         type: 'manual',
         message: 'Tên danh mục đã tồn tại'
+      }
+    ]
+  ]
+};
+
+export const profileErrorMaps: ErrorMaps<ProfileBodyType> = {
+  [ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD]: [
+    ['oldPassword', { type: 'manual', message: 'Mật khẩu không chính xác' }]
+  ],
+  [ErrorCode.ACCOUNT_ERROR_NEW_PASSWORD_SAME_OLD_PASSWORD]: [
+    [
+      'newPassword',
+      {
+        type: 'manual',
+        message: 'Mật khẩu mới không được giống với mật khẩu hiện tại'
       }
     ]
   ]

@@ -10,7 +10,7 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import PasswordField from '@/components/form/password-field';
 import { CircleLoading } from '@/components/loading';
-import { KIND_MANAGER, storageKeys } from '@/constants';
+import { KIND_MANAGER, profileErrorMaps, storageKeys } from '@/constants';
 import { useAuth, useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import {
@@ -23,7 +23,13 @@ import { route } from '@/routes';
 import { profileSchema } from '@/schemaValidations';
 import { useAuthStore } from '@/store';
 import { ProfileBodyType } from '@/types';
-import { getData, notify, removeData, renderImageUrl } from '@/utils';
+import {
+  applyFormErrors,
+  getData,
+  notify,
+  removeData,
+  renderImageUrl
+} from '@/utils';
 import { Save } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -81,13 +87,17 @@ export default function ProfileForm() {
     form: UseFormReturn<ProfileBodyType>
   ) => {
     await profileMutation.mutateAsync(
-      { ...values, avatarPath, logoPath },
+      { ...values, avatarPath },
       {
         onSuccess: (res) => {
+          console.log('🚀 ~ onSubmit ~ res:', res);
           if (res.result) {
             notify.success('Cập nhật hồ sơ thành công');
           } else {
-            notify.error('Cập nhật hồ sơ thất bại');
+            const code = res.code;
+            if (code && profileErrorMaps[code])
+              applyFormErrors(form, code, profileErrorMaps);
+            else notify.error('Cập nhật hồ sơ thất bại');
           }
         },
         onError: (error) => {

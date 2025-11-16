@@ -20,11 +20,13 @@ export const useManagerUpdateProfileMutation = () => {
       http.put<ApiResponse<any>>(apiConfig.customer.updateProfile, {
         body
       }),
-    onSuccess: async () => {
-      const res = await http.get<ApiResponse<ProfileResType>>(
-        apiConfig.customer.getProfile
-      );
-      useAuthStore.getState().setProfile(res.data!);
+    onSuccess: async (res) => {
+      if (res.result) {
+        const res = await http.get<ApiResponse<ProfileResType>>(
+          apiConfig.customer.getProfile
+        );
+        useAuthStore.getState().setProfile(res.data!);
+      }
     }
   });
 };
