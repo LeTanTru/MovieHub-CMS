@@ -90,7 +90,6 @@ export default function ProfileForm() {
       { ...values, avatarPath },
       {
         onSuccess: (res) => {
-          console.log('🚀 ~ onSubmit ~ res:', res);
           if (res.result) {
             notify.success('Cập nhật hồ sơ thành công');
           } else {
