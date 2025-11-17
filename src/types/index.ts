@@ -10,6 +10,7 @@ export * from './file.type';
 export * from './form-error.type';
 export * from './group.type';
 export * from './menu-config.type';
+export * from './movie.type';
 export * from './permission.type';
 export * from './person.type';
 export * from './search.type';

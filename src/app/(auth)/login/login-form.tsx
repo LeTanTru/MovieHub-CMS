@@ -11,17 +11,14 @@ import { notify, setData } from '@/utils';
 import Image from 'next/image';
 import PasswordField from '@/components/form/password-field';
 import { CircleLoading } from '@/components/loading';
-import { useNavigate } from '@/hooks';
 import { useAuthStore } from '@/store';
 import envConfig from '@/config';
-import { route } from '@/routes';
 import { useLoginEmployeeMutation, useLoginManagerMutation } from '@/queries';
 import { omit } from 'lodash';
 
 export default function LoginForm() {
   const loginManagerMutation = useLoginManagerMutation();
   const loginEmployeeMutation = useLoginEmployeeMutation();
-  const navigate = useNavigate(false);
   const { setAuthenticated, setLoading } = useAuthStore();
 
   const loading =
@@ -42,7 +39,6 @@ export default function LoginForm() {
     setData(storageKeys.USER_KIND, res?.user_kind?.toString()!);
     setAuthenticated(true);
     setLoading(true);
-    navigate(route.home.path);
   };
 
   const handleLoginError = (error: Error) => {

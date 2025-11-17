@@ -52,6 +52,12 @@ const menuConfig: MenuItem[] = [
         label: 'Đạo diễn & diễn viên',
         path: route.person.getList.path,
         permissionCode: [apiConfig.person.getList.permissionCode]
+      },
+      {
+        key: 'movie-list',
+        label: 'Phim',
+        path: route.movie.getList.path,
+        permissionCode: [apiConfig.movie.getList.permissionCode]
       }
     ]
   },

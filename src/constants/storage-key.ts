@@ -4,7 +4,8 @@ const storageKeys = {
   X_TENANT: 'X-Tenant',
   PREVIOUS_PATH: 'previous_path',
   USER_KIND: 'user_kind',
-  ACTIVE_TAB_PERSON_KIND: 'active_tab_person_kind'
+  ACTIVE_TAB_PERSON_KIND: 'active_tab_person_kind',
+  PATH_NO_LOGIN: 'path_no_login'
 };
 
 export default storageKeys;

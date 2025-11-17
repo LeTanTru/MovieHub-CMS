@@ -1,4 +1,10 @@
 import {
+  AGE_RATING_18,
+  AGE_RATING_G,
+  AGE_RATING_NC17,
+  AGE_RATING_PG,
+  AGE_RATING_PG13,
+  AGE_RATING_R,
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER,
@@ -13,6 +19,11 @@ import {
   KIND_USER_VIP,
   LOGIN_TYPE_EMPLOYEE,
   LOGIN_TYPE_MANAGER,
+  MOVIE_ITEM_KIND_EPISODE,
+  MOVIE_ITEM_KIND_SEASON,
+  MOVIE_TYPE_SERIES,
+  MOVIE_TYPE_SINGLE,
+  MOVIE_TYPE_TRAILER,
   PERSON_KIND_ACTOR,
   PERSON_KIND_DIRECTOR,
   STATUS_ACTIVE,
@@ -125,7 +136,8 @@ export const queryKeys = {
   PERSON: 'person',
   PROFILE: 'profile',
   SNS_CONFIG: 'sns_config',
-  VIDEO_LIBRARY: 'video_library'
+  VIDEO_LIBRARY: 'video_library',
+  MOVIE: 'movie'
 };
 
 export const loginOptions = [
@@ -1461,4 +1473,89 @@ export const videoLibraryStateOptions = [
     value: VIDEO_LIBRARY_STATE_PROCESSING
   },
   { label: 'Đã hoàn thành', value: VIDEO_LIBRARY_STATE_COMPLETE }
+];
+
+export const ageRatingOptions = [
+  {
+    value: AGE_RATING_G,
+    label: 'G',
+    mean: 'Phù hợp với mọi lứa tuổi'
+  },
+  {
+    value: AGE_RATING_PG,
+    label: 'PG',
+    mean: 'Khuyến nghị xem cùng phụ huynh'
+  },
+  {
+    value: AGE_RATING_PG13,
+    label: 'PG-13',
+    mean: 'Không phù hợp với trẻ dưới 13 tuổi'
+  },
+  {
+    value: AGE_RATING_R,
+    label: 'R',
+    mean: 'Hạn chế trẻ em dưới 17 tuổi cần người lớn đi cùng'
+  },
+  {
+    value: AGE_RATING_NC17,
+    label: 'NC-17',
+    mean: 'Chỉ dành cho người từ 17 tuổi trở lên'
+  },
+  {
+    value: AGE_RATING_18,
+    label: '18+',
+    mean: 'Chỉ dành cho người trưởng thành từ 18 tuổi trở lên'
+  }
+];
+
+export const movieTypeOptions = [
+  {
+    value: MOVIE_TYPE_SINGLE,
+    label: 'Phim lẻ'
+  },
+  {
+    value: MOVIE_TYPE_SERIES,
+    label: 'Phim bộ'
+  }
+];
+
+export const movieItemKinds = [
+  {
+    value: MOVIE_ITEM_KIND_SEASON,
+    label: 'Mùa'
+  },
+  {
+    value: MOVIE_ITEM_KIND_EPISODE,
+    label: 'Tập'
+  },
+  {
+    value: MOVIE_TYPE_TRAILER,
+    label: 'Trailer'
+  }
+];
+
+export const movieItemSingleKinds = [
+  {
+    value: MOVIE_ITEM_KIND_SEASON,
+    label: 'Mùa'
+  },
+  {
+    value: MOVIE_TYPE_TRAILER,
+    label: 'Trailer'
+  }
+];
+
+export const movieItemSeriesKinds = [
+  {
+    value: MOVIE_ITEM_KIND_SEASON,
+    label: 'Mùa'
+  },
+  {
+    value: MOVIE_ITEM_KIND_EPISODE,
+    label: 'Tập'
+  },
+  {
+    value: MOVIE_TYPE_TRAILER,
+    label: 'Trailer'
+  }
 ];

@@ -6,6 +6,7 @@ export * from './customer.schema';
 export * from './employee.schema';
 export * from './group-permission.schema';
 export * from './group.schema';
+export * from './movie.schema';
 export * from './permission.schema';
 export * from './person.schema';
 export * from './search.schema';

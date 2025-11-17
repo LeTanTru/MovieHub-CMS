@@ -2,13 +2,19 @@
 
 import { useAuth, useFirstActiveRoute, useNavigate } from '@/hooks';
 import { usePathname } from 'next/navigation';
-import { getAccessTokenFromLocalStorage, validatePermission } from '@/utils';
+import {
+  getAccessTokenFromLocalStorage,
+  getData,
+  setData,
+  validatePermission
+} from '@/utils';
 import { useEffect, useState } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
 import { motion } from 'framer-motion';
 import { Loader } from 'lucide-react';
 import { useAuthStore } from '@/store';
 import { route } from '@/routes';
+import { storageKeys } from '@/constants';
 
 export default function PermissionGuard({
   children
@@ -65,6 +71,7 @@ export default function PermissionGuard({
   useEffect(() => {
     if (!accessToken && !isAuthenticated) {
       if (pathname !== route.login.path) {
+        setData(storageKeys.PATH_NO_LOGIN, pathname);
         navigate(route.login.path);
       }
       return;
@@ -73,7 +80,11 @@ export default function PermissionGuard({
     if (isAuthenticated) {
       if (pathname === route.home.path || pathname === route.login.path) {
         if (pathname !== firstActiveRoute) {
-          navigate(firstActiveRoute || route.profile.savePage.path);
+          navigate(
+            getData(storageKeys.PATH_NO_LOGIN) ||
+              firstActiveRoute ||
+              route.profile.savePage.path
+          );
         }
       }
     }

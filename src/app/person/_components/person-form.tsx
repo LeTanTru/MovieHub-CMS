@@ -116,7 +116,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
           label: `${!data ? 'Thêm mới' : 'Cập nhật'} ${kind === TAB_PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`
         }
       ]}
-      notFound={responseCode === ErrorCode.EMPLOYEE_ERROR_NOT_FOUND}
+      notFound={responseCode === ErrorCode.PERSON_ERROR_NOT_FOUND}
       notFoundContent={`Không tìm thấy ${kind === TAB_PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'} này`}
     >
       <BaseForm

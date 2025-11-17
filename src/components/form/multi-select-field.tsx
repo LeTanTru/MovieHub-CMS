@@ -55,6 +55,16 @@ const normalizeText = (text: string): string =>
     .toLowerCase()
     .trim();
 
+const fuzzyMatch = (text: string, search: string) => {
+  const t = normalizeText(text);
+  const s = normalizeText(search);
+
+  if (!s) return true;
+
+  const pattern = s.split('').join('.*');
+  return new RegExp(pattern).test(t);
+};
+
 export default function MultiSelectField<
   TFieldValues extends FieldValues,
   TOption extends Record<string, any>
@@ -79,9 +89,8 @@ export default function MultiSelectField<
   const [searchValue, setSearchValue] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
-  const normalizedSearch = normalizeText(searchValue);
   const filteredOptions = options.filter((option) =>
-    normalizeText(String(getLabel(option))).includes(normalizedSearch)
+    fuzzyMatch(String(getLabel(option)), searchValue)
   );
 
   useEffect(() => {
@@ -136,7 +145,7 @@ export default function MultiSelectField<
                   role='combobox'
                   disabled={disabled}
                   className={cn(
-                    'focus-visible:border-dodger-blue w-full justify-between border px-1! py-0 text-black shadow-none focus:ring-0 focus-visible:border-2',
+                    'focus-visible:border-dodger-blue h-auto min-h-9 w-full justify-between border px-1! py-1 text-black shadow-none focus:ring-0 focus-visible:border-2',
                     {
                       'cursor-not-allowed border-gray-300 bg-gray-200/80 text-gray-500':
                         disabled,
@@ -237,7 +246,8 @@ export default function MultiSelectField<
                             'block cursor-pointer truncate rounded-none transition-all first:rounded-tl first:rounded-tr last:rounded-br last:rounded-bl data-[state=active]:bg-transparent',
                             {
                               'bg-accent text-accent-foreground':
-                                highlightedIndex === idx || isSelected
+                                highlightedIndex === idx,
+                              'bg-dodger-blue/10': isSelected
                             }
                           )}
                         >

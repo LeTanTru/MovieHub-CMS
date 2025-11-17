@@ -57,6 +57,16 @@ const normalizeText = (text: string): string =>
     .toLowerCase()
     .trim();
 
+const fuzzyMatch = (text: string, search: string) => {
+  const t = normalizeText(text);
+  const s = normalizeText(search);
+
+  if (!s) return true;
+
+  const pattern = s.split('').join('.*');
+  return new RegExp(pattern).test(t);
+};
+
 export default function SelectField<
   TFieldValues extends FieldValues,
   TOption extends Record<string, any>
@@ -83,11 +93,9 @@ export default function SelectField<
   const [searchValue, setSearchValue] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
-  const normalizedSearch = normalizeText(searchValue);
-  const filteredOptions = options.filter((option) => {
-    const label = String(getLabel(option));
-    return normalizeText(label).includes(normalizedSearch);
-  });
+  const filteredOptions = options.filter((option) =>
+    fuzzyMatch(String(getLabel(option)), searchValue)
+  );
 
   useEffect(() => {
     if (!searchValue) setHighlightedIndex(-1);
@@ -233,7 +241,8 @@ export default function SelectField<
                             'block cursor-pointer truncate rounded transition-all data-[state=active]:bg-transparent',
                             {
                               'bg-accent text-accent-foreground':
-                                highlightedIndex === idx || isSelected
+                                highlightedIndex === idx,
+                              'bg-dodger-blue/10': isSelected
                             }
                           )}
                         >
