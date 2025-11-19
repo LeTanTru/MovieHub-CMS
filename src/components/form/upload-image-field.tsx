@@ -233,6 +233,7 @@ export default function UploadImageField<T extends FieldValues>({
                 src={value}
                 className='size-full rounded-none object-cover'
                 size={size}
+                aspect={aspect}
               />
             ) : (
               <UploadIcon
@@ -327,7 +328,7 @@ export default function UploadImageField<T extends FieldValues>({
                 <img
                   src={previewUrl}
                   alt='Preview'
-                  className='h-full w-full object-contain'
+                  className='h-full w-full object-cover'
                 />
               )
             )}
