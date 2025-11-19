@@ -120,7 +120,6 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={employeeSchema(isEditing)}
         initialValues={initialValues}
-        className='w-200'
       >
         {(form) => (
           <>

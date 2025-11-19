@@ -1,17 +1,18 @@
 'use client';
 
 import { logger } from '@/logger';
-import { ApiConfig, ApiResponse } from '@/types';
+import { ApiConfig, ApiResponse, Column } from '@/types';
 import { http, notify } from '@/utils';
 import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 
-const sortColumn = {
-  title: '',
+const sortColumn: Column<any> = {
+  title: '#',
   key: 'sort',
-  width: 50
+  width: 50,
+  align: 'center'
 };
 
 const useDragDrop = <T extends Record<string, any>>({

@@ -1,7 +1,7 @@
 'use client';
 
-import { useAuth, useFirstActiveRoute, useNavigate } from '@/hooks';
-import { usePathname } from 'next/navigation';
+import { useAuth, useFirstActiveRoute } from '@/hooks';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   getAccessTokenFromLocalStorage,
   getData,
@@ -27,7 +27,8 @@ export default function PermissionGuard({
     isAuthenticated
   } = useAuth();
   const { setLoading } = useAuthStore();
-  const navigate = useNavigate(false);
+  // const navigate = useNavigate(false);
+  const router = useRouter();
   const accessToken = getAccessTokenFromLocalStorage();
   const [ready, setReady] = useState(false);
   const pathname = usePathname();
@@ -72,7 +73,7 @@ export default function PermissionGuard({
     if (!accessToken && !isAuthenticated) {
       if (pathname !== route.login.path) {
         setData(storageKeys.PATH_NO_LOGIN, pathname);
-        navigate(route.login.path);
+        router.replace(route.login.path);
       }
       return;
     }
@@ -80,7 +81,7 @@ export default function PermissionGuard({
     if (isAuthenticated) {
       if (pathname === route.home.path || pathname === route.login.path) {
         if (pathname !== firstActiveRoute) {
-          navigate(
+          router.replace(
             getData(storageKeys.PATH_NO_LOGIN) ||
               firstActiveRoute ||
               route.profile.savePage.path
@@ -88,7 +89,7 @@ export default function PermissionGuard({
         }
       }
     }
-  }, [accessToken, isAuthenticated, pathname, navigate, firstActiveRoute]);
+  }, [accessToken, isAuthenticated, pathname, router, firstActiveRoute]);
 
   // if logged in, set loading to false
   useEffect(() => {

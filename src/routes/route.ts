@@ -126,6 +126,22 @@ const route = defineRoute({
       ],
       separate: true
     }
+  },
+  movieItem: {
+    getList: {
+      path: '/movie/:id/movie-item',
+      auth: true,
+      permissionCode: [apiConfig.movieItem.getList.permissionCode]
+    },
+    savePage: {
+      path: '/movie/:id/movie-item/:movieItemId',
+      auth: true,
+      permissionCode: [
+        apiConfig.movieItem.create.permissionCode,
+        apiConfig.movieItem.update.permissionCode
+      ],
+      separate: true
+    }
   }
 });
 

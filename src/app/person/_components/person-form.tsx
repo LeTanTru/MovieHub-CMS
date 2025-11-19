@@ -124,7 +124,6 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={personSchema}
         initialValues={initialValues}
-        className='w-200'
       >
         {(form) => (
           <>

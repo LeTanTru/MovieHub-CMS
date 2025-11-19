@@ -13,6 +13,7 @@ import {
   movieTypeOptions
 } from '@/constants';
 import { useListBase } from '@/hooks';
+import { route } from '@/routes';
 import { movieSearchSchema } from '@/schemaValidations';
 import {
   Column,
@@ -20,7 +21,8 @@ import {
   MovieSearchType,
   SearchFormProps
 } from '@/types';
-import { formatDate, notify, renderImageUrl } from '@/utils';
+import { formatDate, generatePath, notify, renderImageUrl } from '@/utils';
+import Link from 'next/link';
 import { AiOutlineFileImage } from 'react-icons/ai';
 
 export default function MovieList({ queryKey }: { queryKey: string }) {
@@ -63,15 +65,18 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
       title: 'Tiêu đề',
       render: (_, record) => (
         <>
-          <span
-            className='line-clamp-1 block truncate'
+          <Link
+            href={`${generatePath(route.movieItem.getList.path, {
+              id: record.id
+            })}?type=${record.type}`}
+            className='text-dodger-blue line-clamp-1 block truncate'
             title={`${record.title}`}
           >
             {record.title}
-          </span>
+          </Link>
           <span
             className='line-clamp-1 block truncate text-xs text-zinc-500'
-            title={`${record.title}`}
+            title={`${record.originalTitle}`}
           >
             {record.originalTitle}
           </span>
@@ -105,12 +110,12 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
       title: 'Độ tuổi',
       dataIndex: 'ageRating',
       render: (value) => {
-        const label = ageRatingOptions.find(
+        const ageRating = ageRatingOptions.find(
           (ageRating) => ageRating.value === value
-        )?.label;
+        );
         return (
-          <span className='line-clamp-1 block truncate' title={label}>
-            {label ?? '------'}
+          <span className='line-clamp-1 block truncate' title={ageRating?.mean}>
+            {ageRating?.label ?? '------'}
           </span>
         );
       },

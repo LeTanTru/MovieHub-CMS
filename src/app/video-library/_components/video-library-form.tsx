@@ -145,7 +145,6 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={videoLibrarySchema}
         initialValues={initialValues}
-        className='w-200'
       >
         {(form) => (
           <>

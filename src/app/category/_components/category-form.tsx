@@ -84,7 +84,6 @@ export default function CategoryForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={categorySchema}
         initialValues={initialValues}
-        className='w-200'
       >
         {(form) => (
           <>

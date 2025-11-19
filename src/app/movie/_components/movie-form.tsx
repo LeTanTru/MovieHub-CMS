@@ -14,7 +14,6 @@ import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import {
-  AGE_RATING_G,
   ageRatingOptions,
   apiConfig,
   countryOptions,
@@ -68,7 +67,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
   });
 
   const defaultValues: MovieBodyType = {
-    ageRating: AGE_RATING_G,
+    ageRating: 0,
     categoryIds: [],
     country: '',
     description: '',
@@ -85,7 +84,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
 
   const initialValues: MovieBodyType = useMemo(() => {
     return {
-      ageRating: data?.ageRating ?? AGE_RATING_G,
+      ageRating: data?.ageRating ?? 0,
       categoryIds:
         data?.categories?.map((category) => category.id.toString()) ?? [],
       country: data?.country ?? '',
@@ -142,7 +141,6 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={movieSchema}
         initialValues={initialValues}
-        className='w-200'
       >
         {(form) => (
           <>
@@ -162,7 +160,6 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                     return res.data?.filePath ?? '';
                   }}
                   label='Ảnh xem trước'
-                  aspect={9 / 16}
                 />
               </Col>
               <Col span={12}>
@@ -189,8 +186,8 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                 <InputField
                   control={form.control}
                   name='title'
-                  label='Họ tên'
-                  placeholder='Họ tên'
+                  label='Tiêu đề'
+                  placeholder='Tiêu đề'
                   required
                 />
               </Col>

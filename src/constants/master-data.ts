@@ -137,7 +137,8 @@ export const queryKeys = {
   PROFILE: 'profile',
   SNS_CONFIG: 'sns_config',
   VIDEO_LIBRARY: 'video_library',
-  MOVIE: 'movie'
+  MOVIE: 'movie',
+  MOVIE_ITEM: 'movie_item'
 };
 
 export const loginOptions = [
@@ -1494,7 +1495,7 @@ export const ageRatingOptions = [
   {
     value: AGE_RATING_R,
     label: 'R',
-    mean: 'Hạn chế trẻ em dưới 17 tuổi cần người lớn đi cùng'
+    mean: 'Hạn chế - trẻ em dưới 17 tuổi cần người lớn đi cùng'
   },
   {
     value: AGE_RATING_NC17,
@@ -1519,7 +1520,7 @@ export const movieTypeOptions = [
   }
 ];
 
-export const movieItemKinds = [
+export const movieItemKindOptions = [
   {
     value: MOVIE_ITEM_KIND_SEASON,
     label: 'Mùa'
@@ -1534,7 +1535,7 @@ export const movieItemKinds = [
   }
 ];
 
-export const movieItemSingleKinds = [
+export const movieItemSingleKindOptions = [
   {
     value: MOVIE_ITEM_KIND_SEASON,
     label: 'Mùa'
@@ -1545,7 +1546,7 @@ export const movieItemSingleKinds = [
   }
 ];
 
-export const movieItemSeriesKinds = [
+export const movieItemSeriesKindOptions = [
   {
     value: MOVIE_ITEM_KIND_SEASON,
     label: 'Mùa'
