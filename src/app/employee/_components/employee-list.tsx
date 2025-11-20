@@ -1,7 +1,6 @@
 'use client';
 
 import { AvatarField, Button, ToolTip } from '@/components/form';
-import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import {
@@ -39,34 +38,36 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
           record: EmployeeResType,
           buttonProps?: Record<string, any>
         ) => {
-          return (
-            <HasPermission
-              requiredPermissions={[
+          if (
+            !handlers.hasPermission({
+              requiredPermissions: [
                 apiConfig.employee.changeStatus.permissionCode
-              ]}
+              ]
+            })
+          )
+            return null;
+          return (
+            <ToolTip
+              title={
+                record.status === STATUS_ACTIVE
+                  ? 'Khóa tài khoản'
+                  : 'Mở khóa tài khoản'
+              }
             >
-              <ToolTip
-                title={
-                  record.status === STATUS_ACTIVE
-                    ? 'Khóa tài khoản'
-                    : 'Mở khóa tài khoản'
-                }
-              >
-                <span>
-                  <Button
-                    onClick={() => handleChangeStatus(record)}
-                    className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
-                    {...buttonProps}
-                  >
-                    {record.status === STATUS_ACTIVE ? (
-                      <AiOutlineLock className='text-destructive size-4' />
-                    ) : (
-                      <AiOutlineCheck className='text-dodger-blue size-4' />
-                    )}
-                  </Button>
-                </span>
-              </ToolTip>
-            </HasPermission>
+              <span>
+                <Button
+                  onClick={() => handleChangeStatus(record)}
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  {...buttonProps}
+                >
+                  {record.status === STATUS_ACTIVE ? (
+                    <AiOutlineLock className='text-destructive size-4' />
+                  ) : (
+                    <AiOutlineCheck className='text-dodger-blue size-4' />
+                  )}
+                </Button>
+              </span>
+            </ToolTip>
           );
         }
       });

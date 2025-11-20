@@ -96,6 +96,7 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
     path?: string | undefined;
     separate?: boolean | undefined;
   }) => boolean;
+  setData: (data: T[]) => void;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -565,7 +566,8 @@ export default function useListBase<
       renderReloadButton,
       changeQueryFilter,
       handleDeleteError,
-      hasPermission
+      hasPermission,
+      setData
     };
 
     override?.(handlers);
@@ -581,7 +583,6 @@ export default function useListBase<
     handlers,
     queryFilter,
     listQuery,
-    queryString,
-    setData
+    queryString
   };
 }

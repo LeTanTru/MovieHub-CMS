@@ -138,7 +138,8 @@ export const queryKeys = {
   SNS_CONFIG: 'sns_config',
   VIDEO_LIBRARY: 'video_library',
   MOVIE: 'movie',
-  MOVIE_ITEM: 'movie_item'
+  MOVIE_ITEM: 'movie_item',
+  MOVIE_PERSON: 'movie_person'
 };
 
 export const loginOptions = [

@@ -63,11 +63,6 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
       notShowFromSearchParams: ['movieId']
     },
     override: (handlers) => {
-      handlers.handleDeleteError = (code) => {
-        // if (code === ErrorCode.MOVIE_ERROR_HAS_ITEM) {
-        //   notify.error('Phim này có mục phim đang liên kết');
-        // }
-      };
       handlers.additionalColumns = () => ({
         watchVideo: (
           record: MovieItemResType,
@@ -193,7 +188,7 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
           loading={loading || loadingUpdateOrdering}
           onDragEnd={onDragEnd}
         />
-        {sortedData.length > 1 && !(loading || loadingUpdateOrdering) && (
+        {sortedData.length > 1 && (
           <div className='mr-4 flex justify-end py-4'>
             <Button
               onClick={handleUpdate}

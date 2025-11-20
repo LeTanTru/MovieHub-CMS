@@ -67,7 +67,7 @@ const useDragDrop = <T extends Record<string, any>>({
 
   const handleUpdate = useCallback(async () => {
     let dataUpdate: Record<string, any> = [];
-    const sortList = data.length > 0 ? data : sortedData;
+    const sortList = sortedData;
     sortList.map((item, index) => {
       dataUpdate.push({
         id: item.id,
@@ -91,11 +91,10 @@ const useDragDrop = <T extends Record<string, any>>({
       }
     });
   }, [
-    data,
     key,
     objectName,
-    queryClient,
     sortField,
+    queryClient,
     sortedData,
     updateOrderingMutation
   ]);
@@ -107,12 +106,12 @@ const useDragDrop = <T extends Record<string, any>>({
 
   return {
     isChanged,
-    setIsChanged,
+    sortColumn,
     sortedData,
-    onDragEnd,
-    handleUpdate,
     loading: updateOrderingMutation.isPending,
-    sortColumn
+    setIsChanged,
+    onDragEnd,
+    handleUpdate
   };
 };
 

@@ -18,6 +18,7 @@ type BaseFormProps<T extends Record<string, any>> = {
   initialValues?: T;
   mode?: 'onBlur' | 'onChange' | 'onSubmit' | 'onTouched' | 'all' | undefined;
   onChange?: () => void;
+  id?: string;
 };
 
 export default function BaseForm<T extends Record<string, any>>({
@@ -28,7 +29,8 @@ export default function BaseForm<T extends Record<string, any>>({
   className,
   initialValues,
   mode = 'onChange',
-  onChange
+  onChange,
+  id
 }: BaseFormProps<T>) {
   const form = useForm<T>({
     resolver: zodResolver(schema),
@@ -41,11 +43,12 @@ export default function BaseForm<T extends Record<string, any>>({
       form.reset(initialValues);
     }
   }, [initialValues, form]);
-  logger.info('BaseForm ~ form:', form.formState.errors);
+  // logger.info('BaseForm ~ form:', form.formState.errors);
 
   return (
     <Form {...form}>
       <form
+        id={id}
         className={cn(
           'relative w-4/5 rounded-lg bg-white p-4 max-[1560px]:w-full',
           className

@@ -148,7 +148,7 @@ export default function SearchForm<S extends FieldValues>({
             }
           }
         })}
-        {searchFields.length < 4 && (
+        {searchFields.length && searchFields.length < 4 ? (
           <>
             <Col className='w-11! px-1'>
               <Button type='submit' variant={'primary'}>
@@ -165,7 +165,7 @@ export default function SearchForm<S extends FieldValues>({
               </Button>
             </Col>
           </>
-        )}
+        ) : null}
       </>
     );
   };
@@ -180,25 +180,27 @@ export default function SearchForm<S extends FieldValues>({
     >
       {(form) => (
         <>
-          {searchFields.length < 4 ? (
+          {searchFields.length && searchFields.length < 4 ? (
             <Row className='mb-0 gap-2 *:p-0'>
               {renderField(searchFields, form)}
             </Row>
           ) : (
             <Row className='mb-0 flex flex-1 flex-nowrap justify-start gap-2 *:p-0'>
               {renderField(searchFields, form)}
-              <div className='flex items-center gap-2'>
-                <Button type='submit' variant='primary'>
-                  <Search />
-                </Button>
-                <Button
-                  type='button'
-                  onClick={() => handleReset(form)}
-                  className='hover:[&>svg]:stroke-dodger-blue hover:border-dodger-blue border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
-                >
-                  <BrushCleaning className='transition-all duration-200 ease-linear' />
-                </Button>
-              </div>
+              {searchFields.length ? (
+                <div className='flex items-center gap-2'>
+                  <Button type='submit' variant='primary'>
+                    <Search />
+                  </Button>
+                  <Button
+                    type='button'
+                    onClick={() => handleReset(form)}
+                    className='hover:[&>svg]:stroke-dodger-blue hover:border-dodger-blue border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
+                  >
+                    <BrushCleaning className='transition-all duration-200 ease-linear' />
+                  </Button>
+                </div>
+              ) : null}
             </Row>
           )}
         </>

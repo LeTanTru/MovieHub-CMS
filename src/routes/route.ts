@@ -142,6 +142,13 @@ const route = defineRoute({
       ],
       separate: true
     }
+  },
+  moviePerson: {
+    getList: {
+      path: '/movie/:id/movie-person',
+      auth: true,
+      permissionCode: [apiConfig.moviePerson.getList.permissionCode]
+    }
   }
 });
 

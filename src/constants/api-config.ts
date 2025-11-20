@@ -227,7 +227,7 @@ const apiConfig = defineApiConfig({
     },
     create: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/movie-person/create`,
-      method: 'GET',
+      method: 'POST',
       headers: baseHeader,
       permissionCode: 'MOV_P_C'
     },

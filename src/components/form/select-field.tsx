@@ -48,6 +48,7 @@ type SelectFieldProps<
   labelClassName?: string;
   disabled?: boolean;
   onValueChange?: (value: string | number | null) => void;
+  renderOption?: (option: TOption) => React.ReactNode;
 };
 
 const normalizeText = (text: string): string =>
@@ -79,14 +80,15 @@ export default function SelectField<
   description,
   className,
   required,
-  getLabel = (opt) => opt.label,
-  getValue = (opt) => opt.value,
-  getPrefix = (opt) => opt.prefix,
   allowClear,
   searchText,
   notFoundContent = 'Không có kết quả nào',
   labelClassName,
   disabled = false,
+  renderOption,
+  getLabel = (opt) => opt.label,
+  getValue = (opt) => opt.value,
+  getPrefix = (opt) => opt.prefix,
   onValueChange
 }: SelectFieldProps<TFieldValues, TOption>) {
   const [open, setOpen] = useState(false);
@@ -246,10 +248,17 @@ export default function SelectField<
                             }
                           )}
                         >
-                          {getPrefix?.(opt) && (
-                            <span className='mr-1 font-mono text-xs opacity-70'>
-                              {getPrefix(opt)}
-                            </span>
+                          {renderOption ? (
+                            renderOption(opt)
+                          ) : (
+                            <>
+                              {getPrefix?.(opt) && (
+                                <span className='mr-1 font-mono text-xs opacity-70'>
+                                  {getPrefix(opt)}
+                                </span>
+                              )}
+                              {getLabel(opt)}
+                            </>
                           )}
                           {getLabel(opt)}
                         </CommandItem>

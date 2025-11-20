@@ -5,4 +5,5 @@ export * from './category.query';
 export * from './employee.query';
 export * from './file.query';
 export * from './group.query';
+export * from './movie-person.query';
 export * from './permission.query';

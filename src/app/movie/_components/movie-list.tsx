@@ -1,6 +1,6 @@
 'use client';
 
-import { AvatarField } from '@/components/form';
+import { AvatarField, Button, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import {
@@ -12,7 +12,7 @@ import {
   FieldTypes,
   movieTypeOptions
 } from '@/constants';
-import { useListBase } from '@/hooks';
+import { useListBase, useNavigate } from '@/hooks';
 import { route } from '@/routes';
 import { movieSearchSchema } from '@/schemaValidations';
 import {
@@ -23,9 +23,10 @@ import {
 } from '@/types';
 import { formatDate, generatePath, notify, renderImageUrl } from '@/utils';
 import Link from 'next/link';
-import { AiOutlineFileImage } from 'react-icons/ai';
+import { AiOutlineFileImage, AiOutlineUser } from 'react-icons/ai';
 
 export default function MovieList({ queryKey }: { queryKey: string }) {
+  const navigate = useNavigate(false);
   const { data, pagination, loading, handlers } = useListBase<
     MovieResType,
     MovieSearchType
@@ -41,6 +42,35 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
           notify.error('Phim này có mục phim đang liên kết');
         }
       };
+      handlers.additionalColumns = () => ({
+        person: (record: MovieResType, buttonProps?: Record<string, any>) => {
+          if (
+            !handlers.hasPermission({
+              requiredPermissions: [apiConfig.person.getList.permissionCode]
+            })
+          )
+            return null;
+          return (
+            <ToolTip title={`Diễn viên & đạo diễn`}>
+              <span>
+                <Button
+                  onClick={() =>
+                    navigate(
+                      generatePath(route.moviePerson.getList.path, {
+                        id: record.id
+                      })
+                    )
+                  }
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  {...buttonProps}
+                >
+                  <AiOutlineUser className='text-dodger-blue size-4' />
+                </Button>
+              </span>
+            </ToolTip>
+          );
+        }
+      });
     }
   });
 
@@ -139,7 +169,15 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
       width: 120
     },
     handlers.renderActionColumn({
-      actions: { edit: true, delete: true }
+      actions: {
+        person: handlers.hasPermission({
+          requiredPermissions: [
+            apiConfig.moviePerson.getList.permissionCode as string
+          ]
+        }),
+        edit: true,
+        delete: true
+      }
     })
   ];
 

@@ -11,6 +11,7 @@ export * from './form-error.type';
 export * from './group.type';
 export * from './menu-config.type';
 export * from './movie-item.type';
+export * from './movie-person.type';
 export * from './movie.type';
 export * from './permission.type';
 export * from './person.type';
