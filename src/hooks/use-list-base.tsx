@@ -312,7 +312,7 @@ export default function useListBase<
 
       return (
         <AlertDialog>
-          <AlertDialogTrigger asChild>
+          <AlertDialogTrigger asChild onClick={(e) => e.stopPropagation()}>
             <span>
               <ToolTip title={`Xóa ${objectName}`}>
                 <Button
