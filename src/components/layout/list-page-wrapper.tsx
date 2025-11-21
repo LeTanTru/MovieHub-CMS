@@ -20,7 +20,7 @@ export default function ListPageWrapper({
     >
       <div
         className={cn(
-          'flex items-center justify-between rounded-tl-lg rounded-tr-lg bg-white p-4',
+          'flex items-start justify-between rounded-tl-lg rounded-tr-lg bg-white p-4',
           {
             'py-0': !(searchForm || addButton || reloadButton)
           }

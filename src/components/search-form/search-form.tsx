@@ -11,6 +11,7 @@ import {
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { DEFAULT_COL_SPAN, FieldTypes } from '@/constants';
+import { cn } from '@/lib';
 import { ApiConfig, AutoCompleteOption, SearchFormProps } from '@/types';
 import { BrushCleaning, Search } from 'lucide-react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
@@ -70,124 +71,109 @@ export default function SearchForm<S extends FieldValues>({
     form: UseFormReturn<Record<string, unknown>>
   ) => {
     return (
-      <>
-        {searchFields.map((sf) => {
-          switch (sf.type) {
-            case FieldTypes.SELECT: {
-              return (
-                <Col
-                  key={sf.key as string}
-                  span={sf.colSpan || DEFAULT_COL_SPAN}
-                >
-                  <SelectField
-                    control={form.control}
-                    name={sf.key as string}
-                    placeholder={sf.placeholder}
-                    options={sf.options ?? []}
-                    getLabel={(option) => option.label}
-                    getValue={(option) => option.value}
-                    onValueChange={(val) => {
-                      if (sf.submitOnChanged) {
-                        form.setValue(sf.key as string, val);
-                        form.handleSubmit(onSubmit)();
-                      }
-                    }}
-                  />
-                </Col>
-              );
-            }
-            case FieldTypes.AUTOCOMPLETE: {
-              return (
-                <Col
-                  key={sf.key as string}
-                  span={sf.colSpan || DEFAULT_COL_SPAN}
-                >
-                  <AutoCompleteField
-                    apiConfig={sf.apiConfig as ApiConfig}
-                    control={form.control}
-                    mappingData={
-                      sf.mappingData as (
-                        option: Record<string, any>
-                      ) => AutoCompleteOption
-                    }
-                    name={sf.key as string}
-                    searchParams={sf.searchParams as string[]}
-                    initialParams={sf.initialParams}
-                    placeholder={sf.placeholder}
-                  />
-                </Col>
-              );
-            }
-            case FieldTypes.DATE: {
-              return (
-                <Col
-                  key={sf.key as string}
-                  span={sf.colSpan || DEFAULT_COL_SPAN}
-                >
-                  <DateTimePickerField
-                    control={form.control}
-                    name={sf.key as string}
-                    placeholder={sf.placeholder}
-                  />
-                </Col>
-              );
-            }
-            default: {
-              return (
-                <Col
-                  key={sf.key as string}
-                  span={sf.colSpan || DEFAULT_COL_SPAN}
-                >
-                  <InputField
-                    control={form.control}
-                    name={sf.key as string}
-                    placeholder={sf.placeholder}
-                  />
-                </Col>
-              );
-            }
-          }
-        })}
-        {searchFields.length && searchFields.length < 4 ? (
-          <>
-            <Col className='w-11! px-1'>
-              <Button type='submit' variant={'primary'}>
-                <Search />
-              </Button>
-            </Col>
-            <Col className='w-10! px-1'>
-              <Button
-                type='button'
-                onClick={() => handleReset(form)}
-                className='hover:[&>svg]:stroke-dodger-blue hover:border-dodger-blue border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
-              >
-                <BrushCleaning className='transition-all duration-200 ease-linear' />
-              </Button>
-            </Col>
-          </>
-        ) : null}
-      </>
-    );
-  };
-
-  return (
-    <BaseForm
-      onSubmit={onSubmit}
-      defaultValues={defaultValues}
-      schema={schema}
-      initialValues={initialValues}
-      className='w-full p-0 pr-4'
-    >
-      {(form) => (
-        <>
-          {searchFields.length && searchFields.length < 4 ? (
-            <Row className='mb-0 gap-2 *:p-0'>
-              {renderField(searchFields, form)}
-            </Row>
-          ) : (
-            <Row className='mb-0 flex flex-1 flex-wrap justify-start gap-2 *:p-0'>
-              {renderField(searchFields, form)}
-              {searchFields.length ? (
+      <Row className='mb-0'>
+        <Col
+          span={24}
+          className={cn('my-0', {
+            grow: searchFields.length > 4
+          })}
+        >
+          <Row
+            className={cn('mb-0 *:my-0 *:p-0 min-[1560px]:grid-cols-5', {
+              'grid grid-cols-4 gap-y-2': searchFields.length > 4
+            })}
+          >
+            {searchFields.map((sf) => {
+              switch (sf.type) {
+                case FieldTypes.SELECT: {
+                  return (
+                    <Col
+                      key={sf.key as string}
+                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                      className={cn({
+                        'w-full!': searchFields.length > 4
+                      })}
+                    >
+                      <SelectField
+                        control={form.control}
+                        name={sf.key as string}
+                        placeholder={sf.placeholder}
+                        options={sf.options ?? []}
+                        getLabel={(option) => option.label}
+                        getValue={(option) => option.value}
+                        onValueChange={(val) => {
+                          if (sf.submitOnChanged) {
+                            form.setValue(sf.key as string, val);
+                            form.handleSubmit(onSubmit)();
+                          }
+                        }}
+                      />
+                    </Col>
+                  );
+                }
+                case FieldTypes.AUTOCOMPLETE: {
+                  return (
+                    <Col
+                      key={sf.key as string}
+                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                      className={cn({
+                        'w-full!': searchFields.length > 4
+                      })}
+                    >
+                      <AutoCompleteField
+                        apiConfig={sf.apiConfig as ApiConfig}
+                        control={form.control}
+                        mappingData={
+                          sf.mappingData as (
+                            option: Record<string, any>
+                          ) => AutoCompleteOption
+                        }
+                        name={sf.key as string}
+                        searchParams={sf.searchParams as string[]}
+                        initialParams={sf.initialParams}
+                        placeholder={sf.placeholder}
+                      />
+                    </Col>
+                  );
+                }
+                case FieldTypes.DATE: {
+                  return (
+                    <Col
+                      key={sf.key as string}
+                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                      className={cn({
+                        'w-full!': searchFields.length > 4
+                      })}
+                    >
+                      <DateTimePickerField
+                        control={form.control}
+                        name={sf.key as string}
+                        placeholder={sf.placeholder}
+                      />
+                    </Col>
+                  );
+                }
+                default: {
+                  return (
+                    <Col
+                      key={sf.key as string}
+                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                      className={cn({
+                        'w-full!': searchFields.length > 4
+                      })}
+                    >
+                      <InputField
+                        control={form.control}
+                        name={sf.key as string}
+                        placeholder={sf.placeholder}
+                      />
+                    </Col>
+                  );
+                }
+              }
+            })}
+            {searchFields.length && searchFields.length <= 4 ? (
+              <Col style={{ width: 'auto' }} className='my-0 inline-block px-0'>
                 <div className='flex items-center gap-2'>
                   <Button type='submit' variant='primary'>
                     <Search />
@@ -200,11 +186,39 @@ export default function SearchForm<S extends FieldValues>({
                     <BrushCleaning className='transition-all duration-200 ease-linear' />
                   </Button>
                 </div>
-              ) : null}
-            </Row>
-          )}
-        </>
-      )}
+              </Col>
+            ) : null}
+          </Row>
+        </Col>
+        {searchFields.length > 4 ? (
+          <Col style={{ width: 'auto' }} className='my-0 inline-block px-0'>
+            <div className='flex items-center gap-2'>
+              <Button type='submit' variant='primary'>
+                <Search />
+              </Button>
+              <Button
+                type='button'
+                onClick={() => handleReset(form)}
+                className='hover:[&>svg]:stroke-dodger-blue hover:border-dodger-blue border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
+              >
+                <BrushCleaning className='transition-all duration-200 ease-linear' />
+              </Button>
+            </div>
+          </Col>
+        ) : null}
+      </Row>
+    );
+  };
+
+  return (
+    <BaseForm
+      onSubmit={onSubmit}
+      defaultValues={defaultValues}
+      schema={schema}
+      initialValues={initialValues}
+      className='w-full p-0 pr-2'
+    >
+      {(form) => <>{renderField(searchFields, form)}</>}
     </BaseForm>
   );
 }
