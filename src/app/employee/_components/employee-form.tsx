@@ -107,7 +107,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
     <PageWrapper
       breadcrumbs={[
         {
-          label: 'Quản trị viên',
+          label: 'Nhân viên',
           href: renderListPageUrl(route.employee.getList.path, queryString)
         },
         { label: `${!data ? 'Thêm mới' : 'Cập nhật'} nhân viên` }
