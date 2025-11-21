@@ -108,9 +108,9 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
     data,
     apiConfig: apiConfig.movieItem.updateOrdering,
     sortField: 'ordering',
-    mappingData: (record) => ({
+    mappingData: (record, index) => ({
       id: record.id,
-      ordering: record.ordering,
+      ordering: index,
       parentId: record?.parent?.id
     })
   });
@@ -128,6 +128,8 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
             'ml-4': record.kind === MOVIE_ITEM_KIND_EPISODE
           })}
         >
+          {record.kind === MOVIE_ITEM_KIND_SEASON && `Mùa ${record.label}: `}
+          {record.kind === MOVIE_ITEM_KIND_EPISODE && `${record.label}. `}
           {value}
         </span>
       )

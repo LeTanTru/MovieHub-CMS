@@ -163,7 +163,7 @@ const apiConfig = defineApiConfig({
     },
     create: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/movie/create`,
-      method: 'GET',
+      method: 'POST',
       headers: baseHeader,
       permissionCode: 'MOV_C'
     },
@@ -271,7 +271,7 @@ const apiConfig = defineApiConfig({
     },
     create: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/person/create`,
-      method: 'GET',
+      method: 'POST',
       headers: baseHeader,
       permissionCode: 'PSN_C'
     },
@@ -382,7 +382,7 @@ const apiConfig = defineApiConfig({
     },
     create: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/sidebar/create`,
-      method: 'GET',
+      method: 'POST',
       headers: baseHeader,
       permissionCode: 'SBD_C'
     },

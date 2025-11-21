@@ -1,4 +1,5 @@
 'use client';
+
 import VideoLibraryPreviewModal from '@/app/video-library/_components/video-library-preview-modal';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
@@ -22,7 +23,7 @@ import {
 import { notify, renderImageUrl } from '@/utils';
 import { PlayCircle } from 'lucide-react';
 import { useState } from 'react';
-import { AiFillWarning, AiOutlineUser } from 'react-icons/ai';
+import { AiFillWarning, AiOutlineFileImage } from 'react-icons/ai';
 import { RiCheckboxCircleFill, RiLoader2Fill } from 'react-icons/ri';
 
 export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
@@ -85,8 +86,9 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
           disablePreview={!value}
           src={renderImageUrl(value)}
           className='rounded'
-          zoomSize={500}
-          icon={<AiOutlineUser className='size-7 text-slate-800' />}
+          previewClassName='rounded'
+          zoomSize={800}
+          icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
         />
       )
     },

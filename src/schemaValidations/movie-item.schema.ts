@@ -9,6 +9,7 @@ export const movieItemSchema = z.object({
   parentId: z.string().optional().nullable(),
   releaseDate: z.string().nonempty('Bắt buộc'),
   status: z.number({ error: 'Bắt buộc' }),
+  thumbnailUrl: z.string().nonempty('Bắt buộc'),
   title: z.string().nonempty('Bắt buộc'),
   videoId: z.string().optional().nullable()
 });

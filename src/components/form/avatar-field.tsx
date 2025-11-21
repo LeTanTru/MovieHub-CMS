@@ -106,6 +106,7 @@ export default function AvatarField({
                       'rounded object-cover',
                       imagePreviewClassName
                     )}
+                    unoptimized
                   />
                 ) : (
                   <Image
@@ -113,6 +114,7 @@ export default function AvatarField({
                     alt='Avatar preview'
                     width={zoomSize}
                     height={zoomSize}
+                    unoptimized
                     className={cn('rounded object-cover', previewClassName)}
                   />
                 ))}

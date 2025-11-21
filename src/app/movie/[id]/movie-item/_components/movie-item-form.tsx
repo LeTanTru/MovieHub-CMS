@@ -7,7 +7,8 @@ import {
   InputField,
   RichTextField,
   Row,
-  SelectField
+  SelectField,
+  UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
@@ -17,6 +18,7 @@ import {
   DATE_TIME_FORMAT,
   DEFAULT_DATE_FORMAT,
   ErrorCode,
+  MOVIE_ITEM_KIND_EPISODE,
   MOVIE_ITEM_KIND_SEASON,
   MOVIE_TYPE_SINGLE,
   movieItemSeriesKindOptions,
@@ -27,7 +29,8 @@ import {
 import { useQueryParams, useSaveBase } from '@/hooks';
 import {
   useMovieItemListQuery,
-  useUpdateOrderingMovieItemMutation
+  useUpdateOrderingMovieItemMutation,
+  useUploadLogoMutation
 } from '@/queries';
 import { route } from '@/routes';
 import { movieItemSchema } from '@/schemaValidations';
@@ -36,11 +39,18 @@ import {
   MovieItemResType,
   VideoLibraryResType
 } from '@/types';
-import { formatDate, generatePath, getData, renderListPageUrl } from '@/utils';
+import {
+  formatDate,
+  generatePath,
+  getData,
+  renderImageUrl,
+  renderListPageUrl
+} from '@/utils';
 import { useParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 export default function MovieItemForm({ queryKey }: { queryKey: string }) {
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
   const {
     searchParams: { type }
   } = useQueryParams<{ type: string }>();
@@ -48,6 +58,8 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
     id: string;
     movieItemId: string;
   }>();
+
+  const uploadImageMutation = useUploadLogoMutation();
 
   const movieItemListQuery = useMovieItemListQuery({ movieId });
   const movieItemList = movieItemListQuery.data?.data.content || [];
@@ -85,7 +97,8 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
     status: STATUS_ACTIVE,
     title: '',
     parentId: '',
-    videoId: ''
+    videoId: '',
+    thumbnailUrl: ''
   };
 
   const initialValues: MovieItemBodyType = useMemo(() => {
@@ -99,6 +112,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
       status: STATUS_ACTIVE,
       title: data?.title ?? '',
       parentId: '',
+      thumbnailUrl: data?.thumbnailUrl ?? '',
       videoId: data?.video?.id?.toString() ?? ''
     };
   }, [data, movieId]);
@@ -109,20 +123,50 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
 
     if (!parentId) ordering = movieItemList.length;
     else {
-      const orderingList = movieItemList.map((movieItem) => ({
-        id: movieItem.id.toString(),
-        ordering: movieItem.ordering,
-        parentId: movieItem?.parent?.id
-      }));
-      const parent = orderingList.find(
-        (item) => item.id.toString() === parentId
+      const item = movieItemList.find(
+        (movieItem) => movieItem.id.toString() === parentId
       );
-      const newOrderingList = orderingList.map((item) => {
-        if (parent && item.ordering <= parent?.ordering) return item;
-        return { ...item, ordering: item.ordering + 1 };
-      });
-      ordering += 1;
-      await updateOrderingMovieItemMutation.mutateAsync(newOrderingList);
+
+      if (item) {
+        const kind = item.kind;
+        if (kind === MOVIE_ITEM_KIND_SEASON) {
+          const lastMovieItemOfParent = movieItemList.findLast(
+            (movieItem) => movieItem?.parent?.id?.toString() === parentId
+          );
+
+          const newOrderingList = movieItemList
+            .map((movieItem) => {
+              if (
+                lastMovieItemOfParent &&
+                movieItem.ordering <= lastMovieItemOfParent.ordering
+              )
+                return movieItem;
+              return { ...movieItem, ordering: movieItem.ordering + 1 };
+            })
+            .map((movieItem) => ({
+              id: movieItem.id,
+              ordering: movieItem.ordering,
+              parentId: movieItem?.parent?.id
+            }));
+
+          ordering = (lastMovieItemOfParent?.ordering ?? 0) + 1;
+          await updateOrderingMovieItemMutation.mutateAsync(newOrderingList);
+        } else if (kind === MOVIE_ITEM_KIND_EPISODE) {
+          const newOrderingList = movieItemList
+            .map((movieItem) => {
+              if (movieItem.ordering <= item.ordering) return movieItem;
+              return { ...movieItem, ordering: movieItem.ordering + 1 };
+            })
+            .map((movieItem) => ({
+              id: movieItem.id,
+              ordering: movieItem.ordering,
+              parentId: movieItem?.parent?.id
+            }));
+
+          ordering = item.ordering + 1;
+          await updateOrderingMovieItemMutation.mutateAsync(newOrderingList);
+        }
+      }
     }
 
     await handleSubmit({
@@ -169,6 +213,29 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
           const kind = form.watch('kind');
           return (
             <>
+              <Row>
+                <Col span={24}>
+                  <UploadImageField
+                    value={renderImageUrl(thumbnailUrl)}
+                    loading={uploadImageMutation.isPending}
+                    control={form.control}
+                    name='thumbnailUrl'
+                    onChange={(url) => {
+                      setThumbnailUrl(url);
+                    }}
+                    size={150}
+                    uploadImageFn={async (file: Blob) => {
+                      const res = await uploadImageMutation.mutateAsync({
+                        file
+                      });
+                      return res.data?.filePath ?? '';
+                    }}
+                    label='Ảnh xem trước (16:9)'
+                    aspect={16 / 9}
+                    required
+                  />
+                </Col>
+              </Row>
               <Row>
                 <Col>
                   <SelectField
@@ -229,7 +296,6 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                       name='videoId'
                       label='Video'
                       placeholder='Video'
-                      required
                     />
                   </Col>
                 </Row>

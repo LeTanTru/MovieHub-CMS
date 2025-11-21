@@ -133,7 +133,7 @@ export default function ProfileForm() {
                 onChange={(url) => {
                   setAvatarPath(url);
                 }}
-                size={100}
+                size={150}
                 uploadImageFn={async (file: Blob) => {
                   const res = await uploadAvatarMutation.mutateAsync({
                     file
@@ -153,7 +153,7 @@ export default function ProfileForm() {
                   onChange={(url) => {
                     setLogoPath(url);
                   }}
-                  size={100}
+                  size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadLogoMutation.mutateAsync({
                       file

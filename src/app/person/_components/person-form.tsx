@@ -137,7 +137,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
                   onChange={(url) => {
                     setAvatarPath(url);
                   }}
-                  size={100}
+                  size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';

@@ -30,6 +30,7 @@ export type MovieItemResType = {
     releaseDate: string;
     type: number;
   };
+  thumbnailUrl: string;
   video: VideoLibraryResType;
   releaseDate: string;
 };

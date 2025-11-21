@@ -65,6 +65,9 @@ export default function PersonList({
           size={50}
           disablePreview={!value}
           src={renderImageUrl(value)}
+          className='rounded'
+          previewClassName='rounded'
+          zoomSize={550}
           icon={<AiOutlineUser className='size-7 text-slate-800' />}
         />
       )

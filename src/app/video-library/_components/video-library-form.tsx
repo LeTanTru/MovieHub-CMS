@@ -158,7 +158,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                   onChange={(url) => {
                     setThumbnailUrl(url);
                   }}
-                  size={100}
+                  size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadLogoMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';

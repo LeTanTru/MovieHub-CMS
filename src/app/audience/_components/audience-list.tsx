@@ -107,6 +107,7 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
       render: (value) => (
         <AvatarField
           size={50}
+          zoomSize={500}
           disablePreview={!value}
           src={renderImageUrl(value)}
           icon={<AiOutlineUser className='size-7 text-slate-800' />}

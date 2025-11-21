@@ -9,8 +9,9 @@ export default function Row({ children, className, ...rest }: RowProps) {
   return (
     <div
       className={cn(
-        'mb-6 flex w-full flex-row [&>*:first-child]:pl-0',
-        { '[&>*:last-child]:pr-0': childCount > 1 },
+        'mb-6 flex w-full flex-row gap-x-2 [&>*:first-child]:pl-0',
+        { '[&>*:first-child]:pr-0 [&>*:last-child]:pr-0': childCount > 1 },
+        { '[&>*:last-child]:pr-0': childCount === 1 },
         className
       )}
       {...rest}

@@ -208,6 +208,7 @@ export default function MoviePersonList({
       render: (value) => (
         <AvatarField
           size={50}
+          zoomSize={500}
           disablePreview={!value}
           src={renderImageUrl(value)}
           className='rounded'
@@ -355,8 +356,12 @@ export default function MoviePersonList({
     })
   ];
 
-  const searchFields: SearchFormProps<MoviePersonSearchType>['searchFields'] =
-    [];
+  const searchFields: SearchFormProps<MoviePersonSearchType>['searchFields'] = [
+    {
+      key: 'personId',
+      placeholder: kind === PERSON_KIND_ACTOR ? 'Tên diễn viên' : 'Tên đạo diễn'
+    }
+  ];
 
   return (
     <>

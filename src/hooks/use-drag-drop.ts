@@ -28,7 +28,7 @@ const useDragDrop = <T extends Record<string, any>>({
   data: T[];
   apiConfig: ApiConfig;
   sortField?: keyof T;
-  mappingData?: (record: T) => Record<string, any>;
+  mappingData?: (record: T, index: number) => Record<string, any>;
 }) => {
   const queryClient = useQueryClient();
   const [isChanged, setIsChanged] = useState<boolean>(false);
@@ -77,7 +77,7 @@ const useDragDrop = <T extends Record<string, any>>({
       };
 
       if (typeof mappingData === 'function') {
-        baseData = { ...baseData, ...mappingData(item) };
+        baseData = { ...baseData, ...mappingData(item, index) };
       }
 
       dataUpdate.push(baseData);

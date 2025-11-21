@@ -88,6 +88,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
           src={renderImageUrl(value)}
           className='rounded'
           previewClassName='rounded'
+          zoomSize={850}
           icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
         />
       )
@@ -211,6 +212,18 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
       placeholder: 'Độ tuổi',
       type: FieldTypes.SELECT,
       options: ageRatingOptions
+    },
+    {
+      key: 'language',
+      placeholder: 'Ngôn ngữ',
+      type: FieldTypes.SELECT,
+      options: languageOptions
+    },
+    {
+      key: 'country',
+      placeholder: 'Quốc gia',
+      type: FieldTypes.SELECT,
+      options: countryOptions
     }
   ];
 

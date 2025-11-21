@@ -147,16 +147,18 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
             <Row>
               <Col span={12}>
                 <UploadImageField
-                  value={renderImageUrl(thumbnailUrl)}
+                  value={renderImageUrl(posterUrl)}
                   loading={uploadImageMutation.isPending}
                   control={form.control}
-                  name='thumbnailUrl'
+                  name='posterUrl'
                   onChange={(url) => {
-                    setThumbnailUrl(url);
+                    setPosterUrl(url);
                   }}
-                  size={100}
+                  size={150}
                   uploadImageFn={async (file: Blob) => {
-                    const res = await uploadImageMutation.mutateAsync({ file });
+                    const res = await uploadImageMutation.mutateAsync({
+                      file
+                    });
                     return res.data?.filePath ?? '';
                   }}
                   label='Ảnh xem trước'
@@ -165,14 +167,14 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
               </Col>
               <Col span={12}>
                 <UploadImageField
-                  value={renderImageUrl(posterUrl)}
+                  value={renderImageUrl(thumbnailUrl)}
                   loading={uploadImageMutation.isPending}
                   control={form.control}
-                  name='posterUrl'
+                  name='thumbnailUrl'
                   onChange={(url) => {
-                    setPosterUrl(url);
+                    setThumbnailUrl(url);
                   }}
-                  size={100}
+                  size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
