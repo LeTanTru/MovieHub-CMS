@@ -232,7 +232,6 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                     }}
                     label='Ảnh xem trước (16:9)'
                     aspect={16 / 9}
-                    required
                   />
                 </Col>
               </Row>
@@ -269,6 +268,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                     name='label'
                     label='Nhãn'
                     placeholder='Nhãn'
+                    required
                   />
                 </Col>
                 <Col>
