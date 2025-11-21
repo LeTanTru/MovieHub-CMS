@@ -202,7 +202,6 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                     name='label'
                     label='Nhãn'
                     placeholder='Nhãn'
-                    required
                   />
                 </Col>
                 <Col>

@@ -15,18 +15,25 @@ import { useEffect, useState } from 'react';
 
 export default function DropdownAvatar() {
   const navigate = useNavigate();
-  const { profile, setAuthenticated, setProfile } = useAuthStore();
+  const { profile, setAuthenticated, setProfile, setIsLoggedOut } =
+    useAuthStore();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { queryString } = useQueryParams();
 
   const handleLogout = async () => {
-    setAuthenticated(false);
-    setProfile(null);
-    navigate(route.login.path);
+    removeData(storageKeys.PATH_NO_LOGIN);
+    removeData(storageKeys.PREVIOUS_PATH);
+
     removeData(storageKeys.ACCESS_TOKEN);
     removeData(storageKeys.REFRESH_TOKEN);
     removeData(storageKeys.USER_KIND);
+
+    setAuthenticated(false);
+    setProfile(null);
+
+    setIsLoggedOut(true);
+    navigate(route.login.path);
   };
 
   const handleProfileClick = () => {

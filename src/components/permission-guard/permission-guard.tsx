@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   getAccessTokenFromLocalStorage,
   getData,
+  removeData,
   setData,
   validatePermission
 } from '@/utils';
@@ -26,7 +27,7 @@ export default function PermissionGuard({
     permissionCode: userPermissions,
     isAuthenticated
   } = useAuth();
-  const { setLoading } = useAuthStore();
+  const { isLoggedOut, setLoading } = useAuthStore();
   // const navigate = useNavigate(false);
   const router = useRouter();
   const accessToken = getAccessTokenFromLocalStorage();
@@ -70,9 +71,11 @@ export default function PermissionGuard({
 
   // navigate to login if not login
   useEffect(() => {
-    if (!accessToken && !isAuthenticated) {
+    if (!accessToken && !isAuthenticated && !isLoggedOut) {
       if (pathname !== route.login.path) {
-        setData(storageKeys.PATH_NO_LOGIN, pathname);
+        if (pathname !== route.home.path) {
+          setData(storageKeys.PATH_NO_LOGIN, pathname);
+        }
         router.replace(route.login.path);
       }
       return;
@@ -86,10 +89,18 @@ export default function PermissionGuard({
               firstActiveRoute ||
               route.profile.savePage.path
           );
+          removeData(storageKeys.PATH_NO_LOGIN);
         }
       }
     }
-  }, [accessToken, isAuthenticated, pathname, router, firstActiveRoute]);
+  }, [
+    accessToken,
+    isAuthenticated,
+    pathname,
+    router,
+    firstActiveRoute,
+    isLoggedOut
+  ]);
 
   // if logged in, set loading to false
   useEffect(() => {

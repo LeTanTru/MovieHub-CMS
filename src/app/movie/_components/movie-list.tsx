@@ -10,6 +10,7 @@ import {
   DEFAULT_DATE_FORMAT,
   ErrorCode,
   FieldTypes,
+  languageOptions,
   movieTypeOptions
 } from '@/constants';
 import { useListBase, useNavigate } from '@/hooks';
@@ -146,6 +147,22 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
         return (
           <span className='line-clamp-1 block truncate' title={ageRating?.mean}>
             {ageRating?.label ?? '------'}
+          </span>
+        );
+      },
+      align: 'center',
+      width: 120
+    },
+    {
+      title: 'Ngôn ngữ',
+      dataIndex: 'language',
+      render: (value) => {
+        const label = languageOptions.find(
+          (language) => language.value === value
+        )?.label;
+        return (
+          <span className='line-clamp-1 block truncate' title={label}>
+            {label ?? '------'}
           </span>
         );
       },
