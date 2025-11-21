@@ -1,5 +1,6 @@
 'use client';
 
+import './movie-list.css';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
@@ -9,11 +10,13 @@ import {
   countryOptions,
   DEFAULT_DATE_FORMAT,
   ErrorCode,
+  featureOptions,
   FieldTypes,
   languageOptions,
   movieTypeOptions
 } from '@/constants';
 import { useListBase, useNavigate } from '@/hooks';
+import { cn } from '@/lib';
 import { route } from '@/routes';
 import { movieSearchSchema } from '@/schemaValidations';
 import {
@@ -101,8 +104,13 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
             href={`${generatePath(route.movieItem.getList.path, {
               id: record.id
             })}?type=${record.type}`}
-            className='text-dodger-blue line-clamp-1 block truncate'
-            title={`${record.title}`}
+            className={cn(
+              'text-dodger-blue line-clamp-1 block flex items-center gap-x-1 truncate',
+              {
+                'highlight-animated': record.isFeatured
+              }
+            )}
+            title={record.title}
           >
             {record.title}
           </Link>
@@ -224,6 +232,12 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
       placeholder: 'Quốc gia',
       type: FieldTypes.SELECT,
       options: countryOptions
+    },
+    {
+      key: 'isFeatured',
+      placeholder: 'Nổi bật',
+      type: FieldTypes.SELECT,
+      options: featureOptions
     }
   ];
 

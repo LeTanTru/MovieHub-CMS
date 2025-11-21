@@ -185,7 +185,7 @@ export default function SearchForm<S extends FieldValues>({
               {renderField(searchFields, form)}
             </Row>
           ) : (
-            <Row className='mb-0 flex flex-1 flex-nowrap justify-start gap-2 *:p-0'>
+            <Row className='mb-0 flex flex-1 flex-wrap justify-start gap-2 *:p-0'>
               {renderField(searchFields, form)}
               {searchFields.length ? (
                 <div className='flex items-center gap-2'>

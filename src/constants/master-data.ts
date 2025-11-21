@@ -19,6 +19,8 @@ import {
   KIND_USER_VIP,
   LOGIN_TYPE_EMPLOYEE,
   LOGIN_TYPE_MANAGER,
+  MOVIE_IS_FEATURED,
+  MOVIE_IS_NOT_FEATURED,
   MOVIE_ITEM_KIND_EPISODE,
   MOVIE_ITEM_KIND_SEASON,
   MOVIE_TYPE_SERIES,
@@ -1559,5 +1561,16 @@ export const movieItemSeriesKindOptions = [
   {
     value: MOVIE_TYPE_TRAILER,
     label: 'Trailer'
+  }
+];
+
+export const featureOptions = [
+  {
+    value: MOVIE_IS_FEATURED,
+    label: 'Nổi bật'
+  },
+  {
+    value: MOVIE_IS_NOT_FEATURED,
+    label: 'Không nổi bật'
   }
 ];

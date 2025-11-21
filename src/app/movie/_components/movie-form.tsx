@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  BooleanField,
   Col,
   DatePickerField,
   InputField,
@@ -71,7 +72,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
     categoryIds: [],
     country: '',
     description: '',
-    isFeatured: true,
+    isFeatured: false,
     language: '',
     originalTitle: '',
     posterUrl: '',
@@ -89,7 +90,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
         data?.categories?.map((category) => category.id.toString()) ?? [],
       country: data?.country ?? '',
       description: data?.description ?? '',
-      isFeatured: true,
+      isFeatured: data?.isFeatured ?? false,
       language: data?.language ?? '',
       originalTitle: data?.originalTitle ?? '',
       posterUrl: data?.posterUrl ?? '',
@@ -267,6 +268,16 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   placeholder='Danh mục'
                   required
                   options={categories}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <BooleanField
+                  control={form.control}
+                  name='isFeatured'
+                  label='Nổi bật'
+                  required
                 />
               </Col>
             </Row>

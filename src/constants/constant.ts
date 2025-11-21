@@ -68,3 +68,6 @@ export const AGE_RATING_PG13 = 3;
 export const AGE_RATING_R = 4;
 export const AGE_RATING_NC17 = 5;
 export const AGE_RATING_18 = 6;
+
+export const MOVIE_IS_FEATURED = 1;
+export const MOVIE_IS_NOT_FEATURED = 0;
