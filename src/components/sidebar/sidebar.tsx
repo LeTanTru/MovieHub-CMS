@@ -164,7 +164,7 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
                           variant='ghost'
                           onClick={() => handleSubItemClick(sub)}
                           className={cn(
-                            'mx-auto w-[calc(100%_-_8px)] justify-start rounded-lg pl-12 font-normal text-white transition-all duration-200 ease-linear hover:text-white active:text-white',
+                            'mx-auto w-[calc(100%-8px)] justify-start rounded-lg pl-12 font-normal text-white transition-all duration-200 ease-linear hover:text-white active:text-white',
                             {
                               'bg-sidebar-item-active hover:bg-sidebar-item-active active:bg-sidebar-item-active':
                                 sub.path && pathname.includes(sub.path),
@@ -331,7 +331,7 @@ const AppSidebar = () => {
   if (!clientMenu)
     return (
       <Sidebar
-        className='[&_[data-sidebar="sidebar"]]:bg-sidebar group-data-[side=left]:border-none'
+        className='**:data-[sidebar="sidebar"]:bg-sidebar group-data-[side=left]:border-none'
         collapsible='icon'
       >
         <SidebarHeader className='min-h-25 px-0 py-4'>
@@ -350,7 +350,7 @@ const AppSidebar = () => {
     );
   return (
     <Sidebar
-      className='[&_[data-sidebar="sidebar"]]:bg-sidebar group-data-[side=left]:border-none'
+      className='**:data-[sidebar="sidebar"]:bg-sidebar group-data-[side=left]:border-none'
       collapsible='icon'
     >
       <SidebarHeader
