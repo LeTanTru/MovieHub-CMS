@@ -82,13 +82,22 @@ export const sendRequest = async <T>(
       ...options
     };
 
-    if (isUpload && baseHeader['Content-Type'] === 'multipart/form-data') {
+    if (isUpload) {
       const formData = new FormData();
+
       Object.keys(body).forEach((key) => {
         const value = body[key];
-        formData.append(key, value);
+
+        if (value instanceof Blob) {
+          const ext = value.type.split('/')[1] || 'jpg';
+          formData.append(key, value, `upload.${ext}`);
+        } else {
+          formData.append(key, value);
+        }
       });
+
       axiosConfig.data = formData;
+
       delete axiosConfig.headers!['Content-Type'];
     } else if (method !== 'GET') {
       axiosConfig.data = body;

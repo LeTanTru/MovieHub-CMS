@@ -220,7 +220,7 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
           loading={loading || loadingUpdateOrdering}
           onDragEnd={onDragEnd}
           onSelectRow={(record) => {
-            if (record.kind === MOVIE_ITEM_KIND_TRAILER) return;
+            if (record.kind !== MOVIE_ITEM_KIND_SEASON) return;
             if (selectedKey === record.id) {
               setSelectedKey(null);
               setData(storageKeys.SELECTED_MOVIE_ITEM, '');

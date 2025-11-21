@@ -66,6 +66,19 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
 
   const updateOrderingMovieItemMutation = useUpdateOrderingMovieItemMutation();
 
+  const kindOptions =
+    !!type && +type === MOVIE_TYPE_SINGLE
+      ? movieItemSingleKindOptions.filter(
+          (item) =>
+            !getData(storageKeys.SELECTED_MOVIE_ITEM) &&
+            item.value !== MOVIE_ITEM_KIND_SEASON
+        )
+      : movieItemSeriesKindOptions.filter(
+          (item) =>
+            !getData(storageKeys.SELECTED_MOVIE_ITEM) &&
+            item.value !== MOVIE_ITEM_KIND_SEASON
+        );
+
   const {
     data,
     loading,
@@ -89,7 +102,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
 
   const defaultValues: MovieItemBodyType = {
     description: '',
-    kind: MOVIE_ITEM_KIND_SEASON,
+    kind: kindOptions?.[0]?.value,
     label: '',
     movieId: movieId,
     ordering: 0,
@@ -104,7 +117,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
   const initialValues: MovieItemBodyType = useMemo(() => {
     return {
       description: data?.description ?? '',
-      kind: data?.kind ?? MOVIE_ITEM_KIND_SEASON,
+      kind: data?.kind ?? kindOptions?.[0]?.value,
       label: data?.label ?? '',
       movieId: movieId,
       ordering: data?.ordering ?? 0,
@@ -232,7 +245,6 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                     }}
                     label='Ảnh xem trước (16:9)'
                     aspect={16 / 9}
-                    required
                   />
                 </Col>
               </Row>
@@ -241,8 +253,16 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                   <SelectField
                     options={
                       !!type && +type === MOVIE_TYPE_SINGLE
-                        ? movieItemSingleKindOptions
-                        : movieItemSeriesKindOptions
+                        ? movieItemSingleKindOptions.filter(
+                            (item) =>
+                              !getData(storageKeys.SELECTED_MOVIE_ITEM) &&
+                              item.value !== MOVIE_ITEM_KIND_SEASON
+                          )
+                        : movieItemSeriesKindOptions.filter(
+                            (item) =>
+                              !getData(storageKeys.SELECTED_MOVIE_ITEM) &&
+                              item.value !== MOVIE_ITEM_KIND_SEASON
+                          )
                     }
                     control={form.control}
                     name='kind'
@@ -269,6 +289,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                     name='label'
                     label='Nhãn'
                     placeholder='Nhãn'
+                    required
                   />
                 </Col>
                 <Col>
