@@ -1,7 +1,7 @@
 'use client';
 
 import VideoLibraryPreviewModal from '@/app/movie/[id]/movie-item/_components/video-library-preview-modal';
-import { Button, ToolTip } from '@/components/form';
+import { AvatarField, Button, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { DragDropTable } from '@/components/table';
@@ -36,10 +36,11 @@ import {
   SearchFormProps,
   VideoLibraryResType
 } from '@/types';
-import { formatDate, getData, setData } from '@/utils';
+import { formatDate, getData, renderImageUrl, setData } from '@/utils';
 import { PlayCircle, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { AiOutlineFileImage } from 'react-icons/ai';
 
 export default function MovieItemList({ queryKey }: { queryKey: string }) {
   const [selectedKey, setSelectedKey] = useState<number | string | null>(null);
@@ -117,6 +118,23 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
 
   const columns: Column<MovieItemResType>[] = [
     ...(sortedData.length > 1 ? [sortColumn] : []),
+    {
+      title: '#',
+      dataIndex: 'thumbnailUrl',
+      width: 80,
+      align: 'center',
+      render: (value) => (
+        <AvatarField
+          size={50}
+          disablePreview={!value}
+          src={renderImageUrl(value)}
+          className='rounded'
+          previewClassName='rounded'
+          zoomSize={850}
+          icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
+        />
+      )
+    },
     {
       title: 'Tiêu đề mục phim',
       dataIndex: 'title',

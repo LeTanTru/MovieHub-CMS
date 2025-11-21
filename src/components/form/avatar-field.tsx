@@ -39,8 +39,9 @@ export default function AvatarField({
 }: AvatarFieldProps) {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
     if (!disablePreview && src) {
+      e.stopPropagation();
       setIsModalOpen(true);
     }
   };
