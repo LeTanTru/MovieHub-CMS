@@ -120,7 +120,7 @@ export default function GroupForm() {
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Nhóm quyền', href: route.group.getList.path },
+        { label: 'Quyền', href: route.group.getList.path },
         { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} quyền` }
       ]}
       notFound={groupQuery?.data?.code === ErrorCode.GROUP_ERROR_NOT_FOUND}

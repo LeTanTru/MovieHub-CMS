@@ -149,6 +149,22 @@ const route = defineRoute({
       auth: true,
       permissionCode: [apiConfig.moviePerson.getList.permissionCode]
     }
+  },
+  sidebar: {
+    getList: {
+      path: '/sidebar',
+      auth: true,
+      permissionCode: [apiConfig.sidebar.getList.permissionCode]
+    },
+    savePage: {
+      path: '/sidebar/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.sidebar.create.permissionCode,
+        apiConfig.sidebar.update.permissionCode
+      ],
+      separate: true
+    }
   }
 });
 

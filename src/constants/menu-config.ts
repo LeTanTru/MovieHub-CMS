@@ -58,6 +58,12 @@ const menuConfig: MenuItem[] = [
         label: 'Phim',
         path: route.movie.getList.path,
         permissionCode: [apiConfig.movie.getList.permissionCode]
+      },
+      {
+        key: 'sidebar-movie-list',
+        label: 'Phim mới',
+        path: route.sidebar.getList.path,
+        permissionCode: [apiConfig.sidebar.getList.permissionCode]
       }
     ]
   },
