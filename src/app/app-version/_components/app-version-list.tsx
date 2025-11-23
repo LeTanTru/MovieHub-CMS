@@ -183,7 +183,7 @@ export default function AppVersionList({ queryKey }: { queryKey: string }) {
   ];
 
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Danh mục' }]}>
+    <PageWrapper breadcrumbs={[{ label: 'Phiên bản ứng dụng' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
