@@ -1,6 +1,14 @@
 'use client';
 
-import { Col, Row, UploadImageField } from '@/components/form';
+import {
+  AutoCompleteField,
+  BooleanField,
+  Col,
+  ColorPickerField,
+  RichTextField,
+  Row,
+  UploadImageField
+} from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
@@ -9,7 +17,11 @@ import { useSaveBase } from '@/hooks';
 import { useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
 import { movieSidebarSchema } from '@/schemaValidations';
-import { MovieSidebarBodyType, MovieSidebarResType } from '@/types';
+import {
+  MovieItemResType,
+  MovieSidebarBodyType,
+  MovieSidebarResType
+} from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -47,7 +59,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
   const defaultValues: MovieSidebarBodyType = {
     active: true,
     description: '',
-    mainColor: '#000',
+    mainColor: '#000000',
     mobileThumbnailUrl: '',
     movieItemId: '',
     webThumbnailUrl: ''
@@ -57,7 +69,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
     return {
       description: data?.description ?? '',
       active: data?.active ?? false,
-      mainColor: data?.mainColor ?? '',
+      mainColor: data?.mainColor ?? '#000000',
       mobileThumbnailUrl: data?.mobileThumbnailUrl || '',
       movieItemId: data?.movieItem?.id?.toString() ?? '',
       webThumbnailUrl: data?.webThumbnailUrl || ''
@@ -78,7 +90,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
           href: renderListPageUrl(route.sidebar.getList.path, queryString)
         },
         {
-          label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} phim`
+          label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} phim mới`
         }
       ]}
       notFound={responseCode === ErrorCode.MOVIE_ITEM_ERROR_NOT_FOUND}
@@ -112,6 +124,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                     }}
                     label='Ảnh xem trước web (16:9)'
                     aspect={16 / 9}
+                    required
                   />
                 </Col>
                 <Col span={24}>
@@ -132,6 +145,52 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                     }}
                     label='Ảnh xem trước mobile (16:9)'
                     aspect={16 / 9}
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <AutoCompleteField<any, MovieItemResType>
+                    control={form.control}
+                    name='movieItemId'
+                    apiConfig={apiConfig.movieItem.getList}
+                    mappingData={(item: MovieItemResType) => ({
+                      label: item.title,
+                      value: item.id.toString()
+                    })}
+                    searchParams={['title']}
+                    allowClear
+                    label='Mục phim'
+                    placeholder='Mục phim'
+                  />
+                </Col>
+                <Col>
+                  <ColorPickerField
+                    control={form.control}
+                    name='mainColor'
+                    label='Màu chủ đạo'
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <BooleanField
+                    control={form.control}
+                    name='active'
+                    label='Hiện'
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col span={24}>
+                  <RichTextField
+                    control={form.control}
+                    name='description'
+                    label='Mô tả'
+                    required
                   />
                 </Col>
               </Row>

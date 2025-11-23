@@ -162,8 +162,9 @@ export default function SearchForm<S extends FieldValues>({
                     <Col
                       key={sf.key as string}
                       span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn('items-center justify-center', {
-                        'w-full!': searchFields.length > 4
+                      className={cn('justify-center', {
+                        'w-full!': searchFields.length > 4,
+                        'items-center': searchFields.length > 1
                       })}
                     >
                       <BooleanField

@@ -91,48 +91,6 @@ export default function AppVersionList({ queryKey }: { queryKey: string }) {
       width: 150,
       align: 'center'
     },
-    // {
-    //   title: 'Nhật ký thay đổi',
-    //   dataIndex: 'changeLog',
-    //   render: (value) => (
-    //     <span className='line-clamp-1 block truncate' title={value}>
-    //       {value ?? '------'}
-    //     </span>
-    //   ),
-    //   width: 250
-    // },
-    // {
-    //   title: 'Bắt buộc cập nhật',
-    //   dataIndex: 'forceUpdate',
-    //   render: (value) =>
-    //     value ? (
-    //       <ToolTip title='Không'>
-    //         <IoCloseCircleSharp className='text-destructive mx-auto size-5' />
-    //       </ToolTip>
-    //     ) : (
-    //       <ToolTip title='Có'>
-    //         <IoCheckmarkCircleSharp className='mx-auto size-5 text-green-500' />
-    //       </ToolTip>
-    //     ),
-    //   align: 'center',
-    //   width: 200
-    // },
-    // {
-    //   title: 'Phiên bản mới nhất',
-    //   dataIndex: 'isLatest',
-    //   render: (value) =>
-    //     value ? (
-    //       <ToolTip title='Không'>
-    //         <IoCloseCircleSharp className='text-destructive mx-auto size-5' />
-    //       </ToolTip>
-    //     ) : (
-    //       <ToolTip title='Có'>
-    //         <IoCheckmarkCircleSharp className='mx-auto size-5 text-green-500' />
-    //       </ToolTip>
-    //     ),
-    //   align: 'center',
-    //   width: 200
-    // },
     {
       title: 'Trạng thái',
       dataIndex: 'status',

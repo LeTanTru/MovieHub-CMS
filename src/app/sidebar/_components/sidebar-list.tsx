@@ -4,7 +4,7 @@ import { AvatarField, Button } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { DragDropTable } from '@/components/table';
-import { apiConfig, FieldTypes, movieSidebarStatusOptions } from '@/constants';
+import { apiConfig, DEFAULT_DATE_FORMAT, FieldTypes } from '@/constants';
 import { useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { movieSidebarSearchSchema } from '@/schemaValidations';
@@ -14,7 +14,7 @@ import {
   MovieSidebarSearchType,
   SearchFormProps
 } from '@/types';
-import { renderImageUrl } from '@/utils';
+import { formatDate, renderImageUrl } from '@/utils';
 import { Save } from 'lucide-react';
 import { AiOutlineFileImage } from 'react-icons/ai';
 
@@ -26,7 +26,7 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
     apiConfig: apiConfig.sidebar,
     options: {
       queryKey,
-      objectName: 'phim'
+      objectName: 'phim mới'
     }
   });
 
@@ -83,8 +83,59 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
     },
     {
       title: 'Tiêu đề phim',
-      dataIndex: ['movie', 'movieItem', 'title'],
+      dataIndex: ['movieItem', 'movie', 'title'],
       render: (value) => <span>{value}</span>
+    },
+    {
+      title: 'Tập phim',
+      dataIndex: ['movieItem', 'title'],
+      render: (value, record) => (
+        <span className='line-clamp-1 block truncate'>
+          {record.movieItem.label}.&nbsp;{value}
+        </span>
+      ),
+      width: 250
+    },
+    {
+      title: 'Ngày phát hành',
+      dataIndex: ['movieItem', 'releaseDate'],
+      render: (value, record) => (
+        <span className='line-clamp-1 block truncate'>
+          {formatDate(record.movieItem.releaseDate, DEFAULT_DATE_FORMAT)}
+        </span>
+      ),
+      width: 150,
+      align: 'center'
+    },
+    {
+      title: 'Màu chủ đạo',
+      dataIndex: ['mainColor'],
+      render: (value) => (
+        <div
+          className='mx-auto h-4 w-20 rounded'
+          style={{ background: value }}
+        ></div>
+      ),
+      width: 150,
+      align: 'center'
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      render: (_, record) => (
+        <div className='flex items-center justify-center gap-2'>
+          <span
+            className={cn('rounded-md px-2 py-0.5 text-sm', {
+              'bg-red-100 text-red-600': !record.active,
+              'bg-green-100 text-green-600': record.active
+            })}
+          >
+            {record.active ? 'Hiện' : 'Ẩn'}
+          </span>
+        </div>
+      ),
+      width: 100,
+      align: 'center'
     },
     handlers.renderActionColumn({
       actions: {
@@ -103,14 +154,13 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
     [
       {
         key: 'active',
-        placeholder: 'Trạng thái',
-        type: FieldTypes.SELECT,
-        options: movieSidebarStatusOptions
+        placeholder: 'Hiện',
+        type: FieldTypes.BOOLEAN
       }
     ];
 
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Phim' }]}>
+    <PageWrapper breadcrumbs={[{ label: 'Phim mới' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
