@@ -5,6 +5,10 @@ import {
   AGE_RATING_PG,
   AGE_RATING_PG13,
   AGE_RATING_R,
+  CMD_BROADCAST,
+  CMD_CLIENT_PING,
+  CMD_CLIENT_VERIFY_TOKEN,
+  CMD_DONE_CONVERT_VIDEO,
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER,
@@ -1592,3 +1596,13 @@ export const movieSidebarStatusOptions = [
     label: 'Ẩn'
   }
 ];
+
+export const socketSendCMDs = {
+  CMD_CLIENT_VERIFY_TOKEN,
+  CMD_CLIENT_PING
+};
+
+export const socketReceiveCMDs = {
+  CMD_BROADCAST,
+  CMD_DONE_CONVERT_VIDEO
+};

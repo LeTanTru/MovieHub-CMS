@@ -23,11 +23,9 @@ export type AuthStoreType = {
   profile: ProfileResType | null;
   loading: boolean;
   isLoggedOut: boolean;
-  socket: Socket | null;
 
   setAuthenticated: (isAuthenticated: boolean) => void;
   setProfile: (profile: ProfileResType | null) => void;
   setLoading: (loading: boolean) => void;
   setIsLoggedOut: (isLogout: boolean) => void;
-  setSocket: (socket: Socket) => void;
 };

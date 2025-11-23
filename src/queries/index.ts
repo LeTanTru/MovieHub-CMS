@@ -8,3 +8,4 @@ export * from './group.query';
 export * from './movie-item.query';
 export * from './movie-person.query';
 export * from './permission.query';
+export * from './sns.query';
