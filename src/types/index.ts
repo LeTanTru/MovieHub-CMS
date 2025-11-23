@@ -19,5 +19,6 @@ export * from './permission.type';
 export * from './person.type';
 export * from './search.type';
 export * from './sidebar.type';
+export * from './socket.type';
 export * from './table.type';
 export * from './video-library.type';

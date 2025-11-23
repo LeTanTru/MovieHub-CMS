@@ -5,13 +5,15 @@ const configSchema = z.object({
   NEXT_PUBLIC_NODE_ENV: z.string(),
   NEXT_PUBLIC_API_META_ENDPOINT_URL: z.url(),
   NEXT_PUBLIC_API_TENANT_ENDPOINT_URL: z.url(),
-  NEXT_PUBLIC_TENANT_ID: z.string().min(1).max(100).optional(),
+  NEXT_PUBLIC_TENANT_ID: z.string().min(1).max(100),
   NEXT_PUBLIC_URL: z.string().optional(),
-  NEXT_PUBLIC_TINYMCE_URL: z.string().optional(),
-  NEXT_PUBLIC_API_MEDIA_URL: z.string().optional(),
-  NEXT_PUBLIC_GRANT_TYPE: z.string().optional(),
-  NEXT_PUBLIC_APP_USERNAME: z.string().optional(),
-  NEXT_PUBLIC_APP_PASSWORD: z.string().optional()
+  NEXT_PUBLIC_TINYMCE_URL: z.string(),
+  NEXT_PUBLIC_API_MEDIA_URL: z.string(),
+  NEXT_PUBLIC_GRANT_TYPE: z.string(),
+  NEXT_PUBLIC_APP_USERNAME: z.string(),
+  NEXT_PUBLIC_APP_PASSWORD: z.string(),
+  NEXT_PUBLIC_APP_NAME: z.string(),
+  NEXT_PUBLIC_API_SOCKET: z.string()
 });
 
 const configProject = configSchema.safeParse({
@@ -26,7 +28,9 @@ const configProject = configSchema.safeParse({
   NEXT_PUBLIC_API_MEDIA_URL: process.env.NEXT_PUBLIC_API_MEDIA_URL,
   NEXT_PUBLIC_GRANT_TYPE: process.env.NEXT_PUBLIC_GRANT_TYPE,
   NEXT_PUBLIC_APP_USERNAME: process.env.NEXT_PUBLIC_APP_USERNAME,
-  NEXT_PUBLIC_APP_PASSWORD: process.env.NEXT_PUBLIC_APP_PASSWORD
+  NEXT_PUBLIC_APP_PASSWORD: process.env.NEXT_PUBLIC_APP_PASSWORD,
+  NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
+  NEXT_PUBLIC_API_SOCKET: process.env.NEXT_PUBLIC_API_SOCKET
 });
 
 if (!configProject.success) {

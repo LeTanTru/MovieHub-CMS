@@ -8,11 +8,12 @@ import {
   apiConfig,
   ErrorCode,
   FieldTypes,
+  socketReceiveCMDs,
   VIDEO_LIBRARY_STATE_COMPLETE,
   VIDEO_LIBRARY_STATE_PROCESSING,
   videoLibraryStateOptions
 } from '@/constants';
-import { useDisclosure, useListBase } from '@/hooks';
+import { useDisclosure, useListBase, useSocketEvent } from '@/hooks';
 import { videoLibrarySearchSchema } from '@/schemaValidations';
 import {
   Column,
@@ -30,7 +31,8 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
   const videoLibraryPreviewModal = useDisclosure(false);
   const [selectedVideoLibrary, setSelectedVideoLibrary] =
     useState<VideoLibraryResType>();
-  const { data, pagination, loading, handlers } = useListBase<
+
+  const { data, pagination, loading, handlers, listQuery } = useListBase<
     VideoLibraryResType,
     VideoLibrarySearchType
   >({
@@ -146,6 +148,12 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
         options: videoLibraryStateOptions
       }
     ];
+
+  useSocketEvent(
+    socketReceiveCMDs.CMD_BROADCAST,
+    socketReceiveCMDs.CMD_DONE_CONVERT_VIDEO,
+    () => listQuery.refetch()
+  );
 
   return (
     <PageWrapper breadcrumbs={[{ label: 'Thư viện video' }]}>
