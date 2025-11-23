@@ -1,11 +1,25 @@
 import apiConfig from '@/constants/api-config';
 import { route } from '@/routes';
 import { MenuItem } from '@/types';
-import { Settings } from 'lucide-react';
+import { LayoutPanelLeft, Settings } from 'lucide-react';
 import { AiOutlineUser } from 'react-icons/ai';
 import { RiMovie2Fill } from 'react-icons/ri';
 
 const menuConfig: MenuItem[] = [
+  {
+    key: 'app-management',
+    label: 'Quản lý ứng dụng',
+    icon: LayoutPanelLeft,
+    permissionCode: [apiConfig.appVersion.getList.permissionCode],
+    children: [
+      {
+        key: 'app-version-list',
+        label: 'Ứng dụng',
+        path: route.appVersion.getList.path,
+        permissionCode: [apiConfig.appVersion.getList.permissionCode]
+      }
+    ]
+  },
   {
     key: 'user-management',
     label: 'Quản lý người dùng',
@@ -58,13 +72,13 @@ const menuConfig: MenuItem[] = [
         label: 'Phim',
         path: route.movie.getList.path,
         permissionCode: [apiConfig.movie.getList.permissionCode]
-      },
-      {
-        key: 'sidebar-movie-list',
-        label: 'Phim mới',
-        path: route.sidebar.getList.path,
-        permissionCode: [apiConfig.sidebar.getList.permissionCode]
       }
+      // {
+      //   key: 'sidebar-movie-list',
+      //   label: 'Phim mới',
+      //   path: route.sidebar.getList.path,
+      //   permissionCode: [apiConfig.sidebar.getList.permissionCode]
+      // }
     ]
   },
   {

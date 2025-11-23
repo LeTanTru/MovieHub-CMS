@@ -23,6 +23,8 @@ import {
   MOVIE_IS_NOT_FEATURED,
   MOVIE_ITEM_KIND_EPISODE,
   MOVIE_ITEM_KIND_SEASON,
+  MOVIE_SIDEBAR_ACTIVE,
+  MOVIE_SIDEBAR_INACTIVE,
   MOVIE_TYPE_SERIES,
   MOVIE_TYPE_SINGLE,
   MOVIE_TYPE_TRAILER,
@@ -34,6 +36,7 @@ import {
   STATUS_PENDING,
   UPLOAD_AVATAR,
   UPLOAD_LOGO,
+  UPLOAD_SYSTEM,
   UPLOAD_VIDEO,
   VIDEO_LIBRARY_STATE_COMPLETE,
   VIDEO_LIBRARY_STATE_PROCESSING
@@ -42,7 +45,8 @@ import {
 export const uploadOptions = {
   LOGO: UPLOAD_LOGO,
   AVATAR: UPLOAD_AVATAR,
-  UPLOAD_VIDEO: UPLOAD_VIDEO
+  VIDEO: UPLOAD_VIDEO,
+  SYSTEM: UPLOAD_SYSTEM
 };
 
 export const groupKinds = [
@@ -112,7 +116,8 @@ export const FieldTypes = {
   SELECT: 'SELECT',
   AUTOCOMPLETE: 'AUTOCOMPLETE',
   DATE: 'DATE',
-  DATE_RANGE: 'DATE_RANGE'
+  DATE_RANGE: 'DATE_RANGE',
+  BOOLEAN: 'BOOLEAN'
 } as const;
 
 export type FieldType = keyof typeof FieldTypes;
@@ -141,7 +146,9 @@ export const queryKeys = {
   VIDEO_LIBRARY: 'video_library',
   MOVIE: 'movie',
   MOVIE_ITEM: 'movie_item',
-  MOVIE_PERSON: 'movie_person'
+  MOVIE_PERSON: 'movie_person',
+  SIDEBAR: 'sidebar',
+  APP_VERSION: 'app_version'
 };
 
 export const loginOptions = [
@@ -1572,5 +1579,16 @@ export const featureOptions = [
   {
     value: MOVIE_IS_NOT_FEATURED,
     label: 'Không nổi bật'
+  }
+];
+
+export const movieSidebarStatusOptions = [
+  {
+    value: MOVIE_SIDEBAR_ACTIVE,
+    label: 'Hiện'
+  },
+  {
+    value: MOVIE_SIDEBAR_INACTIVE,
+    label: 'Ẩn'
   }
 ];

@@ -20,7 +20,7 @@ export default function ToolTip({
   children,
   side = 'bottom',
   align = 'center',
-  sideOffset = 0
+  sideOffset = 4
 }: TooltipProps) {
   return (
     <TooltipProvider>

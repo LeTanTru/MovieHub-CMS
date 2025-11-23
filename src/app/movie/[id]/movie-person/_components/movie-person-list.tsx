@@ -97,6 +97,7 @@ export default function MoviePersonList({
                   ? 'Lưu'
                   : `Sửa ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`
               }
+              sideOffset={0}
             >
               <span>
                 <Button
@@ -297,7 +298,7 @@ export default function MoviePersonList({
                         }}
                       />
                       <div className='flex items-center'>
-                        <ToolTip title='Xóa'>
+                        <ToolTip title='Xóa' sideOffset={0}>
                           <Button
                             variant={'ghost'}
                             type='button'
@@ -318,7 +319,7 @@ export default function MoviePersonList({
                           orientation='vertical'
                           className='h-4! w-px!'
                         />
-                        <ToolTip title='Hủy'>
+                        <ToolTip title='Hủy' sideOffset={0}>
                           <Button
                             variant={'ghost'}
                             type='button'

@@ -13,7 +13,7 @@ const defaultOptions: ToastOptions = {
   className: `
     whitespace-nowrap
     pr-10!
-    w-fit!
+    min-w-80!
     max-w-120!
   `
 };

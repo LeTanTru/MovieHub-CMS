@@ -72,7 +72,7 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
           record: MovieItemResType,
           buttonProps?: Record<string, any>
         ) => (
-          <ToolTip title={`Xem video`}>
+          <ToolTip title={`Xem video`} sideOffset={0}>
             <span>
               <Button
                 onClick={() => handleOpenVideoLibraryPreviewModal(record)}

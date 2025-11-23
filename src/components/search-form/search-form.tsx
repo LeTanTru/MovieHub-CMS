@@ -2,6 +2,7 @@
 
 import {
   AutoCompleteField,
+  BooleanField,
   Button,
   Col,
   DateTimePickerField,
@@ -36,6 +37,9 @@ function buildDefaultValues<S extends FieldValues>(
           break;
         case FieldTypes.DATE:
         case FieldTypes.DATE_RANGE:
+          acc[field.key as string] = null;
+          break;
+        case FieldTypes.BOOLEAN:
           acc[field.key as string] = null;
           break;
         default:
@@ -149,6 +153,23 @@ export default function SearchForm<S extends FieldValues>({
                         control={form.control}
                         name={sf.key as string}
                         placeholder={sf.placeholder}
+                      />
+                    </Col>
+                  );
+                }
+                case FieldTypes.BOOLEAN: {
+                  return (
+                    <Col
+                      key={sf.key as string}
+                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                      className={cn('items-center justify-center', {
+                        'w-full!': searchFields.length > 4
+                      })}
+                    >
+                      <BooleanField
+                        control={form.control}
+                        name={sf.key as string}
+                        label={sf.placeholder}
                       />
                     </Col>
                   );

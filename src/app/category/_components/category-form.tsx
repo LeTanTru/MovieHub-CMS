@@ -25,6 +25,7 @@ export default function CategoryForm({ queryKey }: { queryKey: string }) {
   const {
     data,
     loading,
+    isEditing,
     queryString,
     responseCode,
     handleSubmit,
@@ -72,9 +73,9 @@ export default function CategoryForm({ queryKey }: { queryKey: string }) {
       breadcrumbs={[
         {
           label: 'Danh mục',
-          href: renderListPageUrl(route.employee.getList.path, queryString)
+          href: renderListPageUrl(route.category.getList.path, queryString)
         },
-        { label: `${!data ? 'Thêm mới' : 'Cập nhật'} danh mục` }
+        { label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} danh mục` }
       ]}
       notFound={responseCode === ErrorCode.CATEGORY_ERROR_NOT_FOUND}
       notFoundContent={'Không tìm thấy danh mục này'}

@@ -54,6 +54,7 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
                   ? 'Khóa tài khoản'
                   : 'Mở khóa tài khoản'
               }
+              sideOffset={0}
             >
               <span>
                 <Button

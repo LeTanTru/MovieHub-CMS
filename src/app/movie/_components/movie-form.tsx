@@ -50,6 +50,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
   const {
     data,
     loading,
+    isEditing,
     queryString,
     responseCode,
     handleSubmit,
@@ -131,7 +132,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
           href: renderListPageUrl(route.movie.getList.path, queryString)
         },
         {
-          label: `${!data ? 'Thêm mới' : 'Cập nhật'} phim`
+          label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} phim`
         }
       ]}
       notFound={responseCode === ErrorCode.MOVIE_ERROR_NOT_FOUND}

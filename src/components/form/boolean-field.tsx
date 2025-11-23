@@ -59,9 +59,9 @@ export default function BooleanField({
                 disabled={disabled}
                 checked={field.value}
                 onCheckedChange={field.onChange}
-                className='peer data-[state=checked]:bg-dodger-blue absolute inset-0 h-[inherit] w-auto cursor-pointer data-[state=unchecked]:bg-gray-300 [&_span]:z-10 [&_span]:size-5.5 [&_span]:transition-transform [&_span]:duration-300 [&_span]:ease-[cubic-bezier(0.16,1,0.3,1)] [&_span]:data-[state=checked]:translate-x-[calc(100%+4px)] [&_span]:data-[state=checked]:rtl:-translate-x-full'
+                className='peer data-[state=checked]:bg-dodger-blue absolute inset-0 h-[inherit] w-auto cursor-pointer data-[state=unchecked]:bg-gray-300 [&_span]:z-10 [&_span]:size-5.5 [&_span]:transition-transform [&_span]:duration-300 [&_span]:ease-[cubic-bezier(0.16,1,0.3,1)] [&_span]:data-[state=checked]:translate-x-[calc(100%+7px)] [&_span]:data-[state=checked]:rtl:-translate-x-full'
               />
-              <span className='relative flex min-w-7 items-center justify-center text-center text-white transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] peer-data-[state=checked]:invisible peer-data-[state=unchecked]:translate-x-[calc(100%-4px)] peer-data-[state=unchecked]:rtl:-translate-x-full'>
+              <span className='relative flex min-w-7 items-center justify-center text-center text-white transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] peer-data-[state=checked]:invisible peer-data-[state=unchecked]:translate-x-[calc(100%-5px)] peer-data-[state=unchecked]:rtl:-translate-x-full'>
                 <X size={16} aria-hidden='true' />
               </span>
               <span className='peer-data-[state=checked]:text-background relative me-0.5 flex min-w-7 items-center justify-center text-center text-white transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] peer-data-[state=checked]:-translate-x-full peer-data-[state=unchecked]:invisible peer-data-[state=checked]:rtl:translate-x-full'>

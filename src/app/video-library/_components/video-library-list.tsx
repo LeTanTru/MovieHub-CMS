@@ -50,7 +50,7 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
           record: VideoLibraryResType,
           buttonProps?: Record<string, any>
         ) => (
-          <ToolTip title={`Xem video`}>
+          <ToolTip title={`Xem video`} sideOffset={0}>
             <span>
               <Button
                 disabled={record.state !== VIDEO_LIBRARY_STATE_COMPLETE}
@@ -106,19 +106,19 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
       dataIndex: 'state',
       render: (value) =>
         value === VIDEO_LIBRARY_STATE_PROCESSING ? (
-          <ToolTip title='Đang xử lý' sideOffset={4}>
+          <ToolTip title='Đang xử lý'>
             <div>
               <RiLoader2Fill className='mx-auto size-5 animate-spin' />
             </div>
           </ToolTip>
         ) : value === VIDEO_LIBRARY_STATE_COMPLETE ? (
-          <ToolTip title='Đang xử lý' sideOffset={4}>
+          <ToolTip title='Đang xử lý'>
             <div>
               <RiCheckboxCircleFill className='mx-auto size-5 text-green-600' />
             </div>
           </ToolTip>
         ) : (
-          <ToolTip title='Lỗi' sideOffset={4}>
+          <ToolTip title='Lỗi'>
             <div>
               <AiFillWarning className='text-destructive mx-auto size-5' />
             </div>

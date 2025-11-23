@@ -5,6 +5,7 @@ export const MAX_PAGE_SIZE = 1_000_000;
 export const UPLOAD_LOGO = 'LOGO';
 export const UPLOAD_AVATAR = 'AVATAR';
 export const UPLOAD_VIDEO = 'VIDEO';
+export const UPLOAD_SYSTEM = 'SYSTEM';
 
 export const KIND_ADMIN = 1;
 export const KIND_MANAGER = 2;
@@ -71,3 +72,6 @@ export const AGE_RATING_18 = 6;
 
 export const MOVIE_IS_FEATURED = 1;
 export const MOVIE_IS_NOT_FEATURED = 0;
+
+export const MOVIE_SIDEBAR_ACTIVE = 1;
+export const MOVIE_SIDEBAR_INACTIVE = 0;

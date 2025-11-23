@@ -1,14 +1,7 @@
 'use client';
 
 import { emptyData } from '@/assets';
-import {
-  Button,
-  Col,
-  InputField,
-  Row,
-  SelectField,
-  TextAreaField
-} from '@/components/form';
+import { Button, Col, InputField, Row, TextAreaField } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
@@ -17,11 +10,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   DEFAULT_TABLE_PAGE_START,
   ErrorCode,
+  GROUP_KIND_EMPLOYEE,
   groupErrorMaps,
-  groupKinds,
   MAX_PAGE_SIZE
 } from '@/constants';
-import { useNavigate } from '@/hooks';
+import { useNavigate, useQueryParams } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import {
@@ -33,7 +26,7 @@ import {
 import { route } from '@/routes';
 import { groupSchema } from '@/schemaValidations';
 import { GroupBodyType, PermissionResType } from '@/types';
-import { applyFormErrors, notify } from '@/utils';
+import { applyFormErrors, notify, renderListPageUrl } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { omit } from 'lodash';
 import { ArrowLeftFromLine, Save } from 'lucide-react';
@@ -47,6 +40,7 @@ export default function GroupForm() {
   const { id } = useParams<{ id: string }>();
   const isCreate = id === 'create';
   const queryClient = useQueryClient();
+  const { queryString } = useQueryParams();
 
   const groupQuery = useGroupQuery(id);
   const permissionListQuery = usePermissionListQuery({
@@ -72,14 +66,16 @@ export default function GroupForm() {
   const defaultValues: GroupBodyType = {
     name: '',
     permissions: [],
-    description: ''
+    description: '',
+    kind: GROUP_KIND_EMPLOYEE
   };
 
   const initialValues: GroupBodyType = useMemo(
     () => ({
       description: group?.description ?? '',
       name: group?.name ?? '',
-      permissions: group?.permissions.map((g) => g.id.toString()) ?? []
+      permissions: group?.permissions.map((g) => g.id.toString()) ?? [],
+      kind: GROUP_KIND_EMPLOYEE
     }),
     [group?.description, group?.name, group?.permissions]
   );
@@ -120,7 +116,10 @@ export default function GroupForm() {
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Quyền', href: route.group.getList.path },
+        {
+          label: 'Quyền',
+          href: renderListPageUrl(route.group.getList.path, queryString)
+        },
         { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} quyền` }
       ]}
       notFound={groupQuery?.data?.code === ErrorCode.GROUP_ERROR_NOT_FOUND}
@@ -144,20 +143,6 @@ export default function GroupForm() {
                   required
                 />
               </Col>
-              {isCreate && (
-                <Col>
-                  <SelectField
-                    getLabel={(option) => option.label}
-                    getValue={(option) => option.value}
-                    options={groupKinds}
-                    control={form.control}
-                    name='kind'
-                    label='Loại'
-                    placeholder='Chọn loại'
-                    required
-                  />
-                </Col>
-              )}
             </Row>
             <Row>
               <Col span={24}>

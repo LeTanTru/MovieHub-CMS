@@ -372,31 +372,31 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.tenantApiUrl}/v1/sidebar/admin/get/:id`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'SBD_V'
+      permissionCode: 'SDB_V'
     },
     getList: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/sidebar/admin/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'SBD_L'
+      permissionCode: 'SDB_L'
     },
     create: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/sidebar/create`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'SBD_C'
+      permissionCode: 'SDB_C'
     },
     delete: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/sidebar/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
-      permissionCode: 'SBD_D'
+      permissionCode: 'SDB_D'
     },
     update: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/sidebar/update`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'SBD_U'
+      permissionCode: 'SDB_U'
     },
     updateOrdering: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/sidebar/update-ordering`,
@@ -435,6 +435,38 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'VID_L_U'
+    }
+  },
+  appVersion: {
+    getById: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/app-version/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'APP_V_V'
+    },
+    getList: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/app-version/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'APP_V_L'
+    },
+    create: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/app-version/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'APP_V_C'
+    },
+    delete: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/app-version/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'APP_V_D'
+    },
+    update: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/app-version/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'APP_V_U'
     }
   }
 });

@@ -1,7 +1,11 @@
-export type UploadImageResponseType = {
+export type UploadImageResType = {
   filePath: string;
 };
 
-export type UploadVideoResponseType = {
+export type UploadVideoResType = {
+  filePath: string;
+};
+
+export type UploadFileResType = {
   filePath: string;
 };

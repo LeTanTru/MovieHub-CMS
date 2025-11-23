@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { VideoIcon, XIcon } from 'lucide-react';
+import { FileIcon, XIcon } from 'lucide-react';
 import {
   Control,
   FieldPath,
@@ -16,29 +16,31 @@ import { useFileUpload } from '@/hooks';
 import { CircleLoading } from '@/components/loading';
 import { logger } from '@/logger';
 
-type UploadVideoFieldProps<T extends FieldValues> = {
+type UploadFileFieldProps<T extends FieldValues> = {
   control: Control<T>;
   name: FieldPath<T>;
   label?: React.ReactNode;
-  onChange?: (url: string) => void;
   required?: boolean;
   className?: string;
+  accept: string;
+  onChange?: (url: string) => void;
 
-  uploadVideoFn: (
+  uploadFileFn: (
     file: File,
     onProgress: (progress: number) => void
   ) => Promise<string>;
 };
 
-export default function UploadVideoField<T extends FieldValues>({
+export default function UploadFileField<T extends FieldValues>({
   control,
   name,
   label,
-  onChange,
   required,
   className,
-  uploadVideoFn
-}: UploadVideoFieldProps<T>) {
+  accept,
+  onChange,
+  uploadFileFn
+}: UploadFileFieldProps<T>) {
   const {
     field: { value, onChange: fieldOnChange },
     fieldState: { error }
@@ -55,7 +57,7 @@ export default function UploadVideoField<T extends FieldValues>({
       handleDrop,
       clearFiles
     }
-  ] = useFileUpload({ accept: 'video/*' });
+  ] = useFileUpload({ accept });
 
   const file = files[0]?.file as File | undefined;
   const previewUrl = files[0]?.preview;
@@ -78,12 +80,12 @@ export default function UploadVideoField<T extends FieldValues>({
       setUploading(true);
       setProgress(0);
 
-      const url = await uploadVideoFn(file, setProgress);
+      const url = await uploadFileFn(file, setProgress);
 
       fieldOnChange(url);
       onChange?.(url);
     } catch (error) {
-      logger.error('Upload video error:', error);
+      logger.error('Upload file error:', error);
     } finally {
       setUploading(false);
     }
@@ -98,11 +100,11 @@ export default function UploadVideoField<T extends FieldValues>({
   };
 
   return (
-    <div className='space-y-2'>
+    <div className='space-y-1'>
       {label && (
         <FormLabel
           className={cn(
-            'ml-2 flex items-center gap-1',
+            'mb-2 ml-2 flex items-center gap-1',
             error && 'text-destructive',
             className
           )}
@@ -128,8 +130,8 @@ export default function UploadVideoField<T extends FieldValues>({
       >
         <input {...getInputProps()} className='hidden' />
 
-        <VideoIcon
-          className={cn('', {
+        <FileIcon
+          className={cn('text-gray-300', {
             'text-destructive': !!error && !uploading
           })}
         />
@@ -139,20 +141,20 @@ export default function UploadVideoField<T extends FieldValues>({
             {file ? (
               file.name
             ) : value ? (
-              <span>Đã tải video</span>
+              <span>Đã tải tệp lên</span>
             ) : (
               <span
-                className={cn('font-medium', {
+                className={cn('font-medium text-gray-300', {
                   'text-destructive': !!error && !uploading
                 })}
               >
-                Chọn video để tải lên
+                Chọn tệp để tải lên
               </span>
             )}
           </span>
           {file && (
             <span className='text-xs opacity-60'>
-              {(file.size / 1024 / 1024).toFixed(1)} MB
+              {formatFileSize(file.size)}
             </span>
           )}
         </div>
@@ -169,10 +171,6 @@ export default function UploadVideoField<T extends FieldValues>({
           </Button>
         )}
       </div>
-
-      {/* {previewUrl && (
-        <video src={previewUrl} controls className='w-full rounded-md border' />
-      )} */}
 
       {uploading && (
         <div className='mt-2 h-2 w-full overflow-hidden rounded-full'>
@@ -197,4 +195,12 @@ export default function UploadVideoField<T extends FieldValues>({
       )}
     </div>
   );
+}
+
+function formatFileSize(size: number) {
+  const kb = size / 1024;
+  const mb = kb / 1024;
+
+  if (mb >= 1) return `${mb.toFixed(1)} MB`;
+  return `${kb.toFixed(1)} KB`;
 }

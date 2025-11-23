@@ -1,5 +1,6 @@
 export * from './account.type';
 export * from './api.type';
+export * from './app-version.type';
 export * from './audience.type';
 export * from './auth.type';
 export * from './base-table.type';
@@ -12,6 +13,7 @@ export * from './group.type';
 export * from './menu-config.type';
 export * from './movie-item.type';
 export * from './movie-person.type';
+export * from './movie-sidebar.type';
 export * from './movie.type';
 export * from './permission.type';
 export * from './person.type';

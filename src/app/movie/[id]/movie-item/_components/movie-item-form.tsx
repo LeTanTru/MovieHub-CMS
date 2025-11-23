@@ -210,7 +210,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
           )
         },
         {
-          label: `${!data ? 'Thêm mới' : 'Cập nhật'} mục phim`
+          label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} mục phim`
         }
       ]}
       notFound={responseCode === ErrorCode.MOVIE_ITEM_ERROR_NOT_FOUND}

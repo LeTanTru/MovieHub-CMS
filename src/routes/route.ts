@@ -165,6 +165,22 @@ const route = defineRoute({
       ],
       separate: true
     }
+  },
+  appVersion: {
+    getList: {
+      path: '/app-version',
+      auth: true,
+      permissionCode: [apiConfig.appVersion.getList.permissionCode]
+    },
+    savePage: {
+      path: '/app-version/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.appVersion.create.permissionCode,
+        apiConfig.appVersion.update.permissionCode
+      ],
+      separate: true
+    }
   }
 });
 

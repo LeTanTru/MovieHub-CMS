@@ -284,7 +284,7 @@ export default function useListBase<
         return null;
 
       return (
-        <ToolTip title={`Sửa ${objectName}`}>
+        <ToolTip title={`Sửa ${objectName}`} sideOffset={0}>
           <span>
             <Button
               onClick={(e) => {
@@ -314,7 +314,7 @@ export default function useListBase<
         <AlertDialog>
           <AlertDialogTrigger asChild onClick={(e) => e.stopPropagation()}>
             <span>
-              <ToolTip title={`Xóa ${objectName}`}>
+              <ToolTip title={`Xóa ${objectName}`} sideOffset={0}>
                 <Button
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}

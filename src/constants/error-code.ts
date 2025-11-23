@@ -1,4 +1,5 @@
 import {
+  AppVersionBodyType,
   CategoryBodyType,
   EmployeeBodyType,
   ErrorMaps,
@@ -62,7 +63,11 @@ export const ErrorCode = {
   MOVIE_ITEM_ERROR_PARENT_REQUIRED: 'ERROR-MOVIE-ITEM-ERROR-0002',
   MOVIE_ITEM_ERROR_VIDEO_REQUIRED: 'ERROR-MOVIE-ITEM-ERROR-0003',
   MOVIE_ITEM_ERROR_KIND_INVALID: 'ERROR-MOVIE-ITEM-ERROR-0004',
-  MOVIE_ITEM_ERROR_INVALID_REQUEST: 'ERROR-MOVIE-ITEM-ERROR-0005'
+  MOVIE_ITEM_ERROR_INVALID_REQUEST: 'ERROR-MOVIE-ITEM-ERROR-0005',
+
+  APP_VERSION_ERROR_NOT_FOUND: 'ERROR-APP-VERSION-0000',
+  APP_VERSION_ERROR_NAME_EXISTED: 'ERROR-APP-VERSION-0001',
+  APP_VERSION_ERROR_NOT_HAVE_LATEST_VERSION: 'ERROR-APP-VERSION-0002'
 };
 
 export const groupErrorMaps: ErrorMaps<GroupBodyType> = {
@@ -166,5 +171,11 @@ export const profileErrorMaps: ErrorMaps<ProfileBodyType> = {
         message: 'Mật khẩu mới không được giống với mật khẩu hiện tại'
       }
     ]
+  ]
+};
+
+export const appVersionErrorMaps: ErrorMaps<AppVersionBodyType> = {
+  [ErrorCode.APP_VERSION_ERROR_NAME_EXISTED]: [
+    ['name', { type: 'manual', message: 'Tên phiên bản đã tồn tại' }]
   ]
 };

@@ -55,7 +55,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
           )
             return null;
           return (
-            <ToolTip title={`Diễn viên & đạo diễn`}>
+            <ToolTip title={`Diễn viên & đạo diễn`} sideOffset={0}>
               <span>
                 <Button
                   onClick={() =>
@@ -236,8 +236,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
     {
       key: 'isFeatured',
       placeholder: 'Nổi bật',
-      type: FieldTypes.SELECT,
-      options: featureOptions
+      type: FieldTypes.BOOLEAN
     }
   ];
 

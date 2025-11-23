@@ -48,6 +48,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
   const {
     data,
     loading,
+    isEditing,
     queryString,
     responseCode,
     handleSubmit,
@@ -113,7 +114,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
           href: renderListPageUrl(route.person.getList.path, queryString)
         },
         {
-          label: `${!data ? 'Thêm mới' : 'Cập nhật'} ${kind === TAB_PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`
+          label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} ${kind === TAB_PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`
         }
       ]}
       notFound={responseCode === ErrorCode.PERSON_ERROR_NOT_FOUND}

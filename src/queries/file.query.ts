@@ -1,8 +1,9 @@
 import { apiConfig, uploadOptions } from '@/constants';
 import {
   ApiResponse,
-  UploadImageResponseType,
-  UploadVideoResponseType
+  UploadFileResType,
+  UploadImageResType,
+  UploadVideoResType
 } from '@/types';
 import { http } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
@@ -17,7 +18,7 @@ export const useUploadAvatarMutation = () => {
       file: Blob;
       options?: AxiosRequestConfig;
     }) =>
-      http.post<ApiResponse<UploadImageResponseType>>(apiConfig.file.upload, {
+      http.post<ApiResponse<UploadImageResType>>(apiConfig.file.upload, {
         body: {
           file: file,
           type: uploadOptions.AVATAR
@@ -36,7 +37,7 @@ export const useUploadLogoMutation = () => {
       file: Blob;
       options?: AxiosRequestConfig;
     }) =>
-      http.post<ApiResponse<UploadImageResponseType>>(apiConfig.file.upload, {
+      http.post<ApiResponse<UploadImageResType>>(apiConfig.file.upload, {
         body: {
           file: file,
           type: uploadOptions.LOGO
@@ -55,15 +56,31 @@ export const useUploadVideoMutation = () => {
       file: Blob;
       options?: AxiosRequestConfig;
     }) =>
-      http.post<ApiResponse<UploadVideoResponseType>>(
-        apiConfig.file.uploadVideo,
-        {
-          body: {
-            file: file,
-            type: uploadOptions.UPLOAD_VIDEO
-          },
-          options
-        }
-      )
+      http.post<ApiResponse<UploadVideoResType>>(apiConfig.file.uploadVideo, {
+        body: {
+          file: file,
+          type: uploadOptions.VIDEO
+        },
+        options
+      })
+  });
+};
+
+export const useUploadFileMutation = () => {
+  return useMutation({
+    mutationFn: ({
+      file,
+      options
+    }: {
+      file: Blob;
+      options?: AxiosRequestConfig;
+    }) =>
+      http.post<ApiResponse<UploadFileResType>>(apiConfig.file.upload, {
+        body: {
+          file: file,
+          type: uploadOptions.SYSTEM
+        },
+        options
+      })
   });
 };

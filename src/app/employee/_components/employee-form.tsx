@@ -110,7 +110,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
           label: 'Nhân viên',
           href: renderListPageUrl(route.employee.getList.path, queryString)
         },
-        { label: `${!data ? 'Thêm mới' : 'Cập nhật'} nhân viên` }
+        { label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} nhân viên` }
       ]}
       notFound={responseCode === ErrorCode.EMPLOYEE_ERROR_NOT_FOUND}
       notFoundContent={'Không tìm thấy nhân viên này'}

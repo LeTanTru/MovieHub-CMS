@@ -177,9 +177,9 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
       breadcrumbs={[
         {
           label: 'Thư viện video',
-          href: renderListPageUrl(route.employee.getList.path, queryString)
+          href: renderListPageUrl(route.videoLibrary.getList.path, queryString)
         },
-        { label: `${!data ? 'Thêm mới' : 'Cập nhật'} video` }
+        { label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} video` }
       ]}
       notFound={responseCode === ErrorCode.VIDEO_LIBRARY_ERROR_NOT_FOUND}
       notFoundContent={'Không tìm thấy video này'}
