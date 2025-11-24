@@ -8,6 +8,7 @@ import {
   InputField,
   RichTextField,
   Row,
+  SelectField,
   TextAreaField,
   TimePickerField,
   UploadImageField,
@@ -21,7 +22,10 @@ import {
   ErrorCode,
   STATUS_ACTIVE,
   storageKeys,
-  videoLibraryErrorMaps
+  VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL,
+  VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
+  videoLibraryErrorMaps,
+  videoLibrarySourceTypeOptions
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { useUploadLogoMutation, useUploadVideoMutation } from '@/queries';
@@ -125,7 +129,8 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
     name: '',
     shortDescription: '',
     status: STATUS_ACTIVE,
-    thumbnailUrl: ''
+    thumbnailUrl: '',
+    sourceType: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
   };
 
   const initialValues: VideoLibraryBodyType = useMemo(() => {
@@ -138,7 +143,8 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
       name: data?.name ?? '',
       shortDescription: data?.shortDescription ?? '',
       status: STATUS_ACTIVE,
-      thumbnailUrl: data?.thumbnailUrl ?? ''
+      thumbnailUrl: data?.thumbnailUrl ?? '',
+      sourceType: data?.sourceType ?? VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
     };
   }, [data]);
 
@@ -157,7 +163,9 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
         ),
         outroStart: timeToSeconds(
           values.outroStart ? (values.outroStart as string) : '00:00:00'
-        )
+        ),
+        thumbnailUrl,
+        content: videoUrl
       },
       form,
       videoLibraryErrorMaps
@@ -190,182 +198,271 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
         schema={videoLibrarySchema}
         initialValues={initialValues}
       >
-        {(form) => (
-          <>
-            <Row>
-              <Col span={24}>
-                <UploadImageField
-                  value={renderImageUrl(thumbnailUrl)}
-                  loading={uploadLogoMutation.isPending}
-                  control={form.control}
-                  name='thumbnailUrl'
-                  onChange={(url) => {
-                    setThumbnailUrl(url);
-                  }}
-                  size={150}
-                  uploadImageFn={async (file: Blob) => {
-                    const res = await uploadLogoMutation.mutateAsync({ file });
-                    return res.data?.filePath ?? '';
-                  }}
-                  label='Ảnh nền (16:9)'
-                  aspect={16 / 9}
-                  required
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <InputField
-                  control={form.control}
-                  name='name'
-                  label='Tên video'
-                  placeholder='Tên video'
-                  required
-                />
-              </Col>
-            </Row>
-            {isEditing && (
-              <>
-                <Row>
-                  <Col>
-                    <TimePickerField
-                      control={form.control}
-                      name='introStart'
-                      label='Thời gian bắt đầu intro'
-                      placeholder='Thời gian bắt đầu intro'
-                      required
-                    />
-                  </Col>
-                  <Col>
-                    <TimePickerField
-                      control={form.control}
-                      name='introEnd'
-                      label='Thời gian kết thúc intro'
-                      placeholder='Thời gian kết thúc intro'
-                      required
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <TimePickerField
-                      control={form.control}
-                      name='outroStart'
-                      label='Thời gian bắt đầu outro'
-                      placeholder='Thời gian bắt đầu outro'
-                      required
-                    />
-                  </Col>
-                </Row>
-              </>
-            )}
-            <Row>
-              <Col span={24}>
-                {isEditing && data ? (
-                  <MediaPlayer
-                    viewType='video'
-                    streamType='on-demand'
-                    logLevel='silent'
-                    crossOrigin
-                    playsInline
-                    muted
-                    preferNativeHLS={false}
-                    autoPlay={false}
-                    src={renderVideoUrl(data.content)}
-                    fullscreenOrientation={'none'}
-                    onProviderChange={onProviderChange}
-                  >
-                    <MediaProvider slot='media'>
-                      <Poster
-                        className='vds-poster'
-                        src={renderImageUrl(data.thumbnailUrl)}
-                      />
-                      {/* {textTracks.map((track) => (
-              <Track {...(track as any)} key={track.src} />
-            ))} */}
-                    </MediaProvider>
-                    <DefaultVideoLayout
-                      thumbnails={renderVttUrl(data.vttUrl)}
-                      icons={defaultLayoutIcons}
-                      slots={{
-                        playButton: <PlayToggleButton />,
-                        muteButton: <VolumeToggleButton />,
-                        fullscreenButton: <FullscreenToggleButton />,
-                        pipButton: <PiPToggleButton />,
-                        settingsMenu: (
-                          <SettingMenu
-                            placement='top end'
-                            tooltipPlacement='top'
-                          />
-                        ),
-                        captionButton: <CaptionButton />,
-                        beforeSettingsMenu: (
-                          <>
-                            <SeekBackwardButton />
-                            <SeekForwardButton />
-                          </>
-                        ),
-                        googleCastButton: null
-                      }}
-                    />
-                  </MediaPlayer>
-                ) : (
-                  <UploadVideoField
+        {(form) => {
+          const sourceType = form.watch('sourceType');
+
+          return (
+            <>
+              <Row>
+                <Col span={24} className='pr-0'>
+                  <UploadImageField
+                    value={renderImageUrl(thumbnailUrl)}
+                    loading={uploadLogoMutation.isPending}
                     control={form.control}
-                    name='content'
-                    label='Video'
-                    required
-                    uploadVideoFn={async (file: Blob, onProgress) => {
-                      const res = await uploadVideoMutation.mutateAsync({
-                        file,
-                        options: {
-                          onUploadProgress: (e: AxiosProgressEvent) => {
-                            const percent = Math.round(
-                              (e.loaded * 100) / (e.total ?? 1)
-                            );
-                            logger.info(`Upload video: ${percent}%`);
-                            onProgress(percent);
-                          }
-                        }
+                    name='thumbnailUrl'
+                    onChange={(url) => {
+                      setThumbnailUrl(url);
+                    }}
+                    size={150}
+                    uploadImageFn={async (file: Blob) => {
+                      const res = await uploadLogoMutation.mutateAsync({
+                        file
                       });
                       return res.data?.filePath ?? '';
                     }}
-                    onChange={(url) => setVideoUrl(url)}
+                    label='Ảnh nền (16:9)'
+                    aspect={16 / 9}
+                    required
                   />
-                )}
-              </Col>
-            </Row>
-            <Row>
-              <Col span={24}>
-                <TextAreaField
-                  control={form.control}
-                  name='shortDescription'
-                  label='Mô tả ngắn'
-                  placeholder='Mô tả ngắn'
-                  required
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col span={24}>
-                <RichTextField
-                  control={form.control}
-                  name='description'
-                  label='Mô tả'
-                  placeholder='Mô tả'
-                  required
-                />
-              </Col>
-            </Row>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <InputField
+                    control={form.control}
+                    name='name'
+                    label='Tên video'
+                    placeholder='Tên video'
+                    required
+                  />
+                </Col>
+                <Col>
+                  <SelectField
+                    control={form.control}
+                    name='sourceType'
+                    options={videoLibrarySourceTypeOptions}
+                    label='Nguồn video'
+                    required
+                  />
+                </Col>
+              </Row>
+              {isEditing && (
+                <>
+                  <Row>
+                    <Col>
+                      <TimePickerField
+                        control={form.control}
+                        name='introStart'
+                        label='Thời gian bắt đầu intro'
+                        placeholder='Thời gian bắt đầu intro'
+                        required
+                      />
+                    </Col>
+                    <Col>
+                      <TimePickerField
+                        control={form.control}
+                        name='introEnd'
+                        label='Thời gian kết thúc intro'
+                        placeholder='Thời gian kết thúc intro'
+                        required
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <TimePickerField
+                        control={form.control}
+                        name='outroStart'
+                        label='Thời gian bắt đầu outro'
+                        placeholder='Thời gian bắt đầu outro'
+                        required
+                      />
+                    </Col>
+                    {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL &&
+                      isEditing && (
+                        <Col>
+                          <InputField
+                            control={form.control}
+                            name='content'
+                            label='Nhập đường dẫn video'
+                            placeholder='Nhập đường dẫn video'
+                            required
+                            onChange={(e) => {
+                              setVideoUrl(e.target.value);
+                              form.setValue('content', e.target.value);
+                            }}
+                          />
+                        </Col>
+                      )}
+                  </Row>
+                  {(videoUrl || form.watch('content')) &&
+                    isEditing &&
+                    sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL && (
+                      <Row>
+                        <Col span={24}>
+                          <MediaPlayer
+                            viewType='video'
+                            streamType='on-demand'
+                            src={videoUrl || form.watch('content')}
+                            autoPlay={false}
+                            muted
+                            logLevel='silent'
+                          >
+                            <MediaProvider />
+                            <DefaultVideoLayout icons={defaultLayoutIcons} />
+                          </MediaPlayer>
+                        </Col>
+                      </Row>
+                    )}
+                </>
+              )}
+              {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL ? (
+                !isEditing && (
+                  <>
+                    <Row>
+                      <Col>
+                        <InputField
+                          control={form.control}
+                          name='content'
+                          label='Nhập đường dẫn video'
+                          placeholder='Nhập đường dẫn video'
+                          required
+                          onChange={(e) => {
+                            setVideoUrl(e.target.value);
+                            form.setValue('content', e.target.value);
+                          }}
+                        />
+                      </Col>
+                    </Row>
+                    {(videoUrl || form.watch('content')) && (
+                      <Row>
+                        <Col span={24}>
+                          <MediaPlayer
+                            viewType='video'
+                            streamType='on-demand'
+                            src={videoUrl || form.watch('content')}
+                            autoPlay={false}
+                            muted
+                            logLevel='silent'
+                          >
+                            <MediaProvider />
+                            <DefaultVideoLayout icons={defaultLayoutIcons} />
+                          </MediaPlayer>
+                        </Col>
+                      </Row>
+                    )}
+                  </>
+                )
+              ) : (
+                <Row>
+                  <Col span={24}>
+                    {isEditing && data ? (
+                      <MediaPlayer
+                        viewType='video'
+                        streamType='on-demand'
+                        logLevel='silent'
+                        crossOrigin
+                        playsInline
+                        muted
+                        preferNativeHLS={false}
+                        autoPlay={false}
+                        src={renderVideoUrl(data.content)}
+                        fullscreenOrientation={'none'}
+                        onProviderChange={onProviderChange}
+                      >
+                        <MediaProvider slot='media'>
+                          <Poster
+                            className='vds-poster'
+                            src={renderImageUrl(data.thumbnailUrl)}
+                          />
+                          {/* {textTracks.map((track) => (
+                          <Track {...(track as any)} key={track.src} />
+                        ))} */}
+                        </MediaProvider>
+                        <DefaultVideoLayout
+                          thumbnails={renderVttUrl(data.vttUrl)}
+                          icons={defaultLayoutIcons}
+                          slots={{
+                            playButton: <PlayToggleButton />,
+                            muteButton: <VolumeToggleButton />,
+                            fullscreenButton: <FullscreenToggleButton />,
+                            pipButton: <PiPToggleButton />,
+                            settingsMenu: (
+                              <SettingMenu
+                                placement='top end'
+                                tooltipPlacement='top'
+                              />
+                            ),
+                            captionButton: <CaptionButton />,
+                            beforeSettingsMenu: (
+                              <>
+                                <SeekBackwardButton />
+                                <SeekForwardButton />
+                              </>
+                            ),
+                            googleCastButton: null
+                          }}
+                        />
+                      </MediaPlayer>
+                    ) : (
+                      <UploadVideoField
+                        control={form.control}
+                        name='content'
+                        label='Video'
+                        required
+                        uploadVideoFn={async (file: Blob, onProgress) => {
+                          const res = await uploadVideoMutation.mutateAsync({
+                            file,
+                            options: {
+                              onUploadProgress: (e: AxiosProgressEvent) => {
+                                const percent = Math.round(
+                                  (e.loaded * 100) / (e.total ?? 1)
+                                );
+                                logger.info(`Upload video: ${percent}%`);
+                                onProgress(percent);
+                              }
+                            }
+                          });
+                          return res.data?.filePath ?? '';
+                        }}
+                        onChange={(url) => setVideoUrl(url)}
+                      />
+                    )}
+                  </Col>
+                </Row>
+              )}
+              <Row>
+                <Col span={24}>
+                  <TextAreaField
+                    control={form.control}
+                    name='shortDescription'
+                    label='Mô tả ngắn'
+                    placeholder='Mô tả ngắn'
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col span={24}>
+                  <RichTextField
+                    control={form.control}
+                    name='description'
+                    label='Mô tả'
+                    placeholder='Mô tả'
+                    required
+                  />
+                </Col>
+              </Row>
 
-            <>{renderActions(form)}</>
-            {loading && (
-              <div className='absolute inset-0 bg-white/80'>
-                <CircleLoading className='stroke-dodger-blue mt-20 size-8' />
-              </div>
-            )}
-          </>
-        )}
+              <>{renderActions(form)}</>
+              {loading && (
+                <div className='absolute inset-0 bg-white/80'>
+                  <CircleLoading className='stroke-dodger-blue mt-20 size-8' />
+                </div>
+              )}
+            </>
+          );
+        }}
       </BaseForm>
     </PageWrapper>
   );

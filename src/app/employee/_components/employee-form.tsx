@@ -124,7 +124,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
         {(form) => (
           <>
             <Row>
-              <Col span={24}>
+              <Col span={24} className='pr-0'>
                 <UploadImageField
                   value={renderImageUrl(avatarPath)}
                   loading={uploadImageMutation.isPending}

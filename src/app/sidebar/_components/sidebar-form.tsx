@@ -127,7 +127,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                     required
                   />
                 </Col>
-                <Col span={24}>
+                <Col span={12}>
                   <UploadImageField
                     value={renderImageUrl(mobileThumbnailUrl)}
                     loading={uploadImageMutation.isPending}

@@ -23,6 +23,7 @@ export type VideoLibraryResType = {
   status: number;
   thumbnailUrl: string;
   vttUrl: string;
+  sourceType: number;
 };
 
 export type VideoLibraryBodyType = z.infer<typeof videoLibrarySchema>;

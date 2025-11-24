@@ -229,7 +229,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
           return (
             <>
               <Row>
-                <Col span={24}>
+                <Col span={24} className='pr-0'>
                   <UploadImageField
                     value={renderImageUrl(thumbnailUrl)}
                     loading={uploadImageMutation.isPending}

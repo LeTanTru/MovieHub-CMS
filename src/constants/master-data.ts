@@ -42,6 +42,8 @@ import {
   UPLOAD_LOGO,
   UPLOAD_SYSTEM,
   UPLOAD_VIDEO,
+  VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL,
+  VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
   VIDEO_LIBRARY_STATE_COMPLETE,
   VIDEO_LIBRARY_STATE_PROCESSING
 } from '@/constants/constant';
@@ -1606,3 +1608,14 @@ export const socketReceiveCMDs = {
   CMD_BROADCAST,
   CMD_DONE_CONVERT_VIDEO
 };
+
+export const videoLibrarySourceTypeOptions = [
+  {
+    label: 'Tải lên',
+    value: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
+  },
+  {
+    label: 'Sử dụng nguồn bên ngoài',
+    value: VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL
+  }
+];
