@@ -70,13 +70,15 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
     !!type && +type === MOVIE_TYPE_SINGLE
       ? movieItemSingleKindOptions.filter(
           (item) =>
-            !getData(storageKeys.SELECTED_MOVIE_ITEM) &&
-            item.value !== MOVIE_ITEM_KIND_SEASON
+            !getData(storageKeys.SELECTED_MOVIE_ITEM) ||
+            (getData(storageKeys.SELECTED_MOVIE_ITEM) &&
+              item.value !== MOVIE_ITEM_KIND_SEASON)
         )
       : movieItemSeriesKindOptions.filter(
           (item) =>
-            !getData(storageKeys.SELECTED_MOVIE_ITEM) &&
-            item.value !== MOVIE_ITEM_KIND_SEASON
+            !getData(storageKeys.SELECTED_MOVIE_ITEM) ||
+            (getData(storageKeys.SELECTED_MOVIE_ITEM) &&
+              item.value !== MOVIE_ITEM_KIND_SEASON)
         );
 
   const {
@@ -251,19 +253,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
               <Row>
                 <Col>
                   <SelectField
-                    options={
-                      !!type && +type === MOVIE_TYPE_SINGLE
-                        ? movieItemSingleKindOptions.filter(
-                            (item) =>
-                              !getData(storageKeys.SELECTED_MOVIE_ITEM) &&
-                              item.value !== MOVIE_ITEM_KIND_SEASON
-                          )
-                        : movieItemSeriesKindOptions.filter(
-                            (item) =>
-                              !getData(storageKeys.SELECTED_MOVIE_ITEM) &&
-                              item.value !== MOVIE_ITEM_KIND_SEASON
-                          )
-                    }
+                    options={kindOptions}
                     control={form.control}
                     name='kind'
                     label='Loại'
