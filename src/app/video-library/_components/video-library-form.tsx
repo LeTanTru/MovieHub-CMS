@@ -97,6 +97,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
   });
 
   function timeToSeconds(time: string): number {
+    console.log('🚀 ~ timeToSeconds ~ time:', time);
     const parts = time.split(':');
 
     if (parts.length !== 3) {

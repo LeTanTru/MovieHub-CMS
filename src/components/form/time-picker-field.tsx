@@ -57,6 +57,16 @@ export default function TimePickerField({
           hour = Math.floor(field.value / 3600);
           minute = Math.floor((field.value % 3600) / 60);
           second = field.value % 60;
+
+          const hh = pad(Math.floor(field.value / 3600));
+          const mm = pad(Math.floor((field.value % 3600) / 60));
+          const ss = pad(field.value % 60);
+
+          const formatted = `${hh}:${mm}:${ss}`;
+
+          if (String(field.value) !== formatted) {
+            setTimeout(() => field.onChange(formatted), 0);
+          }
         } else if (typeof field.value === 'string') {
           const parts = field.value.split(':').map((v) => parseInt(v));
           hour = isNaN(parts[0]) ? 0 : parts[0];
@@ -77,7 +87,6 @@ export default function TimePickerField({
             result = `${pad(hh)}:${pad(mm)}:${pad(ss)}`;
           else if (timeFormat === 'HH:mm') result = `${pad(hh)}:${pad(mm)}`;
           else if (timeFormat === 'mm:ss') result = `${pad(mm)}:${pad(ss)}`;
-
           field.onChange(result);
           // field.onChange(hh * 3600 + mm * 60 + ss);
         };
