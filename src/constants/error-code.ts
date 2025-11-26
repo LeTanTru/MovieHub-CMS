@@ -7,6 +7,7 @@ import {
   PermissionBodyType,
   PersonBodyType,
   ProfileBodyType,
+  StyleBodyType,
   VideoLibraryBodyType
 } from '@/types';
 
@@ -65,9 +66,23 @@ export const ErrorCode = {
   MOVIE_ITEM_ERROR_KIND_INVALID: 'ERROR-MOVIE-ITEM-ERROR-0004',
   MOVIE_ITEM_ERROR_INVALID_REQUEST: 'ERROR-MOVIE-ITEM-ERROR-0005',
 
+  // === App version error code ===
   APP_VERSION_ERROR_NOT_FOUND: 'ERROR-APP-VERSION-0000',
   APP_VERSION_ERROR_NAME_EXISTED: 'ERROR-APP-VERSION-0001',
-  APP_VERSION_ERROR_NOT_HAVE_LATEST_VERSION: 'ERROR-APP-VERSION-0002'
+  APP_VERSION_ERROR_NOT_HAVE_LATEST_VERSION: 'ERROR-APP-VERSION-0002',
+
+  // === Style error code ===
+  STYLE_ERROR_NOT_FOUND: 'ERROR-STYLE-0000',
+  STYLE_ERROR_TYPE_EXISTED: 'ERROR-STYLE-0001',
+  STYLE_ERROR_TYPE_NOT_HAVE_DEFAULT: 'ERROR-STYLE-0002',
+
+  // === Collection error code ===
+  COLLECTION_ERROR_NOT_FOUND: 'ERROR-COLLECTION-0000',
+  COLLECTION_ERROR_NAME_EXISTED: 'ERROR-COLLECTION-0001',
+
+  // === Collection item error code ===
+  COLLECTION_ITEM_ERROR_NOT_FOUND: 'ERROR-COLLECTION-ITEM-0000',
+  COLLECTION_ITEM_ERROR_MOVIE_EXISTED: 'ERROR-COLLECTION-ITEM-0001'
 };
 
 export const groupErrorMaps: ErrorMaps<GroupBodyType> = {
@@ -179,3 +194,21 @@ export const appVersionErrorMaps: ErrorMaps<AppVersionBodyType> = {
     ['name', { type: 'manual', message: 'Tên phiên bản đã tồn tại' }]
   ]
 };
+
+export const styleErrorMaps: ErrorMaps<StyleBodyType> = {
+  [ErrorCode.STYLE_ERROR_TYPE_EXISTED]: [
+    ['type', { type: 'manual', message: 'Loại thiết kế đã tồn tại' }]
+  ]
+};
+
+// export const collectionErrorMaps: ErrorMaps<StyleBodyType> = {
+//   [ErrorCode.STYLE_ERROR_TYPE_EXISTED]: [
+//     ['name', { type: 'manual', message: 'Tên thiết kế đã tồn tại' }]
+//   ]
+// };
+
+// export const collectionItemErrorMaps: ErrorMaps<StyleBodyType> = {
+//   [ErrorCode.STYLE_ERROR_TYPE_EXISTED]: [
+//     ['name', { type: 'manual', message: 'Tên thiết kế đã tồn tại' }]
+//   ]
+// };

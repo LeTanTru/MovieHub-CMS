@@ -153,7 +153,10 @@ export const queryKeys = {
   MOVIE_ITEM: 'movie_item',
   MOVIE_PERSON: 'movie_person',
   SIDEBAR: 'sidebar',
-  APP_VERSION: 'app_version'
+  APP_VERSION: 'app_version',
+  STYLE: 'style',
+  COLLECTION: 'collection',
+  COLLECTION_ITEM: 'collection_item'
 };
 
 export const loginOptions = [

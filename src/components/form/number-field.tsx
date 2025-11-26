@@ -194,7 +194,7 @@ export default function NumberField<T extends FieldValues>({
               </div>
 
               <div className='ml-1 flex flex-col gap-1'>
-                <ToolTip title='Tăng' sideOffset={0}>
+                <ToolTip title='Tăng' sideOffset={8}>
                   <Button
                     type='button'
                     variant='outline'
@@ -209,7 +209,7 @@ export default function NumberField<T extends FieldValues>({
                     +
                   </Button>
                 </ToolTip>
-                <ToolTip title='Giảm' sideOffset={0}>
+                <ToolTip title='Giảm' sideOffset={8}>
                   <Button
                     type='button'
                     variant='outline'

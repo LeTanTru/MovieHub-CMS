@@ -181,6 +181,51 @@ const route = defineRoute({
       ],
       separate: true
     }
+  },
+  style: {
+    getList: {
+      path: '/style',
+      auth: true,
+      permissionCode: [apiConfig.style.getList.permissionCode]
+    },
+    savePage: {
+      path: '/style/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.style.create.permissionCode,
+        apiConfig.style.update.permissionCode
+      ],
+      separate: true
+    }
+  },
+  collection: {
+    getList: {
+      path: '/collection',
+      auth: true,
+      permissionCode: [apiConfig.collection.getList.permissionCode]
+    },
+    savePage: {
+      path: '/collection/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.collection.create.permissionCode,
+        apiConfig.collection.update.permissionCode
+      ],
+      separate: true
+    }
+  },
+  collectionItem: {
+    getList: {
+      path: '/collection/:id/collection-item',
+      auth: true,
+      permissionCode: [apiConfig.collectionItem.getList.permissionCode]
+    },
+    savePage: {
+      path: '/collection/:id/collection-item/:collectionItemId',
+      auth: true,
+      permissionCode: [apiConfig.collectionItem.create.permissionCode],
+      separate: true
+    }
   }
 });
 

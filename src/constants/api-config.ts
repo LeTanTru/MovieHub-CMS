@@ -468,6 +468,102 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       permissionCode: 'APP_V_U'
     }
+  },
+  style: {
+    getById: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/style/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'STL_V'
+    },
+    getList: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/style/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'STL_L'
+    },
+    create: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/style/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'STL_C'
+    },
+    delete: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/style/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'STL_D'
+    },
+    update: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/style/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'STL_U'
+    }
+  },
+  collection: {
+    getById: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/collection/admin/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'COL_V'
+    },
+    getList: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/collection/admin/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'COL_L'
+    },
+    create: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/collection/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'COL_C'
+    },
+    delete: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/collection/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'COL_D'
+    },
+    update: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/collection/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'COL_U'
+    },
+    updateOrdering: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/collection/update-ordering`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'COL_U'
+    }
+  },
+  collectionItem: {
+    getList: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/collection-item/admin/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'COL_I_L'
+    },
+    create: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/collection-item/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'COL_I_C'
+    },
+    delete: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/collection-item/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'COL_I_D'
+    },
+    updateOrdering: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/collection-item/update-ordering`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'COL_I_U'
+    }
   }
 });
 

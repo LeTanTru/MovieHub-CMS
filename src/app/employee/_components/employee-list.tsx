@@ -194,7 +194,7 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
   ];
 
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Quản trị viên' }]}>
+    <PageWrapper breadcrumbs={[{ label: 'Nhân viên' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,

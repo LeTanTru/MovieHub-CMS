@@ -68,6 +68,29 @@ const menuConfig: MenuItem[] = [
     ]
   },
   {
+    key: 'ui-management',
+    label: 'Quản lý giao diện',
+    icon: Settings,
+    permissionCode: [
+      apiConfig.style.getList.permissionCode,
+      apiConfig.collection.getList.permissionCode
+    ],
+    children: [
+      {
+        key: 'style-list',
+        label: 'Thiết kế',
+        path: route.style.getList.path,
+        permissionCode: [apiConfig.style.getList.permissionCode]
+      },
+      {
+        key: 'collection-list',
+        label: 'Bộ sưu tập',
+        path: route.collection.getList.path,
+        permissionCode: [apiConfig.collection.getList.permissionCode]
+      }
+    ]
+  },
+  {
     key: 'system-management',
     label: 'Quản lý hệ thống',
     icon: Settings,

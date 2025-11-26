@@ -96,6 +96,7 @@ type UploadImageFieldProps<T extends FieldValues> = {
   uploadImageFn: (file: Blob) => Promise<string>;
   loading?: boolean;
   aspect?: number;
+  defaultCrop?: boolean;
 };
 
 export default function UploadImageField<T extends FieldValues>({
@@ -110,11 +111,12 @@ export default function UploadImageField<T extends FieldValues>({
   size = 70,
   uploadImageFn,
   loading,
-  aspect = 1
+  aspect = 1,
+  defaultCrop
 }: UploadImageFieldProps<T>) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-  const [shouldCrop, setShouldCrop] = useState(false);
+  const [shouldCrop, setShouldCrop] = useState(defaultCrop ?? false);
   const [zoom, setZoom] = useState(1);
   const {
     field: { value: fieldValue, onChange: fieldOnChange },

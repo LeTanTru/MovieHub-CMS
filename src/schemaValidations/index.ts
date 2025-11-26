@@ -14,4 +14,5 @@ export * from './movie.schema';
 export * from './permission.schema';
 export * from './person.schema';
 export * from './search.schema';
+export * from './style.schema';
 export * from './video-library.schema';

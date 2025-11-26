@@ -53,7 +53,7 @@ export default function AppVersionList({ queryKey }: { queryKey: string }) {
       });
       handlers.handleDeleteError = (code) => {
         if (code === ErrorCode.APP_VERSION_ERROR_NOT_HAVE_LATEST_VERSION) {
-          notify.error('Ứng dụng phải có ít nhất một phiên bản');
+          notify.error('Không thể xóa phiên bản mới nhất');
         }
       };
     }
