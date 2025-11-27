@@ -178,6 +178,12 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'MOV_U'
+    },
+    collectionFilter: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/movie/collection-filter/:collectionId`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'MOV_L'
     }
   },
   movieItem: {

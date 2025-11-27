@@ -91,7 +91,13 @@ export default function CollectionItemForm({ queryKey }: { queryKey: string }) {
                     label='Tiêu đề phim'
                     placeholder='Tiêu đề phim'
                     required
-                    apiConfig={apiConfig.movie.getList}
+                    apiConfig={{
+                      ...apiConfig.movie.collectionFilter,
+                      baseUrl: generatePath(
+                        apiConfig.movie.collectionFilter.baseUrl,
+                        { collectionId }
+                      )
+                    }}
                     mappingData={(item) => ({
                       label: item.title,
                       value: item.id.toString()
