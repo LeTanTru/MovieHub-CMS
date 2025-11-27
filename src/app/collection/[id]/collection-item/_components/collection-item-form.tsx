@@ -62,13 +62,16 @@ export default function CollectionItemForm({ queryKey }: { queryKey: string }) {
       breadcrumbs={[
         {
           label: 'Bộ sưu tập',
-          href: generatePath(route.collection.getList.path, {
-            id: collectionId
-          })
+          href: route.collection.getList.path
         },
         {
           label: 'Chi tiết bộ sưu tập',
-          href: renderListPageUrl(route.collection.getList.path, queryString)
+          href: renderListPageUrl(
+            generatePath(route.collectionItem.getList.path, {
+              id: collectionId
+            }),
+            queryString
+          )
         },
         { label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} chi tiết bộ sưu tập` }
       ]}
