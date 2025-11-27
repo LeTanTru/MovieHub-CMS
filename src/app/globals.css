@@ -166,6 +166,23 @@ body {
     animation: skeleton 1s ease-in-out infinite;
     border-radius: 8px;
   }
+
+  .highlight-animated {
+    background: linear-gradient(
+      to right,
+      var(--color-yellow-600),
+      var(--color-orange-500),
+      var(--color-red-500),
+      var(--color-blue-500)
+    );
+    background-size: 300% 100%;
+    animation: gradientMove 1s linear infinite alternate;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 @keyframes skeleton {
@@ -174,5 +191,14 @@ body {
   }
   100% {
     background-position-x: -50%;
+  }
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
   }
 }

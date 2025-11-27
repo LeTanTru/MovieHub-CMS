@@ -28,7 +28,7 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
     apiConfig: apiConfig.collection,
     options: {
       queryKey,
-      objectName: 'bộ sư tập'
+      objectName: 'bộ sưu tập'
     },
     override: (handlers) => {
       handlers.additionalColumns = () => ({

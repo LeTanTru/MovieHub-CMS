@@ -29,9 +29,9 @@ type HandlerType<T> = {
 
 type UseSaveBaseProps<R, T> = {
   apiConfig: {
-    getById: ApiConfig;
-    create: ApiConfig;
-    update: ApiConfig;
+    getById?: ApiConfig;
+    create?: ApiConfig;
+    update?: ApiConfig;
   };
   options: {
     objectName: string;
@@ -67,13 +67,15 @@ export default function useSaveBase<
   const itemQuery = useQuery({
     queryKey: [queryKey, pathParams],
     queryFn: () =>
-      http.get<ApiResponse<R>>(apiConfig.getById, {
-        pathParams
-      }),
+      apiConfig.getById
+        ? http.get<ApiResponse<R>>(apiConfig.getById, {
+            pathParams
+          })
+        : Promise.resolve({ data: undefined } as any),
     enabled: false
   });
 
-  const data = itemQuery.data?.data;
+  const data: R = itemQuery.data?.data;
 
   useEffect(() => {
     if (!isCreate && enabled) itemQuery.refetch();
@@ -82,9 +84,11 @@ export default function useSaveBase<
   const createMutation = useMutation({
     mutationKey: [`create-${queryKey}`],
     mutationFn: (body: T) =>
-      http.get<ApiResponse<any>>(apiConfig.create, {
-        body
-      })
+      apiConfig.create
+        ? http.get<ApiResponse<any>>(apiConfig.create, {
+            body
+          })
+        : Promise.resolve({ result: false, code: 'NO_API_CONFIG' } as any)
     // onSuccess: (res) => {
     //   if (res.result) {
     //     notify.success(`Thêm mới ${objectName} thành công`);
@@ -105,9 +109,11 @@ export default function useSaveBase<
   const updateMutation = useMutation({
     mutationKey: [`update-${queryKey}`],
     mutationFn: (body: T) =>
-      http.get<ApiResponse<any>>(apiConfig.update, {
-        body
-      })
+      apiConfig.update
+        ? http.get<ApiResponse<any>>(apiConfig.update, {
+            body
+          })
+        : Promise.resolve({ result: false, code: 'NO_API_CONFIG' } as any)
     // onSuccess: (res) => {
     //   if (res.result) {
     //     queryClient.invalidateQueries({

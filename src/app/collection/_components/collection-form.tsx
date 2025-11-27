@@ -102,7 +102,6 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
         ...values,
         filter: JSON.stringify(values.filter)
       };
-      console.log('🚀 ~ onSubmit ~ payload:', payload);
       await handleSubmit(payload as any, form, collectionErrorMaps);
     }
   };

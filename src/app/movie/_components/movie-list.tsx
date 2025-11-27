@@ -1,6 +1,5 @@
 'use client';
 
-import './movie-list.css';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
