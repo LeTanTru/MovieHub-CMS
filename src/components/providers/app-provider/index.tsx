@@ -29,7 +29,7 @@ export default function AppProvider({
   const kind = getData(storageKeys.USER_KIND);
   const [clientToken, setClientToken] = useState<string>('');
   const { isAuthenticated, setLoading, setProfile } = useAuthStore();
-  const { setSocket } = useSocketStore();
+  const { socket, setSocket } = useSocketStore();
 
   const profileQuery =
     kind && +kind === KIND_MANAGER ? managerProfileQuery : employeeProfileQuery;
@@ -75,8 +75,7 @@ export default function AppProvider({
   }, [accessToken]);
 
   useEffect(() => {
-    const socket = new WebSocket(envConfig.NEXT_PUBLIC_API_SOCKET);
-    setSocket(socket);
+    if (!socket) return;
 
     socket.onopen = () => {
       const payload = {
