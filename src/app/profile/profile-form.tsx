@@ -30,7 +30,7 @@ import {
   removeData,
   renderImageUrl
 } from '@/utils';
-import { Save } from 'lucide-react';
+import { ArrowLeftFromLine, Save } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
@@ -237,6 +237,7 @@ export default function ProfileForm() {
                 variant={'ghost'}
                 className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
               >
+                <ArrowLeftFromLine />
                 Hủy
               </Button>
             </Col>
