@@ -26,7 +26,7 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
     apiConfig: apiConfig.sidebar,
     options: {
       queryKey,
-      objectName: 'phim mới'
+      objectName: 'phim'
     }
   });
 
@@ -39,7 +39,7 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
     handleUpdate
   } = useDragDrop<MovieSidebarResType>({
     key: `${queryKey}-list`,
-    objectName: 'phim mới',
+    objectName: 'phim',
     data,
     apiConfig: apiConfig.sidebar.updateOrdering,
     sortField: 'ordering'
