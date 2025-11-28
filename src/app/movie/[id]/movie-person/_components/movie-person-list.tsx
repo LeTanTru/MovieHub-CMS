@@ -383,7 +383,7 @@ export default function MoviePersonList({
         {sortedData.length > 1 && (
           <div className='mr-4 flex justify-end py-4'>
             <Button
-              onClick={handleUpdate}
+              onClick={() => handleUpdate()}
               disabled={!isChanged || loading || loadingUpdateOrdering}
               className='w-40'
               variant={'primary'}
