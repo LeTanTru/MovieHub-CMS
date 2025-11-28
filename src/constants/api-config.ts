@@ -411,7 +411,7 @@ const apiConfig = defineApiConfig({
       permissionCode: 'SBD_U'
     }
   },
-  videoLibary: {
+  videoLibrary: {
     getById: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/video-library/get/:id`,
       method: 'GET',

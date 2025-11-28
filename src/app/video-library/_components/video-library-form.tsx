@@ -85,7 +85,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
     handleSubmit,
     renderActions
   } = useSaveBase<VideoLibraryResType, VideoLibraryBodyType>({
-    apiConfig: apiConfig.videoLibary,
+    apiConfig: apiConfig.videoLibrary,
     options: {
       queryKey,
       objectName: 'video',

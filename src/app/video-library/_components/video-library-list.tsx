@@ -36,7 +36,7 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
     VideoLibraryResType,
     VideoLibrarySearchType
   >({
-    apiConfig: apiConfig.videoLibary,
+    apiConfig: apiConfig.videoLibrary,
     options: {
       queryKey,
       objectName: 'video'

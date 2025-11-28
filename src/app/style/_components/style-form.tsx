@@ -122,7 +122,6 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
                   }}
                   label='Ảnh bìa'
                   aspect={2 / 3}
-                  defaultCrop
                   required
                 />
               </Col>
