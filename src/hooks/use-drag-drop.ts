@@ -21,6 +21,7 @@ const useDragDrop = <T extends Record<string, any>>({
   data,
   apiConfig,
   sortField = 'ordering',
+  updateOnDragEnd,
   mappingData
 }: {
   key: string;
@@ -28,6 +29,7 @@ const useDragDrop = <T extends Record<string, any>>({
   data: T[];
   apiConfig: ApiConfig;
   sortField?: keyof T;
+  updateOnDragEnd?: boolean;
   mappingData?: (record: T, index: number) => Record<string, any>;
 }) => {
   const queryClient = useQueryClient();
@@ -46,7 +48,7 @@ const useDragDrop = <T extends Record<string, any>>({
   });
 
   const onDragEnd = useCallback(
-    (event: DragEndEvent) => {
+    async (event: DragEndEvent) => {
       const { active, over } = event;
 
       if (!active || !over || active.id === over.id) return;
@@ -63,51 +65,60 @@ const useDragDrop = <T extends Record<string, any>>({
       const newData = arrayMove(currentData, activeIndex, overIndex);
       setSortedData(newData);
       setIsChanged(true);
+
+      if (updateOnDragEnd) {
+        await handleUpdate(newData);
+      }
     },
-    [sortedData]
+    [sortedData, updateOnDragEnd]
   );
 
-  const handleUpdate = useCallback(async () => {
-    let dataUpdate: Record<string, any>[] = [];
+  const handleUpdate = useCallback(
+    async (dataOverride?: T[]) => {
+      const finalData = dataOverride || sortedData;
 
-    sortedData.forEach((item, index) => {
-      let baseData = {
-        id: item.id,
-        [sortField]: index
-      };
+      let dataUpdate: Record<string, any>[] = [];
 
-      if (typeof mappingData === 'function') {
-        baseData = { ...baseData, ...mappingData(item, index) };
-      }
+      finalData.forEach((item, index) => {
+        let baseData = {
+          id: item.id,
+          [sortField]: index
+        };
 
-      dataUpdate.push(baseData);
-    });
+        if (typeof mappingData === 'function') {
+          baseData = { ...baseData, ...mappingData(item, index) };
+        }
 
-    await updateOrderingMutation.mutateAsync(dataUpdate, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [key]
-        });
-        setIsChanged(false);
+        dataUpdate.push(baseData);
+      });
 
-        notify.success(`Cập nhật thứ tự ${objectName} thành công`);
-      },
-      onError: (error) => {
-        logger.error('Error while updating ordering:', error);
-        notify.error(`Cập nhật thứ tự ${objectName} thất bại`);
+      await updateOrderingMutation.mutateAsync(dataUpdate, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: [key]
+          });
+          setIsChanged(false);
 
-        setIsChanged(false);
-      }
-    });
-  }, [
-    sortedData,
-    updateOrderingMutation,
-    sortField,
-    mappingData,
-    queryClient,
-    key,
-    objectName
-  ]);
+          notify.success(`Cập nhật thứ tự ${objectName} thành công`);
+        },
+        onError: (error) => {
+          logger.error('Error while updating ordering:', error);
+          notify.error(`Cập nhật thứ tự ${objectName} thất bại`);
+
+          setIsChanged(false);
+        }
+      });
+    },
+    [
+      sortedData,
+      updateOrderingMutation,
+      sortField,
+      mappingData,
+      queryClient,
+      key,
+      objectName
+    ]
+  );
 
   useEffect(() => {
     if (data) setSortedData(data);

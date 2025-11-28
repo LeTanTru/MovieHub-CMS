@@ -4,6 +4,7 @@ import { AutoCompleteField, AvatarField, Col, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { Modal } from '@/components/modal';
 import { apiConfig, PERSON_KIND_ACTOR } from '@/constants';
+import { useDisclosure } from '@/hooks';
 import { logger } from '@/logger';
 import { useCreateMoviePersonMutation } from '@/queries';
 import { moviePersonSchema } from '@/schemaValidations';
@@ -32,6 +33,7 @@ export default function MoviePersonModal({
   listQuery: UseQueryResult<ApiResponseList<MoviePersonResType>, Error>;
   close: () => void;
 }) {
+  const addMoviePersonModal = useDisclosure();
   const createMoviePersonMutation = useCreateMoviePersonMutation();
 
   const defaultValues: MoviePersonBodyType = {

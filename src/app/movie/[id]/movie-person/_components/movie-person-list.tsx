@@ -71,7 +71,7 @@ export default function MoviePersonList({
           >
             <Button onClick={() => moviePersonModal.open()} variant={'primary'}>
               <PlusIcon />
-              Thêm mới
+              Thêm {kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}
             </Button>
           </HasPermission>
         );

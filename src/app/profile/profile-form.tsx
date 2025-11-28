@@ -230,7 +230,7 @@ export default function ProfileForm() {
             </Col>
           </Row>
           <Row className='my-0 justify-end'>
-            <Col span={4}>
+            <Col className='w-40!'>
               <Button
                 onClick={() => handleCancel()}
                 type='button'
@@ -241,7 +241,7 @@ export default function ProfileForm() {
                 Hủy
               </Button>
             </Col>
-            <Col span={4}>
+            <Col className='w-40!'>
               <Button
                 disabled={!form.formState.isDirty || profileMutation.isPending}
                 variant={'primary'}

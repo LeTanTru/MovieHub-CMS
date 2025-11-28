@@ -101,7 +101,7 @@ export default function CategoryForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
 
-            <>{renderActions(form, { span: 5 })}</>
+            <>{renderActions(form)}</>
             {loading && (
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

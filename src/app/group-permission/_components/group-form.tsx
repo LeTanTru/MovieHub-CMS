@@ -91,7 +91,7 @@ export default function GroupForm() {
         onSuccess: (res) => {
           if (res.result) {
             notify.success(
-              `${isCreate ? 'Thêm mới' : 'Cập nhật'} nhóm quyền thành công`
+              `${isCreate ? 'Thêm mới' : 'Cập nhật'} quyền thành công`
             );
             queryClient.invalidateQueries({ queryKey: ['group', id] });
             navigate(route.group.getList.path);
@@ -295,7 +295,7 @@ export default function GroupForm() {
               </Col>
             </Row>
             <Row className='my-0 justify-end'>
-              <Col span={4}>
+              <Col className='w-40!'>
                 <Button
                   onClick={() => navigate(route.group.getList.path)}
                   type='button'
@@ -306,7 +306,7 @@ export default function GroupForm() {
                   Hủy
                 </Button>
               </Col>
-              <Col span={4}>
+              <Col className='w-40!'>
                 <Button
                   disabled={
                     !form.formState.isDirty ||
