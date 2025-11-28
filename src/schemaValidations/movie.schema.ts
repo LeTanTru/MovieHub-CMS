@@ -1,8 +1,8 @@
 import z from 'zod';
 
 export const movieSchema = z.object({
-  ageRating: z.number({ error: 'Bắt buộc' }),
-  categoryIds: z.array(z.string(), { error: 'Bắt buộc' }),
+  ageRating: z.number({ error: 'Bắt buộc' }).min(1, 'Bắt buộc'),
+  categoryIds: z.array(z.string(), { error: 'Bắt buộc' }).nonempty('Bắt buộc'),
   country: z.string().nonempty('Bắt buộc'),
   description: z.string().nonempty('Bắt buộc'),
   isFeatured: z.boolean(),
@@ -13,7 +13,7 @@ export const movieSchema = z.object({
   status: z.number({ error: 'Bắt buộc' }),
   thumbnailUrl: z.string().nonempty('Bắt buộc'),
   title: z.string().nonempty('Bắt buộc'),
-  type: z.number({ error: 'Bắt buộc' })
+  type: z.number({ error: 'Bắt buộc' }).min(1, 'Bắt buộc')
 });
 
 export const movieSearchSchema = z.object({

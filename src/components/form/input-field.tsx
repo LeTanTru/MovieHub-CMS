@@ -105,7 +105,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps<any>>(
                   </div>
                 )}
                 {fieldState.error && (
-                  <div className='animate-in fade-in absolute -bottom-6 left-1 z-0 mt-1 text-sm text-red-500'>
+                  <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
                     <FormMessage />
                   </div>
                 )}

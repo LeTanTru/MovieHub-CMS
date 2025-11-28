@@ -68,7 +68,10 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
     avatarPath: '',
     status: 0,
     confirmPassword: '',
-    phone: ''
+    phone: '',
+    confirmNewPassword: '',
+    newPassword: '',
+    oldPassword: ''
   };
 
   const initialValues: EmployeeBodyType = useMemo(() => {
@@ -81,7 +84,10 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
       avatarPath: data?.avatarPath ?? '',
       status: data?.status ?? STATUS_ACTIVE,
       confirmPassword: '',
-      phone: data?.phone ?? ''
+      phone: data?.phone ?? '',
+      confirmNewPassword: '',
+      newPassword: '',
+      oldPassword: ''
     };
   }, [data]);
 

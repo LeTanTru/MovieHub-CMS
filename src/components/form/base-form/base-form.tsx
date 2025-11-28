@@ -35,7 +35,8 @@ export default function BaseForm<T extends Record<string, any>>({
   const form = useForm<T>({
     resolver: zodResolver(schema),
     defaultValues,
-    mode
+    mode,
+    shouldFocusError: false
   });
 
   useEffect(() => {

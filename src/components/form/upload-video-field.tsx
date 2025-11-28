@@ -117,7 +117,7 @@ export default function UploadVideoField<T extends FieldValues>({
           'bg-muted/30 hover:bg-accent/50 relative mb-0 flex cursor-pointer items-center gap-3 rounded-md border-2 border-dashed p-4 transition-all duration-200 ease-linear',
           isDragging && 'border-primary bg-primary/10',
           {
-            'border-2 border-solid border-red-500': !!error && !uploading
+            'border border-solid border-red-500': !!error && !uploading
           }
         )}
         onClick={openFileDialog}

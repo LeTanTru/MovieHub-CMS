@@ -165,6 +165,8 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   }}
                   label='Ảnh xem trước'
                   aspect={2 / 3}
+                  defaultCrop
+                  required
                 />
               </Col>
               <Col span={12}>
@@ -183,6 +185,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   }}
                   label='Ảnh bìa (16:9)'
                   aspect={16 / 9}
+                  required
                 />
               </Col>
             </Row>

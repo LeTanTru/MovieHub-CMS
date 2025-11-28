@@ -220,7 +220,7 @@ export default function UploadImageField<T extends FieldValues>({
               'border-input hover:bg-accent/50 focus-visible:border-ring relative flex cursor-pointer items-center justify-center overflow-hidden border border-dashed p-0 transition-colors outline-none focus-visible:ring-[3px]',
               className,
               {
-                'border-2 border-solid border-red-500': !!error
+                'border border-solid border-red-500': !!error
               }
             )}
             onClick={openFileDialog}
