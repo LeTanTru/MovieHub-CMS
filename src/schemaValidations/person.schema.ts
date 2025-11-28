@@ -8,7 +8,7 @@ export const personSchema = z.object({
   gender: z.number({ error: 'Bắt buộc' }),
   kinds: z.array(z.number()).nonempty('Bắt buộc'),
   name: z.string().nonempty('Bắt buộc'),
-  otherName: z.string().optional().nullable()
+  otherName: z.string().nonempty('Bắt buộc')
 });
 
 export const personSearchSchema = z.object({

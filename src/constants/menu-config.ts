@@ -32,7 +32,9 @@ const menuConfig: MenuItem[] = [
     icon: RiMovie2Fill,
     permissionCode: [
       apiConfig.category.getList.permissionCode,
-      apiConfig.person.getList.permissionCode
+      apiConfig.videoLibrary.getList.permissionCode,
+      apiConfig.person.getList.permissionCode,
+      apiConfig.movie.getList.permissionCode
     ],
     children: [
       {
@@ -45,7 +47,7 @@ const menuConfig: MenuItem[] = [
         key: 'video-library-list',
         label: 'Thư viện video',
         path: route.videoLibrary.getList.path,
-        permissionCode: [apiConfig.videoLibary.getList.permissionCode]
+        permissionCode: [apiConfig.videoLibrary.getList.permissionCode]
       },
       {
         key: 'person-list',
@@ -58,12 +60,6 @@ const menuConfig: MenuItem[] = [
         label: 'Phim',
         path: route.movie.getList.path,
         permissionCode: [apiConfig.movie.getList.permissionCode]
-      },
-      {
-        key: 'sidebar-movie-list',
-        label: 'Phim mới',
-        path: route.sidebar.getList.path,
-        permissionCode: [apiConfig.sidebar.getList.permissionCode]
       }
     ]
   },
@@ -73,9 +69,16 @@ const menuConfig: MenuItem[] = [
     icon: LucideLayoutGrid,
     permissionCode: [
       apiConfig.style.getList.permissionCode,
-      apiConfig.collection.getList.permissionCode
+      apiConfig.collection.getList.permissionCode,
+      apiConfig.sidebar.getList.permissionCode
     ],
     children: [
+      {
+        key: 'sidebar-movie-list',
+        label: 'Phim mới',
+        path: route.sidebar.getList.path,
+        permissionCode: [apiConfig.sidebar.getList.permissionCode]
+      },
       {
         key: 'style-list',
         label: 'Thiết kế',

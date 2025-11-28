@@ -99,14 +99,14 @@ const route = defineRoute({
     getList: {
       path: '/video-library',
       auth: true,
-      permissionCode: [apiConfig.videoLibary.getList.permissionCode]
+      permissionCode: [apiConfig.videoLibrary.getList.permissionCode]
     },
     savePage: {
       path: '/video-library/:id',
       auth: true,
       permissionCode: [
-        apiConfig.videoLibary.create.permissionCode,
-        apiConfig.videoLibary.update.permissionCode
+        apiConfig.videoLibrary.create.permissionCode,
+        apiConfig.videoLibrary.update.permissionCode
       ],
       separate: true
     }

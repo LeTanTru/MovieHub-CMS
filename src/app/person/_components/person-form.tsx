@@ -163,6 +163,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
                   name='otherName'
                   label='Nghệ danh'
                   placeholder='Nghệ danh'
+                  required
                 />
               </Col>
             </Row>

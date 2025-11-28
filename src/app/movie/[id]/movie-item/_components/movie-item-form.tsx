@@ -47,7 +47,7 @@ import {
   renderListPageUrl
 } from '@/utils';
 import { useParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function MovieItemForm({ queryKey }: { queryKey: string }) {
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
@@ -197,6 +197,10 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
     });
   };
 
+  useEffect(() => {
+    if (data?.thumbnailUrl) setThumbnailUrl(data?.thumbnailUrl);
+  }, [data?.thumbnailUrl]);
+
   return (
     <PageWrapper
       breadcrumbs={[
@@ -297,7 +301,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                 <Row>
                   <Col>
                     <AutoCompleteField
-                      apiConfig={apiConfig.videoLibary.getList}
+                      apiConfig={apiConfig.videoLibrary.getList}
                       mappingData={(item: VideoLibraryResType) => ({
                         label: item.name,
                         value: item.id.toString()

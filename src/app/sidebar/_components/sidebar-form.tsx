@@ -24,7 +24,7 @@ import {
 } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function SidebarForm({ queryKey }: { queryKey: string }) {
   const [webThumbnailUrl, setWebThumbnailUrl] = useState<string>('');
@@ -81,6 +81,15 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
       ...values
     });
   };
+
+  useEffect(() => {
+    if (data?.webThumbnailUrl) setWebThumbnailUrl(data?.webThumbnailUrl);
+  }, [data?.webThumbnailUrl]);
+
+  useEffect(() => {
+    if (data?.mobileThumbnailUrl)
+      setMobileThumbnailUrl(data?.mobileThumbnailUrl);
+  }, [data?.mobileThumbnailUrl]);
 
   return (
     <PageWrapper
@@ -143,8 +152,8 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                       });
                       return res.data?.filePath ?? '';
                     }}
-                    label='Ảnh xem trước mobile (16:9)'
-                    aspect={16 / 9}
+                    label='Ảnh xem trước mobile (2:3)'
+                    aspect={2 / 3}
                     required
                   />
                 </Col>
