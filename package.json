@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack --port 3000",
     "prebuild": "rimraf .next && rimraf out",
     "build": "next build",
-    "start": "next start --port 3001",
+    "start": "next start --port 3000",
     "prepare": "husky",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "format": "prettier --write .",

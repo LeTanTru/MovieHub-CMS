@@ -21,6 +21,7 @@ import {
   SearchFormProps
 } from '@/types';
 import { formatDate, notify, renderImageUrl } from '@/utils';
+import { useEffect } from 'react';
 import { AiOutlineUser } from 'react-icons/ai';
 
 export default function PersonList({
@@ -30,7 +31,7 @@ export default function PersonList({
   queryKey: string;
   kind: number;
 }) {
-  const { data, pagination, loading, handlers } = useListBase<
+  const { data, pagination, loading, handlers, queryFilter } = useListBase<
     PersonResType,
     PersonSearchType
   >({
@@ -39,7 +40,7 @@ export default function PersonList({
       queryKey,
       objectName: kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
       defaultFilters: { kind },
-      notShowFromSearchParams: ['kind']
+      notShowFromSearchParams: ['kind', 'page', 'size']
     },
     override: (handlers) => {
       handlers.handleDeleteError = (code) => {
@@ -53,6 +54,10 @@ export default function PersonList({
       };
     }
   });
+
+  useEffect(() => {
+    handlers.changeQueryFilter({ ...queryFilter, page: 0 });
+  }, [kind]);
 
   const columns: Column<PersonResType>[] = [
     {
