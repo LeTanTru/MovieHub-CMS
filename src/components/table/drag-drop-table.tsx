@@ -79,7 +79,7 @@ function SortableRow<T extends Record<any, any>>({
     transition,
     isDragging,
     setNodeRef
-  } = useSortable({ id: row[rowKey] });
+  } = useSortable({ id: row[rowKey], animateLayoutChanges: () => false });
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
