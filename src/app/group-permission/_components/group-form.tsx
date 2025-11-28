@@ -67,7 +67,6 @@ export default function GroupForm() {
       acc[group].push(permission);
       return acc;
     }, {} as any);
-  console.log('🚀 ~ GroupForm ~ groupedPermissions:', groupedPermissions);
 
   const defaultValues: GroupBodyType = {
     name: '',
