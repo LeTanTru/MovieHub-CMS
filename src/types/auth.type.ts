@@ -1,7 +1,6 @@
 import { loginSchema } from '@/schemaValidations';
 import { ProfileResType } from '@/types/account.type';
 import z from 'zod';
-import { Socket } from 'socket.io-client';
 
 export type LoginBodyType = z.infer<typeof loginSchema>;
 export type LoginResType = {
@@ -28,4 +27,9 @@ export type AuthStoreType = {
   setProfile: (profile: ProfileResType | null) => void;
   setLoading: (loading: boolean) => void;
   setIsLoggedOut: (isLogout: boolean) => void;
+};
+
+export type RefreshTokenBodyType = {
+  refresh_token: string;
+  grant_type: string;
 };

@@ -3,11 +3,14 @@
 import { AvatarField } from '@/components/form';
 import List from '@/components/list';
 import ListItem from '@/components/list/list-item';
+import { CircleLoading } from '@/components/loading';
 import { storageKeys } from '@/constants';
 import { useNavigate, useQueryParams } from '@/hooks';
+import { logger } from '@/logger';
+import { useLogoutMutation } from '@/queries';
 import { route } from '@/routes';
 import { useAuthStore } from '@/store';
-import { getData, removeData, renderImageUrl, setData } from '@/utils';
+import { getData, notify, removeData, renderImageUrl, setData } from '@/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, CircleUserRound, LogOut, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -15,25 +18,39 @@ import { useEffect, useState } from 'react';
 
 export default function DropdownAvatar() {
   const navigate = useNavigate();
-  const { profile, setAuthenticated, setProfile, setIsLoggedOut } =
-    useAuthStore();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { profile, setAuthenticated, setProfile, setIsLoggedOut } =
+    useAuthStore();
   const { queryString } = useQueryParams();
+  const logoutMutation = useLogoutMutation();
 
   const handleLogout = async () => {
-    removeData(storageKeys.PATH_NO_LOGIN);
-    removeData(storageKeys.PREVIOUS_PATH);
+    await logoutMutation.mutateAsync(undefined, {
+      onSuccess: (res) => {
+        if (res.result) {
+          notify.success('Đăng xuất thành công');
+          removeData(storageKeys.PATH_NO_LOGIN);
+          removeData(storageKeys.PREVIOUS_PATH);
 
-    removeData(storageKeys.ACCESS_TOKEN);
-    removeData(storageKeys.REFRESH_TOKEN);
-    removeData(storageKeys.USER_KIND);
+          removeData(storageKeys.ACCESS_TOKEN);
+          removeData(storageKeys.REFRESH_TOKEN);
+          removeData(storageKeys.USER_KIND);
 
-    setAuthenticated(false);
-    setProfile(null);
+          setAuthenticated(false);
+          setProfile(null);
 
-    setIsLoggedOut(true);
-    navigate(route.login.path);
+          setIsLoggedOut(true);
+          navigate(route.login.path);
+        } else {
+          notify.error('Đăng xuất thất bại');
+        }
+      },
+      onError: (error) => {
+        logger.error('Error while logging out', error);
+        notify.error('Có lỗi xảy ra khi đăng xuất');
+      }
+    });
   };
 
   const handleProfileClick = () => {
@@ -93,7 +110,13 @@ export default function DropdownAvatar() {
                 className='flex w-full cursor-pointer items-center gap-2 rounded-md bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
                 onClick={handleLogout}
               >
-                <LogOut className='size-5' /> Đăng xuất
+                {logoutMutation.isPending ? (
+                  <CircleLoading className='size-5 stroke-gray-300' />
+                ) : (
+                  <>
+                    <LogOut className='size-5' /> Đăng xuất
+                  </>
+                )}
               </ListItem>
             </List>
           </motion.div>

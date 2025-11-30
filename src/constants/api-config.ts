@@ -20,6 +20,16 @@ const apiConfig = defineApiConfig({
       method: 'POST',
       headers: baseHeader,
       isRequiredTenantId: true
+    },
+    logout: {
+      baseUrl: `${AppConstants.metaApiUrl}/v1/auth/logout`,
+      method: 'POST',
+      headers: baseHeader
+    },
+    refreshToken: {
+      baseUrl: `${AppConstants.metaApiUrl}/v1/api/token`,
+      method: 'POST',
+      headers: baseHeader
     }
   },
   customer: {

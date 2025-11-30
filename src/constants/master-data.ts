@@ -158,7 +158,9 @@ export const queryKeys = {
   APP_VERSION: 'app_version',
   STYLE: 'style',
   COLLECTION: 'collection',
-  COLLECTION_ITEM: 'collection_item'
+  COLLECTION_ITEM: 'collection_item',
+  LOGOUT: 'logout',
+  REFRESH_TOKEN: 'refresh_token'
 };
 
 export const loginOptions = [

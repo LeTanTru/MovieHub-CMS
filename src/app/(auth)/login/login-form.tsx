@@ -28,7 +28,7 @@ export default function LoginForm() {
     username: '',
     password: '',
     grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE as string,
-    tenantId: '',
+    tenantId: envConfig.NEXT_PUBLIC_TENANT_ID,
     loginType: LOGIN_TYPE_MANAGER
   };
 
@@ -68,7 +68,7 @@ export default function LoginForm() {
       defaultValues={defaultValues}
       schema={loginSchema}
       onSubmit={onSubmit}
-      className='flex flex-col items-center justify-around gap-0 rounded-lg px-6 py-6 shadow-[0px_0px_10px_1px] shadow-slate-200 max-[1560px]:w-120 min-[1560px]:w-150'
+      className='flex flex-col items-center justify-around gap-0 rounded-lg px-6 py-6 shadow-[0px_0px_10px_1px] shadow-slate-200 max-[1560px]:w-120 min-[1560px]:w-120'
     >
       {(form) => (
         <>
@@ -101,7 +101,7 @@ export default function LoginForm() {
                 required
               />
             </Col>
-            <Col span={24}>
+            {/* <Col span={24}>
               <InputField
                 name='tenantId'
                 control={form.control}
@@ -109,8 +109,8 @@ export default function LoginForm() {
                 placeholder='Mã thuê bao (Tenant Id)'
                 required
               />
-            </Col>
-            <Col span={24}>
+            </Col> */}
+            {/* <Col span={24}>
               <SelectField
                 options={loginOptions}
                 name='loginType'
@@ -119,7 +119,7 @@ export default function LoginForm() {
                 placeholder='Vai trò'
                 required
               />
-            </Col>
+            </Col> */}
           </Row>
           <Row className='mb-0'>
             <Col className='my-0 px-0' span={24}>

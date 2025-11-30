@@ -1,6 +1,11 @@
 import envConfig from '@/config';
 import { apiConfig, queryKeys } from '@/constants';
-import { LoginBodyType, LoginResType } from '@/types';
+import {
+  ApiResponse,
+  LoginBodyType,
+  LoginResType,
+  RefreshTokenBodyType
+} from '@/types';
 import { http } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 
@@ -25,6 +30,28 @@ export const useLoginEmployeeMutation = () => {
     mutationFn: (body: LoginBodyType) =>
       http.post<LoginResType>(apiConfig.auth.loginEmployee, {
         body
+      })
+  });
+};
+
+export const useLogoutMutation = () => {
+  return useMutation({
+    mutationKey: [queryKeys.LOGOUT],
+    mutationFn: () => http.post<ApiResponse<any>>(apiConfig.auth.logout)
+  });
+};
+
+export const useRefreshTokenMutation = () => {
+  return useMutation({
+    mutationKey: [queryKeys.REFRESH_TOKEN],
+    mutationFn: (body: RefreshTokenBodyType) =>
+      http.post<ApiResponse<LoginResType>>(apiConfig.auth.refreshToken, {
+        body,
+        options: {
+          headers: {
+            Authorization: `Basic ${btoa(`${envConfig.NEXT_PUBLIC_APP_USERNAME}:${envConfig.NEXT_PUBLIC_APP_PASSWORD}`)}`
+          }
+        }
       })
   });
 };
