@@ -13,11 +13,13 @@ import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { apiConfig, appVersionErrorMaps, ErrorCode } from '@/constants';
 import { useSaveBase } from '@/hooks';
+import { logger } from '@/logger';
 import { useUploadFileMutation } from '@/queries';
 import { route } from '@/routes';
 import { appVersionSchema } from '@/schemaValidations';
 import { AppVersionBodyType, AppVersionResType } from '@/types';
 import { renderListPageUrl } from '@/utils';
+import { AxiosProgressEvent } from 'axios';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -114,8 +116,19 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
                 <UploadFileField
                   control={form.control}
                   name='filePath'
-                  uploadFileFn={async (file: Blob) => {
-                    const res = await uploadFileMutation.mutateAsync({ file });
+                  uploadFileFn={async (file: Blob, onProgress) => {
+                    const res = await uploadFileMutation.mutateAsync({
+                      file,
+                      options: {
+                        onUploadProgress: (e: AxiosProgressEvent) => {
+                          const percent = Math.round(
+                            (e.loaded * 100) / (e.total ?? 1)
+                          );
+                          logger.info(`Upload video: ${percent}%`);
+                          onProgress(percent);
+                        }
+                      }
+                    });
                     return res.data?.filePath ?? '';
                   }}
                   onChange={(url) => setFilePath(url)}
