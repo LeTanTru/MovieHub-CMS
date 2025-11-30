@@ -28,7 +28,7 @@ export const useLoginEmployeeMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.LOGIN],
     mutationFn: (body: LoginBodyType) =>
-      http.post<LoginResType>(apiConfig.auth.loginEmployee, {
+      http.post<LoginResType | ApiResponse<any>>(apiConfig.auth.loginEmployee, {
         body
       })
   });

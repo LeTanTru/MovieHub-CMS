@@ -3,7 +3,12 @@
 import { logoWithText } from '@/assets';
 import { Button, Col, InputField, Row, SelectField } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { LOGIN_TYPE_MANAGER, loginOptions, storageKeys } from '@/constants';
+import {
+  ErrorCode,
+  LOGIN_TYPE_MANAGER,
+  loginOptions,
+  storageKeys
+} from '@/constants';
 import { logger } from '@/logger';
 import { loginSchema } from '@/schemaValidations';
 import { LoginBodyType, LoginResType } from '@/types/auth.type';
@@ -15,6 +20,7 @@ import { useAuthStore } from '@/store';
 import envConfig from '@/config';
 import { useLoginEmployeeMutation, useLoginManagerMutation } from '@/queries';
 import { omit } from 'lodash';
+import { ApiResponse } from '@/types';
 
 export default function LoginForm() {
   const loginManagerMutation = useLoginManagerMutation();
@@ -32,13 +38,21 @@ export default function LoginForm() {
     loginType: LOGIN_TYPE_MANAGER
   };
 
-  const handleLoginSuccess = (res: LoginResType) => {
-    notify.success('Đăng nhập thành công');
-    setData(storageKeys.ACCESS_TOKEN, res?.access_token!);
-    setData(storageKeys.REFRESH_TOKEN, res?.refresh_token!);
-    setData(storageKeys.USER_KIND, res?.user_kind?.toString()!);
-    setAuthenticated(true);
-    setLoading(true);
+  const handleLoginSuccess = (res: LoginResType | ApiResponse<any>) => {
+    if ((res as ApiResponse<any>).result === false) {
+      const code = (res as ApiResponse<any>).code;
+      if (code === ErrorCode.ACCOUNT_ERROR_LOCKED) {
+        notify.error('Tài khoản đã bị khóa, vui lòng liên hệ quản trị viên');
+      }
+    } else {
+      const _res = res as LoginResType;
+      notify.success('Đăng nhập thành công');
+      setData(storageKeys.ACCESS_TOKEN, _res?.access_token!);
+      setData(storageKeys.REFRESH_TOKEN, _res?.refresh_token!);
+      setData(storageKeys.USER_KIND, _res?.user_kind?.toString()!);
+      setAuthenticated(true);
+      setLoading(true);
+    }
   };
 
   const handleLoginError = (error: Error) => {
