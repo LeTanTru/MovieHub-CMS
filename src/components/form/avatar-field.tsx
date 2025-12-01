@@ -20,6 +20,7 @@ type AvatarFieldProps = {
   width?: number;
   height?: number;
   aspect?: number;
+  alt?: string;
 } & React.HTMLAttributes<HTMLElement>;
 
 export default function AvatarField({
@@ -35,6 +36,7 @@ export default function AvatarField({
   width,
   height,
   aspect = 1,
+  alt,
   ...props
 }: AvatarFieldProps) {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -62,7 +64,7 @@ export default function AvatarField({
             {autosize ? (
               <Image
                 src={src}
-                alt='Avatar'
+                alt={alt ?? 'Avatar'}
                 fill
                 className='object-cover'
                 unoptimized
@@ -70,7 +72,7 @@ export default function AvatarField({
             ) : (
               <Image
                 src={src}
-                alt='Avatar'
+                alt={alt ?? 'Avatar'}
                 width={size * aspect}
                 height={size}
                 className='h-full w-full object-cover'

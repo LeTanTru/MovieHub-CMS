@@ -226,6 +226,13 @@ const route = defineRoute({
       permissionCode: [apiConfig.collectionItem.create.permissionCode],
       separate: true
     }
+  },
+  comment: {
+    getList: {
+      path: '/movie/:id/comment',
+      auth: true,
+      permissionCode: [apiConfig.comment.getList.permissionCode]
+    }
   }
 });
 

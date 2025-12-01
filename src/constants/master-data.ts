@@ -155,25 +155,26 @@ export const genderOptions: OptionType[] = [
 ];
 
 export const queryKeys = {
+  APP_VERSION: 'app_version',
   AUDIENCE: 'audience',
   CATEGORY: 'category',
+  COLLECTION_ITEM: 'collection_item',
+  COLLECTION: 'collection',
+  COMMENT: 'comment',
   EMPLOYEE: 'employee',
   GROUP: 'group',
   LOGIN: 'login',
-  PERSON: 'person',
-  PROFILE: 'profile',
-  SNS_CONFIG: 'sns_config',
-  VIDEO_LIBRARY: 'video_library',
-  MOVIE: 'movie',
+  LOGOUT: 'logout',
   MOVIE_ITEM: 'movie_item',
   MOVIE_PERSON: 'movie_person',
+  MOVIE: 'movie',
+  PERSON: 'person',
+  PROFILE: 'profile',
+  REFRESH_TOKEN: 'refresh_token',
   SIDEBAR: 'sidebar',
-  APP_VERSION: 'app_version',
+  SNS_CONFIG: 'sns_config',
   STYLE: 'style',
-  COLLECTION: 'collection',
-  COLLECTION_ITEM: 'collection_item',
-  LOGOUT: 'logout',
-  REFRESH_TOKEN: 'refresh_token'
+  VIDEO_LIBRARY: 'video_library'
 };
 
 export const loginOptions = [

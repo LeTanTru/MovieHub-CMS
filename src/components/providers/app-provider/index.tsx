@@ -14,7 +14,7 @@ import {
   useRefreshTokenMutation
 } from '@/queries';
 import { useAuthStore, useSocketStore } from '@/store';
-import { getData, removeData, setData } from '@/utils';
+import { getData, isTokenExpiringSoon, removeData, setData } from '@/utils';
 import { useEffect, useState } from 'react';
 
 export default function AppProvider({
@@ -142,26 +142,31 @@ export default function AppProvider({
     };
   }, [clientToken]);
 
-  // useEffect(() => {
-  //   if (!refreshToken) return;
-  //   const handleRefreshToken = async () => {
-  //     const res = await refreshTokenMutation.mutateAsync({
-  //       refresh_token: refreshToken,
-  //       grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN
-  //     });
+  useEffect(() => {
+    if (!refreshToken) return;
 
-  //     if (res.data?.access_token) {
-  //       setData(storageKeys.ACCESS_TOKEN, res.data?.access_token);
-  //     }
+    const handleRefreshToken = async () => {
+      const res = await refreshTokenMutation.mutateAsync({
+        refresh_token: refreshToken,
+        grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN
+      });
 
-  //     if (res.data?.refresh_token) {
-  //       setData(storageKeys.ACCESS_TOKEN, res.data?.refresh_token);
-  //     }
-  //   };
-  //   const interval = setInterval(handleRefreshToken, 5000);
+      if (res.data?.access_token) {
+        setData(storageKeys.ACCESS_TOKEN, res.data?.access_token);
+      }
 
-  //   return () => clearInterval(interval);
-  // }, []);
+      if (res.data?.refresh_token) {
+        setData(storageKeys.ACCESS_TOKEN, res.data?.refresh_token);
+      }
+    };
+    const interval = setInterval(() => {
+      if (isTokenExpiringSoon(accessToken)) {
+        handleRefreshToken();
+      }
+    });
+
+    return clearInterval(interval);
+  }, [accessToken, refreshToken]);
 
   return <>{children}</>;
 }
