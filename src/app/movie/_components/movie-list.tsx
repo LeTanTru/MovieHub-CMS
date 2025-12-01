@@ -24,6 +24,7 @@ import {
   SearchFormProps
 } from '@/types';
 import { formatDate, generatePath, notify, renderImageUrl } from '@/utils';
+import { MessageSquareHeart } from 'lucide-react';
 import Link from 'next/link';
 import { AiOutlineFileImage, AiOutlineUser } from 'react-icons/ai';
 
@@ -46,12 +47,6 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
       };
       handlers.additionalColumns = () => ({
         person: (record: MovieResType, buttonProps?: Record<string, any>) => {
-          if (
-            !handlers.hasPermission({
-              requiredPermissions: [apiConfig.person.getList.permissionCode]
-            })
-          )
-            return null;
           return (
             <ToolTip title={`Diễn viên & đạo diễn`} sideOffset={0}>
               <span>
@@ -67,6 +62,27 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
                   {...buttonProps}
                 >
                   <AiOutlineUser className='text-dodger-blue size-4' />
+                </Button>
+              </span>
+            </ToolTip>
+          );
+        },
+        comment: (record: MovieResType, buttonProps?: Record<string, any>) => {
+          return (
+            <ToolTip title={`Bình luận`} sideOffset={0}>
+              <span>
+                <Button
+                  onClick={() =>
+                    navigate(
+                      generatePath(route.comment.getList.path, {
+                        id: record.id
+                      })
+                    )
+                  }
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  {...buttonProps}
+                >
+                  <MessageSquareHeart className='text-dodger-blue size-4' />
                 </Button>
               </span>
             </ToolTip>
@@ -203,9 +219,15 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
             apiConfig.moviePerson.getList.permissionCode as string
           ]
         }),
+        comment: handlers.hasPermission({
+          requiredPermissions: [
+            apiConfig.comment.getList.permissionCode as string
+          ]
+        }),
         edit: true,
         delete: true
-      }
+      },
+      columnProps: { width: 150 }
     })
   ];
 

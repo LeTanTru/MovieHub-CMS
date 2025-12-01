@@ -23,7 +23,7 @@ export default function Pagination({
       <span
         key={page}
         className={cn(
-          'bg-background text-sidebar-item-active border-sidebar-item-active flex h-8 w-8 cursor-pointer items-center justify-center rounded border font-medium'
+          'bg-background text-dodger-blue border-dodger-blue flex h-8 w-8 cursor-pointer items-center justify-center rounded border font-medium'
         )}
       >
         {page}
@@ -77,7 +77,7 @@ export default function Pagination({
   const pages = getVisiblePages();
 
   return (
-    <div className='flex w-full items-center justify-end gap-2 pr-5 text-sm'>
+    <div className='flex w-full items-center justify-end gap-2 border-t pt-4 pr-5 text-sm'>
       {currentPage > 1 ? (
         <Button
           variant='ghost'

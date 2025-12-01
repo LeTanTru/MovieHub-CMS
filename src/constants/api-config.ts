@@ -27,7 +27,7 @@ const apiConfig = defineApiConfig({
       headers: baseHeader
     },
     refreshToken: {
-      baseUrl: `${AppConstants.metaApiUrl}/v1/api/token`,
+      baseUrl: `${AppConstants.metaApiUrl}/api/token`,
       method: 'POST',
       headers: baseHeader
     }
@@ -78,10 +78,40 @@ const apiConfig = defineApiConfig({
   },
   comment: {
     getList: {
-      baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/list`,
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/admin/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'CA_L'
+      permissionCode: 'CMT_L'
+    },
+    create: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'CMT_C'
+    },
+    update: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'CMT_U'
+    },
+    pin: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/pin`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'CMT_PIN'
+    },
+    vote: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/vote`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'CMT_VOTE'
+    },
+    delete: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'CMT_VOTE'
     }
   },
   employee: {

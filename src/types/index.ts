@@ -8,6 +8,7 @@ export * from './breadcrumb.type';
 export * from './category.type';
 export * from './collection-item.type';
 export * from './collection.type';
+export * from './comment.type';
 export * from './employee.type';
 export * from './file.type';
 export * from './form-error.type';
