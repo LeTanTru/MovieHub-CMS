@@ -103,7 +103,7 @@ export default function UploadVideoField<T extends FieldValues>({
         <FormLabel
           className={cn(
             'ml-2 flex items-center gap-1',
-            error && 'text-destructive',
+            error && !uploading && 'text-destructive',
             className
           )}
         >

@@ -258,9 +258,11 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
             }
           }}
           rowClassName={(row) =>
-            row.id.toString() === selectedKey?.toString()
-              ? 'bg-gray-400/50 hover:bg-gray-400/50'
-              : ''
+            cn({
+              'bg-gray-400/50 hover:bg-gray-400/50':
+                row.id.toString() === selectedKey?.toString(),
+              'cursor-pointer': row.kind === MOVIE_ITEM_KIND_SEASON
+            })
           }
         />
         {sortedData.length > 1 && (
