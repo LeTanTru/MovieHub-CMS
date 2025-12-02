@@ -1,8 +1,7 @@
 'use client';
 
 import { AvatarField } from '@/components/form';
-import List from '@/components/list';
-import ListItem from '@/components/list/list-item';
+import { List, ListItem } from '@/components/list';
 import { CircleLoading } from '@/components/loading';
 import { storageKeys } from '@/constants';
 import { useNavigate, useQueryParams } from '@/hooks';

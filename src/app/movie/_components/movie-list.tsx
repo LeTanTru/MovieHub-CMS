@@ -15,6 +15,7 @@ import {
 } from '@/constants';
 import { useListBase, useNavigate } from '@/hooks';
 import { cn } from '@/lib';
+import { useCategoryListQuery } from '@/queries';
 import { route } from '@/routes';
 import { movieSearchSchema } from '@/schemaValidations';
 import {
@@ -30,6 +31,16 @@ import { AiOutlineFileImage, AiOutlineUser } from 'react-icons/ai';
 
 export default function MovieList({ queryKey }: { queryKey: string }) {
   const navigate = useNavigate(false);
+  const categoryListQuery = useCategoryListQuery();
+
+  const categories =
+    categoryListQuery?.data?.data?.content
+      ?.map((category) => ({
+        value: category.id.toString(),
+        label: category.name
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label)) || [];
+
   const { data, pagination, loading, handlers } = useListBase<
     MovieResType,
     MovieSearchType
@@ -233,6 +244,12 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
 
   const searchFields: SearchFormProps<MovieSearchType>['searchFields'] = [
     { key: 'title', placeholder: 'Tiêu đề' },
+    {
+      key: 'categoryIds',
+      placeholder: 'Danh mục',
+      type: FieldTypes.MULTI_SELECT,
+      options: categories
+    },
     {
       key: 'type',
       placeholder: 'Thể loại',

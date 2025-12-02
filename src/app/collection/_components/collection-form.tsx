@@ -44,10 +44,12 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
   const collectionListQuery = useCollectionListQuery();
 
   const categories =
-    categoryListQuery?.data?.data?.content?.map((category) => ({
-      value: category.id.toString(),
-      label: category.name
-    })) || [];
+    categoryListQuery?.data?.data?.content
+      ?.map((category) => ({
+        value: category.id.toString(),
+        label: category.name
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label)) || [];
 
   const {
     data,

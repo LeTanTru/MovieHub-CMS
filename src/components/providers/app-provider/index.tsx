@@ -14,7 +14,13 @@ import {
   useRefreshTokenMutation
 } from '@/queries';
 import { useAuthStore, useSocketStore } from '@/store';
-import { getData, isTokenExpiringSoon, removeData, setData } from '@/utils';
+import {
+  getData,
+  isTokenExpired,
+  isTokenExpiringSoon,
+  removeData,
+  setData
+} from '@/utils';
 import { useEffect, useState } from 'react';
 
 export default function AppProvider({
@@ -151,22 +157,23 @@ export default function AppProvider({
         grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN
       });
 
-      if (res.data?.access_token) {
-        setData(storageKeys.ACCESS_TOKEN, res.data?.access_token);
+      if (res?.access_token) {
+        setData(storageKeys.ACCESS_TOKEN, res?.access_token);
       }
 
-      if (res.data?.refresh_token) {
-        setData(storageKeys.ACCESS_TOKEN, res.data?.refresh_token);
+      if (res?.refresh_token) {
+        setData(storageKeys.REFRESH_TOKEN, res?.refresh_token);
       }
     };
+
     const interval = setInterval(() => {
-      if (isTokenExpiringSoon(accessToken)) {
+      if (isTokenExpired(accessToken)) {
         handleRefreshToken();
       }
     });
 
-    return clearInterval(interval);
-  }, [accessToken, refreshToken]);
+    return () => clearInterval(interval);
+  }, []);
 
   return <>{children}</>;
 }

@@ -18,7 +18,6 @@ import {
   DATE_TIME_FORMAT,
   DEFAULT_DATE_FORMAT,
   ErrorCode,
-  MOVIE_ITEM_KIND_EPISODE,
   MOVIE_ITEM_KIND_SEASON,
   MOVIE_TYPE_SINGLE,
   movieItemSeriesKindOptions,
@@ -152,8 +151,9 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
           const newOrderingList = movieItemList
             .map((movieItem) => {
               if (
-                lastMovieItemOfParent &&
-                movieItem.ordering <= lastMovieItemOfParent.ordering
+                !lastMovieItemOfParent ||
+                (lastMovieItemOfParent &&
+                  movieItem.ordering <= lastMovieItemOfParent.ordering)
               )
                 return movieItem;
               return { ...movieItem, ordering: movieItem.ordering + 1 };
@@ -164,21 +164,9 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
               parentId: movieItem?.parent?.id
             }));
 
-          ordering = (lastMovieItemOfParent?.ordering ?? 0) + 1;
-          await updateOrderingMovieItemMutation.mutateAsync(newOrderingList);
-        } else if (kind === MOVIE_ITEM_KIND_EPISODE) {
-          const newOrderingList = movieItemList
-            .map((movieItem) => {
-              if (movieItem.ordering <= item.ordering) return movieItem;
-              return { ...movieItem, ordering: movieItem.ordering + 1 };
-            })
-            .map((movieItem) => ({
-              id: movieItem.id,
-              ordering: movieItem.ordering,
-              parentId: movieItem?.parent?.id
-            }));
-
-          ordering = item.ordering + 1;
+          ordering = lastMovieItemOfParent?.ordering
+            ? lastMovieItemOfParent?.ordering + 1
+            : movieItemList.length;
           await updateOrderingMovieItemMutation.mutateAsync(newOrderingList);
         }
       }
@@ -233,7 +221,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
           return (
             <>
               <Row>
-                <Col span={24} className='pr-0'>
+                <Col span={24}>
                   <UploadImageField
                     value={renderImageUrl(thumbnailUrl)}
                     loading={uploadImageMutation.isPending}

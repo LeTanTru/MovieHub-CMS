@@ -150,7 +150,8 @@ export default function PermissionGuard({
         initial={{ opacity: 0 }}
         animate={{
           opacity: showOverlay ? 1 : 0,
-          zIndex: showOverlay ? 9999 : -9999
+          zIndex: showOverlay ? 9999 : -9999,
+          display: showOverlay ? 'flex' : 'none'
         }}
         className='fixed inset-0 z-50 flex h-dvh w-full items-center justify-center bg-white'
       >

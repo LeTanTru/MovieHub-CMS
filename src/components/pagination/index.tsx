@@ -77,7 +77,7 @@ export default function Pagination({
   const pages = getVisiblePages();
 
   return (
-    <div className='flex w-full items-center justify-end gap-2 border-t pt-4 pr-5 text-sm'>
+    <div className='flex w-full items-center justify-end gap-2 border-t py-4 pr-5 text-sm'>
       {currentPage > 1 ? (
         <Button
           variant='ghost'

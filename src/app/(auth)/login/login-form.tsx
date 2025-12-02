@@ -87,7 +87,7 @@ export default function LoginForm() {
       {(form) => (
         <>
           <Row className='mb-2'>
-            <Col span={24} className='items-center justify-center pr-0'>
+            <Col span={24} className='items-center justify-center'>
               <div className='bg-sidebar/80 mx-auto flex w-full items-center justify-center rounded py-2'>
                 <Image
                   src={logoWithText.src}

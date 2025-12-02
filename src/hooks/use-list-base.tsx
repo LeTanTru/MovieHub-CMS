@@ -324,7 +324,7 @@ export default function useListBase<
               </ToolTip>
             </span>
           </AlertDialogTrigger>
-          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-lg p-4'>
+          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-md p-4'>
             <AlertDialogHeader>
               <AlertDialogTitle className='content flex flex-nowrap items-center gap-2 text-sm font-normal'>
                 <Info className='size-8 fill-orange-500 stroke-white' />
@@ -335,15 +335,19 @@ export default function useListBase<
             <AlertDialogFooter>
               <AlertDialogCancel asChild>
                 <Button
+                  onClick={(e) => e.stopPropagation()}
                   variant='outline'
-                  className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
+                  className='w-20 border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
                 >
                   Không
                 </Button>
               </AlertDialogCancel>
               <AlertDialogAction
-                onClick={() => handleDeleteClick(record.id)}
-                className='bg-dodger-blue hover:bg-dodger-blue/80 w-15 cursor-pointer transition-all duration-200 ease-linear'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteClick(record.id);
+                }}
+                className='bg-dodger-blue hover:bg-dodger-blue/80 w-20 cursor-pointer transition-all duration-200 ease-linear'
               >
                 Có
               </AlertDialogAction>

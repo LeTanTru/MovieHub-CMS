@@ -23,5 +23,6 @@ export const movieSearchSchema = z.object({
   language: z.string().optional().nullable(),
   country: z.string().optional().nullable(),
   type: z.number().optional().nullable(),
-  isFeatured: z.boolean().optional().nullable()
+  isFeatured: z.boolean().optional().nullable(),
+  categoryIds: z.array(z.string()).optional().nullable()
 });

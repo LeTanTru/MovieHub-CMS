@@ -1,7 +1,10 @@
 'use client';
 
+import CommentInput from '@/app/movie/[id]/comment/_components/comment-input';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
+import { List, ListItem } from '@/components/list';
+import { NoData } from '@/components/no-data';
 import { apiConfig } from '@/constants';
 import { useListBase } from '@/hooks';
 import { route } from '@/routes';
@@ -49,7 +52,11 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
   const tree = buildCommentTree(data);
 
   const renderComment = (comment: (typeof tree)[0], level: number) => (
-    <div key={comment.id} className='mt-3' style={{ marginLeft: level * 20 }}>
+    <ListItem
+      key={comment.id}
+      style={{ marginLeft: level * 20 }}
+      className='pb-4'
+    >
       <div className='flex items-start space-x-3 rounded-md border p-3 transition hover:bg-gray-50'>
         <AvatarField
           src={renderImageUrl(comment.author.avatarPath)}
@@ -103,7 +110,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
       {comment.children &&
         comment.children.length > 0 &&
         comment.children.map((child) => renderComment(child, level + 1))}
-    </div>
+    </ListItem>
   );
 
   return (
@@ -113,8 +120,15 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
         { label: 'Bình luận' }
       ]}
     >
-      <ListPageWrapper reloadButton={handlers.renderReloadButton()}>
-        <div className='p-4 pt-0'>{tree.map((c) => renderComment(c, 0))}</div>
+      <ListPageWrapper
+      //  reloadButton={handlers.renderReloadButton()}
+      >
+        <CommentInput queryKey={queryKey} movieId={movieId} />
+        {tree.length === 0 ? (
+          <NoData content='Chưa có bình luận nào' />
+        ) : (
+          <List className='px-4'>{tree.map((c) => renderComment(c, 0))}</List>
+        )}
       </ListPageWrapper>
     </PageWrapper>
   );

@@ -137,7 +137,8 @@ export const FieldTypes = {
   AUTOCOMPLETE: 'AUTOCOMPLETE',
   DATE: 'DATE',
   DATE_RANGE: 'DATE_RANGE',
-  BOOLEAN: 'BOOLEAN'
+  BOOLEAN: 'BOOLEAN',
+  MULTI_SELECT: 'MULTI_SELECT'
 } as const;
 
 export type FieldType = keyof typeof FieldTypes;

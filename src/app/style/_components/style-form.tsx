@@ -106,7 +106,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
         {(form) => (
           <>
             <Row>
-              <Col span={24} className='pr-0'>
+              <Col span={24}>
                 <UploadImageField
                   value={renderImageUrl(imageUrl)}
                   loading={uploadImageMutation.isPending}

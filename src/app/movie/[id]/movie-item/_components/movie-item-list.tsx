@@ -40,6 +40,7 @@ import {
   formatDate,
   formatSecondsToHMS,
   getData,
+  removeData,
   renderImageUrl,
   setData
 } from '@/utils';
@@ -158,6 +159,7 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
         >
           {record.kind === MOVIE_ITEM_KIND_SEASON && `Mùa ${record.label}: `}
           {record.kind === MOVIE_ITEM_KIND_EPISODE && `${record.label}. `}
+          {record.kind === MOVIE_ITEM_KIND_TRAILER && `${record.label} `}
           {value}
         </span>
       )
@@ -176,7 +178,7 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
         if (record.video) {
           return formatSecondsToHMS(record.video.duration);
         }
-        return '';
+        return '------';
       },
       align: 'center'
     },
@@ -245,12 +247,13 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
           onDragEnd={onDragEnd}
           onSelectRow={(record) => {
             if (record.kind !== MOVIE_ITEM_KIND_SEASON) return;
-            if (selectedKey === record.id) {
+
+            if (selectedKey === record.id.toString()) {
               setSelectedKey(null);
-              setData(storageKeys.SELECTED_MOVIE_ITEM, '');
+              removeData(storageKeys.SELECTED_MOVIE_ITEM);
             } else {
-              setSelectedKey(record.id);
-              setData(storageKeys.SELECTED_MOVIE_ITEM, record.id);
+              setSelectedKey(record.id.toString());
+              setData(storageKeys.SELECTED_MOVIE_ITEM, record.id.toString());
             }
           }}
           rowClassName={(row) =>

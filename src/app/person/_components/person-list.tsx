@@ -21,7 +21,6 @@ import {
   SearchFormProps
 } from '@/types';
 import { formatDate, notify, renderImageUrl } from '@/utils';
-import { useEffect } from 'react';
 import { AiOutlineUser } from 'react-icons/ai';
 
 export default function PersonList({
@@ -31,7 +30,7 @@ export default function PersonList({
   queryKey: string;
   kind: number;
 }) {
-  const { data, pagination, loading, handlers, queryFilter } = useListBase<
+  const { data, pagination, loading, handlers } = useListBase<
     PersonResType,
     PersonSearchType
   >({
@@ -54,10 +53,6 @@ export default function PersonList({
       };
     }
   });
-
-  useEffect(() => {
-    handlers.changeQueryFilter({ ...queryFilter, page: 0 });
-  }, [kind]);
 
   const columns: Column<PersonResType>[] = [
     {

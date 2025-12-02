@@ -45,7 +45,7 @@ export const useRefreshTokenMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.REFRESH_TOKEN],
     mutationFn: (body: RefreshTokenBodyType) =>
-      http.post<ApiResponse<LoginResType>>(apiConfig.auth.refreshToken, {
+      http.post<LoginResType>(apiConfig.auth.refreshToken, {
         body,
         options: {
           headers: {

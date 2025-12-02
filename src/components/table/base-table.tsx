@@ -72,10 +72,10 @@ export default function BaseTable<T extends Record<any, any>>({
   }, []);
 
   return (
-    <div className='flex flex-col gap-y-5 rounded-br-lg rounded-bl-lg bg-white text-sm'>
+    <div className='bg-base-table flex flex-col gap-y-5 rounded-br-lg rounded-bl-lg text-sm'>
       <div className='base-table relative flex-1'>
         <div
-          className='scroll-wrapper w-full bg-white [&>div]:overflow-y-hidden'
+          className='scroll-wrapper bg-base-table w-full [&>div]:overflow-y-hidden'
           ref={scrollRef}
         >
           <Table className='w-full min-w-200'>
@@ -95,7 +95,7 @@ export default function BaseTable<T extends Record<any, any>>({
                             !isLast && !col.fixed,
                           'sticky right-0 z-1 z-10 bg-white transition-all duration-300':
                             col.fixed,
-                          'before:absolute before:top-0 before:bottom-[-1px] before:left-0 before:w-7.5 before:-translate-x-full before:shadow-[inset_-10px_0_8px_-8px] before:shadow-[rgba(5,5,5,0.1)]':
+                          'before:absolute before:top-0 before:bottom-px before:left-0 before:w-7.5 before:-translate-x-full before:shadow-[inset_-10px_0_8px_-8px] before:shadow-[rgba(5,5,5,0.1)]':
                             col.fixed && !scrollAtEnd
                         }
                       )}
@@ -126,7 +126,7 @@ export default function BaseTable<T extends Record<any, any>>({
                               {
                                 'sticky right-0 z-1 z-10 bg-white transition-all duration-300':
                                   col.fixed,
-                                'before:absolute before:top-0 before:bottom-[-1px] before:left-0 before:w-7.5 before:-translate-x-full before:shadow-[inset_-10px_0_8px_-8px] before:shadow-[rgba(5,5,5,0.1)]':
+                                'before:absolute before:top-0 before:-bottom-px before:left-0 before:w-7.5 before:-translate-x-full before:shadow-[inset_-10px_0_8px_-8px] before:shadow-[rgba(5,5,5,0.1)]':
                                   col.fixed && !scrollAtEnd
                               }
                             )}
@@ -188,7 +188,7 @@ export default function BaseTable<T extends Record<any, any>>({
           </Table>
         </div>
         {!(!total || total <= 1) && (
-          <div className='flex justify-end py-4'>
+          <div className='flex justify-end'>
             <Pagination
               changePagination={changePagination}
               currentPage={pagination.current}

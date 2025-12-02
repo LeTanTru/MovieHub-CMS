@@ -81,7 +81,8 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/admin/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'CMT_L'
+      permissionCode: 'CMT_L',
+      isRequiredTenantId: true
     },
     create: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/create`,
@@ -396,6 +397,14 @@ const apiConfig = defineApiConfig({
       method: 'POST',
       headers: multipartHeader,
       permissionCode: 'FILE_U_V',
+      isUpload: true,
+      isRequiredTenantId: true
+    },
+    delete: {
+      baseUrl: `${AppConstants.mediaUrl}/v1/file/delete`,
+      method: 'POST',
+      headers: multipartHeader,
+      permissionCode: 'FILE_U_D',
       isUpload: true,
       isRequiredTenantId: true
     }

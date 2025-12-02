@@ -156,6 +156,23 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
     values: VideoLibraryBodyType,
     form: UseFormReturn<VideoLibraryBodyType>
   ) => {
+    if (values.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL) {
+      const isDurationValid =
+        values.duration !== null &&
+        values.duration !== undefined &&
+        values.duration !== '' &&
+        values.duration !== '00:00:00' &&
+        values.duration !== 0;
+
+      if (!isDurationValid) {
+        form.setError('duration', {
+          type: 'manual',
+          message: 'Bắt buộc'
+        });
+        return;
+      }
+    }
+
     await handleSubmit(
       {
         ...values,
@@ -205,9 +222,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
       <BaseForm
         onSubmit={onSubmit}
         defaultValues={defaultValues}
-        schema={videoLibrarySchema(
-          data?.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL
-        )}
+        schema={videoLibrarySchema}
         initialValues={initialValues}
       >
         {(form) => {
@@ -216,7 +231,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
           return (
             <>
               <Row>
-                <Col span={24} className='pr-0'>
+                <Col span={24}>
                   <UploadImageField
                     value={renderImageUrl(thumbnailUrl)}
                     loading={uploadLogoMutation.isPending}
@@ -321,8 +336,12 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                             placeholder='Nhập đường dẫn video'
                             required
                             onChange={(e) => {
-                              setVideoUrl(e.target.value);
-                              form.setValue('content', e.target.value);
+                              const value = e.target.value;
+                              setVideoUrl(value);
+                              form.setValue('content', value);
+                              if (value) {
+                                form.clearErrors('content');
+                              }
                             }}
                           />
                         </Col>
@@ -340,7 +359,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                             fullscreenOrientation={'none'}
                             logLevel='silent'
                             muted
-                            onProviderChange={onProviderChange}
+                            onProviderChange={undefined}
                             playsInline
                             preferNativeHLS={false}
                             src={videoUrl || form.watch('content')}
@@ -349,7 +368,6 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                           >
                             <MediaProvider />
                             <DefaultVideoLayout
-                              thumbnails={renderVttUrl(data.vttUrl)}
                               icons={defaultLayoutIcons}
                               slots={{
                                 playButton: <PlayToggleButton />,
@@ -392,8 +410,12 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                           placeholder='Nhập đường dẫn video'
                           required
                           onChange={(e) => {
-                            setVideoUrl(e.target.value);
-                            form.setValue('content', e.target.value);
+                            const value = e.target.value;
+                            setVideoUrl(value);
+                            form.setValue('content', value);
+                            if (value) {
+                              form.clearErrors('content');
+                            }
                           }}
                         />
                       </Col>
@@ -418,7 +440,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                             fullscreenOrientation={'none'}
                             logLevel='silent'
                             muted
-                            onProviderChange={onProviderChange}
+                            onProviderChange={undefined}
                             playsInline
                             preferNativeHLS={false}
                             src={videoUrl || form.watch('content')}
@@ -427,7 +449,6 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                           >
                             <MediaProvider />
                             <DefaultVideoLayout
-                              thumbnails={renderVttUrl(data.vttUrl)}
                               icons={defaultLayoutIcons}
                               slots={{
                                 playButton: <PlayToggleButton />,

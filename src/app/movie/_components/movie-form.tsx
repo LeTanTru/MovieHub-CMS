@@ -42,10 +42,12 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
   const categoryListQuery = useCategoryListQuery();
 
   const categories =
-    categoryListQuery?.data?.data?.content?.map((category) => ({
-      value: category.id.toString(),
-      label: category.name
-    })) || [];
+    categoryListQuery?.data?.data?.content
+      ?.map((category) => ({
+        value: category.id.toString(),
+        label: category.name
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label)) || [];
 
   const {
     data,
@@ -88,7 +90,9 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
     return {
       ageRating: data?.ageRating ?? 0,
       categoryIds:
-        data?.categories?.map((category) => category.id.toString()) ?? [],
+        data?.categories
+          ?.sort((a, b) => a.name.localeCompare(b.name))
+          .map((category) => category.id.toString()) ?? [],
       country: data?.country ?? '',
       description: data?.description ?? '',
       isFeatured: data?.isFeatured ?? false,

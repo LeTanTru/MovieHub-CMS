@@ -46,6 +46,7 @@ type MultiSelectFieldProps<
   notFoundContent?: React.ReactNode;
   labelClassName?: string;
   disabled?: boolean;
+  onValueChange?: (value: Array<string | number>) => void;
 };
 
 const normalizeText = (text: string): string =>
@@ -83,7 +84,8 @@ export default function MultiSelectField<
   searchText,
   notFoundContent = 'Không có kết quả nào',
   labelClassName,
-  disabled = false
+  disabled = false,
+  onValueChange
 }: MultiSelectFieldProps<TFieldValues, TOption>) {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -102,7 +104,15 @@ export default function MultiSelectField<
       control={control}
       name={name}
       render={({ field, fieldState }) => {
-        const selectedValues: Array<string | number> = field.value || [];
+        let selectedValues: Array<string | number> = [];
+        if (Array.isArray(field.value)) {
+          selectedValues = field.value;
+        } else if (typeof field.value === 'string' && field.value) {
+          selectedValues = (field.value as string)
+            .split(',')
+            .map((v) => v.trim())
+            .filter(Boolean);
+        }
 
         const handleSelect = (val: string | number) => {
           let newValues: Array<string | number> = [];
@@ -112,12 +122,15 @@ export default function MultiSelectField<
             newValues = [...selectedValues, val];
           }
           field.onChange(newValues);
+          onValueChange?.(newValues);
         };
 
         const handleRemove = (val: string | number, e: React.MouseEvent) => {
           e.stopPropagation();
           e.preventDefault();
-          field.onChange(selectedValues.filter((v) => v !== val));
+          const newValues = selectedValues.filter((v) => v !== val);
+          field.onChange(newValues);
+          onValueChange?.(newValues);
         };
 
         return (
