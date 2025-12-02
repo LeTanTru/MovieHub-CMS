@@ -175,7 +175,8 @@ export const queryKeys = {
   SIDEBAR: 'sidebar',
   SNS_CONFIG: 'sns_config',
   STYLE: 'style',
-  VIDEO_LIBRARY: 'video_library'
+  VIDEO_LIBRARY: 'video_library',
+  FILE: 'file'
 };
 
 export const loginOptions = [

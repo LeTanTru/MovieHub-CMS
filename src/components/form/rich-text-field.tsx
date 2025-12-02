@@ -70,7 +70,7 @@ export default function RichTextField<T extends FieldValues>({
                   'importcss',
                   'searchreplace',
                   'autolink',
-                  'autosave',
+                  // 'autosave',
                   'save',
                   'directionality',
                   'code',

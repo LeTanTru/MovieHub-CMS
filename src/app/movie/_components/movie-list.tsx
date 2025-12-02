@@ -109,17 +109,19 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
       dataIndex: 'thumbnailUrl',
       width: 80,
       align: 'center',
-      render: (value) => (
-        <AvatarField
-          size={50}
-          disablePreview={!value}
-          src={renderImageUrl(value)}
-          className='rounded'
-          previewClassName='rounded'
-          zoomSize={850}
-          icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
-        />
-      )
+      render: (value) => {
+        return (
+          <AvatarField
+            size={50}
+            disablePreview={!value}
+            src={renderImageUrl(value)}
+            className='rounded'
+            previewClassName='rounded'
+            zoomSize={850}
+            icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
+          />
+        );
+      }
     },
     {
       title: 'Tiêu đề',

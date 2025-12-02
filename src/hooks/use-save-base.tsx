@@ -89,21 +89,6 @@ export default function useSaveBase<
             body
           })
         : Promise.resolve({ result: false, code: 'NO_API_CONFIG' } as any)
-    // onSuccess: (res) => {
-    //   if (res.result) {
-    //     notify.success(`Thêm mới ${objectName} thành công`);
-    //     queryClient.invalidateQueries({
-    //       queryKey: [queryKey, detailId]
-    //     });
-    //   } else {
-    //     logger.error(`Error while creating ${objectName}:`, res);
-    //     // notify.error(`Thêm mới ${objectName} thất bại`);
-    //   }
-    // },
-    // onError: (error) => {
-    //   logger.error(`Error while creating ${queryKey}:`, error);
-    //   // notify.error(`Có lỗi xảy ra khi thêm mới ${objectName}`);
-    // }
   });
 
   const updateMutation = useMutation({
@@ -114,21 +99,6 @@ export default function useSaveBase<
             body
           })
         : Promise.resolve({ result: false, code: 'NO_API_CONFIG' } as any)
-    // onSuccess: (res) => {
-    //   if (res.result) {
-    //     queryClient.invalidateQueries({
-    //       queryKey: [queryKey, detailId]
-    //     });
-    //     notify.success(`Cập nhật ${objectName} thành công`);
-    //   } else {
-    //     logger.error(`Error while creating ${objectName}:`, res);
-    //     // notify.error(`Cập nhật ${objectName} thất bại`);
-    //   }
-    // },
-    // onError: (error) => {
-    //   logger.error(`Error while updating ${queryKey}:`, error);
-    //   // notify.error(`Có lỗi xảy ra khi cập nhật ${objectName}`);
-    // }
   });
 
   const getBackPath = () => {
@@ -232,9 +202,8 @@ export default function useSaveBase<
                   onClick={() => {
                     if (listPageUrl) {
                       navigate(listPageUrl);
-                    } else {
-                      options?.onCancel?.();
                     }
+                    options?.onCancel?.();
                   }}
                   className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
                 >
@@ -267,11 +236,11 @@ export default function useSaveBase<
   return {
     data,
     itemQuery,
+    queryString,
     isEditing: !isCreate,
     loading: itemQuery.isLoading || itemQuery.isFetching,
-    queryString,
+    responseCode: itemQuery.data?.code,
     handleSubmit,
-    renderActions,
-    responseCode: itemQuery.data?.code
+    renderActions
   };
 }

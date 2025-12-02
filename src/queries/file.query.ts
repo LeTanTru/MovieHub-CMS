@@ -1,4 +1,4 @@
-import { apiConfig, uploadOptions } from '@/constants';
+import { apiConfig, queryKeys, uploadOptions } from '@/constants';
 import {
   ApiResponse,
   UploadFileResType,
@@ -11,6 +11,7 @@ import { AxiosRequestConfig } from 'axios';
 
 export const useUploadAvatarMutation = () => {
   return useMutation({
+    mutationKey: [`upload-avatar-${queryKeys.FILE}`],
     mutationFn: ({
       file,
       options
@@ -30,6 +31,7 @@ export const useUploadAvatarMutation = () => {
 
 export const useUploadLogoMutation = () => {
   return useMutation({
+    mutationKey: [`upload-logo-${queryKeys.FILE}`],
     mutationFn: ({
       file,
       options
@@ -49,6 +51,7 @@ export const useUploadLogoMutation = () => {
 
 export const useUploadVideoMutation = () => {
   return useMutation({
+    mutationKey: [`upload-video-${queryKeys.FILE}`],
     mutationFn: ({
       file,
       options
@@ -68,6 +71,7 @@ export const useUploadVideoMutation = () => {
 
 export const useUploadFileMutation = () => {
   return useMutation({
+    mutationKey: [`upload-${queryKeys.FILE}`],
     mutationFn: ({
       file,
       options
@@ -81,6 +85,16 @@ export const useUploadFileMutation = () => {
           type: uploadOptions.SYSTEM
         },
         options
+      })
+  });
+};
+
+export const useDeleteFileMutation = () => {
+  return useMutation({
+    mutationKey: [`delete-${queryKeys.FILE}`],
+    mutationFn: (body: { filePath: string }) =>
+      http.post<ApiResponse<any>>(apiConfig.file.delete, {
+        body
       })
   });
 };
