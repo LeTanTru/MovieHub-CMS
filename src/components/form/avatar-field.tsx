@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { ImageIcon } from 'lucide-react';
+import { EyeIcon, ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -44,6 +44,7 @@ export default function AvatarField({
   const handleClick = (e: React.MouseEvent) => {
     if (!disablePreview && src) {
       e.stopPropagation();
+      e.preventDefault();
       setIsModalOpen(true);
     }
   };
@@ -51,7 +52,6 @@ export default function AvatarField({
   return (
     <>
       <div
-        onClick={handleClick}
         {...props}
         className={cn(
           'relative flex cursor-pointer items-center justify-center overflow-hidden rounded-full border shadow-sm',
@@ -83,6 +83,14 @@ export default function AvatarField({
         ) : (
           icon || <ImageIcon className='h-1/2 w-1/2 opacity-40' />
         )}
+        {src && !disablePreview && (
+          <div
+            onClick={handleClick}
+            className='absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-all duration-200 ease-linear hover:opacity-100'
+          >
+            <EyeIcon className='h-6 w-6 text-white' />
+          </div>
+        )}
       </div>
 
       <AnimatePresence>
@@ -92,7 +100,10 @@ export default function AvatarField({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setIsModalOpen(false)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalOpen(false);
+            }}
           >
             <motion.div
               className={cn(
