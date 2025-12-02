@@ -26,7 +26,12 @@ import {
   STATUS_ACTIVE
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useCategoryListQuery, useUploadLogoMutation } from '@/queries';
+import { logger } from '@/logger';
+import {
+  useCategoryListQuery,
+  useDeleteFileMutation,
+  useUploadLogoMutation
+} from '@/queries';
 import { route } from '@/routes';
 import { movieSchema } from '@/schemaValidations';
 import { MovieBodyType, MovieResType } from '@/types';
@@ -37,8 +42,15 @@ import { useEffect, useMemo, useState } from 'react';
 export default function MovieForm({ queryKey }: { queryKey: string }) {
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
   const [posterUrl, setPosterUrl] = useState<string>('');
+  const [uploadedThumbnailImages, setUploadedThumbnailImages] = useState<
+    string[]
+  >([]);
+
+  const [uploadedPosterImages, setUploadedPosterImages] = useState<string[]>(
+    []
+  );
+
   const { id } = useParams<{ id: string }>();
-  const uploadImageMutation = useUploadLogoMutation();
   const categoryListQuery = useCategoryListQuery();
 
   const categories =
@@ -48,6 +60,9 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
         label: category.name
       }))
       .sort((a, b) => a.label.localeCompare(b.label)) || [];
+
+  const uploadImageMutation = useUploadLogoMutation();
+  const deleteImageMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -107,26 +122,61 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  useEffect(() => {
-    if (data?.thumbnailUrl) setThumbnailUrl(data?.thumbnailUrl);
-  }, [data]);
+  const deleteFiles = async (files: string[]) => {
+    const validFiles = files.filter(Boolean);
+    if (!validFiles.length) return;
+    await Promise.all(
+      validFiles.map((filePath) =>
+        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
+          logger.error('Failed to delete file:', filePath, err);
+        })
+      )
+    );
+  };
 
-  useEffect(() => {
-    if (data?.posterUrl) setPosterUrl(data?.posterUrl);
-  }, [data]);
+  const handleDeleteFiles = async () => {
+    const filesToDelete = [
+      ...uploadedThumbnailImages.slice(1),
+      ...uploadedPosterImages.slice(1)
+    ];
+    await deleteFiles(filesToDelete);
+  };
 
   const onSubmit = async (values: MovieBodyType) => {
+    const filesToDelete = [
+      ...(data?.thumbnailUrl && !thumbnailUrl
+        ? uploadedThumbnailImages
+        : uploadedThumbnailImages.slice(0, uploadedThumbnailImages.length - 1)),
+      ...(data?.posterUrl && !posterUrl
+        ? uploadedPosterImages
+        : uploadedPosterImages.slice(0, uploadedPosterImages.length - 1))
+    ];
+
+    await deleteFiles(filesToDelete.filter(Boolean));
+
     await handleSubmit({
       ...values,
-      thumbnailUrl: thumbnailUrl,
-      posterUrl: posterUrl,
       releaseDate: formatDate(
         values.releaseDate,
         DATE_TIME_FORMAT,
         DEFAULT_DATE_FORMAT
-      )
+      ),
+      thumbnailUrl: thumbnailUrl,
+      posterUrl: posterUrl
     });
   };
+
+  useEffect(() => {
+    const url = data?.thumbnailUrl || '';
+    setThumbnailUrl(url);
+    setUploadedThumbnailImages(url ? [url] : []);
+  }, [data?.thumbnailUrl]);
+
+  useEffect(() => {
+    const url = data?.posterUrl || '';
+    setPosterUrl(url);
+    setUploadedPosterImages(url ? [url] : []);
+  }, [data?.posterUrl]);
 
   return (
     <PageWrapper
@@ -159,6 +209,9 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   name='posterUrl'
                   onChange={(url) => {
                     setPosterUrl(url);
+                    setUploadedPosterImages((prev) =>
+                      url ? [...prev, url] : [...prev]
+                    );
                   }}
                   size={150}
                   uploadImageFn={async (file: Blob) => {
@@ -167,6 +220,14 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                     });
                     return res.data?.filePath ?? '';
                   }}
+                  deleteImageFn={
+                    data?.posterUrl
+                      ? undefined
+                      : () =>
+                          deleteImageMutation.mutateAsync({
+                            filePath: posterUrl
+                          })
+                  }
                   label='Ảnh xem trước'
                   aspect={2 / 3}
                   defaultCrop
@@ -181,12 +242,23 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   name='thumbnailUrl'
                   onChange={(url) => {
                     setThumbnailUrl(url);
+                    setUploadedThumbnailImages((prev) =>
+                      url ? [...prev, url] : [...prev]
+                    );
                   }}
                   size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
                   }}
+                  deleteImageFn={
+                    data?.thumbnailUrl
+                      ? undefined
+                      : () =>
+                          deleteImageMutation.mutateAsync({
+                            filePath: thumbnailUrl
+                          })
+                  }
                   label='Ảnh bìa (16:9)'
                   aspect={16 / 9}
                   required
@@ -301,7 +373,11 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                 />
               </Col>
             </Row>
-            <>{renderActions(form)}</>
+            <>
+              {renderActions(form, {
+                onCancel: handleDeleteFiles
+              })}
+            </>
             {(loading || categoryListQuery.isLoading) && (
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

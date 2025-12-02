@@ -13,6 +13,7 @@ import { KIND_MANAGER, profileErrorMaps, storageKeys } from '@/constants';
 import { useAuth, useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import {
+  useDeleteFileMutation,
   useEmployeeUpdateProfileMutation,
   useManagerUpdateProfileMutation,
   useUploadAvatarMutation,
@@ -36,13 +37,22 @@ import { UseFormReturn } from 'react-hook-form';
 export default function ProfileForm() {
   const navigate = useNavigate();
   const { profile } = useAuthStore();
-  const uploadAvatarMutation = useUploadAvatarMutation();
-  const uploadLogoMutation = useUploadLogoMutation();
   const [avatarPath, setAvatarPath] = useState('');
   const [logoPath, setLogoPath] = useState('');
+  const [uploadedAvatarImages, setUploadedAvatarImages] = useState<string[]>(
+    []
+  );
+  const [uploadedLogoImages, setUploadedLogoImages] = useState<string[]>([]);
+
+  const uploadAvatarMutation = useUploadAvatarMutation();
+  const uploadLogoMutation = useUploadLogoMutation();
+  const deleteImageMutation = useDeleteFileMutation();
+
   const { kind } = useAuth();
+
   const managerUpdateProfileMutation = useManagerUpdateProfileMutation();
   const employeeUpdateProfileMutation = useEmployeeUpdateProfileMutation();
+
   const profileMutation =
     kind === KIND_MANAGER
       ? managerUpdateProfileMutation
@@ -73,20 +83,44 @@ export default function ProfileForm() {
     [profile]
   );
 
-  useEffect(() => {
-    if (profile?.avatarPath) setAvatarPath(profile?.avatarPath);
-  }, [profile?.avatarPath]);
+  const deleteFiles = async (files: string[]) => {
+    const validFiles = files.filter(Boolean);
+    if (!validFiles.length) return;
+    await Promise.all(
+      validFiles.map((filePath) =>
+        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
+          logger.error('Failed to delete file:', filePath, err);
+        })
+      )
+    );
+  };
 
-  useEffect(() => {
-    if (profile?.logoPath) setLogoPath(profile?.logoPath);
-  }, [profile?.logoPath]);
+  const handleDeleteFiles = async () => {
+    const filesToDelete = [
+      ...uploadedAvatarImages.slice(1),
+      ...uploadedLogoImages.slice(1)
+    ];
+    await deleteFiles(filesToDelete);
+  };
 
   const onSubmit = async (
     values: ProfileBodyType,
     form: UseFormReturn<ProfileBodyType>
   ) => {
+    const filesToDelete = [
+      ...(profile?.avatarPath && !avatarPath
+        ? uploadedAvatarImages
+        : uploadedAvatarImages.slice(0, uploadedAvatarImages.length - 1)),
+
+      ...(profile?.logoPath && !logoPath
+        ? uploadedLogoImages
+        : uploadedLogoImages.slice(0, uploadedLogoImages.length - 1))
+    ];
+
+    await deleteFiles(filesToDelete.filter(Boolean));
+
     await profileMutation.mutateAsync(
-      { ...values, avatarPath },
+      { ...values, avatarPath, logoPath },
       {
         onSuccess: (res) => {
           if (res.result) {
@@ -106,7 +140,21 @@ export default function ProfileForm() {
     );
   };
 
+  useEffect(() => {
+    const url = profile?.avatarPath || '';
+    setAvatarPath(url);
+    setUploadedAvatarImages(url ? [url] : []);
+  }, [profile?.avatarPath]);
+
+  useEffect(() => {
+    const url = profile?.logoPath || '';
+    setLogoPath(url);
+    setUploadedLogoImages(url ? [url] : []);
+  }, [profile?.logoPath]);
+
   const handleCancel = () => {
+    handleDeleteFiles();
+
     const prevPath = getData(storageKeys.PREVIOUS_PATH);
     removeData(storageKeys.PREVIOUS_PATH);
     navigate(prevPath ?? route.home.path);
@@ -131,6 +179,9 @@ export default function ProfileForm() {
                 control={form.control}
                 onChange={(url) => {
                   setAvatarPath(url);
+                  setUploadedAvatarImages((prev) =>
+                    url ? [...prev, url] : [...prev]
+                  );
                 }}
                 size={150}
                 uploadImageFn={async (file: Blob) => {
@@ -139,6 +190,14 @@ export default function ProfileForm() {
                   });
                   return res.data?.filePath ?? '';
                 }}
+                deleteImageFn={
+                  profile?.avatarPath
+                    ? undefined
+                    : () =>
+                        deleteImageMutation.mutateAsync({
+                          filePath: avatarPath
+                        })
+                }
                 label='Ảnh đại diện'
               />
             </Col>
@@ -151,6 +210,9 @@ export default function ProfileForm() {
                   control={form.control}
                   onChange={(url) => {
                     setLogoPath(url);
+                    setUploadedLogoImages((prev) =>
+                      url ? [...prev, url] : [...prev]
+                    );
                   }}
                   size={150}
                   uploadImageFn={async (file: Blob) => {
@@ -159,6 +221,14 @@ export default function ProfileForm() {
                     });
                     return res.data?.filePath ?? '';
                   }}
+                  deleteImageFn={
+                    profile?.logoPath
+                      ? undefined
+                      : () =>
+                          deleteImageMutation.mutateAsync({
+                            filePath: logoPath
+                          })
+                  }
                   label='Logo (16:9)'
                   aspect={16 / 9}
                 />

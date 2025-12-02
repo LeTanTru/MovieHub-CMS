@@ -19,7 +19,12 @@ import {
   STATUS_ACTIVE
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useGroupListQuery, useUploadAvatarMutation } from '@/queries';
+import { logger } from '@/logger';
+import {
+  useDeleteFileMutation,
+  useGroupListQuery,
+  useUploadAvatarMutation
+} from '@/queries';
 import { route } from '@/routes';
 import { employeeSchema } from '@/schemaValidations';
 import { EmployeeBodyType, EmployeeResType } from '@/types';
@@ -30,14 +35,19 @@ import { UseFormReturn } from 'react-hook-form';
 
 export default function EmployeeForm({ queryKey }: { queryKey: string }) {
   const [avatarPath, setAvatarPath] = useState<string>('');
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+
+  const { id } = useParams<{ id: string }>();
   const groupListQuery = useGroupListQuery();
+
   const groupList = groupListQuery.data?.data.content || [];
   const groupOptions = groupList.map((item) => ({
     label: item.name,
     value: item.id.toString()
   }));
+
   const uploadImageMutation = useUploadAvatarMutation();
-  const { id } = useParams<{ id: string }>();
+  const deleteImageMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -92,14 +102,34 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  useEffect(() => {
-    if (data?.avatarPath) setAvatarPath(data?.avatarPath);
-  }, [data]);
+  const deleteFiles = async (files: string[]) => {
+    const validFiles = files.filter(Boolean);
+    if (!validFiles.length) return;
+    await Promise.all(
+      validFiles.map((filePath) =>
+        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
+          logger.error('Failed to delete file:', filePath, err);
+        })
+      )
+    );
+  };
+
+  const handleDeleteFiles = async () => {
+    const filesToDelete = uploadedImages.slice(1);
+    await deleteFiles(filesToDelete);
+  };
 
   const onSubmit = async (
     values: EmployeeBodyType,
     form: UseFormReturn<EmployeeBodyType>
   ) => {
+    const filesToDelete =
+      data?.avatarPath && !avatarPath
+        ? uploadedImages
+        : uploadedImages.slice(0, uploadedImages.length - 1);
+
+    await deleteFiles(filesToDelete.filter(Boolean));
+
     await handleSubmit(
       {
         ...values,
@@ -109,6 +139,12 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
       employeeErrorMaps
     );
   };
+
+  useEffect(() => {
+    const url = data?.avatarPath || '';
+    setAvatarPath(url);
+    setUploadedImages(url ? [url] : []);
+  }, [data?.avatarPath]);
 
   return (
     <PageWrapper
@@ -139,12 +175,23 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                   name='avatarPath'
                   onChange={(url) => {
                     setAvatarPath(url);
+                    setUploadedImages((prev) =>
+                      url ? [...prev, url] : [...prev]
+                    );
                   }}
                   size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
                   }}
+                  deleteImageFn={
+                    data?.avatarPath
+                      ? undefined
+                      : () =>
+                          deleteImageMutation.mutateAsync({
+                            filePath: avatarPath
+                          })
+                  }
                   label='Ảnh đại diện'
                 />
               </Col>
@@ -294,7 +341,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
               </>
             )}
 
-            <>{renderActions(form)}</>
+            <>{renderActions(form, { onCancel: handleDeleteFiles })}</>
             {loading && (
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

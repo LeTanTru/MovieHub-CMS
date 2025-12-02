@@ -14,7 +14,8 @@ import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { apiConfig, ErrorCode, styleErrorMaps } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useUploadLogoMutation } from '@/queries';
+import { logger } from '@/logger';
+import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
 import { styleSchema } from '@/schemaValidations';
 import { StyleBodyType, StyleResType } from '@/types';
@@ -24,9 +25,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function StyleForm({ queryKey }: { queryKey: string }) {
-  const [imageUrl, setImageUrl] = useState<string>('');
-  const uploadImageMutation = useUploadLogoMutation();
   const { id } = useParams<{ id: string }>();
+  const [imageUrl, setImageUrl] = useState<string>('');
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+
+  const uploadImageMutation = useUploadLogoMutation();
+  const deleteImageMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -67,14 +71,34 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  useEffect(() => {
-    if (data?.imageUrl) setImageUrl(data?.imageUrl);
-  }, [data]);
+  const deleteFiles = async (files: string[]) => {
+    const validFiles = files.filter(Boolean);
+    if (!validFiles.length) return;
+    await Promise.all(
+      validFiles.map((filePath) =>
+        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
+          logger.error('Failed to delete file:', filePath, err);
+        })
+      )
+    );
+  };
+
+  const handleDeleteFiles = async () => {
+    const filesToDelete = uploadedImages.slice(1);
+    await deleteFiles(filesToDelete);
+  };
 
   const onSubmit = async (
     values: StyleBodyType,
     form: UseFormReturn<StyleBodyType>
   ) => {
+    const filesToDelete =
+      data?.imageUrl && !imageUrl
+        ? uploadedImages
+        : uploadedImages.slice(0, uploadedImages.length - 1);
+
+    await deleteFiles(filesToDelete.filter(Boolean));
+
     await handleSubmit(
       {
         ...values,
@@ -84,6 +108,13 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
       styleErrorMaps
     );
   };
+
+  useEffect(() => {
+    const url = data?.imageUrl || '';
+
+    setImageUrl(url);
+    setUploadedImages(url ? [url] : []);
+  }, [data?.imageUrl]);
 
   return (
     <PageWrapper
@@ -114,12 +145,23 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
                   name='imageUrl'
                   onChange={(url) => {
                     setImageUrl(url);
+                    setUploadedImages((prev) =>
+                      url ? [...prev, url] : [...prev]
+                    );
                   }}
                   size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
                   }}
+                  deleteImageFn={
+                    data?.imageUrl
+                      ? undefined
+                      : () =>
+                          deleteImageMutation.mutateAsync({
+                            filePath: imageUrl
+                          })
+                  }
                   label='Ảnh bìa'
                   aspect={2 / 3}
                   required
@@ -171,7 +213,11 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
 
-            <>{renderActions(form)}</>
+            <>
+              {renderActions(form, {
+                onCancel: handleDeleteFiles
+              })}
+            </>
             {loading && (
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

@@ -26,7 +26,8 @@ import {
   TAB_PERSON_KIND_ACTOR
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useUploadAvatarMutation } from '@/queries';
+import { logger } from '@/logger';
+import { useDeleteFileMutation, useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
 import { personSchema } from '@/schemaValidations';
 import { PersonBodyType, PersonResType } from '@/types';
@@ -40,10 +41,14 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function PersonForm({ queryKey }: { queryKey: string }) {
-  const [avatarPath, setAvatarPath] = useState<string>('');
-  const { id } = useParams<{ id: string }>();
-  const uploadImageMutation = useUploadAvatarMutation();
   const kind = getData(storageKeys.ACTIVE_TAB_PERSON_KIND);
+  const [avatarPath, setAvatarPath] = useState<string>('');
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+
+  const { id } = useParams<{ id: string }>();
+
+  const uploadImageMutation = useUploadAvatarMutation();
+  const deleteImageMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -90,21 +95,47 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  useEffect(() => {
-    if (data?.avatarPath) setAvatarPath(data?.avatarPath);
-  }, [data]);
+  const deleteFiles = async (files: string[]) => {
+    const validFiles = files.filter(Boolean);
+    if (!validFiles.length) return;
+    await Promise.all(
+      validFiles.map((filePath) =>
+        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
+          logger.error('Failed to delete file:', filePath, err);
+        })
+      )
+    );
+  };
+
+  const handleDeleteFiles = async () => {
+    const filesToDelete = uploadedImages.slice(1);
+    await deleteFiles(filesToDelete);
+  };
 
   const onSubmit = async (values: PersonBodyType) => {
+    const filesToDelete =
+      data?.avatarPath && !avatarPath
+        ? uploadedImages
+        : uploadedImages.slice(0, uploadedImages.length - 1);
+
+    await deleteFiles(filesToDelete.filter(Boolean));
+
     await handleSubmit({
       ...values,
-      avatarPath: avatarPath,
       dateOfBirth: formatDate(
         values.dateOfBirth,
         DATE_TIME_FORMAT,
         DEFAULT_DATE_FORMAT
-      )
+      ),
+      avatarPath: avatarPath
     });
   };
+
+  useEffect(() => {
+    const url = data?.avatarPath || '';
+    setAvatarPath(url);
+    setUploadedImages(url ? [url] : []);
+  }, [data?.avatarPath]);
 
   return (
     <PageWrapper
@@ -137,12 +168,23 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
                   name='avatarPath'
                   onChange={(url) => {
                     setAvatarPath(url);
+                    setUploadedImages((prev) =>
+                      url ? [...prev, url] : [...prev]
+                    );
                   }}
                   size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
                   }}
+                  deleteImageFn={
+                    data?.avatarPath
+                      ? undefined
+                      : () =>
+                          deleteImageMutation.mutateAsync({
+                            filePath: avatarPath
+                          })
+                  }
                   label='Ảnh đại diện'
                 />
               </Col>
@@ -218,7 +260,11 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
                 />
               </Col>
             </Row>
-            <>{renderActions(form)}</>
+            <>
+              {renderActions(form, {
+                onCancel: handleDeleteFiles
+              })}
+            </>
             {loading && (
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

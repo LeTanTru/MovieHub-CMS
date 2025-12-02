@@ -51,8 +51,8 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function MovieItemForm({ queryKey }: { queryKey: string }) {
-  const [uploadedImages, setUploadImages] = useState<string[]>([]);
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
   const {
     searchParams: { type }
@@ -206,7 +206,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
         ? uploadedImages
         : uploadedImages.slice(0, uploadedImages.length - 1);
 
-    await deleteFiles(filesToDelete);
+    await deleteFiles(filesToDelete.filter(Boolean));
 
     await handleSubmit({
       ...values,
@@ -217,15 +217,15 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
         values.releaseDate,
         DATE_TIME_FORMAT,
         DEFAULT_DATE_FORMAT
-      )
+      ),
+      thumbnailUrl
     });
-
-    setUploadImages([]);
   };
 
   useEffect(() => {
-    setThumbnailUrl(data?.thumbnailUrl);
-    setUploadImages([data?.thumbnailUrl]);
+    const url = data?.thumbnailUrl || '';
+    setThumbnailUrl(url);
+    setUploadedImages(url ? [url] : []);
   }, [data?.thumbnailUrl]);
 
   return (
@@ -268,7 +268,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                     name='thumbnailUrl'
                     onChange={(url) => {
                       setThumbnailUrl(url);
-                      setUploadImages((prev) =>
+                      setUploadedImages((prev) =>
                         url ? [...prev, url] : [...prev]
                       );
                     }}

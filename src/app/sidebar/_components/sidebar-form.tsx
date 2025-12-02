@@ -14,7 +14,8 @@ import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { apiConfig, ErrorCode } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useUploadLogoMutation } from '@/queries';
+import { logger } from '@/logger';
+import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
 import { movieSidebarSchema } from '@/schemaValidations';
 import {
@@ -30,10 +31,17 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
   const [webThumbnailUrl, setWebThumbnailUrl] = useState<string>('');
   const [mobileThumbnailUrl, setMobileThumbnailUrl] = useState<string>('');
 
-  const uploadImageMutation = useUploadLogoMutation();
+  const [uploadedWebImages, setUploadedWebImages] = useState<string[]>([]);
+  const [uploadedMobileImages, setUploadedMobileImages] = useState<string[]>(
+    []
+  );
+
   const { id } = useParams<{
     id: string;
   }>();
+
+  const uploadImageMutation = useUploadLogoMutation();
+  const deleteImageMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -76,19 +84,55 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
+  const deleteFiles = async (files: string[]) => {
+    const validFiles = files.filter(Boolean);
+    if (!validFiles.length) return;
+    await Promise.all(
+      validFiles.map((filePath) =>
+        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
+          logger.error('Failed to delete file:', filePath, err);
+        })
+      )
+    );
+  };
+
+  const handleDeleteFiles = async () => {
+    const filesToDelete = [
+      ...uploadedWebImages.slice(1),
+      ...uploadedMobileImages.slice(1)
+    ];
+    await deleteFiles(filesToDelete);
+  };
+
   const onSubmit = async (values: MovieSidebarBodyType) => {
+    const filesToDelete = [
+      ...(data?.webThumbnailUrl && !webThumbnailUrl
+        ? uploadedWebImages
+        : uploadedWebImages.slice(0, uploadedWebImages.length - 1)),
+      ...(data?.mobileThumbnailUrl && !mobileThumbnailUrl
+        ? uploadedMobileImages
+        : uploadedMobileImages.slice(0, uploadedMobileImages.length - 1))
+    ];
+
+    await deleteFiles(filesToDelete.filter(Boolean));
+
     await handleSubmit({
-      ...values
+      ...values,
+      webThumbnailUrl,
+      mobileThumbnailUrl
     });
   };
 
   useEffect(() => {
-    if (data?.webThumbnailUrl) setWebThumbnailUrl(data?.webThumbnailUrl);
+    const url = data?.webThumbnailUrl || '';
+    setWebThumbnailUrl(url);
+    setUploadedWebImages(url ? [url] : []);
   }, [data?.webThumbnailUrl]);
 
   useEffect(() => {
-    if (data?.mobileThumbnailUrl)
-      setMobileThumbnailUrl(data?.mobileThumbnailUrl);
+    const url = data?.mobileThumbnailUrl || '';
+    setMobileThumbnailUrl(url);
+    setUploadedMobileImages(url ? [url] : []);
   }, [data?.mobileThumbnailUrl]);
 
   return (
@@ -123,6 +167,9 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                     name='webThumbnailUrl'
                     onChange={(url) => {
                       setWebThumbnailUrl(url);
+                      setUploadedWebImages((prev) =>
+                        url ? [...prev, url] : [...prev]
+                      );
                     }}
                     size={150}
                     uploadImageFn={async (file: Blob) => {
@@ -131,6 +178,14 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                       });
                       return res.data?.filePath ?? '';
                     }}
+                    deleteImageFn={
+                      data?.webThumbnailUrl
+                        ? undefined
+                        : () =>
+                            deleteImageMutation.mutateAsync({
+                              filePath: webThumbnailUrl
+                            })
+                    }
                     label='Ảnh xem trước web (16:9)'
                     aspect={16 / 9}
                     required
@@ -144,6 +199,9 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                     name='mobileThumbnailUrl'
                     onChange={(url) => {
                       setMobileThumbnailUrl(url);
+                      setUploadedMobileImages((prev) =>
+                        url ? [...prev, url] : [...prev]
+                      );
                     }}
                     size={150}
                     uploadImageFn={async (file: Blob) => {
@@ -152,6 +210,14 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                       });
                       return res.data?.filePath ?? '';
                     }}
+                    deleteImageFn={
+                      data?.mobileThumbnailUrl
+                        ? undefined
+                        : () =>
+                            deleteImageMutation.mutateAsync({
+                              filePath: mobileThumbnailUrl
+                            })
+                    }
                     label='Ảnh xem trước mobile (2:3)'
                     aspect={2 / 3}
                     required
@@ -206,7 +272,11 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
 
-              <>{renderActions(form)}</>
+              <>
+                {renderActions(form, {
+                  onCancel: handleDeleteFiles
+                })}
+              </>
               {loading && (
                 <div className='absolute inset-0 bg-white/80'>
                   <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

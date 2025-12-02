@@ -28,7 +28,11 @@ import {
   videoLibrarySourceTypeOptions
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useUploadLogoMutation, useUploadVideoMutation } from '@/queries';
+import {
+  useDeleteFileMutation,
+  useUploadLogoMutation,
+  useUploadVideoMutation
+} from '@/queries';
 import { route } from '@/routes';
 import { videoLibrarySchema } from '@/schemaValidations';
 import { VideoLibraryBodyType, VideoLibraryResType } from '@/types';
@@ -72,9 +76,14 @@ import { cn } from '@/lib';
 export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+
   const [videoUrl, setVideoUrl] = useState<string>('');
+
   const uploadLogoMutation = useUploadLogoMutation();
   const uploadVideoMutation = useUploadVideoMutation();
+
+  const deleteImageMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -127,30 +136,22 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  // const textTracks = [
-  //   {
-  //     src: 'https://files.vidstack.io/sprite-fight/subs/english.vtt',
-  //     label: 'English',
-  //     language: 'en-US',
-  //     kind: 'subtitles',
-  //     type: 'vtt',
-  //     default: true
-  //   },
-  //   {
-  //     src: 'https://files.vidstack.io/sprite-fight/subs/spanish.vtt',
-  //     label: 'Spanish',
-  //     language: 'es-ES',
-  //     kind: 'subtitles',
-  //     type: 'vtt'
-  //   },
-  //   {
-  //     src: 'https://files.vidstack.io/sprite-fight/chapters.vtt',
-  //     language: 'en-US',
-  //     kind: 'chapters',
-  //     type: 'vtt',
-  //     default: true
-  //   }
-  // ];
+  const deleteFiles = async (files: string[]) => {
+    const validFiles = files.filter(Boolean);
+    if (!validFiles.length) return;
+    await Promise.all(
+      validFiles.map((filePath) =>
+        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
+          logger.error('Failed to delete file:', filePath, err);
+        })
+      )
+    );
+  };
+
+  const handleDeleteFiles = async () => {
+    const filesToDelete = uploadedImages.slice(1);
+    await deleteFiles(filesToDelete);
+  };
 
   const onSubmit = async (
     values: VideoLibraryBodyType,
@@ -172,6 +173,13 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
         return;
       }
     }
+
+    const filesToDelete =
+      data?.thumbnailUrl && !thumbnailUrl
+        ? uploadedImages
+        : uploadedImages.slice(0, uploadedImages.length - 1);
+
+    await deleteFiles(filesToDelete.filter(Boolean));
 
     await handleSubmit(
       {
@@ -200,8 +208,11 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
   };
 
   useEffect(() => {
-    if (data?.thumbnailUrl) setThumbnailUrl(data?.thumbnailUrl);
-  }, [data]);
+    const url = data?.thumbnailUrl || '';
+
+    setThumbnailUrl(url);
+    setUploadedImages(url ? [url] : []);
+  }, [data?.thumbnailUrl]);
 
   useEffect(() => {
     if (data?.content) setVideoUrl(data?.content);
@@ -239,6 +250,9 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                     name='thumbnailUrl'
                     onChange={(url) => {
                       setThumbnailUrl(url);
+                      setUploadedImages((prev) =>
+                        url ? [...prev, url] : [...prev]
+                      );
                     }}
                     size={150}
                     uploadImageFn={async (file: Blob) => {
@@ -247,6 +261,14 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                       });
                       return res.data?.filePath ?? '';
                     }}
+                    deleteImageFn={
+                      data?.thumbnailUrl
+                        ? undefined
+                        : () =>
+                            deleteImageMutation.mutateAsync({
+                              filePath: thumbnailUrl
+                            })
+                    }
                     label='Ảnh nền (16:9)'
                     aspect={16 / 9}
                     required
@@ -581,7 +603,11 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
 
-              <>{renderActions(form)}</>
+              <>
+                {renderActions(form, {
+                  onCancel: handleDeleteFiles
+                })}
+              </>
               {loading && (
                 <div className='absolute inset-0 bg-white/80'>
                   <CircleLoading className='stroke-dodger-blue mt-20 size-8' />
