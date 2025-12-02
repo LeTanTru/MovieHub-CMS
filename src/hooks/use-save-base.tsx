@@ -20,7 +20,6 @@ import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
-import { useEffect } from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 type HandlerType<T> = {
@@ -37,7 +36,6 @@ type UseSaveBaseProps<R, T> = {
     objectName: string;
     listPageUrl?: string;
     queryKey: string;
-    enabled?: boolean;
     pathParams: { [key: string]: any };
     mode: 'create' | 'edit';
   };
@@ -53,7 +51,6 @@ export default function useSaveBase<
     queryKey = '',
     objectName = '',
     listPageUrl = '',
-    enabled = true,
     pathParams,
     mode
   },
@@ -72,14 +69,10 @@ export default function useSaveBase<
             pathParams
           })
         : Promise.resolve({ data: undefined } as any),
-    enabled: false
+    enabled: !isCreate
   });
 
   const data: R = itemQuery.data?.data;
-
-  useEffect(() => {
-    if (!isCreate && enabled) itemQuery.refetch();
-  }, [enabled, mode]);
 
   const createMutation = useMutation({
     mutationKey: [`create-${queryKey}`],

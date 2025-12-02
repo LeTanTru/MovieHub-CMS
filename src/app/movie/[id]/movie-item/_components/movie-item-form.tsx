@@ -134,7 +134,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
       thumbnailUrl: data?.thumbnailUrl ?? '',
       videoId: data?.video?.id?.toString() ?? ''
     };
-  }, [data, movieId]);
+  }, [data]);
 
   const deleteFiles = async (files: string[]) => {
     const validFiles = files.filter(Boolean);
@@ -224,10 +224,8 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
   };
 
   useEffect(() => {
-    if (data?.thumbnailUrl) {
-      setThumbnailUrl(data?.thumbnailUrl);
-      setUploadImages([data?.thumbnailUrl]);
-    }
+    setThumbnailUrl(data?.thumbnailUrl);
+    setUploadImages([data?.thumbnailUrl]);
   }, [data?.thumbnailUrl]);
 
   return (
