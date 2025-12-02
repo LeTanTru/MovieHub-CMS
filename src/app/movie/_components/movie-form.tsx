@@ -40,6 +40,8 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function MovieForm({ queryKey }: { queryKey: string }) {
+  const { id } = useParams<{ id: string }>();
+
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
   const [posterUrl, setPosterUrl] = useState<string>('');
   const [uploadedThumbnailImages, setUploadedThumbnailImages] = useState<
@@ -50,7 +52,6 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
     []
   );
 
-  const { id } = useParams<{ id: string }>();
   const categoryListQuery = useCategoryListQuery();
 
   const categories =

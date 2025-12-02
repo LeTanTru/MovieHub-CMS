@@ -14,7 +14,7 @@ import { CircleLoading } from '@/components/loading';
 import { apiConfig, appVersionErrorMaps, ErrorCode } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
-import { useUploadFileMutation } from '@/queries';
+import { useDeleteFileMutation, useUploadFileMutation } from '@/queries';
 import { route } from '@/routes';
 import { appVersionSchema } from '@/schemaValidations';
 import { AppVersionBodyType, AppVersionResType } from '@/types';
@@ -25,10 +25,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function AppVersionForm({ queryKey }: { queryKey: string }) {
-  const [filePath, setFilePath] = useState<string>('');
   const { id } = useParams<{ id: string }>();
+  const [filePath, setFilePath] = useState<string>('');
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  console.log('🚀 ~ AppVersionForm ~ uploadedFiles:', uploadedFiles);
 
   const uploadFileMutation = useUploadFileMutation();
+  const deleteImageMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -71,10 +74,34 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
+  const deleteFiles = async (files: string[]) => {
+    const validFiles = files.filter(Boolean);
+    if (!validFiles.length) return;
+    await Promise.all(
+      validFiles.map((filePath) =>
+        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
+          logger.error('Failed to delete file:', filePath, err);
+        })
+      )
+    );
+  };
+
+  const handleDeleteFiles = async () => {
+    const filesToDelete = uploadedFiles.slice(1);
+    await deleteFiles(filesToDelete);
+  };
+
   const onSubmit = async (
     values: AppVersionBodyType,
     form: UseFormReturn<AppVersionBodyType>
   ) => {
+    const filesToDelete =
+      data?.filePath && !filePath
+        ? uploadedFiles
+        : uploadedFiles.slice(0, uploadedFiles.length - 1);
+
+    await deleteFiles(filesToDelete.filter(Boolean));
+
     await handleSubmit(
       {
         ...values,
@@ -86,9 +113,9 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
   };
 
   useEffect(() => {
-    if (data?.filePath) {
-      setFilePath(data?.filePath);
-    }
+    const url = data?.filePath || '';
+    setFilePath(url);
+    setUploadedFiles(url ? [url] : []);
   }, [data?.filePath]);
 
   return (
@@ -131,7 +158,20 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
                     });
                     return res.data?.filePath ?? '';
                   }}
-                  onChange={(url) => setFilePath(url)}
+                  onChange={(url) => {
+                    setFilePath(url);
+                    setUploadedFiles((prev) =>
+                      url ? [...prev, url] : [...prev]
+                    );
+                  }}
+                  deleteImageFn={
+                    data?.filePath
+                      ? undefined
+                      : () =>
+                          deleteImageMutation.mutateAsync({
+                            filePath: filePath
+                          })
+                  }
                   label='Chọn tệp (.apk)'
                   accept='.apk'
                 />
@@ -187,7 +227,11 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
 
-            <>{renderActions(form)}</>
+            <>
+              {renderActions(form, {
+                onCancel: handleDeleteFiles
+              })}
+            </>
             {loading && (
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

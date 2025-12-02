@@ -49,6 +49,7 @@ import { useEffect, useState } from 'react';
 import { AiOutlineFileImage } from 'react-icons/ai';
 
 export default function MovieItemList({ queryKey }: { queryKey: string }) {
+  const { id: movieId } = useParams<{ id: string }>();
   const [selectedKey, setSelectedKey] = useState<number | string | null>(null);
 
   const {
@@ -57,7 +58,7 @@ export default function MovieItemList({ queryKey }: { queryKey: string }) {
   const videoLibraryPreviewModal = useDisclosure(false);
   const [selectedVideoLibrary, setSelectedVideoLibrary] =
     useState<VideoLibraryResType>();
-  const { id: movieId } = useParams<{ id: string }>();
+
   const { data, loading, handlers } = useListBase<
     MovieItemResType,
     MovieItemSearchType

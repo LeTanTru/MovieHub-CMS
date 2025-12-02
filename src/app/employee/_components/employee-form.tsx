@@ -34,10 +34,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function EmployeeForm({ queryKey }: { queryKey: string }) {
+  const { id } = useParams<{ id: string }>();
   const [avatarPath, setAvatarPath] = useState<string>('');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
-  const { id } = useParams<{ id: string }>();
   const groupListQuery = useGroupListQuery();
 
   const groupList = groupListQuery.data?.data.content || [];

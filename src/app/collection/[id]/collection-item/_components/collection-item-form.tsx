@@ -22,6 +22,7 @@ export default function CollectionItemForm({ queryKey }: { queryKey: string }) {
     id: string;
     collectionItemId: string;
   }>();
+
   const collectionItemListQuery = useCollectionItemListQuery();
 
   const {

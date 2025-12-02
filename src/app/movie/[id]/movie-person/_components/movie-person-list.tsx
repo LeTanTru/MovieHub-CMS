@@ -37,6 +37,8 @@ export default function MoviePersonList({
   queryKey: string;
   kind: number;
 }) {
+  const { id: movieId } = useParams<{ id: string }>();
+
   const [selectedRow, setSelectedRow] = useState<string>('');
   const [characterNames, setCharacterNames] = useState<Record<string, string>>(
     {}
@@ -46,7 +48,6 @@ export default function MoviePersonList({
   const moviePersonModal = useDisclosure(false);
 
   const updateMoviePersonMutation = useUpdateMoviePersonMutation();
-  const { id: movieId } = useParams<{ id: string }>();
 
   const { data, loading, handlers, listQuery } = useListBase<
     MoviePersonResType,

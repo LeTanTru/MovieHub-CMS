@@ -41,11 +41,11 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function PersonForm({ queryKey }: { queryKey: string }) {
+  const { id } = useParams<{ id: string }>();
   const kind = getData(storageKeys.ACTIVE_TAB_PERSON_KIND);
+
   const [avatarPath, setAvatarPath] = useState<string>('');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-
-  const { id } = useParams<{ id: string }>();
 
   const uploadImageMutation = useUploadAvatarMutation();
   const deleteImageMutation = useDeleteFileMutation();

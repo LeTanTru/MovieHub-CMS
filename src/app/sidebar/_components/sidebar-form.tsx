@@ -28,6 +28,10 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function SidebarForm({ queryKey }: { queryKey: string }) {
+  const { id } = useParams<{
+    id: string;
+  }>();
+
   const [webThumbnailUrl, setWebThumbnailUrl] = useState<string>('');
   const [mobileThumbnailUrl, setMobileThumbnailUrl] = useState<string>('');
 
@@ -35,10 +39,6 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
   const [uploadedMobileImages, setUploadedMobileImages] = useState<string[]>(
     []
   );
-
-  const { id } = useParams<{
-    id: string;
-  }>();
 
   const uploadImageMutation = useUploadLogoMutation();
   const deleteImageMutation = useDeleteFileMutation();

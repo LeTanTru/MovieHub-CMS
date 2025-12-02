@@ -28,6 +28,7 @@ import { AiOutlineFileImage } from 'react-icons/ai';
 
 export default function CollectionItemList({ queryKey }: { queryKey: string }) {
   const { id: collectionId } = useParams<{ id: string }>();
+
   const { data, loading, handlers } = useListBase<
     CollectionItemResType,
     CollectionItemSearchType
