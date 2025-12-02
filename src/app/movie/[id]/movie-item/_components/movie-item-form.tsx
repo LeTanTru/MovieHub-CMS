@@ -26,7 +26,9 @@ import {
   storageKeys
 } from '@/constants';
 import { useQueryParams, useSaveBase } from '@/hooks';
+import { logger } from '@/logger';
 import {
+  useDeleteFileMutation,
   useMovieItemListQuery,
   useUpdateOrderingMovieItemMutation,
   useUploadLogoMutation
@@ -49,7 +51,9 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function MovieItemForm({ queryKey }: { queryKey: string }) {
+  const [uploadedImages, setUploadImages] = useState<string[]>([]);
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
+
   const {
     searchParams: { type }
   } = useQueryParams<{ type: string }>();
@@ -59,6 +63,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
   }>();
 
   const uploadImageMutation = useUploadLogoMutation();
+  const deleteImageMutation = useDeleteFileMutation();
 
   const movieItemListQuery = useMovieItemListQuery({ movieId });
   const movieItemList = movieItemListQuery.data?.data.content || [];
@@ -131,18 +136,41 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
     };
   }, [data, movieId]);
 
+  const deleteFiles = async (files: string[]) => {
+    const validFiles = files.filter(Boolean);
+    if (!validFiles.length) return;
+    await Promise.all(
+      validFiles.map((filePath) =>
+        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
+          logger.error('Failed to delete file:', filePath, err);
+        })
+      )
+    );
+  };
+
+  // Delete file while cancel except for current file from api
+  const handleDeleteFiles = async () => {
+    const filesToDelete = uploadedImages.slice(1);
+    await deleteFiles(filesToDelete);
+  };
+
   const onSubmit = async (values: MovieItemBodyType) => {
     let ordering = 0;
     const parentId = getData(storageKeys.SELECTED_MOVIE_ITEM);
 
+    // parentId is null --> create season
     if (!parentId) ordering = movieItemList.length;
     else {
+      // find movie item
       const item = movieItemList.find(
         (movieItem) => movieItem.id.toString() === parentId
       );
 
+      //  if found
       if (item) {
         const kind = item.kind;
+
+        // if season, update new ordering
         if (kind === MOVIE_ITEM_KIND_SEASON) {
           const lastMovieItemOfParent = movieItemList.findLast(
             (movieItem) => movieItem?.parent?.id?.toString() === parentId
@@ -172,6 +200,14 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
       }
     }
 
+    // delete files except for new uploaded file
+    const filesToDelete =
+      data?.thumbnailUrl && !thumbnailUrl
+        ? uploadedImages
+        : uploadedImages.slice(0, uploadedImages.length - 1);
+
+    await deleteFiles(filesToDelete);
+
     await handleSubmit({
       ...values,
       ordering,
@@ -183,10 +219,15 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
         DEFAULT_DATE_FORMAT
       )
     });
+
+    setUploadImages([]);
   };
 
   useEffect(() => {
-    if (data?.thumbnailUrl) setThumbnailUrl(data?.thumbnailUrl);
+    if (data?.thumbnailUrl) {
+      setThumbnailUrl(data?.thumbnailUrl);
+      setUploadImages([data?.thumbnailUrl]);
+    }
   }, [data?.thumbnailUrl]);
 
   return (
@@ -229,6 +270,9 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                     name='thumbnailUrl'
                     onChange={(url) => {
                       setThumbnailUrl(url);
+                      setUploadImages((prev) =>
+                        url ? [...prev, url] : [...prev]
+                      );
                     }}
                     size={150}
                     uploadImageFn={async (file: Blob) => {
@@ -237,6 +281,15 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                       });
                       return res.data?.filePath ?? '';
                     }}
+                    // allow call api delete file when click X if: thumbnailUrl not existed in api response
+                    deleteImageFn={
+                      data?.thumbnailUrl
+                        ? undefined
+                        : () =>
+                            deleteImageMutation.mutateAsync({
+                              filePath: thumbnailUrl
+                            })
+                    }
                     label='Ảnh xem trước (16:9)'
                     aspect={16 / 9}
                   />
@@ -314,7 +367,11 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                   />
                 </Col>
               </Row>
-              <>{renderActions(form)}</>
+              <>
+                {renderActions(form, {
+                  onCancel: handleDeleteFiles
+                })}
+              </>
               {loading && (
                 <div className='absolute inset-0 bg-white/80'>
                   <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

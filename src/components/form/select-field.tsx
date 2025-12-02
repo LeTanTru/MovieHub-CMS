@@ -154,11 +154,11 @@ export default function SelectField<
                   className={cn(
                     'focus-visible:border-dodger-blue w-full justify-between border px-3! py-0 text-black shadow-none focus:ring-0 focus-visible:border-2',
                     {
-                      'cursor-not-allowed border-gray-300 bg-gray-200/80 text-gray-500':
-                        disabled,
                       'border-dodger-blue ring-dodger-blue ring-[1px]': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,
-                      'border-red-500 ring-red-500': fieldState.invalid
+                      'border-red-500 ring-red-500': fieldState.invalid,
+                      'cursor-not-allowed border-gray-300 bg-gray-200/50 text-gray-400':
+                        disabled
                     }
                   )}
                 >

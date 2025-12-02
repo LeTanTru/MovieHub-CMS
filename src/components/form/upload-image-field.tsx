@@ -36,6 +36,7 @@ import {
   useController
 } from 'react-hook-form';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { ApiResponse } from '@/types';
 
 type Area = { x: number; y: number; width: number; height: number };
 
@@ -88,15 +89,16 @@ type UploadImageFieldProps<T extends FieldValues> = {
   name: FieldPath<T>;
   label?: React.ReactNode;
   value?: string;
-  onChange?: (url: string) => void;
   required?: boolean;
   labelClassName?: string;
   className?: string;
   size?: number;
-  uploadImageFn: (file: Blob) => Promise<string>;
   loading?: boolean;
   aspect?: number;
   defaultCrop?: boolean;
+  onChange?: (url: string) => void;
+  uploadImageFn: (file: Blob) => Promise<string>;
+  deleteImageFn?: (url: string) => Promise<ApiResponse<any>>;
 };
 
 export default function UploadImageField<T extends FieldValues>({
@@ -104,15 +106,16 @@ export default function UploadImageField<T extends FieldValues>({
   name,
   label,
   value,
-  onChange,
   required,
   labelClassName,
   className,
   size = 70,
-  uploadImageFn,
   loading,
   aspect = 1,
-  defaultCrop
+  defaultCrop,
+  onChange,
+  uploadImageFn,
+  deleteImageFn
 }: UploadImageFieldProps<T>) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -175,11 +178,18 @@ export default function UploadImageField<T extends FieldValues>({
       fieldOnChange(uploadedUrl);
       setDialogOpen(false);
     } catch (error) {
-      logger.error('Lỗi khi upload ảnh:', error);
+      logger.error('Error while uploading image:', error);
     }
   };
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
+    try {
+      if (deleteImageFn && value) {
+        await deleteImageFn(value);
+      }
+    } catch (err) {
+      logger.error('Error while deleting image:', err);
+    }
     onChange?.('');
     fieldOnChange('');
     clearFiles();
