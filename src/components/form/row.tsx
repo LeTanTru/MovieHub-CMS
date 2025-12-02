@@ -11,7 +11,7 @@ export default function Row({ children, className, ...rest }: RowProps) {
       className={cn(
         'mb-6 flex w-full flex-row [&>*:first-child]:pl-0',
         { '[&>*:first-child]:pl-0 [&>*:last-child]:pr-0': childCount > 1 },
-        { '*:px-0': childCount === 1 },
+        { '-mr-2': childCount === 1 },
         className
       )}
       {...rest}

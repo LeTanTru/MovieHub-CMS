@@ -11,10 +11,12 @@ export const videoLibrarySchema = z.object({
   status: z.number({ error: 'Bắt buộc' }),
   thumbnailUrl: z.string().nonempty('Bắt buộc'),
   sourceType: z.number({ error: 'Bắt buộc' }),
-  duration: z.union([z.string(), z.number()]).nullable().optional()
+  duration: z.union([z.string(), z.number()]).nullable().optional(),
+  vttUrl: z.string().optional().nullable()
 });
 
 export const videoLibrarySearchSchema = z.object({
   name: z.string().optional().nullable(),
-  state: z.number().optional().nullable()
+  state: z.number().optional().nullable(),
+  sourceType: z.number().optional().nullable()
 });

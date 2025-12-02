@@ -117,7 +117,8 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
     status: STATUS_ACTIVE,
     thumbnailUrl: '',
     sourceType: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
-    duration: 0
+    duration: 0,
+    vttUrl: ''
   };
 
   const initialValues: VideoLibraryBodyType = useMemo(() => {
@@ -132,7 +133,8 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
       shortDescription: data?.shortDescription ?? '',
       status: STATUS_ACTIVE,
       thumbnailUrl: data?.thumbnailUrl ?? '',
-      sourceType: data?.sourceType ?? VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
+      sourceType: data?.sourceType ?? VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
+      vttUrl: data?.vttUrl ?? ''
     };
   }, [data]);
 
@@ -238,6 +240,8 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
       >
         {(form) => {
           const sourceType = form.watch('sourceType');
+          const content = form.watch('content');
+          const vttUrl = form.watch('vttUrl');
 
           return (
             <>
@@ -346,10 +350,11 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                       />
                     </Col>
                   </Row>
+
                   {/* source type EXTERNAL & isEditing */}
-                  <Row>
-                    {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL &&
-                      isEditing && (
+                  {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL && (
+                    <>
+                      <Row>
                         <Col>
                           <InputField
                             control={form.control}
@@ -367,55 +372,64 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                             }}
                           />
                         </Col>
-                      )}
-                  </Row>
-                  {/* If has video url */}
-                  {(videoUrl || form.watch('content')) &&
-                    isEditing &&
-                    sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL && (
-                      <Row>
-                        <Col span={24}>
-                          <MediaPlayer
-                            autoPlay={false}
-                            crossOrigin
-                            fullscreenOrientation={'none'}
-                            logLevel='silent'
-                            muted
-                            onProviderChange={undefined}
-                            playsInline
-                            preferNativeHLS={false}
-                            src={videoUrl || form.watch('content')}
-                            streamType='on-demand'
-                            viewType='video'
-                          >
-                            <MediaProvider />
-                            <DefaultVideoLayout
-                              icons={defaultLayoutIcons}
-                              slots={{
-                                playButton: <PlayToggleButton />,
-                                muteButton: <VolumeToggleButton />,
-                                fullscreenButton: <FullscreenToggleButton />,
-                                pipButton: <PiPToggleButton />,
-                                settingsMenu: (
-                                  <SettingMenu
-                                    placement='top end'
-                                    tooltipPlacement='top'
-                                  />
-                                ),
-                                captionButton: <CaptionButton />,
-                                beforeSettingsMenu: (
-                                  <>
-                                    <SeekBackwardButton />
-                                    <SeekForwardButton />
-                                  </>
-                                ),
-                                googleCastButton: null
-                              }}
-                            />
-                          </MediaPlayer>
+                        <Col>
+                          <InputField
+                            control={form.control}
+                            name='vttUrl'
+                            label='Đường dẫn VTT (thumbnail preview)'
+                            placeholder='Nhập URL file .vtt'
+                          />
                         </Col>
                       </Row>
-                    )}
+
+                      {/* If has video url */}
+                      {(videoUrl || content) && (
+                        <Row>
+                          <Col span={24}>
+                            <MediaPlayer
+                              autoPlay={false}
+                              crossOrigin
+                              fullscreenOrientation={'none'}
+                              logLevel='silent'
+                              muted
+                              onProviderChange={undefined}
+                              playsInline
+                              preferNativeHLS={false}
+                              src={videoUrl || content}
+                              streamType='on-demand'
+                              viewType='video'
+                            >
+                              <MediaProvider />
+                              <DefaultVideoLayout
+                                thumbnails={vttUrl || undefined}
+                                icons={defaultLayoutIcons}
+                                slots={{
+                                  playButton: <PlayToggleButton />,
+                                  muteButton: <VolumeToggleButton />,
+                                  fullscreenButton: <FullscreenToggleButton />,
+                                  pipButton: <PiPToggleButton />,
+                                  settingsMenu: (
+                                    <SettingMenu
+                                      placement='top end'
+                                      tooltipPlacement='top'
+                                    />
+                                  ),
+                                  captionButton: <CaptionButton />,
+                                  beforeSettingsMenu: (
+                                    <>
+                                      <SeekBackwardButton />
+                                      <SeekForwardButton />
+                                    </>
+                                  ),
+                                  googleCastButton: null
+                                }}
+                              />
+                            </MediaPlayer>
+                          </Col>
+                        </Row>
+                      )}
+                    </>
+                  )}
                 </>
               )}
 
@@ -453,7 +467,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                     </Row>
 
                     {/* if has video url or content */}
-                    {(videoUrl || form.watch('content')) && (
+                    {(videoUrl || content) && (
                       <Row>
                         <Col span={24}>
                           <MediaPlayer
@@ -465,7 +479,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                             onProviderChange={undefined}
                             playsInline
                             preferNativeHLS={false}
-                            src={videoUrl || form.watch('content')}
+                            src={videoUrl || content}
                             streamType='on-demand'
                             viewType='video'
                           >

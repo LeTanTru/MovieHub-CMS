@@ -1632,7 +1632,7 @@ export const videoLibrarySourceTypeOptions = [
     value: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
   },
   {
-    label: 'Sử dụng nguồn bên ngoài',
+    label: 'Bên ngoài',
     value: VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL
   }
 ];

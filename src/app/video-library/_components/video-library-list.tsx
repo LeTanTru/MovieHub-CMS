@@ -11,6 +11,7 @@ import {
   socketReceiveCMDs,
   VIDEO_LIBRARY_STATE_COMPLETE,
   VIDEO_LIBRARY_STATE_PROCESSING,
+  videoLibrarySourceTypeOptions,
   videoLibraryStateOptions
 } from '@/constants';
 import { useDisclosure, useListBase, useSocketEvent } from '@/hooks';
@@ -152,6 +153,12 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
   const searchFields: SearchFormProps<VideoLibrarySearchType>['searchFields'] =
     [
       { key: 'name', placeholder: 'Tên' },
+      {
+        key: 'sourceType',
+        placeholder: 'Nguồn',
+        type: FieldTypes.SELECT,
+        options: videoLibrarySourceTypeOptions
+      },
       {
         key: 'state',
         placeholder: 'Tình trạng',
