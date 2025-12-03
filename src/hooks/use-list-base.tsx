@@ -117,6 +117,7 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
     enabled?: boolean;
     excludeFromQueryFilter?: string[];
     notShowFromSearchParams?: string[];
+    showNotify?: boolean;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
@@ -132,7 +133,8 @@ export default function useListBase<
     defaultFilters = {} as Partial<S>,
     enabled = true,
     excludeFromQueryFilter = [],
-    notShowFromSearchParams = []
+    notShowFromSearchParams = [],
+    showNotify = true
   } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
@@ -250,10 +252,9 @@ export default function useListBase<
     await deleteMutation.mutateAsync(id, {
       onSuccess: (res) => {
         if (res.result) {
-          notify.success(`Xoá ${objectName} thành công`);
-          close();
-          // queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
-          listQuery.refetch();
+          if (showNotify) notify.success(`Xoá ${objectName} thành công`);
+          queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
+          // listQuery.refetch();
         } else {
           if (res.code) handlers.handleDeleteError(res.code);
           else notify.error(`Xoá ${objectName} thất bại`);

@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import {
   Info,
@@ -32,6 +32,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
+import CommentReplyForm from '@/app/movie/[id]/comment/_components/comment-reply-form';
 
 type Props = {
   comment: CommentResType & { children?: CommentResType[] };
@@ -40,6 +41,7 @@ type Props = {
   onVote: (id: string, type: number) => void;
   onPin: (id: string, isPinned: boolean) => void;
   onDelete: (id: string) => void;
+  onReplySuccess: () => void;
   renderChildren: (list: CommentResType[], level: number) => React.ReactNode;
 };
 
@@ -50,12 +52,20 @@ function CommentItem({
   onVote,
   onPin,
   onDelete,
-  renderChildren
+  renderChildren,
+  onReplySuccess
 }: Props) {
   const author = JSON.parse(comment.authorInfo) as AuthorInfoType;
 
   const isLiked = voteMap[comment.id] === REACTION_TYPE_LIKE;
   const isDisliked = voteMap[comment.id] === REACTION_TYPE_DISLIKE;
+
+  const [showReply, setShowReply] = useState(false);
+
+  const handleReplySubmit = () => {
+    onReplySuccess?.();
+    setShowReply(false);
+  };
 
   return (
     <div style={{ marginLeft: level * 40 }} className='pt-4'>
@@ -175,20 +185,14 @@ function CommentItem({
             </div>
 
             <ToolTip title='Trả lời'>
-              <Button variant='ghost'>
+              <Button
+                variant='ghost'
+                onClick={() => setShowReply((prev) => !prev)}
+              >
                 <Reply className='size-5' /> Trả lời
               </Button>
             </ToolTip>
 
-            {/* <ToolTip title='Xóa'>
-              <Button
-                onClick={(e) => onDelete(comment.id)}
-                variant='ghost'
-                className='text-destructive'
-              >
-                <AiOutlineDelete className='size-5' /> Xóa
-              </Button>
-            </ToolTip> */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <span>
@@ -228,6 +232,16 @@ function CommentItem({
               </AlertDialogContent>
             </AlertDialog>
           </div>
+          {showReply && (
+            <div className='mt-2'>
+              <CommentReplyForm
+                parentId={comment.id.toString()}
+                movieId={comment.movieId.toString()}
+                queryKey='comments'
+                onSubmitted={handleReplySubmit}
+              />
+            </div>
+          )}
         </div>
       </div>
 

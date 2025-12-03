@@ -55,7 +55,8 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
       objectName: 'bình luận',
       queryKey,
       defaultFilters: { movieId },
-      notShowFromSearchParams: ['movieId']
+      notShowFromSearchParams: ['movieId'],
+      showNotify: false
     }
   });
 
@@ -90,6 +91,10 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
     [handlers]
   );
 
+  const handleReplySuccess = useCallback(async () => {
+    await listQuery.refetch();
+  }, [listQuery]);
+
   const renderChildren = useCallback(
     (list: CommentResType[], level: number) =>
       list.map((c) => (
@@ -102,9 +107,16 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
           onPin={handlePinComment}
           onDelete={handleDeleteComment}
           renderChildren={renderChildren}
+          onReplySuccess={handleReplySuccess}
         />
       )),
-    [voteMap, handleVote, handlePinComment, handleDeleteComment]
+    [
+      voteMap,
+      handleVote,
+      handlePinComment,
+      handleDeleteComment,
+      handleReplySuccess
+    ]
   );
 
   return (
