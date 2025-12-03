@@ -12,7 +12,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const isClient = () => typeof window !== 'undefined';
 
-const TIME_OUT = 10000;
+// const TIME_OUT = 10000;
 
 export const sendRequest = async <T>(
   apiConfig: ApiConfig,
@@ -78,7 +78,7 @@ export const sendRequest = async <T>(
       method,
       headers: baseHeader,
       params,
-      timeout: TIME_OUT,
+      // timeout: TIME_OUT,
       ...options
     };
 
