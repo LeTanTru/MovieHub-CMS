@@ -2,11 +2,15 @@
 
 import { memo } from 'react';
 import { AvatarField, Button, ToolTip } from '@/components/form';
-import { Pin, Reply, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { Mars, Pin, Reply, ThumbsDown, ThumbsUp, Venus } from 'lucide-react';
 import { cn } from '@/lib';
 import { convertUTCToLocal, renderImageUrl, timeAgo } from '@/utils';
 import { AuthorInfoType, CommentResType } from '@/types';
-import { REACTION_TYPE_DISLIKE, REACTION_TYPE_LIKE } from '@/constants';
+import {
+  GENDER_MALE,
+  REACTION_TYPE_DISLIKE,
+  REACTION_TYPE_LIKE
+} from '@/constants';
 
 type Props = {
   comment: CommentResType & { children?: CommentResType[] };
@@ -31,7 +35,7 @@ function CommentItem({
   const isDisliked = voteMap[comment.id] === REACTION_TYPE_DISLIKE;
 
   return (
-    <div style={{ marginLeft: level * 20 }} className='pt-4'>
+    <div style={{ marginLeft: level * 40 }} className='pt-4'>
       <div className='flex items-start space-x-3 rounded-md border p-3 transition hover:bg-gray-50'>
         <AvatarField
           src={renderImageUrl(author.avatarPath)}
@@ -43,7 +47,19 @@ function CommentItem({
         <div className='flex-1'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-x-2'>
-              <h4 className='font-medium text-gray-800'>{author.fullName}</h4>
+              <h4 className='flex items-center gap-x-2 font-medium text-gray-800'>
+                {author.fullName}
+                <span>
+                  {author.gender ? (
+                    author.gender === GENDER_MALE ? (
+                      <Mars className='size-5 text-blue-500' />
+                    ) : (
+                      <Venus className='size-5 text-pink-500' />
+                    )
+                  ) : null}
+                </span>
+              </h4>
+
               <span
                 className='text-xs text-gray-500'
                 title={convertUTCToLocal(comment.createdDate)}
