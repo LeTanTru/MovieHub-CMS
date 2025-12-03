@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState } from 'react';
+import React, { memo, useState } from 'react';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import {
   Info,
@@ -20,7 +20,7 @@ import {
   REACTION_TYPE_DISLIKE,
   REACTION_TYPE_LIKE
 } from '@/constants';
-import { AiOutlineDelete } from 'react-icons/ai';
+import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,22 +33,29 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import CommentReplyForm from '@/app/movie/[id]/comment/_components/comment-reply-form';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type Props = {
   comment: CommentResType & { children?: CommentResType[] };
   level: number;
   voteMap: Record<string, number>;
+  rootId: string;
   onVote: (id: string, type: number) => void;
   onPin: (id: string, isPinned: boolean) => void;
   onDelete: (id: string) => void;
   onReplySuccess: () => void;
-  renderChildren: (list: CommentResType[], level: number) => React.ReactNode;
+  renderChildren: (
+    list: CommentResType[],
+    level: number,
+    rootId?: string
+  ) => React.ReactNode;
 };
 
 function CommentItem({
   comment,
   level,
   voteMap,
+  rootId,
   onVote,
   onPin,
   onDelete,
@@ -65,6 +72,39 @@ function CommentItem({
   const handleReplySubmit = () => {
     onReplySuccess?.();
     setShowReply(false);
+  };
+
+  const handleCancelReply = () => {
+    setShowReply(false);
+  };
+
+  const renderContentWithMentions = (content: string) => {
+    if (!content) return null;
+
+    const mention = `@${author.fullName}`;
+
+    if (!content.includes(mention)) {
+      return content;
+    }
+
+    const parts = content.split(mention);
+
+    return (
+      <>
+        {parts.map((part, index) => {
+          return (
+            <React.Fragment key={index}>
+              {part}
+              {index < parts.length - 1 && (
+                <span className='rounded bg-blue-50 px-1.5 py-0.5 font-semibold text-blue-600'>
+                  {mention}
+                </span>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </>
+    );
   };
 
   return (
@@ -139,13 +179,15 @@ function CommentItem({
                   })}
                   onClick={() => onPin(comment.id, !comment.isPinned)}
                 >
-                  <Pin className='size-' />
+                  <Pin className='size-5' />
                 </Button>
               </ToolTip>
             )}
           </div>
 
-          <p className='mt-4 text-gray-700'>{comment.content}</p>
+          <p className='mt-4 text-gray-700'>
+            {renderContentWithMentions(comment.content)}
+          </p>
 
           <div className='mt-4 flex items-center gap-x-8 text-sm text-gray-500'>
             <div className='flex items-center gap-x-6'>
@@ -192,6 +234,17 @@ function CommentItem({
               </Button>
             </ToolTip>
 
+            <ToolTip title='Chỉnh sửa'>
+              <Button
+                variant='ghost'
+                className='h-5! p-0!'
+                onClick={() => setShowReply((prev) => !prev)}
+              >
+                <AiOutlineEdit className='size-5' />
+                Chỉnh sửa
+              </Button>
+            </ToolTip>
+
             <AlertDialog>
               <AlertDialogTrigger className='h-5!' asChild>
                 <span>
@@ -231,21 +284,33 @@ function CommentItem({
               </AlertDialogContent>
             </AlertDialog>
           </div>
-          {showReply && (
-            <div className='mt-2'>
-              <CommentReplyForm
-                parentId={comment.id.toString()}
-                movieId={comment.movieId.toString()}
-                queryKey='comments'
-                onSubmitted={handleReplySubmit}
-              />
-            </div>
-          )}
+          <div className='mt-4'>
+            <AnimatePresence initial={false}>
+              {showReply && (
+                <motion.div
+                  key='reply'
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.1, ease: 'linear' }}
+                >
+                  <CommentReplyForm
+                    parentId={rootId.toString()}
+                    movieId={comment.movieId.toString()}
+                    queryKey='comments'
+                    onSubmitted={handleReplySubmit}
+                    defaultMention={`@${author.fullName}`}
+                    onCancel={handleCancelReply}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
-      {comment.children?.length
-        ? renderChildren(comment.children, level + 1)
+      {level === 0 && comment.children?.length
+        ? renderChildren(comment.children, level + 1, rootId)
         : null}
     </div>
   );

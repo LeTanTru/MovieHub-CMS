@@ -18,14 +18,15 @@ import { useMemo, useCallback } from 'react';
 import CommentItem from './comment-item';
 
 const buildCommentTree = (comments: CommentResType[]) => {
-  const map: Record<string, any> = {};
-  const roots: any[] = [];
+  const map: Record<string, CommentResType & { children?: CommentResType[] }> =
+    {};
+  const roots: (CommentResType & { children?: CommentResType[] })[] = [];
 
   for (const c of comments) map[c.id] = { ...c, children: [] };
 
   for (const c of comments) {
     if (c.parent?.id && map[c.parent.id]) {
-      map[c.parent.id].children.push(map[c.id]);
+      map[c.parent.id].children?.push(map[c.id]);
     } else {
       roots.push(map[c.id]);
     }
@@ -96,12 +97,13 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
   }, [listQuery]);
 
   const renderChildren = useCallback(
-    (list: CommentResType[], level: number) =>
+    (list: CommentResType[], level: number, rootId?: string) =>
       list.map((c) => (
         <CommentItem
           key={c.id}
           comment={c}
           level={level}
+          rootId={rootId ?? c.id}
           voteMap={voteMap}
           onVote={handleVote}
           onPin={handlePinComment}
