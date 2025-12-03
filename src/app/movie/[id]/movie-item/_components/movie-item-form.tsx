@@ -340,7 +340,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                 <Row>
                   <Col>
                     <AutoCompleteField
-                      apiConfig={apiConfig.videoLibrary.getList}
+                      apiConfig={apiConfig.videoLibrary.autoComplete}
                       mappingData={(item: VideoLibraryResType) => ({
                         label: item.name,
                         value: item.id.toString()

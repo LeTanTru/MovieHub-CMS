@@ -90,3 +90,6 @@ export const COLLECTION_TYPE_TOPIC = 1;
 export const COLLECTION_TYPE_SECTION = 2;
 
 export const INITIAL_AUTO_COMPLETE_SIZE = 10;
+
+export const REACTION_TYPE_LIKE = 1;
+export const REACTION_TYPE_DISLIKE = 2;

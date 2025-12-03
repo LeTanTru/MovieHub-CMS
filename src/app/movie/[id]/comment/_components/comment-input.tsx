@@ -120,7 +120,7 @@ export default function CommentInput({
                 />
               </Col>
             </Row>
-            <Row className='mb-0'>
+            <Row className='mt-2 mb-0'>
               <Col span={24}>
                 <div className='relative ml-auto w-fit' ref={wrapperRef}>
                   <div ref={pickerContainerRef} />

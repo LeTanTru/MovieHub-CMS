@@ -489,6 +489,11 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'VID_L_U'
+    },
+    autoComplete: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/video-library/auto-complete`,
+      method: 'GET',
+      headers: baseHeader
     }
   },
   appVersion: {

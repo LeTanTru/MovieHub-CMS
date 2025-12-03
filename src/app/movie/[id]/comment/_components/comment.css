@@ -1,0 +1,22 @@
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35) rotate(-15deg);
+  }
+  90% {
+    transform: scale(1.35) rotate(15deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.like-pop {
+  animation: pop 0.25s linear;
+}
+
+.dislike-pop {
+  animation: pop 0.25s linear;
+}
