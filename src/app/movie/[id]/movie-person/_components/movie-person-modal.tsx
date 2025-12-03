@@ -3,7 +3,11 @@
 import { AutoCompleteField, AvatarField, Col, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { Modal } from '@/components/modal';
-import { apiConfig, PERSON_KIND_ACTOR } from '@/constants';
+import {
+  apiConfig,
+  INITIAL_AUTO_COMPLETE_SIZE,
+  PERSON_KIND_ACTOR
+} from '@/constants';
 import { useDisclosure } from '@/hooks';
 import { logger } from '@/logger';
 import { useCreateMoviePersonMutation } from '@/queries';
@@ -104,7 +108,10 @@ export default function MoviePersonModal({
                   }}
                   name='personId'
                   initialParams={{
-                    kind
+                    kind,
+                    size:
+                      INITIAL_AUTO_COMPLETE_SIZE +
+                      (moviePersonList?.length ?? 0)
                   }}
                   searchParams={['otherName']}
                   label={`${kind === PERSON_KIND_ACTOR ? 'Diễn viên' : 'Đạo diễn'}`}

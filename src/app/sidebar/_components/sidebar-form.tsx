@@ -267,6 +267,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                     control={form.control}
                     name='description'
                     label='Mô tả'
+                    placeholder='Mô tả'
                     required
                   />
                 </Col>

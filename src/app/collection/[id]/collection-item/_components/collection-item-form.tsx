@@ -1,4 +1,5 @@
 'use client';
+
 import { AutoCompleteField, Col, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
@@ -110,7 +111,7 @@ export default function CollectionItemForm({ queryKey }: { queryKey: string }) {
                       value: item.id.toString()
                     })}
                     searchParams={['title']}
-                    init
+                    fetchAll
                   />
                 </Col>
               </Row>

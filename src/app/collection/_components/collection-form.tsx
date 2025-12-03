@@ -176,7 +176,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                         value: item.id.toString()
                       })}
                       searchParams={['name']}
-                      init
+                      fetchAll
                     />
                   </Col>
                 )}
