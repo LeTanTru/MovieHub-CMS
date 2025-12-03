@@ -15,7 +15,7 @@ export default function DarkModeToggle() {
     <div>
       <Toggle
         variant='outline'
-        className='group data-[state=on]:hover:bg-muted size-9 cursor-pointer data-[state=on]:bg-transparent'
+        className='group data-[state=on]:hover:bg-muted size-9 cursor-pointer transition-all duration-200 ease-linear data-[state=on]:bg-transparent'
         pressed={theme === 'dark'}
         onPressedChange={() => {
           setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
@@ -24,7 +24,7 @@ export default function DarkModeToggle() {
       >
         <Moon
           size={16}
-          className='shrink-0 scale-0 opacity-0 transition-all group-data-[state=on]:scale-100 group-data-[state=on]:rotate-[720deg] group-data-[state=on]:opacity-100'
+          className='shrink-0 scale-0 opacity-0 transition-all group-data-[state=on]:scale-100 group-data-[state=on]:rotate-720 group-data-[state=on]:opacity-100'
           aria-hidden='true'
         />
         <Sun

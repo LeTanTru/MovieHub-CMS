@@ -63,7 +63,9 @@ export default function Breadcrumb({
                     </Link>
                   </BreadcrumbLink>
                 ) : (
-                  <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                  <BreadcrumbPage className='text-foreground'>
+                    {item.label}
+                  </BreadcrumbPage>
                 )}
               </BreadcrumbItem>
               {!isLast && separator}
