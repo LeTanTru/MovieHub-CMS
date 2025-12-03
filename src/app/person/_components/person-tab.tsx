@@ -16,9 +16,7 @@ import { getData, setData } from '@/utils';
 import { useEffect, useState } from 'react';
 
 export default function PersonTab() {
-  const [activeTab, setActiveTab] = useState(
-    getData(storageKeys.ACTIVE_TAB_PERSON_KIND) || TAB_PERSON_KIND_ACTOR
-  );
+  const [activeTab, setActiveTab] = useState('');
   const isMounted = useIsMounted();
 
   const tabs = [
@@ -39,11 +37,15 @@ export default function PersonTab() {
   ];
 
   useEffect(() => {
-    if (!getData(TAB_PERSON_KIND_ACTOR)) {
+    const currentTab = getData(storageKeys.ACTIVE_TAB_PERSON_KIND);
+
+    if (currentTab) {
+      setActiveTab(currentTab);
+    } else {
       setActiveTab(TAB_PERSON_KIND_ACTOR);
       setData(storageKeys.ACTIVE_TAB_PERSON_KIND, TAB_PERSON_KIND_ACTOR);
     }
-  }, [activeTab]);
+  }, []);
 
   if (!isMounted) return null;
 

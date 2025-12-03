@@ -7,29 +7,29 @@ import {
   PERSON_KIND_ACTOR,
   PERSON_KIND_DIRECTOR,
   queryKeys,
-  storageKeys
+  storageKeys,
+  TAB_MOVIE_PERSON_KIND_ACTOR,
+  TAB_MOVIE_PERSON_KIND_DIRECTOR
 } from '@/constants';
 import { useIsMounted } from '@/hooks';
 import { route } from '@/routes';
 import { getData, setData } from '@/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function PersonTab() {
-  const [activeTab, setActiveTab] = useState(
-    getData(storageKeys.ACTIVE_TAB_PERSON_KIND) || 'actor-tab'
-  );
+  const [activeTab, setActiveTab] = useState('');
   const isMounted = useIsMounted();
 
   const tabs = [
     {
-      value: 'actor-tab',
+      value: TAB_MOVIE_PERSON_KIND_ACTOR,
       label: 'Diễn viên',
       component: (
         <MoviePersonList queryKey={queryKeys.PERSON} kind={PERSON_KIND_ACTOR} />
       )
     },
     {
-      value: 'director-tab',
+      value: TAB_MOVIE_PERSON_KIND_DIRECTOR,
       label: 'Đạo diễn',
       component: (
         <MoviePersonList
@@ -39,6 +39,20 @@ export default function PersonTab() {
       )
     }
   ];
+
+  useEffect(() => {
+    const currentTab = getData(storageKeys.ACTIVE_TAB_MOVIE_PERSON_KIND);
+
+    if (currentTab) {
+      setActiveTab(currentTab);
+    } else {
+      setActiveTab(TAB_MOVIE_PERSON_KIND_ACTOR);
+      setData(
+        storageKeys.ACTIVE_TAB_MOVIE_PERSON_KIND,
+        TAB_MOVIE_PERSON_KIND_ACTOR
+      );
+    }
+  }, []);
 
   if (!isMounted) return null;
 
