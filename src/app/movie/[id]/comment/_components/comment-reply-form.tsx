@@ -111,7 +111,7 @@ export default function CommentReplyForm({
       {(form) => {
         formRef.current = form;
         return (
-          <Row className='mt-2 mb-0'>
+          <Row className='mb-0'>
             <Col span={24}>
               <TextAreaField
                 control={form.control}
@@ -119,7 +119,7 @@ export default function CommentReplyForm({
                 placeholder='Viết phản hồi...'
               />
               <div
-                className='relative mt-2 flex items-center justify-end gap-2'
+                className='relative mt-4 flex items-center justify-end gap-2'
                 ref={wrapperRef}
               >
                 <div ref={pickerContainerRef} />
