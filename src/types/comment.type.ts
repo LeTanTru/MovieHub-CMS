@@ -12,7 +12,7 @@ export type CommentResType = {
   status: number;
   modifiedDate: string;
   createdDate: string;
-  movieId: number;
+  movieId: string;
   content: string;
   totalLike: number;
   totalDislike: number;
