@@ -15,14 +15,18 @@ type Props = {
   parentId: string;
   movieId: string;
   queryKey: string;
+  defaultMention?: string;
   onSubmitted?: () => void;
+  onCancel?: () => void;
 };
 
 export default function CommentReplyForm({
   parentId,
   movieId,
   queryKey,
-  onSubmitted
+  defaultMention,
+  onSubmitted,
+  onCancel
 }: Props) {
   const formRef = useRef<any>(null);
   const wrapperRef = useClickOutside<HTMLDivElement>(() =>
@@ -54,7 +58,10 @@ export default function CommentReplyForm({
   };
 
   const onSubmit = async (values: CommentBodyType) => {
-    await handleSubmit(values);
+    await handleSubmit({
+      ...values,
+      content: defaultMention + ' ' + values.content
+    });
     if (onSubmitted) onSubmitted();
     formRef.current.reset();
     setShowPicker(false);
@@ -107,6 +114,7 @@ export default function CommentReplyForm({
       defaultValues={defaultValues}
       schema={commentSchema}
       onSubmit={onSubmit}
+      className='shadow-[0px_0px_2px_2px] shadow-gray-200'
     >
       {(form) => {
         formRef.current = form;
@@ -117,12 +125,26 @@ export default function CommentReplyForm({
                 control={form.control}
                 name='content'
                 placeholder='Viết phản hồi...'
+                className='min-h-20'
+                label={
+                  <span className='rounded bg-blue-50 px-1.5 py-0.5 font-semibold text-blue-600'>
+                    {defaultMention}
+                  </span>
+                }
               />
               <div
                 className='relative mt-4 flex items-center justify-end gap-2'
                 ref={wrapperRef}
               >
                 <div ref={pickerContainerRef} />
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={onCancel}
+                  className='border-destructive text-destructive hover:text-destructive/50 hover:border-destructive/50 w-20!'
+                >
+                  Hủy
+                </Button>
                 <Button
                   type='button'
                   onClick={() => setShowPicker((prev) => !prev)}

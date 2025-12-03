@@ -1,6 +1,14 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  ForwardedRef,
+  useImperativeHandle
+} from 'react';
 import {
   FormControl,
   FormField,
@@ -15,7 +23,7 @@ import { cn } from '@/lib/utils';
 type TextAreaFieldProps<T extends FieldValues> = {
   control: Control<T>;
   name: FieldPath<T>;
-  label?: string;
+  label?: string | React.ReactNode;
   placeholder?: string;
   className?: string;
   required?: boolean;
@@ -25,38 +33,48 @@ type TextAreaFieldProps<T extends FieldValues> = {
   maxLength?: number;
   rows?: number;
   maxRows?: number;
-};
+} & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-export default function TextAreaField<T extends FieldValues>({
-  control,
-  name,
-  label,
-  placeholder = '',
-  className,
-  required = false,
-  disabled = false,
-  readOnly = false,
-  floatLabel = false,
-  maxLength,
-  rows = 8,
-  maxRows = 15
-}: TextAreaFieldProps<T>) {
+const TextAreaField = <T extends FieldValues>(
+  {
+    control,
+    name,
+    label,
+    placeholder = '',
+    className,
+    required = false,
+    disabled = false,
+    readOnly = false,
+    floatLabel = false,
+    maxLength,
+    rows = 8,
+    maxRows = 15,
+    ...rest
+  }: TextAreaFieldProps<T>,
+  ref: ForwardedRef<HTMLTextAreaElement>
+) => {
   const id = useId();
+  const internalRef = useRef<HTMLTextAreaElement | null>(null);
   const [charCount, setCharCount] = useState(0);
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // expose internal ref ra ngoài
+  useImperativeHandle(ref, () => internalRef.current!);
+
   const resizeTextarea = () => {
-    if (!textareaRef.current) return;
-    textareaRef.current.style.height = 'auto';
-    const scrollHeight = textareaRef.current.scrollHeight;
+    if (!internalRef.current) return;
+    internalRef.current.style.height = 'auto';
+    const scrollHeight = internalRef.current.scrollHeight;
     const lineHeight = parseInt(
-      window.getComputedStyle(textareaRef.current).lineHeight || '20'
+      window.getComputedStyle(internalRef.current).lineHeight || '20'
     );
     const maxHeight = maxRows ? maxRows * lineHeight : Infinity;
-    textareaRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
+    internalRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
   };
+
   useEffect(() => {
     resizeTextarea();
   }, [charCount]);
+
   return (
     <FormField
       control={control}
@@ -95,11 +113,13 @@ export default function TextAreaField<T extends FieldValues>({
                   className
                 )}
                 {...field}
-                ref={textareaRef}
+                {...rest} // kế thừa các props textarea
+                ref={internalRef}
                 onChange={(e) => {
                   field.onChange(e);
                   setCharCount(e.target.value.length);
                   resizeTextarea();
+                  rest.onChange?.(e);
                 }}
               />
             </FormControl>
@@ -119,4 +139,10 @@ export default function TextAreaField<T extends FieldValues>({
       )}
     />
   );
-}
+};
+
+export default forwardRef(TextAreaField) as <T extends FieldValues>(
+  props: TextAreaFieldProps<T> & {
+    ref?: React.ForwardedRef<HTMLTextAreaElement>;
+  }
+) => React.ReactElement;
