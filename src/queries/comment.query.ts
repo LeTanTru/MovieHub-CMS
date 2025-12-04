@@ -2,6 +2,7 @@ import { apiConfig, queryKeys } from '@/constants';
 import {
   ApiResponse,
   ApiResponseList,
+  CommentChangeStatusBodyType,
   CommentPinBodyType,
   CommentResType,
   CommentSearchType,
@@ -55,5 +56,15 @@ export const useCommentListQuery = (
         params
       }),
     enabled
+  });
+};
+
+export const useChangeCommenStatustMutation = () => {
+  return useMutation({
+    mutationKey: [`change-status-${queryKeys.COMMENT}`],
+    mutationFn: (body: CommentChangeStatusBodyType) =>
+      http.put(apiConfig.comment.changeStatus, {
+        body
+      })
   });
 };

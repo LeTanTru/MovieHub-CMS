@@ -1,10 +1,11 @@
 'use client';
+
 import './comment.css';
 import CommentInput from '@/app/movie/[id]/comment/_components/comment-input';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { NoData } from '@/components/no-data';
 import { apiConfig } from '@/constants';
-import { useListBase } from '@/hooks';
+import { useListBase, useValidatePermission } from '@/hooks';
 import {
   usePinCommentMutation,
   useVoteCommentMutation,
@@ -17,21 +18,6 @@ import { useMemo, useCallback } from 'react';
 import CommentItem from './comment-item';
 import { DotLoading } from '@/components/loading';
 
-const buildCommentTree = (comments: CommentResType[]) => {
-  const map: Record<string, CommentResType & { children?: CommentResType[] }> =
-    {};
-  const roots: (CommentResType & { children?: CommentResType[] })[] = [];
-  for (const c of comments) map[c.id] = { ...c, children: [] };
-  for (const c of comments) {
-    if (c.parent?.id && map[c.parent.id]) {
-      map[c.parent.id].children?.push(map[c.id]);
-    } else {
-      roots.push(map[c.id]);
-    }
-  }
-  return roots;
-};
-
 export default function CommentList({ queryKey }: { queryKey: string }) {
   const { id: movieId } = useParams<{ id: string }>();
 
@@ -43,6 +29,8 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
 
   const voteCommentMutation = useVoteCommentMutation();
   const pinCommentMutation = usePinCommentMutation();
+
+  const { hasPermission } = useValidatePermission();
 
   const { data, isFetchingMore, handlers, listQuery } = useListBase<
     CommentResType,
@@ -125,12 +113,14 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
       onScroll={handlers.handleScrollLoadMore}
     >
       <ListPageWrapper>
-        <CommentInput queryKey={queryKey} movieId={movieId} />
+        {hasPermission({
+          requiredPermissions: [apiConfig.comment.create.permissionCode]
+        }) && <CommentInput queryKey={queryKey} movieId={movieId} />}
 
         {data.length === 0 ? (
           <NoData content='Chưa có bình luận nào' />
         ) : (
-          <div className='px-4 pb-4'>
+          <div className='mt-4 px-4 pb-4'>
             <h4 className='-mb-2 ml-2 font-semibold text-black'>
               Bình luận ({data.length})
             </h4>

@@ -112,6 +112,7 @@ export default function CommentInput({
       schema={commentSchema}
       onSubmit={onSubmit}
       ref={formRef}
+      className='-mb-4'
     >
       {(form) => {
         return (

@@ -104,6 +104,13 @@ const apiConfig = defineApiConfig({
       permissionCode: 'CMT_U',
       isRequiredTenantId: true
     },
+    changeStatus: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/change-status`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'CMT_U',
+      isRequiredTenantId: true
+    },
     pin: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/comment/pin`,
       method: 'PUT',
