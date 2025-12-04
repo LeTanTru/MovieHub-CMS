@@ -1,4 +1,5 @@
 import {
+  commentChangeStatusSchema,
   commentPinSchema,
   commentSchema,
   commentSearchSchema,
@@ -41,6 +42,10 @@ export type CommentSearchType = z.infer<typeof commentSearchSchema> &
 export type CommentPinBodyType = z.infer<typeof commentPinSchema>;
 
 export type CommentVoteBodyType = z.infer<typeof commentVoteSchema>;
+
+export type CommentChangeStatusBodyType = z.infer<
+  typeof commentChangeStatusSchema
+>;
 
 export type CommentVoteResType = {
   id: string;
