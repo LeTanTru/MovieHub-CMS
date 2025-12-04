@@ -9,7 +9,7 @@ import {
   CommentVoteResType
 } from '@/types';
 import { http } from '@/utils';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 
 export const useVoteListCommentQuery = ({ movieId }: { movieId: string }) => {
   return useQuery({
@@ -54,6 +54,29 @@ export const useCommentListQuery = (
       http.get<ApiResponseList<CommentResType>>(apiConfig.comment.getList, {
         params
       }),
+    enabled
+  });
+};
+
+export const useInfiniteCommentListQuery = (
+  params?: CommentSearchType,
+  enabled: boolean = false
+) => {
+  return useInfiniteQuery<
+    ApiResponseList<CommentResType>,
+    Error,
+    ApiResponseList<CommentResType>
+  >({
+    queryKey: [`${queryKeys.COMMENT}-list`, params],
+    queryFn: ({ pageParam = 0 }) =>
+      http.get<ApiResponseList<CommentResType>>(apiConfig.comment.getList, {
+        params: { ...params, page: pageParam }
+      }),
+    getNextPageParam: (lastPage, allPages) => {
+      const nextPage = allPages.length;
+      return nextPage < lastPage.data.totalPages ? nextPage : undefined;
+    },
+    initialPageParam: 0,
     enabled
   });
 };

@@ -99,8 +99,6 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   setData: (data: T[]) => void;
   loadMore: () => void;
   handleScrollLoadMore: (e: React.UIEvent<HTMLElement>) => void;
-  isFetchingMore: boolean;
-  hasMore: boolean;
   setHiddenFilter: (key: keyof S, value: S[keyof S] | null) => void;
   setHiddenFilters: (filters: Partial<S>) => void;
 };
@@ -662,8 +660,6 @@ export default function useListBase<
       setData,
       loadMore,
       handleScrollLoadMore,
-      isFetchingMore,
-      hasMore,
       setHiddenFilter,
       setHiddenFilters
     };
@@ -681,6 +677,8 @@ export default function useListBase<
     handlers,
     queryFilter,
     listQuery,
-    queryString
+    queryString,
+    isFetchingMore,
+    hasMore
   };
 }

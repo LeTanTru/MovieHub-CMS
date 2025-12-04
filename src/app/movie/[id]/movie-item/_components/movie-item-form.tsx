@@ -44,6 +44,7 @@ import {
   formatDate,
   generatePath,
   getData,
+  notify,
   renderImageUrl,
   renderListPageUrl
 } from '@/utils';
@@ -103,6 +104,13 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
         id: movieItemId
       },
       mode: movieItemId === 'create' ? 'create' : 'edit'
+    },
+    override: (handlers) => {
+      handlers.handleSubmitError = (code) => {
+        if (code === ErrorCode.MOVIE_ITEM_ERROR_PARENT_REQUIRED) {
+          notify.error('Vui lòng chọn mùa để thêm');
+        }
+      };
     }
   });
 

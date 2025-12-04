@@ -24,8 +24,7 @@ const apiConfig = defineApiConfig({
     logout: {
       baseUrl: `${AppConstants.metaApiUrl}/v1/auth/logout`,
       method: 'POST',
-      headers: baseHeader,
-      isRequiredTenantId: true
+      headers: baseHeader
     },
     refreshToken: {
       baseUrl: `${AppConstants.metaApiUrl}/api/token`,

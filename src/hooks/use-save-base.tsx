@@ -22,7 +22,8 @@ import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 type HandlerType<T> = {
-  additionParams: () => { [key: string]: any };
+  // additionParams: () => { [key: string]: any };
+  handleSubmitError: (code: string) => void;
 };
 
 type UseSaveBaseProps<R, T> = {
@@ -126,8 +127,10 @@ export default function useSaveBase<
             }
           } else {
             const code = res.code;
-            if (code && errorMaps && form) {
+            if (code && errorMaps?.[code] && form) {
               applyFormErrors(form, code, errorMaps);
+            } else {
+              handlers.handleSubmitError(code);
             }
           }
         },
@@ -223,8 +226,26 @@ export default function useSaveBase<
     </Row>
   );
 
+  const handleSubmitError = (code: string) => {};
+
+  const extendableHandlers = (): HandlerType<T> => {
+    let handlers: HandlerType<T> = {
+      handleSubmitError
+    };
+
+    const overridden = override?.(handlers);
+    if (overridden) {
+      handlers = overridden;
+    }
+
+    return handlers;
+  };
+
+  const handlers = extendableHandlers();
+
   return {
     data,
+    handlers,
     itemQuery,
     queryString,
     isEditing: !isCreate,

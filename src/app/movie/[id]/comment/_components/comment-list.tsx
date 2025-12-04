@@ -9,7 +9,7 @@ import {
   usePinCommentMutation,
   useVoteCommentMutation,
   useVoteListCommentQuery
-} from '@/queries/comment.query';
+} from '@/queries';
 import { route } from '@/routes';
 import { CommentResType, CommentSearchType } from '@/types';
 import { useParams } from 'next/navigation';
@@ -44,7 +44,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
   const voteCommentMutation = useVoteCommentMutation();
   const pinCommentMutation = usePinCommentMutation();
 
-  const { data, handlers, listQuery } = useListBase<
+  const { data, isFetchingMore, handlers, listQuery } = useListBase<
     CommentResType,
     CommentSearchType
   >({
@@ -135,7 +135,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
               Bình luận ({data.length})
             </h4>
             {renderChildren(data, 0)}
-            {handlers.isFetchingMore && <DotLoading className='mt-4' />}
+            {isFetchingMore && <DotLoading className='mt-4' />}
           </div>
         )}
       </ListPageWrapper>
