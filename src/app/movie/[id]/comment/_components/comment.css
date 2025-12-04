@@ -1,12 +1,27 @@
-@keyframes pop {
+@keyframes likePop {
   0% {
     transform: scale(1);
   }
-  50% {
-    transform: scale(1.35) rotate(-15deg);
+  33.333333333333% {
+    transform: scale(1.35) rotate(60deg);
   }
-  90% {
-    transform: scale(1.35) rotate(15deg);
+  66.666666666666% {
+    transform: scale(1.35) rotate(-30deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes disLikePop {
+  0% {
+    transform: scale(1);
+  }
+  33.333333333333% {
+    transform: scale(1.35) rotate(30deg);
+  }
+  66.666666666666% {
+    transform: scale(1.35) rotate(-60deg);
   }
   100% {
     transform: scale(1);
@@ -14,9 +29,9 @@
 }
 
 .like-pop {
-  animation: pop 0.25s linear;
+  animation: likePop 0.5s linear;
 }
 
 .dislike-pop {
-  animation: pop 0.25s linear;
+  animation: disLikePop 0.5s linear;
 }

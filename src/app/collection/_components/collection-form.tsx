@@ -129,7 +129,6 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
         initialValues={initialValues}
       >
         {(form) => {
-          const type = form.watch('type');
           return (
             <>
               <Row>
@@ -162,24 +161,22 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                     required
                   />
                 </Col>
-                {type === COLLECTION_TYPE_SECTION && (
-                  <Col>
-                    <AutoCompleteField<any, StyleResType>
-                      control={form.control}
-                      name='styleId'
-                      label='Thiết kế'
-                      placeholder='Thiết kế'
-                      required
-                      apiConfig={apiConfig.style.getList}
-                      mappingData={(item) => ({
-                        label: item.name,
-                        value: item.id.toString()
-                      })}
-                      searchParams={['name']}
-                      fetchAll
-                    />
-                  </Col>
-                )}
+                <Col>
+                  <AutoCompleteField<any, StyleResType>
+                    control={form.control}
+                    name='styleId'
+                    label='Thiết kế'
+                    placeholder='Thiết kế'
+                    required
+                    apiConfig={apiConfig.style.getList}
+                    mappingData={(item) => ({
+                      label: item.name,
+                      value: item.id.toString()
+                    })}
+                    searchParams={['name']}
+                    fetchAll
+                  />
+                </Col>
               </Row>
               <FieldSet title='Bộ lọc'>
                 <Row>

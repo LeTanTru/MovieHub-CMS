@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Col, Row, TextAreaField } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { Send } from 'lucide-react';
@@ -10,6 +10,7 @@ import { commentSchema } from '@/schemaValidations';
 import { apiConfig } from '@/constants';
 import { CommentBodyType, CommentResType } from '@/types';
 import { emojiIcon } from '@/assets';
+import { useCommentStore } from '@/store';
 
 type Props = {
   parentId: string;
@@ -33,8 +34,8 @@ export default function CommentReplyForm({
     setShowPicker(false)
   );
   const pickerContainerRef = useRef<HTMLDivElement>(null);
-
   const [showPicker, setShowPicker] = useState(false);
+  const { editingComment, setEditingComment, closeReply } = useCommentStore();
 
   const { loading, handleSubmit } = useSaveBase<
     CommentResType,
@@ -44,8 +45,8 @@ export default function CommentReplyForm({
     options: {
       queryKey,
       objectName: 'bình luận',
-      pathParams: {},
-      mode: 'create',
+      pathParams: { id: editingComment?.id },
+      mode: editingComment === null ? 'create' : 'edit',
       showNotify: false
     }
   });
@@ -57,14 +58,30 @@ export default function CommentReplyForm({
     parentId: parentId
   };
 
+  const initialValues: CommentBodyType = useMemo(
+    () => ({
+      content: editingComment?.content || '',
+      movieId: editingComment?.movieId?.toString() || movieId,
+      movieItemId: editingComment?.movieId?.toString() || '',
+      parentId: editingComment?.parent?.id?.toString() || parentId
+    }),
+    [editingComment]
+  );
+
   const onSubmit = async (values: CommentBodyType) => {
+    const finalContent =
+      (defaultMention ? defaultMention + ' ' : '') + values.content;
+
     await handleSubmit({
       ...values,
-      content: defaultMention + ' ' + values.content
+      content: finalContent
     });
+
     if (onSubmitted) onSubmitted();
     formRef.current.reset();
     setShowPicker(false);
+    setEditingComment(null);
+    closeReply();
   };
 
   useEffect(() => {
@@ -112,6 +129,7 @@ export default function CommentReplyForm({
   return (
     <BaseForm
       defaultValues={defaultValues}
+      initialValues={initialValues}
       schema={commentSchema}
       onSubmit={onSubmit}
       className='shadow-[0px_0px_2px_2px] shadow-gray-200'
@@ -127,10 +145,11 @@ export default function CommentReplyForm({
                 placeholder='Viết phản hồi...'
                 className='min-h-20'
                 label={
-                  <span className='rounded bg-blue-50 px-1.5 py-0.5 font-semibold text-blue-600'>
+                  <span className='rounded bg-blue-50 px-1.5 py-1 font-semibold text-blue-600'>
                     {defaultMention}
                   </span>
                 }
+                labelClassName='m-0 mb-1 ml-0.5'
               />
               <div
                 className='relative mt-4 flex items-center justify-end gap-2'
@@ -164,7 +183,7 @@ export default function CommentReplyForm({
                   variant='primary'
                   className='w-20!'
                   loading={loading}
-                  disabled={!form.watch('content')}
+                  disabled={!form.watch('content') || !form.formState.isDirty}
                 >
                   <Send />
                 </Button>

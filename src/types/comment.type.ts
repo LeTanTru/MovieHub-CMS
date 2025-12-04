@@ -35,7 +35,7 @@ export type AuthorInfoType = {
 
 export type CommentBodyType = z.infer<typeof commentSchema>;
 
-export type CommentSearchBodyType = z.infer<typeof commentSearchSchema> &
+export type CommentSearchType = z.infer<typeof commentSearchSchema> &
   BaseSearchType;
 
 export type CommentPinBodyType = z.infer<typeof commentPinSchema>;
@@ -45,4 +45,14 @@ export type CommentVoteBodyType = z.infer<typeof commentVoteSchema>;
 export type CommentVoteResType = {
   id: string;
   type: number;
+};
+
+export type CommentStoreType = {
+  replyingCommentId: string | null;
+  editingComment: CommentResType | null;
+
+  openReply: (id: string) => void;
+  closeReply: () => void;
+
+  setEditingComment: (c: CommentResType | null) => void;
 };

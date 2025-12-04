@@ -26,6 +26,7 @@ type TextAreaFieldProps<T extends FieldValues> = {
   label?: string | React.ReactNode;
   placeholder?: string;
   className?: string;
+  labelClassName?: string;
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
@@ -42,6 +43,7 @@ const TextAreaField = <T extends FieldValues>(
     label,
     placeholder = '',
     className,
+    labelClassName,
     required = false,
     disabled = false,
     readOnly = false,
@@ -85,10 +87,14 @@ const TextAreaField = <T extends FieldValues>(
             {label && (
               <FormLabel
                 htmlFor={id}
-                className={cn('mb-2 ml-2 gap-0', {
-                  'origin-start text-muted-foreground/70 group-focus-within:text-foreground has-[+textarea:not(:placeholder-shown)]:text-foreground has-aria-invalid:border-destructive/60 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive bg-background absolute top-0 block translate-y-2 cursor-text rounded px-1 text-sm transition-all group-focus-within:pointer-events-none group-focus-within:-translate-y-1/2 group-focus-within:cursor-default group-focus-within:text-xs group-focus-within:font-medium has-[+textarea:not(:placeholder-shown)]:pointer-events-none has-[+textarea:not(:placeholder-shown)]:-translate-y-1/2 has-[+textarea:not(:placeholder-shown)]:cursor-default has-[+textarea:not(:placeholder-shown)]:text-xs has-[+textarea:not(:placeholder-shown)]:font-medium':
-                    floatLabel
-                })}
+                className={cn(
+                  'mb-2 ml-2 gap-0',
+                  {
+                    'origin-start text-muted-foreground/70 group-focus-within:text-foreground has-[+textarea:not(:placeholder-shown)]:text-foreground has-aria-invalid:border-destructive/60 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive bg-background absolute top-0 block translate-y-2 cursor-text rounded px-1 text-sm transition-all group-focus-within:pointer-events-none group-focus-within:-translate-y-1/2 group-focus-within:cursor-default group-focus-within:text-xs group-focus-within:font-medium has-[+textarea:not(:placeholder-shown)]:pointer-events-none has-[+textarea:not(:placeholder-shown)]:-translate-y-1/2 has-[+textarea:not(:placeholder-shown)]:cursor-default has-[+textarea:not(:placeholder-shown)]:text-xs has-[+textarea:not(:placeholder-shown)]:font-medium':
+                      floatLabel
+                  },
+                  labelClassName
+                )}
               >
                 {label}
                 {required && <span className='text-destructive ml-1'>*</span>}
@@ -105,7 +111,7 @@ const TextAreaField = <T extends FieldValues>(
                 rows={rows ?? 4}
                 className={cn(
                   floatLabel && 'bg-background pt-6',
-                  'focus-visible:ring-dodger-blue min-h-40 shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
+                  'focus-visible:ring-dodger-blue min-h-40 shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
                   {
                     'focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-red-500!':
                       !!fieldState.error
@@ -113,7 +119,7 @@ const TextAreaField = <T extends FieldValues>(
                   className
                 )}
                 {...field}
-                {...rest} // kế thừa các props textarea
+                {...rest}
                 ref={internalRef}
                 onChange={(e) => {
                   field.onChange(e);

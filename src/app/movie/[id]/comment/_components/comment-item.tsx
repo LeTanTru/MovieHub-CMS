@@ -1,7 +1,7 @@
 'use client';
 
-import React, { memo, useState } from 'react';
-import { AvatarField, Button, ToolTip } from '@/components/form';
+import React, { memo } from 'react';
+import { AvatarField, Button } from '@/components/form';
 import {
   Info,
   Mars,
@@ -17,10 +17,11 @@ import { AuthorInfoType, CommentResType } from '@/types';
 import {
   GENDER_FEMALE,
   GENDER_MALE,
+  queryKeys,
   REACTION_TYPE_DISLIKE,
   REACTION_TYPE_LIKE
 } from '@/constants';
-import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import { AiOutlineDelete, AiOutlineEdit, AiOutlineUser } from 'react-icons/ai';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,6 +35,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import CommentReplyForm from '@/app/movie/[id]/comment/_components/comment-reply-form';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCommentStore } from '@/store';
 
 type Props = {
   comment: CommentResType & { children?: CommentResType[] };
@@ -44,6 +46,7 @@ type Props = {
   onPin: (id: string, isPinned: boolean) => void;
   onDelete: (id: string) => void;
   onReplySuccess: () => void;
+  onLoadReplies: (parentId: string) => void;
   renderChildren: (
     list: CommentResType[],
     level: number,
@@ -59,6 +62,7 @@ function CommentItem({
   onVote,
   onPin,
   onDelete,
+  onLoadReplies,
   renderChildren,
   onReplySuccess
 }: Props) {
@@ -67,15 +71,36 @@ function CommentItem({
   const isLiked = voteMap[comment.id] === REACTION_TYPE_LIKE;
   const isDisliked = voteMap[comment.id] === REACTION_TYPE_DISLIKE;
 
-  const [showReply, setShowReply] = useState(false);
+  const {
+    replyingCommentId,
+    editingComment,
+    openReply,
+    closeReply,
+    setEditingComment
+  } = useCommentStore();
 
   const handleReplySubmit = () => {
     onReplySuccess?.();
-    setShowReply(false);
+    closeReply();
+  };
+
+  const handleReplyComment = () => {
+    if (replyingCommentId === comment.id) {
+      closeReply();
+    } else {
+      openReply(comment.id);
+    }
+    setEditingComment(null);
+  };
+
+  const handleEditComment = (comment: CommentResType) => {
+    setEditingComment(comment);
+    closeReply();
   };
 
   const handleCancelReply = () => {
-    setShowReply(false);
+    closeReply();
+    setEditingComment(null);
   };
 
   const renderContentWithMentions = (content: string) => {
@@ -115,6 +140,7 @@ function CommentItem({
           previewClassName='rounded-full'
           size={40}
           alt={author.fullName}
+          icon={<AiOutlineUser className='size-5' />}
         />
 
         <div className='flex-1'>
@@ -170,18 +196,16 @@ function CommentItem({
             </div>
 
             {level === 0 && (
-              <ToolTip title='Ghim bình luận'>
-                <Button
-                  variant='ghost'
-                  className={cn('mr-2 size-5! p-0!', {
-                    '[&_svg]:fill-blue-600 [&_svg]:text-blue-600':
-                      comment.isPinned
-                  })}
-                  onClick={() => onPin(comment.id, !comment.isPinned)}
-                >
-                  <Pin className='size-5' />
-                </Button>
-              </ToolTip>
+              <Button
+                variant='ghost'
+                className={cn('mr-2 size-5! p-0!', {
+                  '[&_svg]:fill-blue-600 [&_svg]:text-blue-600':
+                    comment.isPinned
+                })}
+                onClick={() => onPin(comment.id, !comment.isPinned)}
+              >
+                <Pin className='size-5' />
+              </Button>
             )}
           </div>
 
@@ -192,68 +216,58 @@ function CommentItem({
           <div className='mt-4 flex items-center gap-x-8 text-sm text-gray-500'>
             <div className='flex items-center gap-x-6'>
               <div className='flex items-center gap-x-2'>
-                <ToolTip title='Thích'>
-                  <Button
-                    variant='ghost'
-                    className={cn('size-5! p-0!', {
-                      'like-pop [&_svg]:fill-blue-400 [&_svg]:stroke-blue-400':
-                        isLiked
-                    })}
-                    onClick={() => onVote(comment.id, REACTION_TYPE_LIKE)}
-                  >
-                    <ThumbsUp className='size-5' />
-                  </Button>
-                </ToolTip>
+                <Button
+                  variant='ghost'
+                  className={cn('size-5! p-0!', {
+                    'like-pop [&_svg]:fill-blue-400 [&_svg]:stroke-blue-400':
+                      isLiked
+                  })}
+                  onClick={() => onVote(comment.id, REACTION_TYPE_LIKE)}
+                >
+                  <ThumbsUp className='size-5' />
+                </Button>
                 {comment.totalLike}
               </div>
 
               <div className='flex items-center gap-x-2'>
-                <ToolTip title='Không thích'>
-                  <Button
-                    variant='ghost'
-                    className={cn('size-5! p-0!', {
-                      'dislike-pop [&_svg]:fill-red-400 [&_svg]:stroke-red-400':
-                        isDisliked
-                    })}
-                    onClick={() => onVote(comment.id, REACTION_TYPE_DISLIKE)}
-                  >
-                    <ThumbsDown className='size-5' />
-                  </Button>
-                </ToolTip>
+                <Button
+                  variant='ghost'
+                  className={cn('size-5! p-0!', {
+                    'dislike-pop [&_svg]:fill-red-400 [&_svg]:stroke-red-400':
+                      isDisliked
+                  })}
+                  onClick={() => onVote(comment.id, REACTION_TYPE_DISLIKE)}
+                >
+                  <ThumbsDown className='size-5' />
+                </Button>
                 {comment.totalDislike}
               </div>
             </div>
 
-            <ToolTip title='Trả lời'>
-              <Button
-                variant='ghost'
-                className='h-5! p-0!'
-                onClick={() => setShowReply((prev) => !prev)}
-              >
-                <Reply className='size-5' /> Trả lời
-              </Button>
-            </ToolTip>
+            <Button
+              variant='ghost'
+              className='h-5! p-0!'
+              onClick={() => handleReplyComment()}
+            >
+              <Reply className='size-5' /> Trả lời
+            </Button>
 
-            <ToolTip title='Chỉnh sửa'>
-              <Button
-                variant='ghost'
-                className='h-5! p-0!'
-                onClick={() => setShowReply((prev) => !prev)}
-              >
-                <AiOutlineEdit className='size-5' />
-                Chỉnh sửa
-              </Button>
-            </ToolTip>
+            <Button
+              variant='ghost'
+              className='text-dodger-blue hover:text-dodger-blue/50 h-5! p-0!'
+              onClick={() => handleEditComment(comment)}
+            >
+              <AiOutlineEdit className='size-5' />
+              Chỉnh sửa
+            </Button>
 
             <AlertDialog>
               <AlertDialogTrigger className='h-5!' asChild>
                 <span>
-                  <ToolTip title={`Xóa bình luận`} sideOffset={0}>
-                    <Button className='text-destructive h-5! border-none bg-transparent p-0! shadow-none hover:bg-transparent'>
-                      <AiOutlineDelete className='size-5' />
-                      Xóa
-                    </Button>
-                  </ToolTip>
+                  <Button className='text-destructive hover:text-destructive/50 h-5! border-none bg-transparent p-0! shadow-none hover:bg-transparent'>
+                    <AiOutlineDelete className='size-5' />
+                    Xóa
+                  </Button>
                 </span>
               </AlertDialogTrigger>
               <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-md p-4'>
@@ -284,28 +298,39 @@ function CommentItem({
               </AlertDialogContent>
             </AlertDialog>
           </div>
-          <div className='mt-4'>
-            <AnimatePresence initial={false}>
-              {showReply && (
-                <motion.div
-                  key='reply'
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.1, ease: 'linear' }}
-                >
-                  <CommentReplyForm
-                    parentId={rootId.toString()}
-                    movieId={comment.movieId.toString()}
-                    queryKey='comments'
-                    onSubmitted={handleReplySubmit}
-                    defaultMention={`@${author.fullName}`}
-                    onCancel={handleCancelReply}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+
+          {comment.totalChildren ? (
+            <Button
+              variant='ghost'
+              className='mt-4 h-5! p-0! font-medium hover:opacity-70'
+              onClick={() => onLoadReplies(rootId)}
+            >
+              Xem tất cả ({comment.totalChildren}) trả lời
+            </Button>
+          ) : null}
+
+          <AnimatePresence initial={false}>
+            {(replyingCommentId === comment.id ||
+              editingComment?.id === comment.id) && (
+              <motion.div
+                key='reply'
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.1, ease: 'linear' }}
+                className='mt-4'
+              >
+                <CommentReplyForm
+                  parentId={rootId.toString()}
+                  movieId={comment.movieId.toString()}
+                  defaultMention={`@${author.fullName}`}
+                  queryKey={queryKeys.COMMENT}
+                  onSubmitted={handleReplySubmit}
+                  onCancel={handleCancelReply}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 

@@ -97,6 +97,10 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
     separate?: boolean | undefined;
   }) => boolean;
   setData: (data: T[]) => void;
+  loadMore: () => void;
+  handleScrollLoadMore: (e: React.UIEvent<HTMLElement>) => void;
+  isFetchingMore: boolean;
+  hasMore: boolean;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -141,6 +145,8 @@ export default function useListBase<
   const queryClient = useQueryClient();
   const [data, setData] = useState<T[]>([]);
   const { hasPermission } = useValidatePermission();
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const [pagination, setPagination] = useState<PaginationType>({
     current: DEFAULT_TABLE_PAGE_START,
@@ -483,7 +489,9 @@ export default function useListBase<
           switch (field.type) {
             case FieldTypes.NUMBER:
               return [key, value ? Number(value) : undefined];
-            case FieldTypes.SELECT || FieldTypes.AUTOCOMPLETE:
+            case FieldTypes.SELECT ||
+              FieldTypes.AUTOCOMPLETE ||
+              FieldTypes.MULTI_SELECT:
               const option = field.options?.find(
                 (opt: any) => String(opt.value) === String(value)
               );
@@ -557,6 +565,51 @@ export default function useListBase<
     </Button>
   );
 
+  // Load more
+  const loadMore = async () => {
+    if (isFetchingMore || !hasMore) return;
+
+    setIsFetchingMore(true);
+    try {
+      const nextPage = (pagination.current || 1) + 1;
+
+      const res = await http.get<ApiResponseList<T>>(apiConfig.getList, {
+        params: {
+          ...queryFilter,
+          page: nextPage - 1,
+          size: pageSize
+        },
+        pathParams: { ...handlers.additionalPathParams() }
+      });
+
+      const newItems = res.data.content || [];
+
+      setData((prev) => [...prev, ...newItems]);
+
+      setPagination((p) => ({
+        ...p,
+        current: nextPage,
+        total: res.data.totalPages
+      }));
+
+      if (nextPage >= (res.data.totalPages ?? 0)) {
+        setHasMore(false);
+      }
+    } catch (err) {
+      logger.error('Fetch more error', err);
+    } finally {
+      setIsFetchingMore(false);
+    }
+  };
+
+  const handleScrollLoadMore = (e: React.UIEvent<HTMLElement>) => {
+    const target = e.currentTarget;
+
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 100) {
+      loadMore();
+    }
+  };
+
   const extendableHandlers = (): HandlerType<T, S> => {
     const handlers: HandlerType<T, S> = {
       changePagination,
@@ -575,7 +628,11 @@ export default function useListBase<
       changeQueryFilter,
       handleDeleteError,
       hasPermission,
-      setData
+      setData,
+      loadMore,
+      handleScrollLoadMore,
+      isFetchingMore,
+      hasMore
     };
 
     override?.(handlers);
