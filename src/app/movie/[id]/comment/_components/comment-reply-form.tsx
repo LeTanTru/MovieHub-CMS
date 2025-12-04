@@ -70,7 +70,8 @@ export default function CommentReplyForm({
 
   const onSubmit = async (values: CommentBodyType) => {
     const finalContent =
-      (defaultMention ? defaultMention + ' ' : '') + values.content;
+      (defaultMention && !editingComment ? defaultMention + ' ' : '') +
+      values.content;
 
     await handleSubmit({
       ...values,
