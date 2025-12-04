@@ -200,6 +200,13 @@ function CommentItem({
     queryClient.refetchQueries({ queryKey: [`${queryKeys.COMMENT}-list`] });
   };
 
+  const canDelete = hasPermission({
+    requiredPermissions: [apiConfig.comment.delete.permissionCode]
+  });
+  const canChangeStatus = hasPermission({
+    requiredPermissions: [apiConfig.comment.changeStatus.permissionCode]
+  });
+
   return (
     <div style={{ marginLeft: level * 0 }} className='pt-4'>
       <div className='flex items-start space-x-3 rounded-md border p-3 transition hover:bg-gray-50'>
@@ -344,96 +351,93 @@ function CommentItem({
               </Button>
             )}
 
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                className='border-none bg-transparent shadow-none'
-                asChild
-              >
-                <Button variant='outline'>
-                  <Ellipsis />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                sideOffset={0}
-                className='w-56'
-                align='start'
-              >
-                <DropdownMenuGroup>
-                  <DropdownMenuItem className='cursor-pointer p-0! transition-all duration-200 ease-linear'>
-                    {hasPermission({
-                      requiredPermissions: [
-                        apiConfig.comment.delete.permissionCode
-                      ]
-                    }) && (
-                      <AlertDialog>
-                        <AlertDialogTrigger className='w-full' asChild>
-                          <span onClick={(e) => e.stopPropagation()}>
-                            <Button className='text-destructive hover:text-destructive/50 h-fit w-full justify-start border-none bg-transparent p-2! shadow-none hover:bg-transparent'>
-                              <AiOutlineDelete className='size-5' />
-                              Xóa
-                            </Button>
-                          </span>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-md p-4'>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle className='content flex flex-nowrap items-center gap-2 text-sm font-normal'>
-                              <Info className='size-8 fill-orange-500 stroke-white' />
-                              Bạn có chắc chắn muốn xóa bình luận này không ?
-                            </AlertDialogTitle>
-                            <AlertDialogDescription></AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel asChild>
-                              <Button
-                                onClick={(e) => e.stopPropagation()}
-                                variant='outline'
-                                className='w-20 border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
-                              >
-                                Không
+            {(canChangeStatus || canDelete) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  className='border-none bg-transparent shadow-none'
+                  asChild
+                >
+                  <Button variant='outline'>
+                    <Ellipsis />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  sideOffset={0}
+                  className='w-56'
+                  align='start'
+                >
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem className='cursor-pointer' asChild>
+                      {canChangeStatus && (
+                        <Button
+                          className='h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
+                          variant={'ghost'}
+                          onClick={() =>
+                            handleChangeCommentStatus(
+                              comment.id,
+                              comment.status
+                            )
+                          }
+                          loading={changeStatusCommentMutation.isPending}
+                        >
+                          {comment.status === COMMENT_STATUS_SHOW ? (
+                            <>
+                              <AiOutlineEyeInvisible />
+                              Ẩn
+                            </>
+                          ) : (
+                            <>
+                              <AiOutlineEye />
+                              Hiện
+                            </>
+                          )}
+                        </Button>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className='cursor-pointer p-0! transition-all duration-200 ease-linear'>
+                      {canDelete && (
+                        <AlertDialog>
+                          <AlertDialogTrigger className='w-full' asChild>
+                            <span onClick={(e) => e.stopPropagation()}>
+                              <Button className='text-destructive hover:text-destructive/50 h-fit w-full justify-start border-none bg-transparent p-2! shadow-none hover:bg-transparent'>
+                                <AiOutlineDelete className='size-5' />
+                                Xóa
                               </Button>
-                            </AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => onDelete(comment.id)}
-                              className='bg-dodger-blue hover:bg-dodger-blue/80 w-20 cursor-pointer transition-all duration-200 ease-linear'
-                            >
-                              Có
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    )}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className='cursor-pointer' asChild>
-                    {hasPermission({
-                      requiredPermissions: [
-                        apiConfig.comment.changeStatus.permissionCode
-                      ]
-                    }) && (
-                      <Button
-                        className='h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
-                        variant={'ghost'}
-                        onClick={() =>
-                          handleChangeCommentStatus(comment.id, comment.status)
-                        }
-                        loading={changeStatusCommentMutation.isPending}
-                      >
-                        {comment.status === COMMENT_STATUS_SHOW ? (
-                          <>
-                            <AiOutlineEyeInvisible />
-                            Ẩn
-                          </>
-                        ) : (
-                          <>
-                            <AiOutlineEye />
-                            Hiện
-                          </>
-                        )}
-                      </Button>
-                    )}
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                            </span>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-md p-4'>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle className='content flex flex-nowrap items-center gap-2 text-sm font-normal'>
+                                <Info className='size-8 fill-orange-500 stroke-white' />
+                                Bạn có chắc chắn muốn xóa bình luận này không ?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription></AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel asChild>
+                                <Button
+                                  onClick={(e) => e.stopPropagation()}
+                                  variant='outline'
+                                  className='w-20 border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
+                                >
+                                  Không
+                                </Button>
+                              </AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => onDelete(comment.id)}
+                                className='bg-dodger-blue hover:bg-dodger-blue/80 w-20 cursor-pointer transition-all duration-200 ease-linear'
+                              >
+                                Có
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
 
           {isActiveParent && commentListSize > 0 && (
