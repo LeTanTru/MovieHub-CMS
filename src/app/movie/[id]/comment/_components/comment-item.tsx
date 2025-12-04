@@ -74,16 +74,16 @@ function CommentItem({
   const isDisliked = voteMap[comment.id] === REACTION_TYPE_DISLIKE;
 
   const {
-    parentId,
+    openParentIds,
     replyingCommentId,
     editingComment,
-    setParentId,
+    setOpenParentIds,
     openReply,
     closeReply,
     setEditingComment
   } = useCommentStore();
 
-  const isActiveParent = parentId === comment.id;
+  const isActiveParent = openParentIds.includes(comment.id);
 
   const totalChildren = comment.totalChildren || 0;
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -92,12 +92,12 @@ function CommentItem({
       queryKey: [queryKeys.COMMENT, comment.id],
       enabled: isActiveParent,
       params: {
-        parentId,
+        parentId: comment.id,
         size: DEFAULT_TABLE_PAGE_SIZE
       }
     });
 
-  const commentList = data?.data.content || [];
+  const commentList = data?.data?.content || [];
   const commentListSize = commentList.length;
   const isOpen = isActiveParent;
 
@@ -155,15 +155,15 @@ function CommentItem({
   };
 
   const handleViewReplies = (parentId: string) => {
-    setParentId(parentId);
+    setOpenParentIds((prev) => [...prev, parentId]);
   };
 
   const handleFetchNextPage = () => {
     fetchNextPage();
   };
 
-  const handleHideReplies = () => {
-    setParentId('');
+  const handleHideReplies = (parentId: string) => {
+    setOpenParentIds((prev) => prev.filter((value) => value !== parentId));
   };
 
   return (
@@ -371,7 +371,7 @@ function CommentItem({
                   <Button
                     variant='ghost'
                     className='h-5! p-0! font-medium text-red-500 hover:opacity-70'
-                    onClick={() => handleHideReplies()}
+                    onClick={() => handleHideReplies(comment.id)}
                   >
                     Ẩn trả lời
                   </Button>

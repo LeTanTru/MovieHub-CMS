@@ -4,13 +4,19 @@ import { create } from 'zustand';
 const useCommentStore = create<CommentStoreType>((set) => ({
   replyingCommentId: null,
   editingComment: null,
-  parentId: '',
+  openParentIds: [],
 
   openReply: (id) => set({ replyingCommentId: id }),
   closeReply: () => set({ replyingCommentId: null }),
 
   setEditingComment: (editingComment) => set({ editingComment }),
-  setParentId: (parentId) => set({ parentId })
+  setOpenParentIds: (openParentIds) =>
+    set((state) => ({
+      openParentIds:
+        typeof openParentIds === 'function'
+          ? openParentIds(state.openParentIds)
+          : openParentIds
+    }))
 }));
 
 export default useCommentStore;
