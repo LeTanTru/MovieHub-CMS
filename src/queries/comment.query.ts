@@ -49,7 +49,7 @@ export const useCommentListQuery = (
   enabled: boolean = false
 ) => {
   return useQuery({
-    queryKey: [`${queryKeys.COMMENT}-list`],
+    queryKey: [`${queryKeys.COMMENT}-list`, params],
     queryFn: () =>
       http.get<ApiResponseList<CommentResType>>(apiConfig.comment.getList, {
         params

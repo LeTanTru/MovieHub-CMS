@@ -1,4 +1,5 @@
 'use client';
+
 import React, { memo, useState } from 'react';
 import { AvatarField, Button } from '@/components/form';
 import {
@@ -37,6 +38,7 @@ import CommentReplyForm from '@/app/movie/[id]/comment/_components/comment-reply
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCommentStore } from '@/store';
 import { useCommentListQuery } from '@/queries/comment.query';
+import { DotLoading } from '@/components/loading';
 
 type Props = {
   comment: CommentResType & { children?: CommentResType[] };
@@ -74,13 +76,16 @@ function CommentItem({
 
   const isActiveParent = parentId === comment.id;
 
-  const [pageSize, setPageSize] = useState(DEFAULT_TABLE_PAGE_SIZE);
+  const [pageSize, setPageSize] = useState<number>(DEFAULT_TABLE_PAGE_SIZE);
+  const totalChildren = comment.totalChildren || 0;
   const commentListQuery = useCommentListQuery(
     { parentId, page: 0, size: pageSize },
     isActiveParent
   );
   const commentList = commentListQuery.data?.data?.content || [];
-  const commentSize = commentList.length;
+  const commentListSize = commentList.length;
+  const hasMore = commentListSize < totalChildren;
+  const isOpen = isActiveParent;
 
   const {
     replyingCommentId,
@@ -315,24 +320,54 @@ function CommentItem({
             </AlertDialog>
           </div>
 
-          {isActiveParent && commentList.length > 0 && (
-            <>{renderChildren(commentList, level + 1, rootId)}</>
+          {isActiveParent && commentListSize > 0 && (
+            <>
+              {renderChildren(commentList, level + 1, rootId)}
+              {commentListQuery.isFetching && (
+                <DotLoading className='mt-4 justify-start bg-transparent' />
+              )}
+            </>
           )}
 
-          {!comment?.parent && comment.totalChildren !== commentList.length ? (
-            <Button
-              variant='ghost'
-              className='mt-4 h-5! p-0! font-medium hover:opacity-70'
-              style={{ marginLeft: level * 40 }}
-              onClick={() => handleViewReplies(comment.id)}
-            >
-              Xem tất cả (
-              {comment.totalChildren >= commentSize
-                ? comment.totalChildren - commentSize
-                : commentSize}
-              ) trả lời
-            </Button>
-          ) : null}
+          {totalChildren > 0 && (
+            <>
+              {!isOpen ? (
+                <Button
+                  variant='ghost'
+                  className='mt-4 h-5! p-0! font-medium hover:opacity-70'
+                  style={{ marginLeft: level * 40 }}
+                  onClick={() => handleViewReplies(comment.id)}
+                >
+                  Xem tất cả ({totalChildren}) trả lời
+                </Button>
+              ) : (
+                <div
+                  className='mt-4 flex items-center gap-x-4'
+                  style={{ marginLeft: level * 40 }}
+                >
+                  {hasMore && (
+                    <Button
+                      variant='ghost'
+                      className='h-5! p-0! font-medium hover:opacity-70'
+                      onClick={() =>
+                        setPageSize(pageSize + DEFAULT_TABLE_PAGE_SIZE)
+                      }
+                    >
+                      Xem thêm ({totalChildren - commentListSize})
+                    </Button>
+                  )}
+
+                  <Button
+                    variant='ghost'
+                    className='h-5! p-0! font-medium text-red-500 hover:opacity-70'
+                    onClick={() => setParentId('')}
+                  >
+                    Ẩn trả lời
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
 
           <AnimatePresence initial={false}>
             {(replyingCommentId === comment.id ||

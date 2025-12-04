@@ -208,13 +208,12 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
               <Row>
-                {' '}
                 <Col span={12}>
                   <div className='space-y-2'>
-                    <label className='text-sm font-medium'>
+                    <label className='ml-2 text-sm font-medium'>
                       Màu <span className='text-red-500'>*</span>
                     </label>
-                    <div className='space-y-2'>
+                    <div className='mt-1 space-y-2'>
                       {colors.map((color: string, index: number) => (
                         <div key={index} className='flex items-center gap-2'>
                           <div className='flex-1'>
