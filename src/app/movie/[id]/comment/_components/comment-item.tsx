@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import { AvatarField, Button } from '@/components/form';
 import {
   Info,
@@ -13,8 +13,9 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib';
 import { convertUTCToLocal, renderImageUrl, timeAgo } from '@/utils';
-import { AuthorInfoType, CommentResType } from '@/types';
+import { AuthorInfoType, CommentResType, CommentSearchType } from '@/types';
 import {
+  apiConfig,
   DEFAULT_TABLE_PAGE_SIZE,
   GENDER_FEMALE,
   GENDER_MALE,
@@ -37,7 +38,7 @@ import {
 import CommentReplyForm from '@/app/movie/[id]/comment/_components/comment-reply-form';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCommentStore } from '@/store';
-import { useCommentListQuery } from '@/queries/comment.query';
+import { useInfiniteListQuery } from '@/hooks';
 import { DotLoading } from '@/components/loading';
 
 type Props = {
@@ -72,22 +73,8 @@ function CommentItem({
   const isLiked = voteMap[comment.id] === REACTION_TYPE_LIKE;
   const isDisliked = voteMap[comment.id] === REACTION_TYPE_DISLIKE;
 
-  const { parentId } = useCommentStore();
-
-  const isActiveParent = parentId === comment.id;
-
-  const [pageSize, setPageSize] = useState<number>(DEFAULT_TABLE_PAGE_SIZE);
-  const totalChildren = comment.totalChildren || 0;
-  const commentListQuery = useCommentListQuery(
-    { parentId, page: 0, size: pageSize },
-    isActiveParent
-  );
-  const commentList = commentListQuery.data?.data?.content || [];
-  const commentListSize = commentList.length;
-  const hasMore = commentListSize < totalChildren;
-  const isOpen = isActiveParent;
-
   const {
+    parentId,
     replyingCommentId,
     editingComment,
     setParentId,
@@ -95,6 +82,24 @@ function CommentItem({
     closeReply,
     setEditingComment
   } = useCommentStore();
+
+  const isActiveParent = parentId === comment.id;
+
+  const totalChildren = comment.totalChildren || 0;
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteListQuery<CommentResType, CommentSearchType>({
+      apiConfig: apiConfig.comment.getList,
+      queryKey: [queryKeys.COMMENT, comment.id],
+      enabled: isActiveParent,
+      params: {
+        parentId,
+        size: DEFAULT_TABLE_PAGE_SIZE
+      }
+    });
+
+  const commentList = data?.data.content || [];
+  const commentListSize = commentList.length;
+  const isOpen = isActiveParent;
 
   const handleReplySubmit = () => {
     onReplySuccess?.();
@@ -151,6 +156,14 @@ function CommentItem({
 
   const handleViewReplies = (parentId: string) => {
     setParentId(parentId);
+  };
+
+  const handleFetchNextPage = () => {
+    fetchNextPage();
+  };
+
+  const handleHideReplies = () => {
+    setParentId('');
   };
 
   return (
@@ -323,7 +336,7 @@ function CommentItem({
           {isActiveParent && commentListSize > 0 && (
             <>
               {renderChildren(commentList, level + 1, rootId)}
-              {commentListQuery.isFetching && (
+              {isFetchingNextPage && (
                 <DotLoading className='mt-4 justify-start bg-transparent' />
               )}
             </>
@@ -345,13 +358,11 @@ function CommentItem({
                   className='mt-4 flex items-center gap-x-4'
                   style={{ marginLeft: level * 40 }}
                 >
-                  {hasMore && (
+                  {hasNextPage && (
                     <Button
                       variant='ghost'
                       className='h-5! p-0! font-medium hover:opacity-70'
-                      onClick={() =>
-                        setPageSize(pageSize + DEFAULT_TABLE_PAGE_SIZE)
-                      }
+                      onClick={() => handleFetchNextPage()}
                     >
                       Xem thêm ({totalChildren - commentListSize})
                     </Button>
@@ -360,7 +371,7 @@ function CommentItem({
                   <Button
                     variant='ghost'
                     className='h-5! p-0! font-medium text-red-500 hover:opacity-70'
-                    onClick={() => setParentId('')}
+                    onClick={() => handleHideReplies()}
                   >
                     Ẩn trả lời
                   </Button>

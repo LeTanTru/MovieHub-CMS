@@ -572,7 +572,7 @@ export default function useListBase<
 
   // Load more
   const loadMore = async () => {
-    if (isFetchingMore || !hasMore) return;
+    if (isFetchingMore || !hasMore || data.length <= pageSize) return;
 
     setIsFetchingMore(true);
     try {
