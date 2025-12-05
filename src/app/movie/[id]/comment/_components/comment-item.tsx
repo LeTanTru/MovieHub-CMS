@@ -30,8 +30,7 @@ import {
   AiOutlineDelete,
   AiOutlineEdit,
   AiOutlineEye,
-  AiOutlineEyeInvisible,
-  AiOutlineUser
+  AiOutlineEyeInvisible
 } from 'react-icons/ai';
 import {
   AlertDialog,
@@ -44,7 +43,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
-import CommentReplyForm from '@/app/movie/[id]/comment/_components/comment-reply-form';
+import CommentReplyForm from './comment-reply-form';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCommentStore } from '@/store';
 import { useAuth, useInfiniteListQuery, useValidatePermission } from '@/hooks';
@@ -230,9 +229,7 @@ function CommentItem({
         <AvatarField
           src={renderImageUrl(author.avatarPath)}
           previewClassName='rounded-full'
-          size={40}
           alt={author.fullName}
-          icon={<AiOutlineUser className='size-5' />}
         />
 
         <div className='flex-1'>

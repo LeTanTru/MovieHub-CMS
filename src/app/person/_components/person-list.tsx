@@ -21,7 +21,6 @@ import {
   SearchFormProps
 } from '@/types';
 import { formatDate, notify, renderImageUrl } from '@/utils';
-import { AiOutlineUser } from 'react-icons/ai';
 
 export default function PersonList({
   queryKey,
@@ -61,15 +60,7 @@ export default function PersonList({
       width: 80,
       align: 'center',
       render: (value) => (
-        <AvatarField
-          size={50}
-          disablePreview={!value}
-          src={renderImageUrl(value)}
-          className='rounded'
-          previewClassName='rounded'
-          zoomSize={550}
-          icon={<AiOutlineUser className='size-7 text-slate-800' />}
-        />
+        <AvatarField disablePreview={!value} src={renderImageUrl(value)} />
       )
     },
     {

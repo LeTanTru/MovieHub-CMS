@@ -30,12 +30,12 @@ import {
 import { getData, renderImageUrl, renderVideoUrl, renderVttUrl } from '@/utils';
 import { storageKeys, VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL } from '@/constants';
 
-export default function VideoLibraryPreviewModal({
+export default function VideoPlayModal({
   open,
-  videoLibrary,
+  video,
   close
 }: {
-  videoLibrary?: VideoLibraryResType;
+  video?: VideoLibraryResType;
   open: boolean;
   close: () => void;
 }) {
@@ -65,7 +65,7 @@ export default function VideoLibraryPreviewModal({
   // ];
   return (
     <Modal
-      title={videoLibrary?.name}
+      title={video?.name}
       className='[&_.content]:w-300'
       open={open}
       onClose={close}
@@ -80,9 +80,9 @@ export default function VideoLibraryPreviewModal({
           muted
           preferNativeHLS={false}
           autoPlay={false}
-          src={renderVideoUrl(videoLibrary?.content)}
+          src={renderVideoUrl(video?.content)}
           onProviderChange={
-            videoLibrary?.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
+            video?.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
               ? onProviderChange
               : undefined
           }
@@ -90,14 +90,14 @@ export default function VideoLibraryPreviewModal({
           <MediaProvider slot='media'>
             <Poster
               className='vds-poster'
-              src={renderImageUrl(videoLibrary?.thumbnailUrl)}
+              src={renderImageUrl(video?.thumbnailUrl)}
             />
             {/* {textTracks.map((track) => (
               <Track {...(track as any)} key={track.src} />
             ))} */}
           </MediaProvider>
           <DefaultVideoLayout
-            thumbnails={renderVttUrl(videoLibrary?.vttUrl)}
+            thumbnails={renderVttUrl(video?.vttUrl)}
             icons={defaultLayoutIcons}
             slots={{
               playButton: <PlayToggleButton />,

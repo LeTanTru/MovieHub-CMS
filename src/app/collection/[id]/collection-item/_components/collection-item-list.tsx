@@ -1,6 +1,6 @@
 'use client';
 
-import { AvatarField, Button } from '@/components/form';
+import { Button, ImageField } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import {
@@ -24,7 +24,6 @@ import {
 import { formatDate, renderImageUrl } from '@/utils';
 import { Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import { AiOutlineFileImage } from 'react-icons/ai';
 
 export default function CollectionItemList({ queryKey }: { queryKey: string }) {
   const { id: collectionId } = useParams<{ id: string }>();
@@ -73,14 +72,11 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
       width: 80,
       align: 'center',
       render: (value) => (
-        <AvatarField
-          size={50}
+        <ImageField
           disablePreview={!value}
           src={renderImageUrl(value)}
           className='rounded'
           previewClassName='rounded'
-          zoomSize={850}
-          icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
         />
       )
     },

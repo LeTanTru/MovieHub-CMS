@@ -23,7 +23,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Slider } from '@/components/ui/slider';
-import { AvatarField, Button } from '@/components/form';
+import { Button, ImageField } from '@/components/form';
 import { FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib';
 import { useFileUpload } from '@/hooks';
@@ -242,12 +242,13 @@ export default function UploadImageField<T extends FieldValues>({
             aria-label={value ? 'Thay ảnh' : 'Tải lên'}
           >
             {!!value ? (
-              <AvatarField
+              <ImageField
                 disablePreview
                 src={value}
                 className='size-full rounded-none object-cover'
-                size={size}
                 aspect={aspect}
+                width={size}
+                height={size}
               />
             ) : (
               <UploadIcon

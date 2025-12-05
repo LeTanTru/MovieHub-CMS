@@ -1,6 +1,6 @@
 'use client';
 
-import { AvatarField, Button, ToolTip } from '@/components/form';
+import { Button, ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import { apiConfig, DEFAULT_DATE_FORMAT, FieldTypes } from '@/constants';
@@ -15,7 +15,6 @@ import {
 } from '@/types';
 import { formatDate, renderImageUrl } from '@/utils';
 import { Save } from 'lucide-react';
-import { AiOutlineFileImage } from 'react-icons/ai';
 
 export default function SidebarList({ queryKey }: { queryKey: string }) {
   const { data, loading, handlers } = useListBase<
@@ -52,15 +51,7 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
       width: 80,
       align: 'center',
       render: (value) => (
-        <AvatarField
-          size={50}
-          disablePreview={!value}
-          src={renderImageUrl(value)}
-          className='rounded'
-          previewClassName='rounded'
-          zoomSize={850}
-          icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
-        />
+        <ImageField disablePreview={!value} src={renderImageUrl(value)} />
       )
     },
     {
@@ -69,14 +60,10 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
       width: 80,
       align: 'center',
       render: (value) => (
-        <AvatarField
-          size={50}
+        <ImageField
           disablePreview={!value}
           src={renderImageUrl(value)}
-          className='rounded'
-          previewClassName='rounded'
-          zoomSize={500}
-          icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
+          previewAspect={2 / 3}
         />
       )
     },

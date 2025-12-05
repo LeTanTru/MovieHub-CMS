@@ -1,6 +1,6 @@
 'use client';
 
-import MoviePersonList from '@/app/movie/[id]/movie-person/_components/movie-person-list';
+import MoviePersonList from './movie-person-list';
 import { PageWrapper } from '@/components/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {

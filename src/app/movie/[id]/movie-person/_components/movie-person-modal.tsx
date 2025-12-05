@@ -8,7 +8,6 @@ import {
   INITIAL_AUTO_COMPLETE_SIZE,
   PERSON_KIND_ACTOR
 } from '@/constants';
-import { useDisclosure } from '@/hooks';
 import { logger } from '@/logger';
 import { useCreateMoviePersonMutation } from '@/queries';
 import { moviePersonSchema } from '@/schemaValidations';
@@ -37,7 +36,6 @@ export default function MoviePersonModal({
   listQuery: UseQueryResult<ApiResponseList<MoviePersonResType>, Error>;
   close: () => void;
 }) {
-  const addMoviePersonModal = useDisclosure();
   const createMoviePersonMutation = useCreateMoviePersonMutation();
 
   const defaultValues: MoviePersonBodyType = {
@@ -121,7 +119,6 @@ export default function MoviePersonModal({
                       <div className='flex items-center gap-x-2'>
                         <AvatarField
                           src={renderImageUrl(opt.extra?.avatarPath)}
-                          size={50}
                           disablePreview
                         />
                         <span>{opt.extra?.otherName}</span>

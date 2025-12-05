@@ -83,7 +83,6 @@ export default function DropdownAvatar() {
           icon={
             <CircleUserRound className='size-8 fill-transparent stroke-gray-600 stroke-2' />
           }
-          className='rounded-full'
         />
         <ChevronDown className='size-5' />
       </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import './comment.css';
-import CommentInput from '@/app/movie/[id]/comment/_components/comment-input';
+import CommentInput from './comment-input';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { NoData } from '@/components/no-data';
 import { apiConfig } from '@/constants';
@@ -17,7 +17,7 @@ import { useParams } from 'next/navigation';
 import { useMemo, useCallback } from 'react';
 import CommentItem from './comment-item';
 import { DotLoading } from '@/components/loading';
-import CommentItemSkeleton from '@/app/movie/[id]/comment/_components/comment-item-skeleton';
+import CommentItemSkeleton from './comment-item-skeleton';
 
 export default function CommentList({ queryKey }: { queryKey: string }) {
   const { id: movieId } = useParams<{ id: string }>();

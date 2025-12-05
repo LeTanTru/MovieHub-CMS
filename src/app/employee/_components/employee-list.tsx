@@ -21,7 +21,7 @@ import {
   SearchFormProps
 } from '@/types';
 import { notify, renderImageUrl } from '@/utils';
-import { AiOutlineCheck, AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
 export default function EmployeeList({ queryKey }: { queryKey: string }) {
   const groupListQuery = useGroupListQuery({ size: MAX_PAGE_SIZE });
@@ -109,13 +109,7 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
       width: 80,
       align: 'center',
       render: (value) => (
-        <AvatarField
-          size={50}
-          zoomSize={500}
-          disablePreview={!value}
-          src={renderImageUrl(value)}
-          icon={<AiOutlineUser className='size-7 text-slate-800' />}
-        />
+        <AvatarField disablePreview={!value} src={renderImageUrl(value)} />
       )
     },
     {

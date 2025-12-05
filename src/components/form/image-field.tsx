@@ -6,54 +6,52 @@ import { EyeIcon } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineFileImage } from 'react-icons/ai';
 
-type AvatarFieldProps = {
-  size?: number;
-  icon?: React.ReactNode;
+type ImageFieldProps = {
   src?: string;
-  className?: string;
-  previewClassName?: string;
-  imagePreviewClassName?: string;
-  disablePreview?: boolean;
-  previewSize?: number;
+  alt?: string;
   width?: number;
   height?: number;
   aspect?: number;
   previewAspect?: number;
-  alt?: string;
-  zoomOnScroll?: boolean;
+  previewSize?: number;
+  disablePreview?: boolean;
+  className?: string;
+  previewClassName?: string;
+  imagePreviewClassName?: string;
+  hoverIcon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   showHoverIcon?: boolean;
-} & React.HTMLAttributes<HTMLElement>;
+  zoomOnScroll?: boolean;
+} & React.HTMLAttributes<HTMLDivElement>;
 
-export default function AvatarField({
-  size = 50,
-  previewSize = 200,
-  icon,
+export default function ImageField({
   src,
+  alt = 'Image',
+  width,
+  height,
+  aspect = 1,
+  previewAspect = 16 / 9,
+  previewSize = 500,
+  disablePreview = false,
   className,
   previewClassName,
   imagePreviewClassName,
-  disablePreview = false,
-  width = 50,
-  height = 50,
-  aspect = 1,
-  previewAspect = 1,
+  hoverIcon: HoverIcon = EyeIcon,
   showHoverIcon = true,
   zoomOnScroll = true,
-  alt,
   ...props
-}: AvatarFieldProps) {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+}: ImageFieldProps) {
+  const [isOpen, setIsOpen] = React.useState(false);
   const [scale, setScale] = React.useState(1);
 
   const previewRef = React.useRef<HTMLDivElement | null>(null);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const openPreview = (e: React.MouseEvent) => {
     if (disablePreview || !src) return;
     e.preventDefault();
     e.stopPropagation();
-    setIsModalOpen(true);
+    setIsOpen(true);
   };
 
   const handleWheel = (e: WheelEvent) => {
@@ -69,67 +67,69 @@ export default function AvatarField({
   };
 
   React.useEffect(() => {
-    if (!isModalOpen || !previewRef.current) return;
+    if (!isOpen || !previewRef.current) return;
 
     const node = previewRef.current;
     node.addEventListener('wheel', handleWheel, { passive: false });
 
     return () => node.removeEventListener('wheel', handleWheel);
-  }, [isModalOpen]);
+  }, [isOpen]);
 
   return (
     <>
       <div
         {...props}
-        onClick={props?.onClick ?? handleClick}
+        onClick={props?.onClick ?? openPreview}
         className={cn(
-          'relative flex cursor-pointer items-center justify-center overflow-hidden rounded-full border shadow-sm',
+          'relative cursor-pointer rounded border bg-gray-100 shadow-sm select-none',
           className
         )}
-        style={{ width: width || size, height: height || size }}
+        style={{ width, height }}
       >
         {src ? (
-          <AspectRatio ratio={aspect} className='h-full w-full'>
-            {aspect ? (
+          aspect ? (
+            <AspectRatio ratio={aspect} className='h-full w-full'>
               <Image
                 src={src}
-                alt={alt ?? 'Avatar'}
+                alt={alt}
                 fill
-                className='object-cover'
+                className='rounded object-cover'
                 unoptimized
               />
-            ) : (
-              <Image
-                src={src}
-                alt={alt ?? 'Avatar'}
-                width={width}
-                height={height}
-                className='h-full w-full object-cover'
-                unoptimized
-              />
-            )}
-          </AspectRatio>
+            </AspectRatio>
+          ) : (
+            <Image
+              src={src}
+              alt={alt}
+              width={width}
+              height={height}
+              className='h-full w-full object-cover'
+              unoptimized
+            />
+          )
         ) : (
-          icon || <AiOutlineUser className='h-1/2 w-1/2 opacity-40' />
+          <div className='flex h-full w-full items-center justify-center opacity-50'>
+            <AiOutlineFileImage className='h-12 w-12' />
+          </div>
         )}
-        {src && showHoverIcon && !disablePreview && (
-          <div className='absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-all duration-200 ease-linear hover:opacity-100'>
-            <EyeIcon className='h-6 w-6 text-white' />
+
+        {src && showHoverIcon && (
+          <div className='absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity hover:opacity-100'>
+            <HoverIcon className='h-7 w-7 text-white' />
           </div>
         )}
       </div>
 
       <AnimatePresence>
-        {isModalOpen && (
+        {isOpen && (
           <motion.div
             className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={() => {
               setScale(1);
-              setIsModalOpen(false);
+              setIsOpen(false);
             }}
           >
             <motion.div
@@ -142,9 +142,9 @@ export default function AvatarField({
                 width: previewSize * previewAspect,
                 height: previewSize
               }}
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.85, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
+              exit={{ scale: 0.85, opacity: 0 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -162,7 +162,7 @@ export default function AvatarField({
                     alt='Preview'
                     fill
                     className={cn(
-                      'rounded-full object-cover transition-transform duration-100',
+                      'rounded object-cover transition-transform duration-100',
                       imagePreviewClassName
                     )}
                     style={{

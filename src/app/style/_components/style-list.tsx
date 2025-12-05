@@ -1,13 +1,12 @@
 'use client';
 
-import { AvatarField, ToolTip } from '@/components/form';
+import { ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { apiConfig, ErrorCode } from '@/constants';
 import { useListBase } from '@/hooks';
 import { Column, StyleResType, StyleSearchType } from '@/types';
 import { notify, renderImageUrl } from '@/utils';
-import { AiOutlineFileImage } from 'react-icons/ai';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 
 export default function StyleList({ queryKey }: { queryKey: string }) {
@@ -36,13 +35,11 @@ export default function StyleList({ queryKey }: { queryKey: string }) {
       width: 80,
       align: 'center',
       render: (value) => (
-        <AvatarField
-          size={50}
-          zoomSize={500}
+        <ImageField
           disablePreview={!value}
           src={renderImageUrl(value)}
-          className='rounded'
-          icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
+          aspect={1}
+          previewAspect={2 / 3}
         />
       )
     },

@@ -1,7 +1,7 @@
 'use client';
 
-import VideoLibraryPreviewModal from '@/app/video-library/_components/video-library-preview-modal';
-import { AvatarField, Button, ToolTip } from '@/components/form';
+import VideoPlayModal from './video-play-modal';
+import { Button, ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import {
@@ -25,13 +25,12 @@ import {
 import { formatSecondsToHMS, notify, renderImageUrl } from '@/utils';
 import { PlayCircle } from 'lucide-react';
 import { useState } from 'react';
-import { AiFillWarning, AiOutlineFileImage } from 'react-icons/ai';
+import { AiFillWarning } from 'react-icons/ai';
 import { RiCheckboxCircleFill, RiLoader2Fill } from 'react-icons/ri';
 
 export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
-  const videoLibraryPreviewModal = useDisclosure(false);
-  const [selectedVideoLibrary, setSelectedVideoLibrary] =
-    useState<VideoLibraryResType>();
+  const playModal = useDisclosure(false);
+  const [selectedVideo, setSelectedVideo] = useState<VideoLibraryResType>();
 
   const { data, pagination, loading, handlers, listQuery } = useListBase<
     VideoLibraryResType,
@@ -57,7 +56,7 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
             <span>
               <Button
                 disabled={record.state !== VIDEO_LIBRARY_STATE_COMPLETE}
-                onClick={() => handleOpenVideoLibraryPreviewModal(record)}
+                onClick={() => handleOpenPlayModal(record)}
                 className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                 {...buttonProps}
               >
@@ -70,11 +69,9 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
     }
   });
 
-  const handleOpenVideoLibraryPreviewModal = (
-    videoLibrary: VideoLibraryResType
-  ) => {
-    setSelectedVideoLibrary(videoLibrary);
-    videoLibraryPreviewModal.open();
+  const handleOpenPlayModal = (video: VideoLibraryResType) => {
+    setSelectedVideo(video);
+    playModal.open();
   };
 
   const columns: Column<VideoLibraryResType>[] = [
@@ -84,15 +81,7 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
       width: 80,
       align: 'center',
       render: (value) => (
-        <AvatarField
-          size={50}
-          disablePreview={!value}
-          src={renderImageUrl(value)}
-          className='rounded'
-          previewClassName='rounded'
-          zoomSize={800}
-          icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
-        />
+        <ImageField disablePreview={!value} src={renderImageUrl(value)} />
       )
     },
     {
@@ -191,10 +180,10 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
           changePagination={handlers.changePagination}
         />
       </ListPageWrapper>
-      <VideoLibraryPreviewModal
-        open={videoLibraryPreviewModal.opened}
-        close={videoLibraryPreviewModal.close}
-        videoLibrary={selectedVideoLibrary}
+      <VideoPlayModal
+        open={playModal.opened}
+        close={playModal.close}
+        video={selectedVideo}
       />
     </PageWrapper>
   );

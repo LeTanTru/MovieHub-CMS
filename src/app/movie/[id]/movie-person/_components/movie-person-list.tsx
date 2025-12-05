@@ -1,6 +1,6 @@
 'use client';
 
-import MoviePersonModal from '@/app/movie/[id]/movie-person/_components/movie-person-modal';
+import MoviePersonModal from './movie-person-modal';
 import { AvatarField, Button, InputField, ToolTip } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { HasPermission } from '@/components/has-permission';
@@ -22,12 +22,7 @@ import { notify, renderImageUrl } from '@/utils';
 import { PlusIcon, Save, X } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import {
-  AiOutlineClear,
-  AiOutlineEdit,
-  AiOutlineSave,
-  AiOutlineUser
-} from 'react-icons/ai';
+import { AiOutlineClear, AiOutlineEdit, AiOutlineSave } from 'react-icons/ai';
 import z from 'zod';
 
 export default function MoviePersonList({
@@ -207,15 +202,7 @@ export default function MoviePersonList({
       width: 80,
       align: 'center',
       render: (value) => (
-        <AvatarField
-          size={50}
-          zoomSize={500}
-          disablePreview={!value}
-          src={renderImageUrl(value)}
-          className='rounded'
-          previewClassName='rounded'
-          icon={<AiOutlineUser className='size-7 text-slate-800' />}
-        />
+        <AvatarField disablePreview={!value} src={renderImageUrl(value)} />
       )
     },
     {

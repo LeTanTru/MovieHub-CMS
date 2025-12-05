@@ -1,6 +1,6 @@
 'use client';
 
-import PersonList from '@/app/person/_components/person-list';
+import PersonList from './person-list';
 import { PageWrapper } from '@/components/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {

@@ -1,6 +1,6 @@
 'use client';
 
-import { AvatarField, Button, ToolTip } from '@/components/form';
+import { Button, ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import {
@@ -27,7 +27,7 @@ import {
 import { formatDate, generatePath, notify, renderImageUrl } from '@/utils';
 import { MessageSquareHeart } from 'lucide-react';
 import Link from 'next/link';
-import { AiOutlineFileImage, AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineUser } from 'react-icons/ai';
 
 export default function MovieList({ queryKey }: { queryKey: string }) {
   const navigate = useNavigate(false);
@@ -111,15 +111,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
       align: 'center',
       render: (value) => {
         return (
-          <AvatarField
-            size={50}
-            disablePreview={!value}
-            src={renderImageUrl(value)}
-            className='rounded'
-            previewClassName='rounded'
-            zoomSize={850}
-            icon={<AiOutlineFileImage className='size-7 text-slate-800' />}
-          />
+          <ImageField disablePreview={!value} src={renderImageUrl(value)} />
         );
       }
     },
