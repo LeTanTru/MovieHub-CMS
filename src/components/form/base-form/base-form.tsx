@@ -9,10 +9,7 @@ import { DefaultValues, useForm, UseFormReturn } from 'react-hook-form';
 
 type AsyncDefaultValues<T> = (payload?: unknown) => Promise<T>;
 
-type BaseFormProps<T extends Record<string, any>> = Omit<
-  React.FormHTMLAttributes<HTMLFormElement>,
-  'onSubmit' | 'children'
-> & {
+type BaseFormProps<T extends Record<string, any>> = {
   schema: any;
   defaultValues: DefaultValues<T> | AsyncDefaultValues<T>;
   onSubmit: (values: T, form: UseFormReturn<T>) => Promise<void> | void;
@@ -35,8 +32,7 @@ export default function BaseForm<T extends Record<string, any>>({
   mode = 'onChange',
   onChange,
   id,
-  ref,
-  ...rest
+  ref
 }: BaseFormProps<T>) {
   const form = useForm<T>({
     resolver: zodResolver(schema),
@@ -63,7 +59,6 @@ export default function BaseForm<T extends Record<string, any>>({
         className={cn('relative rounded-lg bg-white p-4', className)}
         onSubmit={form.handleSubmit((values) => onSubmit(values, form))}
         onChange={onChange}
-        {...rest}
       >
         {children?.(form)}
       </form>

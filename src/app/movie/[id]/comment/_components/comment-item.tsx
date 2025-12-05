@@ -200,9 +200,18 @@ function CommentItem({
     queryClient.refetchQueries({ queryKey: [`${queryKeys.COMMENT}-list`] });
   };
 
+  const canCreate = hasPermission({
+    requiredPermissions: [apiConfig.comment.create.permissionCode]
+  });
+
+  const canUpdate = hasPermission({
+    requiredPermissions: [apiConfig.comment.update.permissionCode]
+  });
+
   const canDelete = hasPermission({
     requiredPermissions: [apiConfig.comment.delete.permissionCode]
   });
+
   const canChangeStatus = hasPermission({
     requiredPermissions: [apiConfig.comment.changeStatus.permissionCode]
   });
@@ -255,19 +264,6 @@ function CommentItem({
                     </svg>
                   )}
                 </span>
-                {comment.status === COMMENT_STATUS_HIDE && (
-                  <span title='Bình luận đã bị ẩn' className='text-gray-500'>
-                    <AiOutlineEyeInvisible className='size-4' />
-                  </span>
-                )}
-                {comment.status === COMMENT_STATUS_SHOW && (
-                  <span
-                    title='Bình luận đang hiển thị'
-                    className='text-green-500'
-                  >
-                    <AiOutlineEye className='size-4' />
-                  </span>
-                )}
               </h4>
 
               <span
@@ -279,6 +275,20 @@ function CommentItem({
               {comment.isPinned && (
                 <span className='text-xs font-medium text-slate-600 italic'>
                   Đã ghim
+                </span>
+              )}
+
+              {comment.status === COMMENT_STATUS_HIDE && (
+                <span title='Bình luận đã bị ẩn' className='text-gray-500'>
+                  <AiOutlineEyeInvisible className='size-4' />
+                </span>
+              )}
+              {comment.status === COMMENT_STATUS_SHOW && (
+                <span
+                  title='Bình luận đang hiển thị'
+                  className='text-green-500'
+                >
+                  <AiOutlineEye className='size-4' />
                 </span>
               )}
             </div>
@@ -332,15 +342,17 @@ function CommentItem({
               </div>
             </div>
 
-            <Button
-              variant='ghost'
-              className='h-5! p-0!'
-              onClick={() => handleReplyComment()}
-            >
-              <Reply className='size-5' /> Trả lời
-            </Button>
+            {canCreate && (
+              <Button
+                variant='ghost'
+                className='h-5! p-0!'
+                onClick={() => handleReplyComment()}
+              >
+                <Reply className='size-5' /> Trả lời
+              </Button>
+            )}
 
-            {isAuthor && (
+            {isAuthor && canUpdate && (
               <Button
                 variant='ghost'
                 className='text-dodger-blue hover:text-dodger-blue/50 h-5! p-0!'

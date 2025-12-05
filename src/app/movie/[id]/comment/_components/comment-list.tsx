@@ -5,7 +5,7 @@ import CommentInput from '@/app/movie/[id]/comment/_components/comment-input';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { NoData } from '@/components/no-data';
 import { apiConfig } from '@/constants';
-import { useListBase, useValidatePermission } from '@/hooks';
+import { useIsMounted, useListBase, useValidatePermission } from '@/hooks';
 import {
   usePinCommentMutation,
   useVoteCommentMutation,
@@ -20,6 +20,7 @@ import { DotLoading } from '@/components/loading';
 
 export default function CommentList({ queryKey }: { queryKey: string }) {
   const { id: movieId } = useParams<{ id: string }>();
+  const isMounted = useIsMounted();
 
   const voteListCommentQuery = useVoteListCommentQuery({ movieId });
   const voteList = useMemo(
@@ -103,6 +104,8 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
       handleReplySuccess
     ]
   );
+
+  if (!isMounted) return null;
 
   return (
     <PageWrapper
