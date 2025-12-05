@@ -196,7 +196,9 @@ function CommentItem({
           ? COMMENT_STATUS_HIDE
           : COMMENT_STATUS_SHOW
     });
-    queryClient.refetchQueries({ queryKey: [`${queryKeys.COMMENT}-list`] });
+    queryClient.invalidateQueries({
+      queryKey: [`${queryKeys.COMMENT}-infinite`]
+    });
   };
 
   const canCreate = hasPermission({
@@ -229,6 +231,7 @@ function CommentItem({
         <AvatarField
           src={renderImageUrl(author.avatarPath)}
           previewClassName='rounded-full'
+          size={40}
           alt={author.fullName}
         />
 

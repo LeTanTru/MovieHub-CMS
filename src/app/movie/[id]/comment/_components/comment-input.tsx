@@ -53,7 +53,7 @@ export default function CommentInput({
 
   const onSubmit = async (values: CommentBodyType) => {
     await handleSubmit(values);
-    queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
+    queryClient.invalidateQueries({ queryKey: [`${queryKey}-infinite`] });
   };
 
   useEffect(() => {
