@@ -17,6 +17,7 @@ import { useParams } from 'next/navigation';
 import { useMemo, useCallback } from 'react';
 import CommentItem from './comment-item';
 import { DotLoading } from '@/components/loading';
+import { Button } from '@/components/form';
 import CommentItemSkeleton from './comment-item-skeleton';
 
 export default function CommentList({ queryKey }: { queryKey: string }) {
@@ -34,17 +35,24 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
 
   const { hasPermission } = useValidatePermission();
 
-  const { data, loading, isFetchingMore, handlers, listQuery } = useListBase<
-    CommentResType,
-    CommentSearchType
-  >({
+  const {
+    data,
+    loading,
+    handlers,
+    listQuery,
+    isFetchingMore,
+    hasMore,
+    totalLeft,
+    totalElements
+  } = useListBase<CommentResType, CommentSearchType>({
     apiConfig: apiConfig.comment,
     options: {
       objectName: 'bình luận',
       queryKey,
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId', 'parentId', 'page', 'size'],
-      showNotify: false
+      showNotify: false,
+      useInfiniteScroll: true
     }
   });
 
@@ -114,7 +122,6 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
         { label: 'Phim', href: route.movie.getList.path },
         { label: 'Bình luận' }
       ]}
-      onScroll={handlers.handleScrollLoadMore}
     >
       <ListPageWrapper>
         {hasPermission({
@@ -123,20 +130,29 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
 
         {data.length === 0 ? (
           <NoData content='Chưa có bình luận nào' />
-        ) : loading || isFetchingMore ? (
-          <div className='px-4'>
-            <h4 className='skeleton mb-2 ml-4 h-5 w-20'></h4>
-            {Array.from({ length: 4 }).map((_, index) => (
+        ) : loading ? (
+          <div className='space-y-4 px-4'>
+            <h4 className='skeleton ml-4 h-5 w-20'></h4>
+            {Array.from({ length: 8 }).map((_, index) => (
               <CommentItemSkeleton key={index} />
             ))}
           </div>
         ) : (
           <div className='mt-4 px-4 pb-4'>
             <h4 className='-mb-2 ml-2 font-semibold text-black'>
-              Bình luận ({data.length})
+              Bình luận ({totalElements})
             </h4>
             {renderChildren(data, 0)}
             {isFetchingMore && <DotLoading className='mt-4' />}
+            {hasMore && (
+              <Button
+                variant={'ghost'}
+                className='mx-auto block'
+                onClick={handlers.loadMore}
+              >
+                Xem thêm ({totalLeft}) bình luận
+              </Button>
+            )}
           </div>
         )}
       </ListPageWrapper>

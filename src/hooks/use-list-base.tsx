@@ -40,7 +40,7 @@ import { Separator } from '@radix-ui/react-separator';
 import {
   keepPreviousData,
   useMutation,
-  useQuery,
+  useInfiniteQuery,
   useQueryClient
 } from '@tanstack/react-query';
 import { Info, PlusIcon, RefreshCcw } from 'lucide-react';
@@ -123,6 +123,7 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
     notShowFromSearchParams?: string[];
     showNotify?: boolean;
     defaultHiddenFilters?: Partial<S>;
+    useInfiniteScroll?: boolean;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
@@ -140,14 +141,13 @@ export default function useListBase<
     excludeFromQueryFilter = [],
     notShowFromSearchParams = [],
     showNotify = true,
-    defaultHiddenFilters = {} as Partial<S>
+    defaultHiddenFilters = {} as Partial<S>,
+    useInfiniteScroll = false
   } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const [data, setData] = useState<T[]>([]);
-  const [isFetchingMore, setIsFetchingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
   const [hiddenFilters, setHiddenFiltersState] =
     useState<Partial<S>>(defaultHiddenFilters);
   const { hasPermission } = useValidatePermission();
@@ -205,17 +205,49 @@ export default function useListBase<
 
   const additionalParams = () => ({});
 
-  // query
-  const listQuery = useQuery({
-    queryKey: [`${queryKey}-list`, queryFilter],
-    queryFn: () =>
+  // Infinite Query for infinite scroll
+  const infiniteQuery = useInfiniteQuery({
+    queryKey: [`${queryKey}-infinite`, queryFilter],
+    queryFn: ({ pageParam = 0 }) =>
       http.get<ApiResponseList<T>>(apiConfig.getList, {
-        params: { ...queryFilter, ...handlers.additionalParams() },
+        params: {
+          ...queryFilter,
+          ...handlers.additionalParams(),
+          page: pageParam,
+          size: pageSize
+        },
         pathParams: { ...handlers.additionalPathParams() }
       }),
-    placeholderData: keepPreviousData,
-    enabled
+    getNextPageParam: (lastPage, allPages) => {
+      const currentPage = allPages.length - 1;
+      const totalPages = lastPage.data.totalPages ?? 0;
+      return currentPage < totalPages - 1 ? currentPage + 1 : undefined;
+    },
+    initialPageParam: 0,
+    enabled: enabled && useInfiniteScroll,
+    placeholderData: keepPreviousData
   });
+
+  // Regular query for pagination
+  const listQuery = useInfiniteQuery({
+    queryKey: [`${queryKey}-list`, queryFilter],
+    queryFn: ({ pageParam = 0 }) =>
+      http.get<ApiResponseList<T>>(apiConfig.getList, {
+        params: {
+          ...queryFilter,
+          ...handlers.additionalParams(),
+          page: pageParam,
+          size: pageSize
+        },
+        pathParams: { ...handlers.additionalPathParams() }
+      }),
+    getNextPageParam: () => undefined,
+    initialPageParam: queryFilter.page || 0,
+    enabled: enabled && !useInfiniteScroll,
+    placeholderData: keepPreviousData
+  });
+
+  const activeQuery = useInfiniteScroll ? infiniteQuery : listQuery;
 
   const deleteMutation = useMutation({
     mutationKey: [`delete-${queryKey}`],
@@ -227,19 +259,31 @@ export default function useListBase<
       })
   });
 
+  // Update data from query results
   useEffect(() => {
-    setData(listQuery.data?.data.content || []);
-  }, [listQuery.data?.data.content]);
+    if (useInfiniteScroll) {
+      const allData =
+        infiniteQuery.data?.pages.flatMap((page) => page.data.content || []) ||
+        [];
+      setData(allData);
+    } else {
+      const firstPage = listQuery.data?.pages[0];
+      setData(firstPage?.data.content || []);
+    }
+  }, [useInfiniteScroll, infiniteQuery.data, listQuery.data]);
 
   // Pagination
   const current = searchParams['page'];
   useEffect(() => {
-    setPagination((p) => ({
-      ...p,
-      current: current ? Number(current) : DEFAULT_TABLE_PAGE_START + 1,
-      total: listQuery.data?.data.totalPages ?? 0
-    }));
-  }, [current, listQuery.data]);
+    if (!useInfiniteScroll) {
+      const firstPage = listQuery.data?.pages[0];
+      setPagination((p) => ({
+        ...p,
+        current: current ? Number(current) : DEFAULT_TABLE_PAGE_START + 1,
+        total: firstPage?.data.totalPages ?? 0
+      }));
+    }
+  }, [current, listQuery.data, useInfiniteScroll]);
 
   const changePagination = (page: number) => {
     setPagination({ ...pagination, current: page });
@@ -265,7 +309,7 @@ export default function useListBase<
         if (res.result) {
           if (showNotify) notify.success(`Xoá ${objectName} thành công`);
           queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
-          // listQuery.refetch();
+          queryClient.invalidateQueries({ queryKey: [`${queryKey}-infinite`] });
         } else {
           if (res.code) handlers.handleDeleteError(res.code);
           else notify.error(`Xoá ${objectName} thất bại`);
@@ -507,10 +551,6 @@ export default function useListBase<
               return [key, value];
           }
         })
-        // .map(([key, value]) => [
-        //   key,
-        //   !isNaN(value) ? Number(value) : value.trim()
-        // ])
       )
     };
 
@@ -555,57 +595,36 @@ export default function useListBase<
     );
   };
 
-  const invalidateQueries = () =>
+  const invalidateQueries = () => {
     queryClient.invalidateQueries({
       queryKey: [`${queryKey}-list`, queryFilter]
     });
+    queryClient.invalidateQueries({
+      queryKey: [`${queryKey}-infinite`, queryFilter]
+    });
+  };
 
   const renderReloadButton = () => (
     <Button
-      disabled={listQuery.isFetching}
-      onClick={() => listQuery.refetch()}
+      disabled={activeQuery.isFetching}
+      onClick={() => activeQuery.refetch()}
       variant={'primary'}
     >
       <RefreshCcw />
     </Button>
   );
 
-  // Load more
-  const loadMore = async () => {
-    if (isFetchingMore || !hasMore || data.length <= pageSize) return;
-
-    setIsFetchingMore(true);
-    try {
-      const nextPage = (pagination.current || 1) + 1;
-
-      const res = await http.get<ApiResponseList<T>>(apiConfig.getList, {
-        params: {
-          ...queryFilter,
-          page: nextPage - 1,
-          size: pageSize
-        },
-        pathParams: { ...handlers.additionalPathParams() }
-      });
-
-      const newItems = res.data.content || [];
-
-      setData((prev) => [...prev, ...newItems]);
-
-      setPagination((p) => ({
-        ...p,
-        current: nextPage,
-        total: res.data.totalPages
-      }));
-
-      if (nextPage >= (res.data.totalPages ?? 0)) {
-        setHasMore(false);
-      }
-    } catch (err) {
-      logger.error('Fetch more error', err);
-    } finally {
-      setIsFetchingMore(false);
+  // Load more using useInfiniteQuery
+  const loadMore = () => {
+    if (
+      useInfiniteScroll &&
+      infiniteQuery.hasNextPage &&
+      !infiniteQuery.isFetchingNextPage
+    ) {
+      infiniteQuery.fetchNextPage();
     }
   };
+
   const handleScrollLoadMore = (e: React.UIEvent<HTMLElement>) => {
     const target = e.currentTarget;
 
@@ -638,6 +657,30 @@ export default function useListBase<
     setPagination((p) => ({ ...p, current: 1 }));
     setQueryParam('page', null);
   };
+
+  // Get total elements and total pages from active query
+  const totalElements = useMemo(() => {
+    if (useInfiniteScroll) {
+      return infiniteQuery.data?.pages[0]?.data.totalElements ?? 0;
+    }
+    return listQuery.data?.pages[0]?.data.totalElements ?? 0;
+  }, [useInfiniteScroll, infiniteQuery.data, listQuery.data]);
+
+  const totalPages = useMemo(() => {
+    if (useInfiniteScroll) {
+      return infiniteQuery.data?.pages[0]?.data.totalPages ?? 0;
+    }
+    return listQuery.data?.pages[0]?.data.totalPages ?? 0;
+  }, [useInfiniteScroll, infiniteQuery.data, listQuery.data]);
+
+  const totalLeft = useMemo(() => {
+    const currentPageList = infiniteQuery.data?.pageParams;
+    if (currentPageList?.length) {
+      const currentPage = currentPageList[currentPageList.length - 1] as number;
+      return totalElements - (currentPage + 1) * pageSize;
+    }
+    return 0;
+  }, [infiniteQuery.data?.pageParams, pageSize, totalElements]);
 
   const extendableHandlers = (): HandlerType<T, S> => {
     const handlers: HandlerType<T, S> = {
@@ -673,12 +716,17 @@ export default function useListBase<
   return {
     data,
     pagination,
-    loading: listQuery.isLoading || deleteMutation.isPending,
+    loading: activeQuery.isLoading || deleteMutation.isPending,
     handlers,
     queryFilter,
-    listQuery,
+    listQuery: activeQuery,
     queryString,
-    isFetchingMore,
-    hasMore
+    isFetchingMore: useInfiniteScroll
+      ? infiniteQuery.isFetchingNextPage
+      : false,
+    hasMore: useInfiniteScroll ? infiniteQuery.hasNextPage : false,
+    totalPages,
+    totalElements,
+    totalLeft
   };
 }
