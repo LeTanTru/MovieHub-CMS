@@ -233,6 +233,12 @@ const route = defineRoute({
       auth: true,
       permissionCode: [apiConfig.comment.getList.permissionCode]
     }
+  },
+  contact: {
+    path: '/contact'
+  },
+  privacy: {
+    path: '/privacy'
   }
 });
 
