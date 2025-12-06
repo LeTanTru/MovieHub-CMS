@@ -30,7 +30,7 @@ export type AuthorInfoType = {
   id: string;
   email: string;
   fullName: string;
-  kind: 10;
+  kind: number;
   avatarPath: string;
   gender: number;
 };

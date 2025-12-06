@@ -123,9 +123,15 @@ function CommentItem({
 
   const changeStatusCommentMutation = useChangeCommenStatustMutation();
 
-  const handleReplySubmit = () => {
-    onReplySuccess?.();
+  const handleReplySubmit = async () => {
     closeReply();
+    onReplySuccess?.();
+
+    const parentIdToInvalidate = level === 0 ? comment.id : rootId;
+
+    await queryClient.invalidateQueries({
+      queryKey: [queryKeys.COMMENT, parentIdToInvalidate]
+    });
   };
 
   const handleReplyComment = () => {
@@ -200,15 +206,11 @@ function CommentItem({
           ? COMMENT_STATUS_HIDE
           : COMMENT_STATUS_SHOW
     });
-    if (id === comment.id && comment.parent) {
-      queryClient.invalidateQueries({
-        queryKey: [`${queryKeys.COMMENT}`, comment.parent.id]
-      });
-    } else {
-      queryClient.invalidateQueries({
-        queryKey: [`${queryKeys.COMMENT}-infinite`]
-      });
-    }
+    queryClient.invalidateQueries({
+      queryKey: comment.parent
+        ? [queryKeys.COMMENT, comment.parent.id]
+        : [`${queryKeys.COMMENT}-infinite`]
+    });
   };
 
   const canCreate = hasPermission({
