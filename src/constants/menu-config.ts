@@ -1,7 +1,7 @@
 import apiConfig from '@/constants/api-config';
 import { route } from '@/routes';
 import { MenuItem } from '@/types';
-import { LucideLayoutGrid, Settings } from 'lucide-react';
+import { Info, LucideLayoutGrid, Settings } from 'lucide-react';
 import { AiOutlineUser } from 'react-icons/ai';
 import { RiMovie2Fill } from 'react-icons/ri';
 
@@ -90,6 +90,19 @@ const menuConfig: MenuItem[] = [
         label: 'Bộ sưu tập',
         path: route.collection.getList.path,
         permissionCode: [apiConfig.collection.getList.permissionCode]
+      }
+    ]
+  },
+  {
+    key: 'info-management',
+    label: 'Quản lý thông tin',
+    icon: Info,
+    children: [
+      {
+        key: 'sidebar-movie-list',
+        label: 'Phim nổi bật',
+        path: route.sidebar.getList.path,
+        permissionCode: [apiConfig.sidebar.getList.permissionCode]
       }
     ]
   },
