@@ -99,10 +99,14 @@ const menuConfig: MenuItem[] = [
     icon: Info,
     children: [
       {
-        key: 'sidebar-movie-list',
-        label: 'Phim nổi bật',
-        path: route.sidebar.getList.path,
-        permissionCode: [apiConfig.sidebar.getList.permissionCode]
+        key: 'contact',
+        label: 'Liên hệ',
+        path: route.contact.path
+      },
+      {
+        key: 'privacy',
+        label: 'Chính sách và bảo mật',
+        path: route.privacy.path
       }
     ]
   },
