@@ -97,4 +97,5 @@ export { default as PlayToggleButton } from './play-toggle-button';
 export { default as SeekBackwardButton } from './seek-backward-button';
 export { default as SeekForwardButton } from './seek-forward-button';
 export { default as SettingMenu } from './setting-menu';
+export { default as SkipIntroButton } from './skip-intro-button';
 export { default as VolumeToggleButton } from './volume-toggle-button';

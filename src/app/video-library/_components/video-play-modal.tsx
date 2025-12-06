@@ -77,7 +77,7 @@ export default function VideoPlayModal({
           logLevel='silent'
           crossOrigin
           playsInline
-          preferNativeHLS={true}
+          preferNativeHLS={false}
           autoPlay
           src={renderVideoUrl(video?.content)}
           fullscreenOrientation={'none'}

@@ -77,7 +77,6 @@ export default function VideoPlayModal({
           logLevel='silent'
           crossOrigin
           playsInline
-          muted
           preferNativeHLS={false}
           autoPlay={false}
           src={renderVideoUrl(video?.content)}
@@ -86,6 +85,7 @@ export default function VideoPlayModal({
               ? onProviderChange
               : undefined
           }
+          volume={0.5}
         >
           <MediaProvider slot='media'>
             <Poster
