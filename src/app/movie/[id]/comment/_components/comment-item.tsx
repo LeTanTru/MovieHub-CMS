@@ -207,8 +207,8 @@ function CommentItem({
           : COMMENT_STATUS_SHOW
     });
     queryClient.invalidateQueries({
-      queryKey: comment.parent
-        ? [queryKeys.COMMENT, comment.parent.id]
+      queryKey: rootId
+        ? [queryKeys.COMMENT, rootId]
         : [`${queryKeys.COMMENT}-infinite`]
     });
   };

@@ -407,8 +407,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.metaApiUrl}/v1/permission/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'PER_L',
-      isRequiredTenantId: true
+      permissionCode: 'PER_L'
     }
   },
   user: {
