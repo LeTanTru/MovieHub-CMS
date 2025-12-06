@@ -21,7 +21,7 @@ export function generatePath(
 
 export function renderVideoUrl(url?: string) {
   if (!url) return '';
-  return url.startsWith('https') ? url : `${AppConstants.videoRootUrl}/${url}`;
+  return url.startsWith('https') ? url : `${AppConstants.videoRootUrl}${url}`;
 }
 
 export const renderImageUrl = (url: string | undefined | null) => {

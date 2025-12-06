@@ -387,17 +387,17 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                         <Row>
                           <Col span={24}>
                             <MediaPlayer
-                              autoPlay={false}
+                              autoPlay
                               crossOrigin
                               fullscreenOrientation={'none'}
                               logLevel='silent'
-                              muted
                               onProviderChange={undefined}
                               playsInline
                               preferNativeHLS={false}
                               src={videoUrl || content}
                               streamType='on-demand'
                               viewType='video'
+                              volume={0.5}
                             >
                               <MediaProvider />
                               <DefaultVideoLayout
@@ -471,17 +471,17 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                       <Row>
                         <Col span={24}>
                           <MediaPlayer
-                            autoPlay={false}
+                            autoPlay
                             crossOrigin
                             fullscreenOrientation={'none'}
                             logLevel='silent'
-                            muted
                             onProviderChange={undefined}
                             playsInline
                             preferNativeHLS={false}
                             src={videoUrl || content}
                             streamType='on-demand'
                             viewType='video'
+                            volume={0.5}
                           >
                             <MediaProvider />
                             <DefaultVideoLayout
@@ -520,17 +520,17 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                     {/* Play preview video */}
                     {isEditing && data ? (
                       <MediaPlayer
-                        autoPlay={false}
+                        autoPlay
                         crossOrigin
                         fullscreenOrientation={'none'}
                         logLevel='silent'
-                        muted
                         onProviderChange={onProviderChange}
                         playsInline
                         preferNativeHLS={false}
                         src={renderVideoUrl(data.content)}
                         streamType='on-demand'
                         viewType='video'
+                        volume={0.5}
                       >
                         <MediaProvider slot='media'>
                           <Poster
