@@ -16,6 +16,7 @@ import { Loader } from 'lucide-react';
 import { useAuthStore } from '@/store';
 import { route } from '@/routes';
 import { storageKeys } from '@/constants';
+import { RouteItem } from '@/routes/route';
 
 export default function PermissionGuard({
   children
@@ -28,6 +29,7 @@ export default function PermissionGuard({
     isAuthenticated
   } = useAuth();
   const { isLoggedOut, setLoading } = useAuthStore();
+
   // const navigate = useNavigate(false);
   const router = useRouter();
   const accessToken = getAccessTokenFromLocalStorage();
@@ -60,7 +62,8 @@ export default function PermissionGuard({
     return null;
   }
 
-  const matchedRoute = findRouteByPath(route, pathname);
+  const matchedRoute: RouteItem = findRouteByPath(route, pathname);
+  const isPublicRoute = matchedRoute?.auth === false;
 
   // ready if loading is false
   useEffect(() => {
@@ -71,6 +74,8 @@ export default function PermissionGuard({
 
   // navigate to login if not login
   useEffect(() => {
+    if (isPublicRoute) return;
+
     if (!accessToken && !isAuthenticated && !isLoggedOut) {
       if (pathname !== route.login.path) {
         if (pathname !== route.home.path) {
@@ -99,7 +104,8 @@ export default function PermissionGuard({
     pathname,
     router,
     firstActiveRoute,
-    isLoggedOut
+    isLoggedOut,
+    isPublicRoute
   ]);
 
   // if logged in, set loading to false
@@ -109,6 +115,7 @@ export default function PermissionGuard({
 
   // get route permission
   const requiredPermissions = matchedRoute?.permissionCode ?? [];
+
   // check permission
   const hasPermission =
     requiredPermissions.length === 0 ||
@@ -116,10 +123,10 @@ export default function PermissionGuard({
       requiredPermissions,
       path: pathname.split('/')?.pop(),
       userPermissions,
-      separate: matchedRoute.separate,
-      excludeKind: matchedRoute.excludeKind,
-      requiredKind: matchedRoute.requiredKind,
-      userKind: matchedRoute.userKind
+      separate: matchedRoute.separate as boolean,
+      excludeKind: matchedRoute.excludeKind as string[],
+      requiredKind: matchedRoute.requiredKind as number,
+      userKind: matchedRoute.userKind as number
     });
 
   // show overlay
@@ -133,6 +140,10 @@ export default function PermissionGuard({
   // check authorization
   if (!hasPermission && isAuthenticated && ready) {
     return <Unauthorized />;
+  }
+
+  if (isPublicRoute) {
+    return <>{children}</>;
   }
 
   return (

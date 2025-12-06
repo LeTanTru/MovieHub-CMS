@@ -11,7 +11,7 @@ import {
 } from '@/constants';
 import { logger } from '@/logger';
 import { loginSchema } from '@/schemaValidations';
-import { LoginBodyType, LoginResType } from '@/types/auth.type';
+import { ApiResponse, LoginBodyType, LoginResType } from '@/types';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
 import PasswordField from '@/components/form/password-field';
@@ -19,7 +19,6 @@ import { useAuthStore } from '@/store';
 import envConfig from '@/config';
 import { useLoginEmployeeMutation, useLoginManagerMutation } from '@/queries';
 import { omit } from 'lodash';
-import { ApiResponse } from '@/types';
 
 export default function LoginForm() {
   const loginManagerMutation = useLoginManagerMutation();

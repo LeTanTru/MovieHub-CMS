@@ -4,7 +4,7 @@ export type RouteItem = {
   path?: string;
   auth?: boolean;
   permissionCode?: string[];
-  [key: string]: RouteItem | string[] | boolean | string | undefined;
+  [key: string]: RouteItem | string[] | boolean | string | number | undefined;
 };
 
 export type RouteConfig = Record<string, RouteItem>;
@@ -13,7 +13,8 @@ const defineRoute = <T extends RouteConfig>(routes: T): T => routes;
 
 const route = defineRoute({
   home: {
-    path: '/'
+    path: '/',
+    auth: true
   },
   employee: {
     getList: {
@@ -235,10 +236,12 @@ const route = defineRoute({
     }
   },
   contact: {
-    path: '/contact'
+    path: '/contact',
+    auth: false
   },
   privacy: {
-    path: '/privacy'
+    path: '/privacy',
+    auth: false
   }
 });
 
