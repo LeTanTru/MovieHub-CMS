@@ -5,6 +5,6 @@ export const metadata: Metadata = {
   title: 'Diễn viên & đạo diễn'
 };
 
-export default function MovieListPage() {
+export default function MovieLPersonListPage() {
   return <MoviePersonTab />;
 }

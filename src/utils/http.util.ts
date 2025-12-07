@@ -125,6 +125,9 @@ const http = {
   put<T>(apiConfig: ApiConfig, payload?: Payload) {
     return sendRequest<T>(apiConfig, payload);
   },
+  patch<T>(apiConfig: ApiConfig, payload?: Payload) {
+    return sendRequest<T>(apiConfig, payload);
+  },
   delete<T>(apiConfig: ApiConfig, payload?: Payload) {
     return sendRequest<T>(apiConfig, payload);
   }

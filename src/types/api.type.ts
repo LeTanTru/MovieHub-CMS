@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export type ApiConfig = {
   baseUrl: string;

@@ -235,6 +235,13 @@ const route = defineRoute({
       permissionCode: [apiConfig.comment.getList.permissionCode]
     }
   },
+  review: {
+    getList: {
+      path: '/movie/:id/review',
+      auth: true,
+      permissionCode: [apiConfig.review.getList.permissionCode]
+    }
+  },
   contact: {
     path: '/contact',
     auth: false

@@ -1,17 +1,8 @@
 'use client';
 
 import React, { memo } from 'react';
-import { AvatarField, Button } from '@/components/form';
-import {
-  Ellipsis,
-  Info,
-  Mars,
-  Pin,
-  Reply,
-  ThumbsDown,
-  ThumbsUp,
-  Venus
-} from 'lucide-react';
+import { AvatarField, Button, ToolTip } from '@/components/form';
+import { Ellipsis, Info, Mars, Pin, Reply, Venus } from 'lucide-react';
 import { cn } from '@/lib';
 import { convertUTCToLocal, renderImageUrl, timeAgo } from '@/utils';
 import { AuthorInfoType, CommentResType, CommentSearchType } from '@/types';
@@ -55,8 +46,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useChangeCommenStatustMutation } from '@/queries';
+import { useChangeCommenStatusMutation } from '@/queries';
 import { useQueryClient } from '@tanstack/react-query';
+import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 
 type Props = {
   comment: CommentResType & { children?: CommentResType[] };
@@ -121,7 +113,7 @@ function CommentItem({
   const commentListSize = commentList.length;
   const isOpen = isActiveParent;
 
-  const changeStatusCommentMutation = useChangeCommenStatustMutation();
+  const changeStatusCommentMutation = useChangeCommenStatusMutation();
 
   const handleReplySubmit = async () => {
     closeReply();
@@ -206,11 +198,14 @@ function CommentItem({
           ? COMMENT_STATUS_HIDE
           : COMMENT_STATUS_SHOW
     });
-    queryClient.invalidateQueries({
-      queryKey: rootId
-        ? [queryKeys.COMMENT, rootId]
-        : [`${queryKeys.COMMENT}-infinite`]
-    });
+    if (comment.parent)
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.COMMENT, comment.parent.id]
+      });
+    else
+      queryClient.invalidateQueries({
+        queryKey: [`${queryKeys.COMMENT}-infinite`]
+      });
   };
 
   const canCreate = hasPermission({
@@ -234,7 +229,7 @@ function CommentItem({
   });
 
   const canVote = hasPermission({
-    requiredPermissions: [apiConfig.comment.pin.permissionCode]
+    requiredPermissions: [apiConfig.comment.vote.permissionCode]
   });
 
   return (
@@ -335,30 +330,34 @@ function CommentItem({
             {canVote && (
               <div className='flex items-center gap-x-6'>
                 <div className='flex items-center gap-x-2'>
-                  <Button
-                    variant='ghost'
-                    className={cn('size-5! p-0!', {
-                      'like-pop [&_svg]:fill-blue-400 [&_svg]:stroke-blue-400':
-                        isLiked
-                    })}
-                    onClick={() => onVote(comment.id, REACTION_TYPE_LIKE)}
-                  >
-                    <ThumbsUp className='size-5' />
-                  </Button>
+                  <ToolTip title='Thích'>
+                    <Button
+                      variant='ghost'
+                      className={cn('size-5! p-0!', {
+                        'like-pop [&_svg]:fill-blue-400 [&_svg]:stroke-blue-400':
+                          isLiked
+                      })}
+                      onClick={() => onVote(comment.id, REACTION_TYPE_LIKE)}
+                    >
+                      <FaArrowAltCircleUp className='size-5' />
+                    </Button>
+                  </ToolTip>
                   {comment.totalLike}
                 </div>
 
                 <div className='flex items-center gap-x-2'>
-                  <Button
-                    variant='ghost'
-                    className={cn('size-5! p-0!', {
-                      'dislike-pop [&_svg]:fill-red-400 [&_svg]:stroke-red-400':
-                        isDisliked
-                    })}
-                    onClick={() => onVote(comment.id, REACTION_TYPE_DISLIKE)}
-                  >
-                    <ThumbsDown className='size-5' />
-                  </Button>
+                  <ToolTip title='Không thích'>
+                    <Button
+                      variant='ghost'
+                      className={cn('size-5! p-0!', {
+                        'dislike-pop [&_svg]:fill-red-400 [&_svg]:stroke-red-400':
+                          isDisliked
+                      })}
+                      onClick={() => onVote(comment.id, REACTION_TYPE_DISLIKE)}
+                    >
+                      <FaArrowAltCircleDown className='size-5' />
+                    </Button>
+                  </ToolTip>
                   {comment.totalDislike}
                 </div>
               </div>

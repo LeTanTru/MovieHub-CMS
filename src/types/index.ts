@@ -20,6 +20,7 @@ export * from './movie-sidebar.type';
 export * from './movie.type';
 export * from './permission.type';
 export * from './person.type';
+export * from './review.type';
 export * from './search.type';
 export * from './sidebar.type';
 export * from './socket.type';

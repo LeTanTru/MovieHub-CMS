@@ -6,6 +6,6 @@ export const metadata: Metadata = {
   title: 'Bình luận'
 };
 
-export default function MovieListPage() {
+export default function CommentListPage() {
   return <CommentList queryKey={queryKeys.COMMENT} />;
 }

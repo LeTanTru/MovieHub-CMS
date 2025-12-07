@@ -44,7 +44,7 @@ export type CommentPinBodyType = z.infer<typeof commentPinSchema>;
 
 export type CommentVoteBodyType = z.infer<typeof commentVoteSchema>;
 
-export type CommentChangeStatusBodyType = z.infer<
+export type ChangeCommentStatusBodyType = z.infer<
   typeof commentChangeStatusSchema
 >;
 

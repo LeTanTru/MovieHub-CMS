@@ -163,6 +163,7 @@ export const queryKeys = {
   COLLECTION: 'collection',
   COMMENT: 'comment',
   EMPLOYEE: 'employee',
+  FILE: 'file',
   GROUP: 'group',
   LOGIN: 'login',
   LOGOUT: 'logout',
@@ -172,11 +173,11 @@ export const queryKeys = {
   PERSON: 'person',
   PROFILE: 'profile',
   REFRESH_TOKEN: 'refresh_token',
+  REVIEW: 'review',
   SIDEBAR: 'sidebar',
   SNS_CONFIG: 'sns_config',
   STYLE: 'style',
-  VIDEO_LIBRARY: 'video_library',
-  FILE: 'file'
+  VIDEO_LIBRARY: 'video_library'
 };
 
 export const loginOptions = [

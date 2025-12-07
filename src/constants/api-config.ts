@@ -400,6 +400,33 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       permissionCode: 'REV_L',
       isRequiredTenantId: true
+    },
+    changeStatus: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/review/change-status`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'REV_C_S',
+      isRequiredTenantId: true
+    },
+    delete: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/review/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'REV_D',
+      isRequiredTenantId: true
+    },
+    getById: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/review/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'REV_V',
+      isRequiredTenantId: true
+    },
+    voteList: {
+      baseUrl: `${AppConstants.tenantApiUrl}/v1/review/vote-list/:movieId`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredTenantId: true
     }
   },
   permission: {

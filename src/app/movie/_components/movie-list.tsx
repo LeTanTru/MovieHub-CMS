@@ -22,10 +22,11 @@ import {
   Column,
   MovieResType,
   MovieSearchType,
+  ReviewResType,
   SearchFormProps
 } from '@/types';
 import { formatDate, generatePath, notify, renderImageUrl } from '@/utils';
-import { MessageSquareHeart } from 'lucide-react';
+import { MessageSquareHeart, Star } from 'lucide-react';
 import Link from 'next/link';
 import { AiOutlineUser } from 'react-icons/ai';
 
@@ -94,6 +95,27 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
                   {...buttonProps}
                 >
                   <MessageSquareHeart className='text-dodger-blue size-4' />
+                </Button>
+              </span>
+            </ToolTip>
+          );
+        },
+        review: (record: ReviewResType, buttonProps?: Record<string, any>) => {
+          return (
+            <ToolTip title={`Đánh giá`} sideOffset={0}>
+              <span>
+                <Button
+                  onClick={() =>
+                    navigate(
+                      generatePath(route.review.getList.path, {
+                        id: record.id
+                      })
+                    )
+                  }
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  {...buttonProps}
+                >
+                  <Star className='text-dodger-blue size-4' />
                 </Button>
               </span>
             </ToolTip>
@@ -229,10 +251,15 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
             apiConfig.comment.getList.permissionCode as string
           ]
         }),
+        review: handlers.hasPermission({
+          requiredPermissions: [
+            apiConfig.review.getList.permissionCode as string
+          ]
+        }),
         edit: true,
         delete: true
       },
-      columnProps: { width: 150 }
+      columnProps: { width: 180 }
     })
   ];
 

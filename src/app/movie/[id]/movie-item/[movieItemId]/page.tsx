@@ -6,6 +6,6 @@ export const metadata: Metadata = {
   title: 'Mục phim'
 };
 
-export default function MovieSavePage() {
+export default function MovieItemSavePage() {
   return <MovieItemForm queryKey={queryKeys.MOVIE_ITEM} />;
 }

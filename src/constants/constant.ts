@@ -96,3 +96,6 @@ export const REACTION_TYPE_DISLIKE = 2;
 
 export const COMMENT_STATUS_SHOW = 1;
 export const COMMENT_STATUS_HIDE = 0;
+
+export const REVIEW_STATUS_SHOW = 1;
+export const REVIEW_STATUS_HIDE = 0;

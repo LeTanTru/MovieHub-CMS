@@ -144,22 +144,20 @@ export default function VideoPlayModal({
                 />
               ),
               timeSlider: (
-                <TimeSlider.Root className='group relative mx-[7.5px] inline-flex h-10 w-full cursor-pointer touch-none items-center outline-none select-none aria-hidden:hidden'>
-                  <TimeSlider.Track className='relative z-0 h-[5px] w-full rounded-sm bg-white/30 ring-sky-400 group-data-[focus]:ring-[3px]'>
-                    <TimeSlider.TrackFill className='absolute h-full w-[var(--slider-fill)] rounded-sm bg-black/80 will-change-[width]' />
-                    <TimeSlider.Progress className='absolute z-10 h-full w-[var(--slider-progress)] rounded-sm bg-white/50 will-change-[width]' />
-                    {video?.introStart &&
-                      video?.introEnd &&
-                      video?.duration && (
-                        <IntroRangeHighlight
-                          start={video.introStart}
-                          end={video.introEnd}
-                          duration={video?.duration}
-                        />
-                      )}
-                    {video?.outroStart && video?.duration && (
+                <TimeSlider.Root className='group relative mx-[7.5px] inline-flex h-10 w-full cursor-pointer touch-none items-center rounded outline-none select-none aria-hidden:hidden'>
+                  <TimeSlider.Track className='relative z-0 h-[5px] w-full overflow-hidden rounded-sm bg-white/30 ring-sky-400 group-data-[focus]:ring-[3px]'>
+                    <TimeSlider.TrackFill className='absolute h-full w-[var(--slider-fill)] rounded-sm bg-red-500 will-change-[width]' />
+                    <TimeSlider.Progress className='absolute z-10 h-full w-[var(--slider-progress)] rounded-sm bg-white/80 will-change-[width]' />
+                    {video && (
                       <IntroRangeHighlight
-                        start={video?.outroStart}
+                        start={video.introStart || 0}
+                        end={video.introEnd}
+                        duration={video.duration}
+                      />
+                    )}
+                    {video && (
+                      <IntroRangeHighlight
+                        start={video.outroStart}
                         end={video.duration}
                         duration={video.duration}
                       />
@@ -208,13 +206,11 @@ function onProviderChange(
 function IntroRangeHighlight({
   start,
   end,
-  duration,
-  position = 'start'
+  duration
 }: {
   start: number;
   end: number;
   duration?: number;
-  position?: 'start' | 'end';
 }) {
   if (!duration || duration === 0) return null;
 
@@ -223,10 +219,9 @@ function IntroRangeHighlight({
 
   return (
     <div
-      className={cn('pointer-events-none absolute top-0 h-full bg-red-600', {
-        'left-0': position === 'start',
-        'right-0': position === 'end'
-      })}
+      className={cn(
+        'pointer-events-none absolute top-0 h-full rounded-tr rounded-br bg-gray-300'
+      )}
       style={{
         left: `${left}%`,
         width: `${width}%`

@@ -244,10 +244,11 @@ export default function UploadImageField<T extends FieldValues>({
             {!!value ? (
               <ImageField
                 disablePreview
+                showHoverIcon={false}
                 src={value}
                 className='size-full rounded-none object-cover'
                 aspect={aspect}
-                width={size}
+                width={size * aspect}
                 height={size}
               />
             ) : (
