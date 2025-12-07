@@ -10,7 +10,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   DEFAULT_TABLE_PAGE_START,
   ErrorCode,
-  GROUP_KIND_EMPLOYEE,
   groupErrorMaps,
   MAX_PAGE_SIZE
 } from '@/constants';

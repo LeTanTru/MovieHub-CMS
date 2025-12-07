@@ -173,32 +173,15 @@ function CommentItem({
     setEditingComment(null);
   };
 
-  const renderContentWithMentions = (content: string) => {
-    if (!content) return null;
+  const renderContentWithMentions = () => {
+    if (!replyToInfo?.fullName) return;
 
     const mention = `@${replyToInfo?.fullName}`;
 
-    if (!content.includes(mention)) {
-      return content;
-    }
-
-    const parts = content.split(mention);
-
     return (
-      <>
-        {parts.map((part, index) => {
-          return (
-            <React.Fragment key={index}>
-              {part}
-              {index < parts.length - 1 && (
-                <span className='rounded bg-blue-50 px-1.5 py-0.5 font-semibold text-blue-600'>
-                  {mention}
-                </span>
-              )}
-            </React.Fragment>
-          );
-        })}
-      </>
+      <span className='rounded bg-blue-50 px-1.5 py-0.5 font-semibold text-blue-600'>
+        {mention}
+      </span>
     );
   };
 
@@ -336,7 +319,7 @@ function CommentItem({
           </div>
 
           <p className='mt-4 text-gray-700'>
-            {renderContentWithMentions(comment.content)}
+            {renderContentWithMentions()}&nbsp;{comment.content}
           </p>
 
           <div className='mt-4 flex items-center gap-x-8 text-sm text-gray-500'>
