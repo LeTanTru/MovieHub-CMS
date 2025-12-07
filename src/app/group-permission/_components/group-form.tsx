@@ -71,16 +71,14 @@ export default function GroupForm() {
   const defaultValues: GroupBodyType = {
     name: '',
     permissions: [],
-    description: '',
-    kind: GROUP_KIND_EMPLOYEE
+    description: ''
   };
 
   const initialValues: GroupBodyType = useMemo(
     () => ({
       description: group?.description ?? '',
       name: group?.name ?? '',
-      permissions: group?.permissions.map((g) => g.id.toString()) ?? [],
-      kind: GROUP_KIND_EMPLOYEE
+      permissions: group?.permissions.map((g) => g.id.toString()) ?? []
     }),
     [group?.description, group?.name, group?.permissions]
   );
