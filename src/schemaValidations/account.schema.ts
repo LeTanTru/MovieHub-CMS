@@ -70,6 +70,14 @@ export const profileSchema = z
       }
     }
 
+    if (!data.oldPassword && data.newPassword && data.confirmPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['oldPassword'],
+        message: 'Bắt buộc'
+      });
+    }
+
     if (data.newPassword || data.confirmPassword) {
       if (data.newPassword !== data.confirmPassword) {
         ctx.addIssue({
