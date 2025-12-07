@@ -35,6 +35,10 @@ export default function ReviewList({ queryKey }: { queryKey: string }) {
     }
   });
 
+  const totalStars = data.reduce((acc, item) => {
+    return acc + item.rate;
+  }, 0);
+
   const handleDeleteReview = useCallback(
     async (review: ReviewResType) => {
       handlers.handleDeleteClick(review.id);
@@ -62,7 +66,7 @@ export default function ReviewList({ queryKey }: { queryKey: string }) {
         ) : (
           <div className='mt-4 p-4'>
             <h4 className='-mb-2 ml-2 font-semibold text-black'>
-              Đánh giá ({totalElements})
+              Đánh giá ({totalElements}) ({((totalStars * 2) / 3)?.toFixed(2)})
             </h4>
             {data.map((item) => (
               <ReviewItem
