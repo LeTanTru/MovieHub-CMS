@@ -90,7 +90,7 @@ export default function MoviePersonList({
               title={
                 isEditing
                   ? 'Lưu'
-                  : `Sửa ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`
+                  : `Cập nhật ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`
               }
               sideOffset={0}
             >

@@ -351,7 +351,7 @@ export default function useListBase<
         return null;
 
       return (
-        <ToolTip title={`Sửa ${objectName}`} sideOffset={0}>
+        <ToolTip title={`Cập nhật ${objectName}`} sideOffset={0}>
           <span>
             <Button
               onClick={(e) => {
