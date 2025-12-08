@@ -139,15 +139,6 @@ export const employeeErrorMaps: ErrorMaps<EmployeeBodyType> = {
         message: 'Mật khẩu mới không được trùng với mật khẩu cũ'
       }
     ]
-  ],
-  [ErrorCode.EMPLOYEE_ERROR_WRONG_PASSWORD]: [
-    [
-      'oldPassword',
-      {
-        type: 'manual',
-        message: 'Mật khẩu cũ không chính xác'
-      }
-    ]
   ]
 };
 
