@@ -82,6 +82,14 @@ export const employeeSchema = (isEditing: boolean) =>
             });
         }
 
+        if (data.password && !data.confirmPassword) {
+          ctx.addIssue({
+            code: 'custom',
+            path: ['confirmPassword'],
+            message: 'Vui lòng nhập lại mật khẩu'
+          });
+        }
+
         if (data.password !== data.confirmPassword) {
           ctx.addIssue({
             code: 'custom',
