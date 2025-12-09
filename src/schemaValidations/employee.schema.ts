@@ -2,7 +2,7 @@ import z from 'zod';
 
 export const employeeSearchSchema = z.object({
   fullName: z.string().optional().nullable(),
-  kind: z.string().optional().nullable(),
+  kind: z.number().optional().nullable(),
   phone: z.string().optional().nullable(),
   status: z.string().optional().nullable(),
   username: z.string().optional().nullable()
