@@ -24,7 +24,9 @@ export default function CollectionItemForm({ queryKey }: { queryKey: string }) {
     collectionItemId: string;
   }>();
 
-  const collectionItemListQuery = useCollectionItemListQuery();
+  const collectionItemListQuery = useCollectionItemListQuery({
+    params: { collectionId }
+  });
 
   const {
     loading,
@@ -51,7 +53,7 @@ export default function CollectionItemForm({ queryKey }: { queryKey: string }) {
   const defaultValues: CollectionItemBodyType = {
     collectionId: collectionId,
     movieId: '',
-    ordering: collectionItemListQuery.data?.data.totalElements ?? 0
+    ordering: collectionItemListQuery.data?.data?.totalElements ?? 0
   };
 
   const onSubmit = async (

@@ -72,8 +72,6 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
 
   const updateOrderingMovieItemMutation = useUpdateOrderingMovieItemMutation();
 
-  const parentId = getData(storageKeys.SELECTED_MOVIE_ITEM);
-
   const kindOptions =
     !!type && +type === MOVIE_TYPE_SINGLE
       ? movieItemSingleKindOptions.filter(
@@ -116,6 +114,9 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
       };
     }
   });
+
+  const parentId =
+    getData(storageKeys.SELECTED_MOVIE_ITEM) || data?.parent?.id?.toString();
 
   const defaultValues: MovieItemBodyType = {
     description: '',

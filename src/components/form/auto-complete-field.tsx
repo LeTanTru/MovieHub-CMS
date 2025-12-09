@@ -28,7 +28,6 @@ import { ApiConfig, ApiResponseList } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import { http } from '@/utils';
 import {
-  DEFAULT_TABLE_PAGE_SIZE,
   DEFAULT_TABLE_PAGE_START,
   INITIAL_AUTO_COMPLETE_SIZE,
   MAX_PAGE_SIZE
@@ -157,7 +156,12 @@ export default function AutoCompleteField<
     .filter((item) => item !== null);
 
   useEffect(() => {
-    if (!fieldValue || initialFetched.current) return;
+    if (
+      !fieldValue ||
+      initialFetched.current ||
+      selectedOption?.value === fieldValue
+    )
+      return;
 
     const getInitialOptions = async () => {
       const res = await http.get<ApiResponseList<TOption>>(apiConfig, {

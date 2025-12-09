@@ -1,14 +1,25 @@
 import { apiConfig, queryKeys } from '@/constants';
-import { ApiResponseList, CollectionItemResType } from '@/types';
+import {
+  ApiResponseList,
+  CollectionItemResType,
+  CollectionItemSearchType
+} from '@/types';
 import { http } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 
-export const useCollectionItemListQuery = () => {
+export const useCollectionItemListQuery = ({
+  params
+}: {
+  params: CollectionItemSearchType;
+}) => {
   return useQuery({
-    queryKey: [`${queryKeys.COLLECTION_ITEM}-list`],
+    queryKey: [`${queryKeys.COLLECTION_ITEM}-list`, params],
     queryFn: () =>
       http.get<ApiResponseList<CollectionItemResType>>(
-        apiConfig.collectionItem.getList
+        apiConfig.collectionItem.getList,
+        {
+          params
+        }
       )
   });
 };
