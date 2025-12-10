@@ -15,7 +15,7 @@ export default function SidebarLayout({
     <SidebarProvider
       style={
         {
-          '--sidebar-width': '20rem',
+          '--sidebar-width': '18.75rem',
           '--sidebar-width-icon': '5rem'
         } as React.CSSProperties
       }

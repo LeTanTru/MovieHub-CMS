@@ -83,7 +83,7 @@ export default function AvatarField({
         {...props}
         onClick={props?.onClick ?? handleClick}
         className={cn(
-          'relative flex cursor-pointer items-center justify-center overflow-hidden rounded-full border shadow-sm',
+          'relative flex cursor-pointer items-center justify-center overflow-hidden rounded-full shadow-sm',
           className
         )}
         style={{ width: width || size, height: height || size }}

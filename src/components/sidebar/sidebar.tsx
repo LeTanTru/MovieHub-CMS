@@ -1,11 +1,12 @@
 'use client';
 
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, CircleUserRound } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -20,14 +21,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib';
-import { Button } from '@/components/form';
+import { AvatarField, Button } from '@/components/form';
 import './sidebar.css';
 import { MenuItem } from '@/types';
 import { useSidebarStore } from '@/store';
-import { useNavigate, useQueryParams, useValidatePermission } from '@/hooks';
+import {
+  useAuth,
+  useNavigate,
+  useQueryParams,
+  useValidatePermission
+} from '@/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
 import menuConfig from '@/constants/menu-config';
 import { createPortal } from 'react-dom';
+import { renderImageUrl } from '@/utils';
 
 function CollapsibleMenuItem({ item }: { item: MenuItem }) {
   const navigate = useNavigate();
@@ -290,6 +297,7 @@ const renderMenu = (items: MenuItem[]) => {
 };
 
 const AppSidebar = () => {
+  const { profile } = useAuth();
   const { hasPermission } = useValidatePermission();
   const [clientMenu, setClientMenu] = useState<MenuItem[]>([]);
   const openLastMenu = useSidebarStore((s) => s.openLastMenu);
@@ -394,6 +402,35 @@ const AppSidebar = () => {
           <SidebarGroupContent>{renderMenu(clientMenu)}</SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter
+        className={cn('mb-4 flex flex-row items-center justify-center', {
+          'pl-8': state === 'expanded'
+        })}
+      >
+        <SidebarMenu className='size-10'>
+          <SidebarMenuItem>
+            <AvatarField
+              src={renderImageUrl(profile?.avatarPath)}
+              disablePreview
+              size={40}
+              icon={
+                <CircleUserRound className='size-8 fill-transparent stroke-gray-600 stroke-2' />
+              }
+            />
+          </SidebarMenuItem>
+        </SidebarMenu>
+        {state === 'expanded' && (
+          <SidebarMenu className='flex-1'>
+            <SidebarMenuItem className='mx-auto line-clamp-1 block w-full justify-start truncate rounded-lg font-normal text-white transition-all duration-200 ease-linear'>
+              {profile?.fullName}
+            </SidebarMenuItem>
+            <SidebarMenuItem className='mx-auto line-clamp-1 block w-full justify-start truncate rounded-lg text-xs font-normal text-gray-400 transition-all duration-200 ease-linear'>
+              {profile?.email}
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
+      </SidebarFooter>
     </Sidebar>
   );
 };
