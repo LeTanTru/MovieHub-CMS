@@ -1,6 +1,8 @@
 'use client';
 
+import CollectionItemModal from './collection-item-modal';
 import { Button, ImageField } from '@/components/form';
+import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import {
@@ -11,7 +13,7 @@ import {
   languageOptions,
   movieTypeOptions
 } from '@/constants';
-import { useDragDrop, useListBase } from '@/hooks';
+import { useDisclosure, useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { route } from '@/routes';
 import { collectionItemSearchSchema } from '@/schemaValidations';
@@ -22,11 +24,12 @@ import {
   SearchFormProps
 } from '@/types';
 import { formatDate, renderImageUrl } from '@/utils';
-import { Save } from 'lucide-react';
+import { PlusIcon, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
 export default function CollectionItemList({ queryKey }: { queryKey: string }) {
   const { id: collectionId } = useParams<{ id: string }>();
+  const collectionItemModal = useDisclosure(false);
 
   const { data, loading, handlers } = useListBase<
     CollectionItemResType,
@@ -41,6 +44,20 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
       handlers.additionalParams = () => ({
         collectionId
       });
+      handlers.renderAddButton = () => {
+        return (
+          <HasPermission
+            requiredPermissions={[
+              apiConfig.collectionItem.create.permissionCode
+            ]}
+          >
+            <Button variant={'primary'} onClick={handleAddCollectionItem}>
+              <PlusIcon />
+              Thêm mới
+            </Button>
+          </HasPermission>
+        );
+      };
     }
   });
 
@@ -63,6 +80,10 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
       parentId: record.collectionId
     })
   });
+
+  const handleAddCollectionItem = () => {
+    collectionItemModal.open();
+  };
 
   const columns: Column<CollectionItemResType>[] = [
     ...(sortedData.length > 1 ? [sortColumn] : []),
@@ -225,6 +246,10 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
           </div>
         )}
       </ListPageWrapper>
+      <CollectionItemModal
+        open={collectionItemModal.opened}
+        close={collectionItemModal.close}
+      />
     </PageWrapper>
   );
 }
