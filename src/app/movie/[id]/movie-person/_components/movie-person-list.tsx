@@ -202,7 +202,11 @@ export default function MoviePersonList({
       width: 80,
       align: 'center',
       render: (value) => (
-        <AvatarField disablePreview={!value} src={renderImageUrl(value)} />
+        <AvatarField
+          disablePreview={!value}
+          src={renderImageUrl(value)}
+          size={45}
+        />
       )
     },
     {
@@ -242,7 +246,7 @@ export default function MoviePersonList({
                   onSubmit={(values) =>
                     handleUpdateCharacterName(record, values.characterName)
                   }
-                  className='w-full bg-transparent px-0'
+                  className='w-full bg-transparent p-0'
                   id={`character-form-${record.id}`}
                 >
                   {(form) => (

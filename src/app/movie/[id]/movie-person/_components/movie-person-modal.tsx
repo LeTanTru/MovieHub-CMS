@@ -82,13 +82,12 @@ export default function MoviePersonModal({
       title={`Thêm ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`}
       open={open}
       onClose={close}
-      className='[&_.content]:-top-[30%] [&_.content]:w-200'
     >
       <BaseForm
         defaultValues={defaultValues}
         schema={moviePersonSchema}
         onSubmit={handleSubmit}
-        className='w-full'
+        className='w-175'
       >
         {(form) => (
           <>

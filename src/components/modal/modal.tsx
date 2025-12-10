@@ -71,7 +71,7 @@ export default function Modal({
           )}
 
           <motion.div
-            className='content relative rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40'
+            className='content relative -top-70 rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40'
             initial={variants.initial}
             animate={variants.animate}
             exit={variants.exit}
