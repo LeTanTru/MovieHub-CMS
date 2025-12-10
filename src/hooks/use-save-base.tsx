@@ -23,6 +23,7 @@ import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 type HandlerType<T> = {
   // additionParams: () => { [key: string]: any };
+  handleSubmitSuccess: () => void;
   handleSubmitError: (code: string) => void;
 };
 
@@ -125,6 +126,7 @@ export default function useSaveBase<
             if (listPageUrl) {
               navigate(getBackPath());
             }
+            handlers.handleSubmitSuccess();
           } else {
             const code = res.code;
             if (code && errorMaps?.[code] && form) {
@@ -226,10 +228,13 @@ export default function useSaveBase<
     </Row>
   );
 
+  const handleSubmitSuccess = () => {};
+
   const handleSubmitError = (code: string) => {};
 
   const extendableHandlers = (): HandlerType<T> => {
     let handlers: HandlerType<T> = {
+      handleSubmitSuccess,
       handleSubmitError
     };
 

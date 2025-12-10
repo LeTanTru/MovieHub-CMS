@@ -37,6 +37,14 @@ export default function CategoryModal({
         id: category?.id
       },
       mode: !category ? 'create' : 'edit'
+    },
+    override: (handlers) => {
+      handlers.handleSubmitSuccess = () => {
+        close();
+        queryClient.invalidateQueries({
+          queryKey: [`${queryKeys.CATEGORY}-list`]
+        });
+      };
     }
   });
 
@@ -63,8 +71,6 @@ export default function CategoryModal({
       form,
       categoryErrorMaps
     );
-    close();
-    queryClient.invalidateQueries({ queryKey: [`${queryKeys.CATEGORY}-list`] });
   };
 
   return (
