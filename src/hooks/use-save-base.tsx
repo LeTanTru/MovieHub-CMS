@@ -185,7 +185,7 @@ export default function useSaveBase<
               <AlertDialogHeader>
                 <AlertDialogTitle className='flex items-center gap-2 text-sm font-normal'>
                   <Info className='size-8 fill-orange-500 stroke-white' />
-                  Bạn có chắc chắn muốn quay lại không ?
+                  Bạn có chắc chắn muốn hủy không ?
                 </AlertDialogTitle>
                 <AlertDialogDescription></AlertDialogDescription>
               </AlertDialogHeader>
