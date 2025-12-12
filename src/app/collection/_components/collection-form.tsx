@@ -204,11 +204,12 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                     placeholder='Loại'
                     required
                     options={collectionTypeOptions}
+                    disabled={isEditing}
                   />
                 </Col>
               </Row>
               <Row>
-                <Col span={12}>
+                <Col span={12} className='pr-2!'>
                   <div className='space-y-2'>
                     <label className='ml-2 text-sm font-medium'>
                       Màu <span className='text-red-500'>*</span>
@@ -258,7 +259,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                   </div>
                 </Col>
                 {type === COLLECTION_TYPE_SECTION && (
-                  <Col>
+                  <Col span={12}>
                     <AutoCompleteField<any, StyleResType>
                       control={form.control}
                       name='styleId'
