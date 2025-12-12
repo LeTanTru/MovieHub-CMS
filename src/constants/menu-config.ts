@@ -1,4 +1,5 @@
 import apiConfig from '@/constants/api-config';
+import { COLLECTION_TYPE_TOPIC } from '@/constants/constant';
 import { route } from '@/routes';
 import { MenuItem } from '@/types';
 import { LucideLayoutGrid, Settings } from 'lucide-react';
@@ -89,7 +90,8 @@ const menuConfig: MenuItem[] = [
         key: 'collection-list',
         label: 'Bộ sưu tập',
         path: route.collection.getList.path,
-        permissionCode: [apiConfig.collection.getList.permissionCode]
+        permissionCode: [apiConfig.collection.getList.permissionCode],
+        query: { type: COLLECTION_TYPE_TOPIC }
       }
     ]
   },

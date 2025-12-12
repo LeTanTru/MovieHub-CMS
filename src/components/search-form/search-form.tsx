@@ -69,7 +69,7 @@ export default function SearchForm<S extends FieldValues>({
 
   const handleReset = (form: UseFormReturn<z.infer<typeof schema>>) => {
     handleSearchReset();
-    form.reset({});
+    form.reset(defaultValues);
   };
 
   const renderField = (

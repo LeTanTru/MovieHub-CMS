@@ -5,6 +5,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import {
   apiConfig,
+  COLLECTION_TYPE_TOPIC,
   collectionTypeOptions,
   FieldTypes,
   MAX_PAGE_SIZE
@@ -33,7 +34,10 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
     apiConfig: apiConfig.collection,
     options: {
       queryKey,
-      objectName: 'bộ sưu tập'
+      objectName: 'bộ sưu tập',
+      defaultFilters: {
+        type: COLLECTION_TYPE_TOPIC
+      }
     },
     override: (handlers) => {
       handlers.additionalColumns = () => ({
@@ -208,7 +212,8 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
       key: 'type',
       placeholder: 'Loại',
       options: collectionTypeOptions,
-      type: FieldTypes.SELECT
+      type: FieldTypes.SELECT,
+      submitOnChanged: true
     }
   ];
 

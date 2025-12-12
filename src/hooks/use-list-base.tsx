@@ -215,9 +215,9 @@ export default function useListBase<
       http.get<ApiResponseList<T>>(apiConfig.getList, {
         params: {
           ...queryFilter,
-          ...handlers.additionalParams(),
           page: pageParam,
-          size: pageSize
+          size: pageSize,
+          ...handlers.additionalParams()
         },
         pathParams: { ...handlers.additionalPathParams() }
       }),
@@ -238,9 +238,9 @@ export default function useListBase<
       http.get<ApiResponseList<T>>(apiConfig.getList, {
         params: {
           ...queryFilter,
-          ...handlers.additionalParams(),
           page: pageParam,
-          size: pageSize
+          size: pageSize,
+          ...handlers.additionalParams()
         },
         pathParams: { ...handlers.additionalPathParams() }
       }),
@@ -592,7 +592,11 @@ export default function useListBase<
         )
       );
 
-      setQueryParams({ ...(filteredValues as Partial<S>), ...preservedParams });
+      setQueryParams({
+        ...(filteredValues as Partial<S>),
+        ...preservedParams,
+        ...hiddenFilters
+      });
     };
 
     return (
