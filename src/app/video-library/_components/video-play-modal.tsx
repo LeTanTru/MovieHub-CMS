@@ -66,7 +66,7 @@ export default function VideoPlayModal({
   return (
     <Modal
       title={video?.name}
-      className='[&_.content]:w-300'
+      className='[&_.content]:top-0 [&_.content]:w-300'
       open={open}
       onClose={close}
     >
