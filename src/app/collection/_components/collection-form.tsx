@@ -191,8 +191,8 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                   <InputField
                     control={form.control}
                     name='name'
-                    label='Tên thiết kế'
-                    placeholder='Tên thiết kế'
+                    label='Tên bộ sưu tập'
+                    placeholder='Tên bộ sưu tập'
                     required
                   />
                 </Col>
