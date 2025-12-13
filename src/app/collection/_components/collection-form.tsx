@@ -209,7 +209,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
               <Row>
-                <Col span={12} className='pr-2!'>
+                <Col span={12}>
                   <div className='space-y-2'>
                     <label className='ml-2 text-sm font-medium'>
                       Màu <span className='text-red-500'>*</span>
