@@ -16,6 +16,7 @@ import {
   employeeErrorMaps,
   employeeStatusOptions,
   ErrorCode,
+  MAX_PAGE_SIZE,
   STATUS_ACTIVE
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
@@ -38,7 +39,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
   const [avatarPath, setAvatarPath] = useState<string>('');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
-  const groupListQuery = useGroupListQuery();
+  const groupListQuery = useGroupListQuery({ size: MAX_PAGE_SIZE });
 
   const groupList = groupListQuery.data?.data.content || [];
   const groupOptions = groupList.map((item) => ({
