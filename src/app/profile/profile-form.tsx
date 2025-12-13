@@ -95,27 +95,39 @@ export default function ProfileForm() {
     );
   };
 
-  const handleDeleteFiles = async () => {
-    const filesToDelete = [
-      ...uploadedAvatarImages.slice(1),
-      ...uploadedLogoImages.slice(1)
-    ];
-    await deleteFiles(filesToDelete);
-  };
-
   const onSubmit = async (
     values: ProfileBodyType,
     form: UseFormReturn<ProfileBodyType>
   ) => {
-    const filesToDelete = [
-      ...(profile?.avatarPath && !avatarPath
-        ? uploadedAvatarImages
-        : uploadedAvatarImages.slice(0, uploadedAvatarImages.length - 1)),
+    // Delete logic for avatar:
+    // - If user removed avatar (avatarPath is empty), delete all uploaded avatars except the original
+    // - If user kept/changed avatar, delete all previous uploads, keep only the current one
+    const avatarFilesToDelete = [];
+    if (!avatarPath) {
+      // User removed avatar - delete all uploaded files except original
+      avatarFilesToDelete.push(
+        ...uploadedAvatarImages.filter((img) => img !== profile?.avatarPath)
+      );
+    } else if (avatarPath !== profile?.avatarPath) {
+      // User changed avatar - delete all previous uploads except the current one
+      avatarFilesToDelete.push(
+        ...uploadedAvatarImages.filter((img) => img !== avatarPath)
+      );
+    }
 
-      ...(profile?.logoPath && !logoPath
-        ? uploadedLogoImages
-        : uploadedLogoImages.slice(0, uploadedLogoImages.length - 1))
-    ];
+    // Same logic for logo
+    const logoFilesToDelete = [];
+    if (!logoPath) {
+      logoFilesToDelete.push(
+        ...uploadedLogoImages.filter((img) => img !== profile?.logoPath)
+      );
+    } else if (logoPath !== profile?.logoPath) {
+      logoFilesToDelete.push(
+        ...uploadedLogoImages.filter((img) => img !== logoPath)
+      );
+    }
+
+    const filesToDelete = [...avatarFilesToDelete, ...logoFilesToDelete];
 
     await deleteFiles(filesToDelete.filter(Boolean));
 
@@ -152,8 +164,17 @@ export default function ProfileForm() {
     setUploadedLogoImages(url ? [url] : []);
   }, [profile?.logoPath]);
 
-  const handleCancel = () => {
-    handleDeleteFiles();
+  const handleCancel = async () => {
+    // Delete all files uploaded during this session, keep only the original files
+    const avatarFilesToDelete = uploadedAvatarImages.filter(
+      (img) => img !== profile?.avatarPath
+    );
+    const logoFilesToDelete = uploadedLogoImages.filter(
+      (img) => img !== profile?.logoPath
+    );
+
+    const filesToDelete = [...avatarFilesToDelete, ...logoFilesToDelete];
+    await deleteFiles(filesToDelete.filter(Boolean));
 
     const prevPath = getData(storageKeys.PREVIOUS_PATH);
     removeData(storageKeys.PREVIOUS_PATH);

@@ -28,7 +28,6 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
   const [filePath, setFilePath] = useState<string>('');
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
-  console.log('🚀 ~ AppVersionForm ~ uploadedFiles:', uploadedFiles);
 
   const uploadFileMutation = useUploadFileMutation();
   const deleteImageMutation = useDeleteFileMutation();
@@ -87,7 +86,9 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
   };
 
   const handleDeleteFiles = async () => {
-    const filesToDelete = uploadedFiles.slice(1);
+    const filesToDelete = isEditing
+      ? uploadedFiles.slice(uploadedFiles.length - 1)
+      : uploadedFiles;
     await deleteFiles(filesToDelete);
   };
 

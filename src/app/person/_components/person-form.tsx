@@ -118,7 +118,9 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
   };
 
   const handleDeleteFiles = async () => {
-    const filesToDelete = uploadedImages.slice(1);
+    const filesToDelete = isEditing
+      ? uploadedImages.slice(uploadedImages.length - 1)
+      : uploadedImages;
     await deleteFiles(filesToDelete);
   };
 

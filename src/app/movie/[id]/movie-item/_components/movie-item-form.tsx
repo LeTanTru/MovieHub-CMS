@@ -162,7 +162,9 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
 
   // Delete file while cancel except for current file from api
   const handleDeleteFiles = async () => {
-    const filesToDelete = uploadedImages.slice(1);
+    const filesToDelete = isEditing
+      ? uploadedImages.slice(uploadedImages.length - 1)
+      : uploadedImages;
     await deleteFiles(filesToDelete);
   };
 

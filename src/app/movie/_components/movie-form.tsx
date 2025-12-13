@@ -137,9 +137,14 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
 
   const handleDeleteFiles = async () => {
     const filesToDelete = [
-      ...uploadedThumbnailImages.slice(1),
-      ...uploadedPosterImages.slice(1)
+      ...(isEditing
+        ? uploadedThumbnailImages.slice(uploadedThumbnailImages.length - 1)
+        : uploadedThumbnailImages),
+      ...(isEditing
+        ? uploadedPosterImages.slice(uploadedPosterImages.length - 1)
+        : uploadedPosterImages)
     ];
+
     await deleteFiles(filesToDelete);
   };
 

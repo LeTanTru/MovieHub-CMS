@@ -98,9 +98,14 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
 
   const handleDeleteFiles = async () => {
     const filesToDelete = [
-      ...uploadedWebImages.slice(1),
-      ...uploadedMobileImages.slice(1)
+      ...(isEditing
+        ? uploadedWebImages.slice(uploadedWebImages.length - 1)
+        : uploadedWebImages),
+      ...(isEditing
+        ? uploadedMobileImages.slice(uploadedMobileImages.length - 1)
+        : uploadedMobileImages)
     ];
+
     await deleteFiles(filesToDelete);
   };
 
