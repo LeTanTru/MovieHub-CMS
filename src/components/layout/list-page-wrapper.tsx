@@ -32,7 +32,8 @@ export default function ListPageWrapper({
         {searchForm && <div className='flex-1'>{searchForm}</div>}
         <div
           className={cn('flex gap-2', {
-            'ml-auto': !searchForm
+            'ml-auto': !searchForm,
+            'ml-2': !!searchForm
           })}
         >
           {reloadButton}
