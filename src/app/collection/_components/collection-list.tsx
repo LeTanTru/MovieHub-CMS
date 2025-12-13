@@ -5,12 +5,13 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import {
   apiConfig,
+  COLLECTION_TYPE_SECTION,
   COLLECTION_TYPE_TOPIC,
   collectionTypeOptions,
   FieldTypes,
   MAX_PAGE_SIZE
 } from '@/constants';
-import { useDragDrop, useListBase, useNavigate } from '@/hooks';
+import { useDragDrop, useListBase, useNavigate, useQueryParams } from '@/hooks';
 import { logger } from '@/logger';
 import { route } from '@/routes';
 import { collectionSearchSchema } from '@/schemaValidations';
@@ -26,6 +27,10 @@ import { TbListDetails } from 'react-icons/tb';
 
 export default function CollectionList({ queryKey }: { queryKey: string }) {
   const navigate = useNavigate(false);
+
+  const {
+    searchParams: { type }
+  } = useQueryParams<CollectionSearchType>();
 
   const { data, loading, handlers } = useListBase<
     CollectionResType,
@@ -106,19 +111,23 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
         <span className='line-clamp-1 block truncate'>{value}</span>
       )
     },
-    {
-      title: 'Thiết kế',
-      dataIndex: ['style', 'name'],
-      render: (value) => {
-        return (
-          <span title={value} className='line-clamp-1 block truncate'>
-            {value || '------'}
-          </span>
-        );
-      },
-      width: 200,
-      align: 'center'
-    },
+    ...(type && +type === COLLECTION_TYPE_SECTION
+      ? [
+          {
+            title: 'Thiết kế',
+            dataIndex: ['style', 'name'],
+            render: (value: string) => {
+              return (
+                <span title={value} className='line-clamp-1 block truncate'>
+                  {value || '------'}
+                </span>
+              );
+            },
+            width: 300,
+            align: 'center' as const
+          }
+        ]
+      : []),
     {
       title: 'Màu',
       dataIndex: 'color',
@@ -181,7 +190,7 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
           </div>
         );
       },
-      width: 300,
+      width: 250,
       align: 'center'
     },
     {
@@ -201,7 +210,10 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
       align: 'center'
     },
     handlers.renderActionColumn({
-      actions: { detail: true, edit: true, delete: true }
+      actions: { detail: true, edit: true, delete: true },
+      columnProps: {
+        fixed: true
+      }
     })
   ];
 
