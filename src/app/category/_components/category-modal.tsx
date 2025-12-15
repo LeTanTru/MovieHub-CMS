@@ -44,6 +44,7 @@ export default function CategoryModal({
         queryClient.invalidateQueries({
           queryKey: [`${queryKeys.CATEGORY}-list`]
         });
+        queryClient.invalidateQueries({ queryKey: [queryKeys.CATEGORY] });
       };
     }
   });

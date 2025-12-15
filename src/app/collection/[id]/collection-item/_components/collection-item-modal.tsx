@@ -52,6 +52,9 @@ export default function CollectionItemModal({
         queryClient.invalidateQueries({
           queryKey: [`${queryKeys.COLLECTION_ITEM}-list`]
         });
+        queryClient.invalidateQueries({
+          queryKey: [`${queryKeys.COLLECTION_ITEM}`]
+        });
       };
     }
   });
