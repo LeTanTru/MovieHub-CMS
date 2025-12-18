@@ -13,7 +13,7 @@ import {
   Column,
   SearchFormProps
 } from '@/types';
-import { notify, renderFileUrl } from '@/utils';
+import { convertUTCToLocal, notify, renderFileUrl } from '@/utils';
 import { AiOutlineDownload } from 'react-icons/ai';
 
 export default function AppVersionList({ queryKey }: { queryKey: string }) {
@@ -79,6 +79,20 @@ export default function AppVersionList({ queryKey }: { queryKey: string }) {
           {value ?? '------'}
         </span>
       )
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'createdDate',
+      render: (value) => (
+        <span
+          className='line-clamp-1 block truncate'
+          title={convertUTCToLocal(value)}
+        >
+          {convertUTCToLocal(value) ?? '------'}
+        </span>
+      ),
+      width: 200,
+      align: 'center'
     },
     {
       title: 'Mã phiên bản',
