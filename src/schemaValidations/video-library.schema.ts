@@ -12,7 +12,8 @@ export const videoLibrarySchema = z.object({
   thumbnailUrl: z.string().nonempty('Bắt buộc'),
   sourceType: z.number({ error: 'Bắt buộc' }),
   duration: z.union([z.string(), z.number()]).nullable().optional(),
-  vttUrl: z.string().optional().nullable()
+  vttUrl: z.string().optional().nullable(),
+  spriteUrl: z.string().optional().nullable()
 });
 
 export const videoLibrarySearchSchema = z.object({

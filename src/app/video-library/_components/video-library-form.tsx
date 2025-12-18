@@ -303,220 +303,140 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
 
-              {/* isEditing */}
-              {isEditing && (
+              {/* Always show intro/outro fields for both source types */}
+              <Row>
+                <Col>
+                  <TimePickerField
+                    control={form.control}
+                    name='introStart'
+                    label='Thời gian bắt đầu intro'
+                    placeholder='Thời gian bắt đầu intro'
+                  />
+                </Col>
+                <Col>
+                  <TimePickerField
+                    control={form.control}
+                    name='introEnd'
+                    label='Thời gian kết thúc intro'
+                    placeholder='Thời gian kết thúc intro'
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <TimePickerField
+                    control={form.control}
+                    name='outroStart'
+                    label='Thời gian bắt đầu outro'
+                    placeholder='Thời gian bắt đầu outro'
+                  />
+                </Col>
+                {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL && (
+                  <Col>
+                    <TimePickerField
+                      control={form.control}
+                      name='duration'
+                      label='Thời lượng'
+                      placeholder='Thời lượng'
+                      required
+                    />
+                  </Col>
+                )}
+              </Row>
+
+              {/* Show content, vttUrl, spriteUrl, duration only for EXTERNAL source type */}
+              {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL && (
                 <>
                   <Row>
                     <Col>
-                      <TimePickerField
+                      <InputField
                         control={form.control}
-                        name='introStart'
-                        label='Thời gian bắt đầu intro'
-                        placeholder='Thời gian bắt đầu intro'
+                        name='content'
+                        label='Nhập đường dẫn video'
+                        placeholder='Nhập đường dẫn video'
+                        required
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setVideoUrl(value);
+                          form.setValue('content', value);
+                          if (value) {
+                            form.clearErrors('content');
+                          }
+                        }}
                       />
                     </Col>
                     <Col>
-                      <TimePickerField
+                      <InputField
                         control={form.control}
-                        name='introEnd'
-                        label='Thời gian kết thúc intro'
-                        placeholder='Thời gian kết thúc intro'
-                      />
-                    </Col>
-                  </Row>
-                  <Row
-                    className={cn({
-                      'mb-0':
-                        isEditing &&
-                        data?.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
-                    })}
-                  >
-                    <Col>
-                      <TimePickerField
-                        control={form.control}
-                        name='outroStart'
-                        label='Thời gian bắt đầu outro'
-                        placeholder='Thời gian bắt đầu outro'
-                      />
-                    </Col>
-                    <Col>
-                      <TimePickerField
-                        control={form.control}
-                        name='duration'
-                        label='Thời lượng'
-                        placeholder='Thời lượng'
-                        required={
-                          data?.sourceType ===
-                          VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL
-                        }
+                        name='vttUrl'
+                        label='Đường dẫn VTT (thumbnail preview)'
+                        placeholder='Nhập URL file .vtt'
                       />
                     </Col>
                   </Row>
 
-                  {/* source type EXTERNAL & isEditing */}
-                  {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL && (
-                    <>
-                      <Row>
-                        <Col>
-                          <InputField
-                            control={form.control}
-                            name='content'
-                            label='Nhập đường dẫn video'
-                            placeholder='Nhập đường dẫn video'
-                            required
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              setVideoUrl(value);
-                              form.setValue('content', value);
-                              if (value) {
-                                form.clearErrors('content');
-                              }
+                  <Row>
+                    <Col>
+                      <InputField
+                        control={form.control}
+                        name='spriteUrl'
+                        label='Đường dẫn ảnh sprite (sprite url)'
+                        placeholder='Đường dẫn ảnh sprite (sprite url)'
+                      />
+                    </Col>
+                  </Row>
+
+                  {/* Video preview for external source */}
+                  {(videoUrl || content) && (
+                    <Row>
+                      <Col span={24}>
+                        <MediaPlayer
+                          autoPlay
+                          crossOrigin
+                          fullscreenOrientation={'none'}
+                          logLevel='silent'
+                          onProviderChange={undefined}
+                          playsInline
+                          preferNativeHLS={false}
+                          src={videoUrl || content}
+                          streamType='on-demand'
+                          viewType='video'
+                          volume={0.5}
+                        >
+                          <MediaProvider />
+                          <DefaultVideoLayout
+                            thumbnails={vttUrl || undefined}
+                            icons={defaultLayoutIcons}
+                            slots={{
+                              playButton: <PlayToggleButton />,
+                              muteButton: <VolumeToggleButton />,
+                              fullscreenButton: <FullscreenToggleButton />,
+                              pipButton: <PiPToggleButton />,
+                              settingsMenu: (
+                                <SettingMenu
+                                  placement='top end'
+                                  tooltipPlacement='top'
+                                />
+                              ),
+                              captionButton: <CaptionButton />,
+                              beforeSettingsMenu: (
+                                <>
+                                  <SeekBackwardButton />
+                                  <SeekForwardButton />
+                                </>
+                              ),
+                              googleCastButton: null
                             }}
                           />
-                        </Col>
-                        <Col>
-                          <InputField
-                            control={form.control}
-                            name='vttUrl'
-                            label='Đường dẫn VTT (thumbnail preview)'
-                            placeholder='Nhập URL file .vtt'
-                          />
-                        </Col>
-                      </Row>
-
-                      {/* If has video url */}
-                      {(videoUrl || content) && (
-                        <Row>
-                          <Col span={24}>
-                            <MediaPlayer
-                              autoPlay
-                              crossOrigin
-                              fullscreenOrientation={'none'}
-                              logLevel='silent'
-                              onProviderChange={undefined}
-                              playsInline
-                              preferNativeHLS={false}
-                              src={videoUrl || content}
-                              streamType='on-demand'
-                              viewType='video'
-                              volume={0.5}
-                            >
-                              <MediaProvider />
-                              <DefaultVideoLayout
-                                thumbnails={vttUrl || undefined}
-                                icons={defaultLayoutIcons}
-                                slots={{
-                                  playButton: <PlayToggleButton />,
-                                  muteButton: <VolumeToggleButton />,
-                                  fullscreenButton: <FullscreenToggleButton />,
-                                  pipButton: <PiPToggleButton />,
-                                  settingsMenu: (
-                                    <SettingMenu
-                                      placement='top end'
-                                      tooltipPlacement='top'
-                                    />
-                                  ),
-                                  captionButton: <CaptionButton />,
-                                  beforeSettingsMenu: (
-                                    <>
-                                      <SeekBackwardButton />
-                                      <SeekForwardButton />
-                                    </>
-                                  ),
-                                  googleCastButton: null
-                                }}
-                              />
-                            </MediaPlayer>
-                          </Col>
-                        </Row>
-                      )}
-                    </>
+                        </MediaPlayer>
+                      </Col>
+                    </Row>
                   )}
                 </>
               )}
 
-              {/* Source = EXTERNAL & not isEditing */}
-              {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL ? (
-                !isEditing && (
-                  <>
-                    <Row>
-                      <Col>
-                        <InputField
-                          control={form.control}
-                          name='content'
-                          label='Nhập đường dẫn video'
-                          placeholder='Nhập đường dẫn video'
-                          required
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            setVideoUrl(value);
-                            form.setValue('content', value);
-                            if (value) {
-                              form.clearErrors('content');
-                            }
-                          }}
-                        />
-                      </Col>
-                      <Col>
-                        <TimePickerField
-                          control={form.control}
-                          name='duration'
-                          label='Thời lượng'
-                          placeholder='Thời lượng'
-                          required
-                        />
-                      </Col>
-                    </Row>
-
-                    {/* if has video url or content */}
-                    {(videoUrl || content) && (
-                      <Row>
-                        <Col span={24}>
-                          <MediaPlayer
-                            autoPlay
-                            crossOrigin
-                            fullscreenOrientation={'none'}
-                            logLevel='silent'
-                            onProviderChange={undefined}
-                            playsInline
-                            preferNativeHLS={false}
-                            src={videoUrl || content}
-                            streamType='on-demand'
-                            viewType='video'
-                            volume={0.5}
-                          >
-                            <MediaProvider />
-                            <DefaultVideoLayout
-                              icons={defaultLayoutIcons}
-                              slots={{
-                                playButton: <PlayToggleButton />,
-                                muteButton: <VolumeToggleButton />,
-                                fullscreenButton: <FullscreenToggleButton />,
-                                pipButton: <PiPToggleButton />,
-                                settingsMenu: (
-                                  <SettingMenu
-                                    placement='top end'
-                                    tooltipPlacement='top'
-                                  />
-                                ),
-                                captionButton: <CaptionButton />,
-                                beforeSettingsMenu: (
-                                  <>
-                                    <SeekBackwardButton />
-                                    <SeekForwardButton />
-                                  </>
-                                ),
-                                googleCastButton: null
-                              }}
-                            />
-                          </MediaPlayer>
-                        </Col>
-                      </Row>
-                    )}
-                  </>
-                )
-              ) : (
-                // source type = INTERNAL && isEditing
+              {/* Show video player/upload for INTERNAL source type */}
+              {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL && (
                 <Row>
                   <Col span={24}>
                     {/* Play preview video */}
@@ -596,6 +516,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                   </Col>
                 </Row>
               )}
+
               <Row>
                 <Col span={24}>
                   <TextAreaField
