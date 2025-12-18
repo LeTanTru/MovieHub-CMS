@@ -89,8 +89,16 @@ export const sendRequest = async <T>(
         const value = body[key];
 
         if (value instanceof Blob) {
-          const ext = value.type.split('/')[1] || 'jpg';
-          formData.append(key, value, `upload.${ext}`);
+          let filename = 'upload';
+
+          if (value instanceof File && value.name) {
+            filename = value.name;
+          } else {
+            const ext = value.type.split('/').pop() || 'bin';
+            filename = `upload.${ext}`;
+          }
+
+          formData.append(key, value, filename);
         } else {
           formData.append(key, value);
         }
