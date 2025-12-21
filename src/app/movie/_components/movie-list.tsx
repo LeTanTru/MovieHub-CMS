@@ -281,7 +281,10 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
       key: 'ageRating',
       placeholder: 'Độ tuổi',
       type: FieldTypes.SELECT,
-      options: ageRatingOptions
+      options: ageRatingOptions.map((ageRating) => ({
+        label: `${ageRating.label} - ${ageRating.mean}`,
+        value: ageRating.value
+      }))
     },
     {
       key: 'language',

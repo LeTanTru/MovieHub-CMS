@@ -549,15 +549,19 @@ export default function useListBase<
           switch (field.type) {
             case FieldTypes.NUMBER:
               return [key, value ? Number(value) : undefined];
-            case FieldTypes.SELECT ||
-              FieldTypes.AUTOCOMPLETE ||
-              FieldTypes.MULTI_SELECT:
+            case FieldTypes.SELECT:
+            case FieldTypes.AUTOCOMPLETE: {
               const option = field.options?.find(
                 (opt: any) => String(opt.value) === String(value)
               );
               return [key, option ? option.value : value];
+            }
+            case FieldTypes.MULTI_SELECT:
+              return [key, value?.split(',')];
             case FieldTypes.DATE:
               return [key, convertUTCToLocal(value)];
+            case FieldTypes.BOOLEAN:
+              return [key, Boolean(value)];
             default:
               return [key, value];
           }
