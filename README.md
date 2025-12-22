@@ -5,7 +5,7 @@
 </p>
 
 - Developed by [Lê Tấn Trụ](https://github.com/LeTanTru)
-
+- See original repo: [MovieHub-CMS](https://github.com/LeTanTru/MovieHub-CMS)
 - Set up & run:
 - install yarn first
 - **yarn** to install `node_modules`
