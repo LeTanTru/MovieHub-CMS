@@ -86,14 +86,15 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps<any>>(
                   ref={ref}
                   className={cn(
                     className,
-                    'pt-0! pb-0 pb-[0.5px] font-normal shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2',
+                    'pt-0! font-normal shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2',
                     {
                       'pl-10': prefixIcon,
                       'pr-10': suffixIcon,
                       'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/50 text-gray-500':
                         disabled,
                       'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500':
-                        fieldState.error
+                        fieldState.error,
+                      'pb-0': !field.value
                     },
                     !fieldState.error &&
                       'focus-visible:ring-dodger-blue focus-visible:border-transparent'
