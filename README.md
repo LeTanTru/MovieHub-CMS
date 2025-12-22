@@ -1,4 +1,4 @@
-![Biblio](./src/assets/images/logo.webp)
+![MovieHub](./src/assets/images/logo-with-text.png)
 
 <p align="center">
     CMS - MovieHub
