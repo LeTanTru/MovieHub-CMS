@@ -168,13 +168,9 @@ export default function AppProvider({
       }
     };
 
-    const interval = setInterval(() => {
-      if (isTokenExpiringSoon(accessToken)) {
-        handleRefreshToken();
-      }
-    });
-
-    return () => clearInterval(interval);
+    if (isTokenExpiringSoon(accessToken)) {
+      handleRefreshToken();
+    }
   }, []);
 
   return <>{children}</>;
