@@ -25,7 +25,7 @@ import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/form';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type MultiSelectFieldProps<
   TFieldValues extends FieldValues,
@@ -90,6 +90,7 @@ export default function MultiSelectField<
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const commandRef = useRef<HTMLDivElement>(null);
 
   const filteredOptions = options.filter((option) =>
     fuzzyMatch(String(getLabel(option)), searchValue)
@@ -209,7 +210,11 @@ export default function MultiSelectField<
               )}
 
               <PopoverContent className='w-(--radix-popover-trigger-width) p-0'>
-                <Command className='bg-background' shouldFilter={false}>
+                <Command
+                  className='bg-background'
+                  shouldFilter={false}
+                  ref={commandRef}
+                >
                   <CommandInput
                     placeholder={searchText}
                     value={searchValue}
@@ -245,7 +250,20 @@ export default function MultiSelectField<
                     {notFoundContent}
                   </CommandEmpty>
 
-                  <CommandGroup className='max-h-100 overflow-y-auto'>
+                  <CommandGroup
+                    className='max-h-100 overflow-y-auto'
+                    onMouseLeave={() => {
+                      setHighlightedIndex(-1);
+                      if (commandRef.current) {
+                        const items =
+                          commandRef.current.querySelectorAll('[cmdk-item]');
+                        items.forEach((item) => {
+                          item.setAttribute('data-selected', 'false');
+                          item.setAttribute('aria-selected', 'false');
+                        });
+                      }
+                    }}
+                  >
                     {filteredOptions.map((opt, idx) => {
                       const val = getValue(opt);
                       const isSelected = selectedValues.includes(val);

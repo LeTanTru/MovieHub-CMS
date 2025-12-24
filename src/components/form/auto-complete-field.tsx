@@ -105,6 +105,7 @@ export default function AutoCompleteField<
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const commandInputRef = useRef<HTMLInputElement>(null);
   const initialFetched = useRef(false);
+  const commandRef = useRef<HTMLDivElement>(null);
 
   const fieldValue = useWatch({ control, name });
 
@@ -292,7 +293,11 @@ export default function AutoCompleteField<
               )}
 
               <PopoverContent className='scroll-bar max-h-[60vh] w-(--radix-popover-trigger-width) overflow-auto p-0'>
-                <Command shouldFilter={false} className='bg-background'>
+                <Command
+                  shouldFilter={false}
+                  className='bg-background'
+                  ref={commandRef}
+                >
                   <CommandInput
                     placeholder={searchText}
                     value={search}
@@ -336,7 +341,19 @@ export default function AutoCompleteField<
                       {notFoundContent}
                     </CommandEmpty>
                   ) : (
-                    <CommandGroup>
+                    <CommandGroup
+                      onMouseLeave={() => {
+                        setHighlightedIndex(-1);
+                        if (commandRef.current) {
+                          const items =
+                            commandRef.current.querySelectorAll('[cmdk-item]');
+                          items.forEach((item) => {
+                            item.setAttribute('data-selected', 'false');
+                            item.setAttribute('aria-selected', 'false');
+                          });
+                        }
+                      }}
+                    >
                       {loading ? (
                         <CircleLoading className='stroke-dodger-blue my-2 size-7' />
                       ) : (
