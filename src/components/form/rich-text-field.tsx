@@ -11,7 +11,7 @@ import {
   FormControl,
   FormMessage
 } from '@/components/ui/form';
-import './rich-text-editor.css';
+import './rich-text-field.css';
 
 type RichTextFieldProps<T extends FieldValues> = {
   control: Control<T>;
