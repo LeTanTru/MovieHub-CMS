@@ -1,6 +1,6 @@
 'use client';
 
-import { ControllerRenderProps, FieldValues } from 'react-hook-form';
+import { FieldValues } from 'react-hook-form';
 import {
   FormControl,
   FormField,
