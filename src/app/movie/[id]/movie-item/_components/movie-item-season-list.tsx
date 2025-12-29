@@ -347,12 +347,7 @@ export default function MovieItemSeasonList({
     objectName: 'mùa',
     data,
     apiConfig: apiConfig.movieItem.updateOrdering,
-    sortField: 'ordering',
-    mappingData: (record, index) => ({
-      id: record.id,
-      ordering: index,
-      parentId: record?.parent?.id
-    })
+    sortField: 'ordering'
   });
 
   const handleViewDetail = (record: MovieItemResType) => {

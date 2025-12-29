@@ -380,12 +380,7 @@ export default function MovieItemSeasonDetailList({
     objectName: 'tập/trailer',
     data,
     apiConfig: apiConfig.movieItem.updateOrdering,
-    sortField: 'ordering',
-    mappingData: (record, index) => ({
-      id: record.id,
-      ordering: index,
-      parentId: record?.parent?.id
-    })
+    sortField: 'ordering'
   });
 
   const sensors = useSensors(

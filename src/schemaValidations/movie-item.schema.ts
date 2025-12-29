@@ -7,7 +7,6 @@ export const movieItemSchema = z
     kind: z.number({ error: 'Bắt buộc' }),
     label: z.string().optional().nullable(),
     movieId: z.string().optional().nullable(),
-    ordering: z.number({ error: 'Bắt buộc' }),
     parentId: z.string().optional().nullable(),
     releaseDate: z.string().nonempty('Bắt buộc'),
     status: z.number({ error: 'Bắt buộc' }),

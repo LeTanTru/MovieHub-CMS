@@ -27,11 +27,7 @@ import {
   STATUS_ACTIVE
 } from '@/constants';
 import { useFileUploadManager, useQueryParams, useSaveBase } from '@/hooks';
-import {
-  useDeleteFileMutation,
-  useMovieItemListQuery,
-  useUploadLogoMutation
-} from '@/queries';
+import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { movieItemSchema } from '@/schemaValidations';
 import {
   MovieItemBodyType,
@@ -64,16 +60,6 @@ export default function MovieItemModal({
 
   const uploadImageMutation = useUploadLogoMutation();
   const deleteFileMutation = useDeleteFileMutation();
-
-  const movieItemListQuery = useMovieItemListQuery({
-    params: {
-      movieId,
-      excludeKind: MOVIE_ITEM_KIND_SEASON,
-      parentId: movieItemId
-    },
-    enabled: open
-  });
-  const movieItemList = movieItemListQuery.data?.data.content || [];
 
   const kindOptions =
     !!type && +type === MOVIE_TYPE_SINGLE
@@ -131,7 +117,6 @@ export default function MovieItemModal({
     kind: kindOptions?.[0]?.value,
     label: '',
     movieId: movieId,
-    ordering: 0,
     releaseDate: '',
     status: STATUS_ACTIVE,
     title: '',
@@ -166,7 +151,6 @@ export default function MovieItemModal({
 
     await handleSubmit({
       ...values,
-      ordering: movieItemList.length,
       movieId,
       parentId,
       releaseDate: formatDate(
