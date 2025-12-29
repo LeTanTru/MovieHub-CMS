@@ -30,5 +30,6 @@ export const movieItemSearchSchema = z.object({
   movieId: z.string().optional().nullable(),
   parentId: z.string().optional().nullable(),
   status: z.number().optional().nullable(),
-  title: z.string().optional().nullable()
+  title: z.string().optional().nullable(),
+  excludeKind: z.number().optional().nullable()
 });

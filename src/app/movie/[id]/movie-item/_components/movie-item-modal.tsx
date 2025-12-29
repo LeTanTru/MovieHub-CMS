@@ -11,50 +11,48 @@ import {
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
+import { Modal } from '@/components/modal';
 import {
   apiConfig,
   DATE_TIME_FORMAT,
   DEFAULT_DATE_FORMAT,
   ErrorCode,
+  MOVIE_ITEM_KIND_EPISODE,
   MOVIE_ITEM_KIND_SEASON,
   MOVIE_TYPE_SINGLE,
   movieItemSeriesKindOptions,
   movieItemSingleKindOptions,
-  STATUS_ACTIVE,
-  storageKeys
+  queryKeys,
+  STATUS_ACTIVE
 } from '@/constants';
-import { useIsMounted, useQueryParams, useSaveBase } from '@/hooks';
-import { logger } from '@/logger';
+import { useFileUploadManager, useQueryParams, useSaveBase } from '@/hooks';
 import {
   useDeleteFileMutation,
   useMovieItemListQuery,
-  useUpdateOrderingMovieItemMutation,
   useUploadLogoMutation
 } from '@/queries';
-import { route } from '@/routes';
 import { movieItemSchema } from '@/schemaValidations';
 import {
   MovieItemBodyType,
   MovieItemResType,
   VideoLibraryResType
 } from '@/types';
-import {
-  formatDate,
-  generatePath,
-  getData,
-  notify,
-  renderImageUrl,
-  renderListPageUrl
-} from '@/utils';
+import { formatDate, notify, renderImageUrl } from '@/utils';
+import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-export default function MovieItemForm({ queryKey }: { queryKey: string }) {
-  const isMounted = useIsMounted();
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+export default function MovieItemModal({
+  open,
+  close,
+  movieItem
+}: {
+  open: boolean;
+  close: () => void;
+  movieItem?: MovieItemResType | null;
+}) {
+  const queryClient = useQueryClient();
 
   const {
     searchParams: { type }
@@ -65,46 +63,43 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
   }>();
 
   const uploadImageMutation = useUploadLogoMutation();
-  const deleteImageMutation = useDeleteFileMutation();
+  const deleteFileMutation = useDeleteFileMutation();
 
-  const movieItemListQuery = useMovieItemListQuery({ movieId });
+  const movieItemListQuery = useMovieItemListQuery({
+    params: {
+      movieId,
+      excludeKind: MOVIE_ITEM_KIND_SEASON,
+      parentId: movieItemId
+    },
+    enabled: open
+  });
   const movieItemList = movieItemListQuery.data?.data.content || [];
-
-  const updateOrderingMovieItemMutation = useUpdateOrderingMovieItemMutation();
 
   const kindOptions =
     !!type && +type === MOVIE_TYPE_SINGLE
       ? movieItemSingleKindOptions.filter(
           (item) =>
-            !getData(storageKeys.SELECTED_MOVIE_ITEM) ||
-            (getData(storageKeys.SELECTED_MOVIE_ITEM) &&
-              item.value !== MOVIE_ITEM_KIND_SEASON)
+            !movieItemId ||
+            (movieItemId && item.value !== MOVIE_ITEM_KIND_SEASON)
         )
       : movieItemSeriesKindOptions.filter(
           (item) =>
-            !getData(storageKeys.SELECTED_MOVIE_ITEM) ||
-            (getData(storageKeys.SELECTED_MOVIE_ITEM) &&
-              item.value !== MOVIE_ITEM_KIND_SEASON)
+            !movieItemId ||
+            (movieItemId && item.value !== MOVIE_ITEM_KIND_SEASON)
         );
 
-  const {
-    data,
-    loading,
-    isEditing,
-    queryString,
-    responseCode,
-    handleSubmit,
-    renderActions
-  } = useSaveBase<MovieItemResType, MovieItemBodyType>({
+  const { data, loading, isEditing, handleSubmit, renderActions } = useSaveBase<
+    MovieItemResType,
+    MovieItemBodyType
+  >({
     apiConfig: apiConfig.movieItem,
     options: {
-      queryKey,
-      objectName: 'mục phim',
-      listPageUrl: generatePath(route.movieItem.getList.path, { id: movieId }),
+      queryKey: queryKeys.MOVIE_ITEM,
+      objectName: 'mùa',
       pathParams: {
-        id: movieItemId
+        id: movieItem?.id
       },
-      mode: movieItemId === 'create' ? 'create' : 'edit'
+      mode: !movieItem ? 'create' : 'edit'
     },
     override: (handlers) => {
       handlers.handleSubmitError = (code) => {
@@ -112,11 +107,24 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
           notify.error('Vui lòng chọn mùa để thêm');
         }
       };
+      handlers.handleSubmitSuccess = () => {
+        close();
+        queryClient.invalidateQueries({
+          queryKey: [`${queryKeys.MOVIE_ITEM}-list`]
+        });
+        queryClient.invalidateQueries({ queryKey: [queryKeys.MOVIE_ITEM] });
+      };
     }
   });
 
-  const parentId =
-    getData(storageKeys.SELECTED_MOVIE_ITEM) || data?.parent?.id?.toString();
+  const imageManager = useFileUploadManager({
+    initialUrl: data?.thumbnailUrl,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: open
+  });
+
+  const parentId = movieItemId || data?.parent?.id?.toString();
 
   const defaultValues: MovieItemBodyType = {
     description: '',
@@ -148,82 +156,17 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  const deleteFiles = async (files: string[]) => {
-    const validFiles = files.filter(Boolean);
-    if (!validFiles.length) return;
-    await Promise.all(
-      validFiles.map((filePath) =>
-        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
-          logger.error('Failed to delete file:', filePath, err);
-        })
-      )
-    );
-  };
-
-  // Delete file while cancel except for current file from api
-  const handleDeleteFiles = async () => {
-    const filesToDelete = isEditing
-      ? uploadedImages.slice(uploadedImages.length - 1)
-      : uploadedImages;
-    await deleteFiles(filesToDelete);
+  const handleCancel = async () => {
+    await imageManager.handleCancel();
+    close();
   };
 
   const onSubmit = async (values: MovieItemBodyType) => {
-    let ordering = 0;
-
-    // parentId is null --> create season
-    if (!parentId) ordering = movieItemList.length;
-    else {
-      // find movie item
-      const item = movieItemList.find(
-        (movieItem) => movieItem.id.toString() === parentId
-      );
-
-      //  if found
-      if (item) {
-        const kind = item.kind;
-
-        // if season, update new ordering
-        if (kind === MOVIE_ITEM_KIND_SEASON) {
-          const lastMovieItemOfParent = movieItemList.findLast(
-            (movieItem) => movieItem?.parent?.id?.toString() === parentId
-          );
-
-          const newOrderingList = movieItemList
-            .map((movieItem) => {
-              if (
-                !lastMovieItemOfParent ||
-                (lastMovieItemOfParent &&
-                  movieItem.ordering <= lastMovieItemOfParent.ordering)
-              )
-                return movieItem;
-              return { ...movieItem, ordering: movieItem.ordering + 1 };
-            })
-            .map((movieItem) => ({
-              id: movieItem.id,
-              ordering: movieItem.ordering,
-              parentId: movieItem?.parent?.id
-            }));
-
-          ordering = lastMovieItemOfParent?.ordering
-            ? lastMovieItemOfParent?.ordering + 1
-            : movieItemList.length;
-          await updateOrderingMovieItemMutation.mutateAsync(newOrderingList);
-        }
-      }
-    }
-
-    // delete files except for new uploaded file
-    const filesToDelete =
-      data?.thumbnailUrl && !thumbnailUrl
-        ? uploadedImages
-        : uploadedImages.slice(0, uploadedImages.length - 1);
-
-    await deleteFiles(filesToDelete.filter(Boolean));
+    await imageManager.handleSubmit();
 
     await handleSubmit({
       ...values,
-      ordering,
+      ordering: movieItemList.length,
       movieId,
       parentId,
       releaseDate: formatDate(
@@ -231,38 +174,16 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
         DATE_TIME_FORMAT,
         DEFAULT_DATE_FORMAT
       ),
-      thumbnailUrl
+      thumbnailUrl: imageManager.currentUrl
     });
   };
 
-  useEffect(() => {
-    const url = data?.thumbnailUrl || '';
-    setThumbnailUrl(url);
-    setUploadedImages(url ? [url] : []);
-  }, [data?.thumbnailUrl]);
-
-  if (!isMounted) return null;
-
   return (
-    <PageWrapper
-      breadcrumbs={[
-        {
-          label: 'Phim',
-          href: route.movie.getList.path
-        },
-        {
-          label: 'Mục phim',
-          href: renderListPageUrl(
-            generatePath(route.movieItem.getList.path, { id: movieId }),
-            queryString
-          )
-        },
-        {
-          label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} mục phim`
-        }
-      ]}
-      notFound={responseCode === ErrorCode.MOVIE_ITEM_ERROR_NOT_FOUND}
-      notFoundContent={`Không tìm thấy phim này`}
+    <Modal
+      open={open}
+      onClose={close}
+      width={800}
+      title={`${isEditing ? 'Cập nhật' : 'Thêm'} ${movieItem ? (movieItem.kind === MOVIE_ITEM_KIND_EPISODE ? 'tập' : 'trailer') : 'tập/trailer'}`}
     >
       <BaseForm
         onSubmit={onSubmit}
@@ -277,16 +198,11 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
               <Row>
                 <Col span={24}>
                   <UploadImageField
-                    value={renderImageUrl(thumbnailUrl)}
+                    value={renderImageUrl(imageManager.currentUrl)}
                     loading={uploadImageMutation.isPending}
                     control={form.control}
                     name='thumbnailUrl'
-                    onChange={(url) => {
-                      setThumbnailUrl(url);
-                      setUploadedImages((prev) =>
-                        url ? [...prev, url] : [...prev]
-                      );
-                    }}
+                    onChange={imageManager.trackUpload}
                     size={150}
                     uploadImageFn={async (file: Blob) => {
                       const res = await uploadImageMutation.mutateAsync({
@@ -294,15 +210,7 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                       });
                       return res.data?.filePath ?? '';
                     }}
-                    // allow call api delete file when click X if: thumbnailUrl not existed in api response
-                    deleteImageFn={
-                      data?.thumbnailUrl
-                        ? undefined
-                        : () =>
-                            deleteImageMutation.mutateAsync({
-                              filePath: thumbnailUrl
-                            })
-                    }
+                    deleteImageFn={imageManager.handleDeleteOnClick}
                     label='Ảnh xem trước (16:9)'
                     aspect={16 / 9}
                   />
@@ -311,13 +219,13 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
               <Row>
                 <Col>
                   <SelectField
-                    options={kindOptions}
+                    options={movieItemId ? kindOptions : [kindOptions[0]]}
                     control={form.control}
                     name='kind'
                     label='Loại'
                     placeholder='Loại'
                     required
-                    disabled={isEditing}
+                    disabled={isEditing || !movieItemId}
                   />
                 </Col>
                 <Col>
@@ -367,24 +275,6 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                       placeholder='Video'
                     />
                   </Col>
-                  <Col>
-                    <SelectField
-                      control={form.control}
-                      name='parentId'
-                      label='Thêm vào mùa'
-                      placeholder='Thêm vào mùa'
-                      required
-                      options={movieItemList
-                        .filter(
-                          (movieItem) =>
-                            movieItem.kind === MOVIE_ITEM_KIND_SEASON
-                        )
-                        .map((movieItem) => ({
-                          label: movieItem.title,
-                          value: movieItem.id.toString()
-                        }))}
-                    />
-                  </Col>
                 </Row>
               ) : null}
               <Row>
@@ -395,12 +285,13 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
                     label='Mô tả'
                     placeholder='Mô tả'
                     required
+                    height={300}
                   />
                 </Col>
               </Row>
               <>
                 {renderActions(form, {
-                  onCancel: handleDeleteFiles
+                  onCancel: handleCancel
                 })}
               </>
               {loading && (
@@ -412,6 +303,6 @@ export default function MovieItemForm({ queryKey }: { queryKey: string }) {
           );
         }}
       </BaseForm>
-    </PageWrapper>
+    </Modal>
   );
 }

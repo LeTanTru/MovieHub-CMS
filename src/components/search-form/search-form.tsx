@@ -77,7 +77,7 @@ export default function SearchForm<S extends FieldValues>({
     form: UseFormReturn<Record<string, unknown>>
   ) => {
     return (
-      <Row className='mb-0'>
+      <Row className='mx-0 mb-0 flex-nowrap'>
         <Col
           span={24}
           className={cn('my-0', {
@@ -86,9 +86,9 @@ export default function SearchForm<S extends FieldValues>({
         >
           <Row
             className={cn(
-              'mb-0 gap-x-2 *:my-0 *:p-0 min-[1560px]:grid-cols-5',
+              'mr-0 mb-0 grid gap-2 *:my-0 *:p-0 min-[1560px]:grid-cols-5',
               {
-                'grid grid-cols-4 gap-y-2': searchFields.length > 4
+                'grid-cols-4': searchFields.length > 4
               }
             )}
           >
@@ -99,9 +99,7 @@ export default function SearchForm<S extends FieldValues>({
                     <Col
                       key={sf.key as string}
                       span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn({
-                        'w-full!': searchFields.length > 4
-                      })}
+                      className={cn('w-full!')}
                     >
                       <SelectField
                         control={form.control}
@@ -125,9 +123,7 @@ export default function SearchForm<S extends FieldValues>({
                     <Col
                       key={sf.key as string}
                       span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn({
-                        'w-full!': searchFields.length > 4
-                      })}
+                      className={cn('w-full!')}
                     >
                       <MultiSelectField
                         control={form.control}
@@ -151,9 +147,7 @@ export default function SearchForm<S extends FieldValues>({
                     <Col
                       key={sf.key as string}
                       span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn({
-                        'w-full!': searchFields.length > 4
-                      })}
+                      className={cn('w-full!')}
                     >
                       <AutoCompleteField
                         apiConfig={sf.apiConfig as ApiConfig}
@@ -176,9 +170,7 @@ export default function SearchForm<S extends FieldValues>({
                     <Col
                       key={sf.key as string}
                       span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn({
-                        'w-full!': searchFields.length > 4
-                      })}
+                      className={cn('w-full!')}
                     >
                       <DateTimePickerField
                         control={form.control}
@@ -211,9 +203,7 @@ export default function SearchForm<S extends FieldValues>({
                     <Col
                       key={sf.key as string}
                       span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn({
-                        'w-full!': searchFields.length > 4
-                      })}
+                      className={cn('w-full!')}
                     >
                       <InputField
                         control={form.control}
@@ -269,7 +259,7 @@ export default function SearchForm<S extends FieldValues>({
       defaultValues={defaultValues}
       schema={schema}
       initialValues={initialValues}
-      className='w-full p-0 pr-2'
+      className='w-full p-0'
     >
       {(form) => <>{renderField(searchFields, form)}</>}
     </BaseForm>

@@ -1,5 +1,4 @@
 'use client';
-
 import {
   BooleanField,
   Col,
@@ -13,24 +12,21 @@ import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { apiConfig, ErrorCode, styleErrorMaps } from '@/constants';
-import { useSaveBase } from '@/hooks';
-import { logger } from '@/logger';
+import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
 import { styleSchema } from '@/schemaValidations';
 import { StyleBodyType, StyleResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function StyleForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
-  const [imageUrl, setImageUrl] = useState<string>('');
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
   const uploadImageMutation = useUploadLogoMutation();
-  const deleteImageMutation = useDeleteFileMutation();
+  const deleteFileMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -53,6 +49,13 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
     }
   });
 
+  const imageManager = useFileUploadManager({
+    initialUrl: data?.imageUrl,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: true
+  });
+
   const defaultValues: StyleBodyType = {
     description: '',
     imageUrl: '',
@@ -71,52 +74,25 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  const deleteFiles = async (files: string[]) => {
-    const validFiles = files.filter(Boolean);
-    if (!validFiles.length) return;
-    await Promise.all(
-      validFiles.map((filePath) =>
-        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
-          logger.error('Failed to delete file:', filePath, err);
-        })
-      )
-    );
-  };
-
-  const handleDeleteFiles = async () => {
-    const filesToDelete = isEditing
-      ? uploadedImages.slice(uploadedImages.length - 1)
-      : uploadedImages;
-    await deleteFiles(filesToDelete);
+  const handleCancel = async () => {
+    await imageManager.handleCancel();
   };
 
   const onSubmit = async (
     values: StyleBodyType,
     form: UseFormReturn<StyleBodyType>
   ) => {
-    const filesToDelete =
-      data?.imageUrl && !imageUrl
-        ? uploadedImages
-        : uploadedImages.slice(0, uploadedImages.length - 1);
-
-    await deleteFiles(filesToDelete.filter(Boolean));
+    await imageManager.handleSubmit();
 
     await handleSubmit(
       {
         ...values,
-        imageUrl: imageUrl
+        imageUrl: imageManager.currentUrl
       },
       form,
       styleErrorMaps
     );
   };
-
-  useEffect(() => {
-    const url = data?.imageUrl || '';
-
-    setImageUrl(url);
-    setUploadedImages(url ? [url] : []);
-  }, [data?.imageUrl]);
 
   return (
     <PageWrapper
@@ -141,29 +117,17 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
             <Row>
               <Col span={24}>
                 <UploadImageField
-                  value={renderImageUrl(imageUrl)}
+                  value={renderImageUrl(imageManager.currentUrl)}
                   loading={uploadImageMutation.isPending}
                   control={form.control}
                   name='imageUrl'
-                  onChange={(url) => {
-                    setImageUrl(url);
-                    setUploadedImages((prev) =>
-                      url ? [...prev, url] : [...prev]
-                    );
-                  }}
+                  onChange={imageManager.trackUpload}
                   size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
                   }}
-                  deleteImageFn={
-                    data?.imageUrl
-                      ? undefined
-                      : () =>
-                          deleteImageMutation.mutateAsync({
-                            filePath: imageUrl
-                          })
-                  }
+                  deleteImageFn={imageManager.handleDeleteOnClick}
                   label='Ảnh bìa'
                   aspect={2 / 3}
                   required
@@ -217,7 +181,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
 
             <>
               {renderActions(form, {
-                onCancel: handleDeleteFiles
+                onCancel: handleCancel
               })}
             </>
             {loading && (

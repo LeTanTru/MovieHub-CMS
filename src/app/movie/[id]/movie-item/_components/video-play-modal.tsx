@@ -20,7 +20,6 @@ import {
   MediaPlayer,
   MediaProvider,
   MediaProviderAdapter,
-  MediaProviderChangeEvent,
   Poster
 } from '@vidstack/react';
 import {
@@ -66,11 +65,11 @@ export default function VideoPlayModal({
   return (
     <Modal
       title={video?.name}
-      className='[&_.content]:top-0 [&_.content]:w-300'
+      className='[&_.content]:top-0 [&_.content]:h-fit [&_.content]:w-300!'
       open={open}
       onClose={close}
     >
-      <div>
+      <div className='p-4'>
         <MediaPlayer
           viewType='video'
           streamType='on-demand'
@@ -87,7 +86,7 @@ export default function VideoPlayModal({
           }
           volume={0.5}
         >
-          <MediaProvider slot='media'>
+          <MediaProvider>
             <Poster
               className='vds-poster'
               src={renderImageUrl(video?.thumbnailUrl)}
@@ -124,8 +123,8 @@ export default function VideoPlayModal({
 }
 
 function onProviderChange(
-  provider: MediaProviderAdapter | null,
-  nativeEvent: MediaProviderChangeEvent
+  provider: MediaProviderAdapter | null
+  // nativeEvent: MediaProviderChangeEvent
 ) {
   if (isHLSProvider(provider)) {
     provider.config = {

@@ -82,6 +82,7 @@ export default function MoviePersonModal({
       title={`Thêm ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`}
       open={open}
       onClose={close}
+      className='[&_.content]:bottom-[25%] [&_.content]:h-fit'
     >
       <BaseForm
         defaultValues={defaultValues}

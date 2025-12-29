@@ -27,7 +27,7 @@ import {
   videoLibraryErrorMaps,
   videoLibrarySourceTypeOptions
 } from '@/constants';
-import { useSaveBase } from '@/hooks';
+import { useFileUploadManager, useSaveBase } from '@/hooks';
 import {
   useDeleteFileMutation,
   useUploadLogoMutation,
@@ -45,7 +45,7 @@ import {
   timeToSeconds
 } from '@/utils';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import {
   DefaultVideoLayout,
@@ -56,7 +56,6 @@ import {
   MediaPlayer,
   MediaProvider,
   MediaProviderAdapter,
-  MediaProviderChangeEvent,
   Poster
 } from '@vidstack/react';
 import {
@@ -74,15 +73,11 @@ import { logger } from '@/logger';
 
 export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-
-  const [videoUrl, setVideoUrl] = useState<string>('');
 
   const uploadLogoMutation = useUploadLogoMutation();
   const uploadVideoMutation = useUploadVideoMutation();
 
-  const deleteImageMutation = useDeleteFileMutation();
+  const deleteFileMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -103,6 +98,20 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
       },
       mode: id === 'create' ? 'create' : 'edit'
     }
+  });
+
+  const imageManager = useFileUploadManager({
+    initialUrl: data?.thumbnailUrl,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: true
+  });
+
+  const videoManager = useFileUploadManager({
+    initialUrl: data?.content,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: true
   });
 
   const defaultValues: VideoLibraryBodyType = {
@@ -137,23 +146,9 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  const deleteFiles = async (files: string[]) => {
-    const validFiles = files.filter(Boolean);
-    if (!validFiles.length) return;
-    await Promise.all(
-      validFiles.map((filePath) =>
-        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
-          logger.error('Failed to delete file:', filePath, err);
-        })
-      )
-    );
-  };
-
-  const handleDeleteFiles = async () => {
-    const filesToDelete = isEditing
-      ? uploadedImages.slice(uploadedImages.length - 1)
-      : uploadedImages;
-    await deleteFiles(filesToDelete);
+  const handleCancel = async () => {
+    await imageManager.handleCancel();
+    await videoManager.handleCancel();
   };
 
   const onSubmit = async (
@@ -177,12 +172,8 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
       }
     }
 
-    const filesToDelete =
-      data?.thumbnailUrl && !thumbnailUrl
-        ? uploadedImages
-        : uploadedImages.slice(0, uploadedImages.length - 1);
-
-    await deleteFiles(filesToDelete.filter(Boolean));
+    await imageManager.handleSubmit();
+    await videoManager.handleSubmit();
 
     await handleSubmit(
       {
@@ -202,24 +193,13 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
         duration: timeToSeconds(
           values.duration ? (values.duration as string) : '00:00:00'
         ),
-        thumbnailUrl,
-        content: videoUrl
+        thumbnailUrl: imageManager.currentUrl,
+        content: videoManager.currentUrl
       },
       form,
       videoLibraryErrorMaps
     );
   };
-
-  useEffect(() => {
-    const url = data?.thumbnailUrl || '';
-
-    setThumbnailUrl(url);
-    setUploadedImages(url ? [url] : []);
-  }, [data?.thumbnailUrl]);
-
-  useEffect(() => {
-    if (data?.content) setVideoUrl(data?.content);
-  }, [data]);
 
   return (
     <PageWrapper
@@ -249,16 +229,11 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
               <Row>
                 <Col span={24}>
                   <UploadImageField
-                    value={renderImageUrl(thumbnailUrl)}
+                    value={renderImageUrl(imageManager.currentUrl)}
                     loading={uploadLogoMutation.isPending}
                     control={form.control}
                     name='thumbnailUrl'
-                    onChange={(url) => {
-                      setThumbnailUrl(url);
-                      setUploadedImages((prev) =>
-                        url ? [...prev, url] : [...prev]
-                      );
-                    }}
+                    onChange={imageManager.trackUpload}
                     size={150}
                     uploadImageFn={async (file: Blob) => {
                       const res = await uploadLogoMutation.mutateAsync({
@@ -266,14 +241,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                       });
                       return res.data?.filePath ?? '';
                     }}
-                    deleteImageFn={
-                      data?.thumbnailUrl
-                        ? undefined
-                        : () =>
-                            deleteImageMutation.mutateAsync({
-                              filePath: thumbnailUrl
-                            })
-                    }
+                    deleteImageFn={imageManager.handleDeleteOnClick}
                     label='Ảnh nền (16:9)'
                     aspect={16 / 9}
                     required
@@ -356,7 +324,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                         required
                         onChange={(e) => {
                           const value = e.target.value;
-                          setVideoUrl(value);
+                          imageManager.trackUpload(value);
                           form.setValue('content', value);
                           if (value) {
                             form.clearErrors('content');
@@ -386,7 +354,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                   </Row>
 
                   {/* Video preview for external source */}
-                  {(videoUrl || content) && (
+                  {(videoManager.currentUrl || content) && (
                     <Row>
                       <Col span={24}>
                         <MediaPlayer
@@ -397,7 +365,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                           onProviderChange={undefined}
                           playsInline
                           preferNativeHLS={false}
-                          src={videoUrl || content}
+                          src={videoManager.currentUrl || content}
                           streamType='on-demand'
                           viewType='video'
                           volume={0.5}
@@ -494,6 +462,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                         name='content'
                         label='Video'
                         required
+                        onChange={videoManager.trackUpload}
                         uploadVideoFn={async (file: Blob, onProgress) => {
                           const res = await uploadVideoMutation.mutateAsync({
                             file,
@@ -509,7 +478,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                           });
                           return res.data?.filePath ?? '';
                         }}
-                        onChange={(url) => setVideoUrl(url)}
+                        deleteImageFn={videoManager.handleDeleteOnClick}
                       />
                     )}
                   </Col>
@@ -541,7 +510,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
 
               <>
                 {renderActions(form, {
-                  onCancel: handleDeleteFiles
+                  onCancel: handleCancel
                 })}
               </>
               {loading && (
@@ -558,8 +527,8 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
 }
 
 function onProviderChange(
-  provider: MediaProviderAdapter | null,
-  nativeEvent: MediaProviderChangeEvent
+  provider: MediaProviderAdapter | null
+  // nativeEvent: MediaProviderChangeEvent
 ) {
   if (isHLSProvider(provider)) {
     provider.config = {

@@ -7,10 +7,8 @@ export default function Row({ children, className, ...rest }: RowProps) {
   return (
     <div
       className={cn(
-        'mb-6 flex w-full flex-row [&>*:first-child]:pl-0',
-        {
-          '[&>*:last-child]:pr-0': !Array.isArray(children)
-        },
+        '-mx-2 mb-6 flex flex-wrap',
+
         className
       )}
       {...rest}

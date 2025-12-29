@@ -15,6 +15,7 @@ import { cn } from '@/lib';
 import { useFileUpload } from '@/hooks';
 import { CircleLoading } from '@/components/loading';
 import { logger } from '@/logger';
+import { ApiResponse } from '@/types';
 
 type UploadVideoFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -28,6 +29,7 @@ type UploadVideoFieldProps<T extends FieldValues> = {
     file: File,
     onProgress: (progress: number) => void
   ) => Promise<string>;
+  deleteImageFn?: (url: string) => Promise<ApiResponse<any>>;
 };
 
 export default function UploadVideoField<T extends FieldValues>({
@@ -37,7 +39,8 @@ export default function UploadVideoField<T extends FieldValues>({
   onChange,
   required,
   className,
-  uploadVideoFn
+  uploadVideoFn,
+  deleteImageFn
 }: UploadVideoFieldProps<T>) {
   const {
     field: { value, onChange: fieldOnChange },
@@ -89,8 +92,15 @@ export default function UploadVideoField<T extends FieldValues>({
     }
   };
 
-  const handleRemove = (e: React.MouseEvent) => {
+  const handleRemove = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    try {
+      if (deleteImageFn && value) {
+        await deleteImageFn(value);
+      }
+    } catch (err) {
+      logger.error('Error while deleting video:', err);
+    }
     fieldOnChange('');
     onChange?.('');
     clearFiles();

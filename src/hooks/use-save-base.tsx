@@ -151,7 +151,7 @@ export default function useSaveBase<
     form: UseFormReturn<T>,
     options?: { onCancel?: () => void }
   ) => (
-    <Row className='my-0 justify-end gap-x-4 *:px-0'>
+    <Row className='mx-0 my-0 justify-end gap-x-4 *:px-0'>
       <Col className='w-40!'>
         {!form.formState.isDirty ? (
           <Button

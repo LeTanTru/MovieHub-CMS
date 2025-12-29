@@ -1,18 +1,30 @@
 import { apiConfig, MAX_PAGE_SIZE, queryKeys } from '@/constants';
-import { ApiResponse, ApiResponseList, MovieItemResType } from '@/types';
+import {
+  ApiResponse,
+  ApiResponseList,
+  MovieItemResType,
+  MovieItemSearchType
+} from '@/types';
 import { http } from '@/utils';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-export const useMovieItemListQuery = ({ movieId }: { movieId: string }) => {
+export const useMovieItemListQuery = ({
+  params,
+  enabled
+}: {
+  params: MovieItemSearchType;
+  enabled: boolean;
+}) => {
   return useQuery({
-    queryKey: [`${queryKeys.MOVIE_ITEM}-list`],
+    queryKey: [`${queryKeys.MOVIE_ITEM}-list-query`],
     queryFn: () =>
       http.get<ApiResponseList<MovieItemResType>>(apiConfig.movieItem.getList, {
         params: {
-          size: MAX_PAGE_SIZE,
-          movieId
+          ...params,
+          size: MAX_PAGE_SIZE
         }
-      })
+      }),
+    enabled
   });
 };
 

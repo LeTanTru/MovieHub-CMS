@@ -1,5 +1,6 @@
 export { default as useAuth } from './use-auth';
 export { default as useClickOutside } from './use-click-out-side';
+export { default as useFileUploadManager } from './use-file-upload-manager';
 export { default as useDisclosure } from './use-disclosure';
 export { default as useDragDrop } from './use-drag-drop';
 export { default as useFirstActiveRoute } from './use-first-active-route';

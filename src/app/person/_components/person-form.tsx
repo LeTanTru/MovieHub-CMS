@@ -28,8 +28,7 @@ import {
   TAB_PERSON_KIND_ACTOR,
   TAB_PERSON_KIND_DIRECTOR
 } from '@/constants';
-import { useSaveBase } from '@/hooks';
-import { logger } from '@/logger';
+import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
 import { personSchema } from '@/schemaValidations';
@@ -41,17 +40,14 @@ import {
   renderListPageUrl
 } from '@/utils';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export default function PersonForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
   const kind = getData(storageKeys.ACTIVE_TAB_PERSON_KIND);
 
-  const [avatarPath, setAvatarPath] = useState<string>('');
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-
   const uploadImageMutation = useUploadAvatarMutation();
-  const deleteImageMutation = useDeleteFileMutation();
+  const deleteFileMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -74,6 +70,13 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
     }
   });
 
+  const imageManager = useFileUploadManager({
+    initialUrl: data?.avatarPath,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: true
+  });
+
   const defaultValues: PersonBodyType = {
     avatarPath: '',
     bio: '',
@@ -85,12 +88,12 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
     otherName: ''
   };
 
-  const getKinds = () => {
+  const getKinds = useCallback(() => {
     const kinds = [];
     if (kind === TAB_PERSON_KIND_ACTOR) kinds.push(PERSON_KIND_ACTOR);
     if (kind === TAB_PERSON_KIND_DIRECTOR) kinds.push(PERSON_KIND_DIRECTOR);
     return kinds;
-  };
+  }, [kind]);
 
   const initialValues: PersonBodyType = useMemo(() => {
     return {
@@ -103,34 +106,14 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
       name: data?.name ?? '',
       otherName: data?.otherName ?? ''
     };
-  }, [data, kind]);
+  }, [data, getKinds]);
 
-  const deleteFiles = async (files: string[]) => {
-    const validFiles = files.filter(Boolean);
-    if (!validFiles.length) return;
-    await Promise.all(
-      validFiles.map((filePath) =>
-        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
-          logger.error('Failed to delete file:', filePath, err);
-        })
-      )
-    );
-  };
-
-  const handleDeleteFiles = async () => {
-    const filesToDelete = isEditing
-      ? uploadedImages.slice(uploadedImages.length - 1)
-      : uploadedImages;
-    await deleteFiles(filesToDelete);
+  const handleCancel = async () => {
+    await imageManager.handleCancel();
   };
 
   const onSubmit = async (values: PersonBodyType) => {
-    const filesToDelete =
-      data?.avatarPath && !avatarPath
-        ? uploadedImages
-        : uploadedImages.slice(0, uploadedImages.length - 1);
-
-    await deleteFiles(filesToDelete.filter(Boolean));
+    await imageManager.handleSubmit();
 
     await handleSubmit({
       ...values,
@@ -139,15 +122,9 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
         DATE_TIME_FORMAT,
         DEFAULT_DATE_FORMAT
       ),
-      avatarPath: avatarPath
+      avatarPath: imageManager.currentUrl
     });
   };
-
-  useEffect(() => {
-    const url = data?.avatarPath || '';
-    setAvatarPath(url);
-    setUploadedImages(url ? [url] : []);
-  }, [data?.avatarPath]);
 
   return (
     <PageWrapper
@@ -174,29 +151,17 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
             <Row>
               <Col span={24}>
                 <UploadImageField
-                  value={renderImageUrl(avatarPath)}
+                  value={renderImageUrl(imageManager.currentUrl)}
                   loading={uploadImageMutation.isPending}
                   control={form.control}
                   name='avatarPath'
-                  onChange={(url) => {
-                    setAvatarPath(url);
-                    setUploadedImages((prev) =>
-                      url ? [...prev, url] : [...prev]
-                    );
-                  }}
+                  onChange={imageManager.trackUpload}
                   size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
                   }}
-                  deleteImageFn={
-                    data?.avatarPath
-                      ? undefined
-                      : () =>
-                          deleteImageMutation.mutateAsync({
-                            filePath: avatarPath
-                          })
-                  }
+                  deleteImageFn={imageManager.handleDeleteOnClick}
                   label='Ảnh đại diện'
                 />
               </Col>
@@ -274,7 +239,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
             </Row>
             <>
               {renderActions(form, {
-                onCancel: handleDeleteFiles
+                onCancel: handleCancel
               })}
             </>
             {loading && (

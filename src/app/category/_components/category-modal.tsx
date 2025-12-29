@@ -79,13 +79,14 @@ export default function CategoryModal({
       open={open}
       onClose={close}
       title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} danh mục`}
+      className='[&_.content]:bottom-[20%] [&_.content]:h-fit'
     >
       <BaseForm
         onSubmit={onSubmit}
         defaultValues={defaultValues}
         schema={categorySchema}
         initialValues={initialValues}
-        className='w-175 p-0'
+        className='w-175 p-4'
       >
         {(form) => (
           <>

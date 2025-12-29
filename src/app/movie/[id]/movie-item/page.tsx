@@ -1,11 +1,11 @@
-import { MovieItemList } from '@/app/movie/[id]/movie-item/_components';
+import { MovieItemSeasonList } from '@/app/movie/[id]/movie-item/_components';
 import { queryKeys } from '@/constants';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Mục phim'
+  title: 'Mùa'
 };
 
 export default function MovieItemListPage() {
-  return <MovieItemList queryKey={queryKeys.MOVIE_ITEM} />;
+  return <MovieItemSeasonList queryKey={queryKeys.MOVIE_ITEM} />;
 }

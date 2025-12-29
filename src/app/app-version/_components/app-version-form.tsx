@@ -12,7 +12,7 @@ import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { apiConfig, appVersionErrorMaps, ErrorCode } from '@/constants';
-import { useSaveBase } from '@/hooks';
+import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import { useDeleteFileMutation, useUploadFileMutation } from '@/queries';
 import { route } from '@/routes';
@@ -21,16 +21,14 @@ import { AppVersionBodyType, AppVersionResType } from '@/types';
 import { renderListPageUrl } from '@/utils';
 import { AxiosProgressEvent } from 'axios';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function AppVersionForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
-  const [filePath, setFilePath] = useState<string>('');
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
 
   const uploadFileMutation = useUploadFileMutation();
-  const deleteImageMutation = useDeleteFileMutation();
+  const deleteFileMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -53,6 +51,13 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
     }
   });
 
+  const imageManager = useFileUploadManager({
+    initialUrl: data?.filePath,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: true
+  });
+
   const defaultValues: AppVersionBodyType = {
     name: '',
     changeLog: '',
@@ -73,51 +78,25 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  const deleteFiles = async (files: string[]) => {
-    const validFiles = files.filter(Boolean);
-    if (!validFiles.length) return;
-    await Promise.all(
-      validFiles.map((filePath) =>
-        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
-          logger.error('Failed to delete file:', filePath, err);
-        })
-      )
-    );
-  };
-
-  const handleDeleteFiles = async () => {
-    const filesToDelete = isEditing
-      ? uploadedFiles.slice(uploadedFiles.length - 1)
-      : uploadedFiles;
-    await deleteFiles(filesToDelete);
+  const handleCancel = async () => {
+    await imageManager.handleCancel();
   };
 
   const onSubmit = async (
     values: AppVersionBodyType,
     form: UseFormReturn<AppVersionBodyType>
   ) => {
-    const filesToDelete =
-      data?.filePath && !filePath
-        ? uploadedFiles
-        : uploadedFiles.slice(0, uploadedFiles.length - 1);
-
-    await deleteFiles(filesToDelete.filter(Boolean));
+    await imageManager.handleSubmit();
 
     await handleSubmit(
       {
         ...values,
-        filePath: filePath
+        filePath: imageManager.currentUrl
       },
       form,
       appVersionErrorMaps
     );
   };
-
-  useEffect(() => {
-    const url = data?.filePath || '';
-    setFilePath(url);
-    setUploadedFiles(url ? [url] : []);
-  }, [data?.filePath]);
 
   return (
     <PageWrapper
@@ -159,20 +138,8 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
                     });
                     return res.data?.filePath ?? '';
                   }}
-                  onChange={(url) => {
-                    setFilePath(url);
-                    setUploadedFiles((prev) =>
-                      url ? [...prev, url] : [...prev]
-                    );
-                  }}
-                  deleteImageFn={
-                    data?.filePath
-                      ? undefined
-                      : () =>
-                          deleteImageMutation.mutateAsync({
-                            filePath: filePath
-                          })
-                  }
+                  onChange={imageManager.trackUpload}
+                  deleteImageFn={imageManager.handleDeleteOnClick}
                   label='Chọn tệp (.apk)'
                   accept='.apk'
                 />
@@ -230,7 +197,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
 
             <>
               {renderActions(form, {
-                onCancel: handleDeleteFiles
+                onCancel: handleCancel
               })}
             </>
             {loading && (

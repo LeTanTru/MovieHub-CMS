@@ -77,12 +77,13 @@ export default function CollectionItemModal({
       title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} chi tiết bộ sưu tập`}
       open={open}
       onClose={close}
+      className='[&_.content]:bottom-[20%] [&_.content]:h-fit'
     >
       <BaseForm
         onSubmit={onSubmit}
         defaultValues={defaultValues}
         schema={collectionItemSchema}
-        className='w-175 p-0'
+        className='w-175 p-4'
       >
         {(form) => {
           return (

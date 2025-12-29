@@ -81,14 +81,19 @@ export default function ImageField({
         {...props}
         onClick={props?.onClick ?? openPreview}
         className={cn(
-          'relative cursor-pointer rounded border bg-gray-100 shadow-sm select-none',
+          'relative rounded border bg-gray-100 shadow-sm select-none',
+          { 'cursor-pointer': !!src },
           className
         )}
         style={{ width, height }}
       >
         {src ? (
           aspect ? (
-            <AspectRatio ratio={aspect} className='h-full w-full'>
+            <AspectRatio
+              style={{ width, height }}
+              ratio={aspect}
+              className='h-full w-full'
+            >
               <Image
                 src={src}
                 alt={alt}

@@ -104,6 +104,7 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   handleScrollLoadMore: (e: React.UIEvent<HTMLElement>) => void;
   setHiddenFilter: (key: keyof S, value: S[keyof S] | null) => void;
   setHiddenFilters: (filters: Partial<S>) => void;
+  mappingData: (respose: ApiResponseList<T>) => ApiResponseList<T>;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -701,6 +702,10 @@ export default function useListBase<
     return 0;
   }, [infiniteQuery.data?.pageParams, pageSize, totalElements]);
 
+  const mappingData = (response: ApiResponseList<T>) => {
+    return response;
+  };
+
   const extendableHandlers = (): HandlerType<T, S> => {
     const handlers: HandlerType<T, S> = {
       changePagination,
@@ -723,7 +728,8 @@ export default function useListBase<
       loadMore,
       handleScrollLoadMore,
       setHiddenFilter,
-      setHiddenFilters
+      setHiddenFilters,
+      mappingData
     };
 
     override?.(handlers);

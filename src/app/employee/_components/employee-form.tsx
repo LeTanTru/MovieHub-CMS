@@ -19,8 +19,7 @@ import {
   MAX_PAGE_SIZE,
   STATUS_ACTIVE
 } from '@/constants';
-import { useSaveBase } from '@/hooks';
-import { logger } from '@/logger';
+import { useFileUploadManager, useSaveBase } from '@/hooks';
 import {
   useDeleteFileMutation,
   useGroupListQuery,
@@ -31,13 +30,11 @@ import { employeeSchema } from '@/schemaValidations';
 import { EmployeeBodyType, EmployeeResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function EmployeeForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
-  const [avatarPath, setAvatarPath] = useState<string>('');
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
   const groupListQuery = useGroupListQuery({ size: MAX_PAGE_SIZE });
 
@@ -48,7 +45,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
   }));
 
   const uploadImageMutation = useUploadAvatarMutation();
-  const deleteImageMutation = useDeleteFileMutation();
+  const deleteFileMutation = useDeleteFileMutation();
 
   const {
     data,
@@ -69,6 +66,13 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
       },
       mode: id === 'create' ? 'create' : 'edit'
     }
+  });
+
+  const imageManager = useFileUploadManager({
+    initialUrl: data?.avatarPath,
+    deleteFileMutation: deleteFileMutation,
+    isEditing,
+    onOpen: true
   });
 
   const defaultValues: EmployeeBodyType = {
@@ -102,51 +106,25 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
     };
   }, [data]);
 
-  const deleteFiles = async (files: string[]) => {
-    const validFiles = files.filter(Boolean);
-    if (!validFiles.length) return;
-    await Promise.all(
-      validFiles.map((filePath) =>
-        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
-          logger.error('Failed to delete file:', filePath, err);
-        })
-      )
-    );
-  };
-
-  const handleDeleteFiles = async () => {
-    const filesToDelete = isEditing
-      ? uploadedImages.slice(uploadedImages.length - 1)
-      : uploadedImages;
-    await deleteFiles(filesToDelete);
+  const handleCancel = async () => {
+    await imageManager.handleCancel();
   };
 
   const onSubmit = async (
     values: EmployeeBodyType,
     form: UseFormReturn<EmployeeBodyType>
   ) => {
-    const filesToDelete =
-      data?.avatarPath && !avatarPath
-        ? uploadedImages
-        : uploadedImages.slice(0, uploadedImages.length - 1);
-
-    await deleteFiles(filesToDelete.filter(Boolean));
+    await imageManager.handleSubmit();
 
     await handleSubmit(
       {
         ...values,
-        avatarPath: avatarPath
+        avatarPath: imageManager.currentUrl
       },
       form,
       employeeErrorMaps
     );
   };
-
-  useEffect(() => {
-    const url = data?.avatarPath || '';
-    setAvatarPath(url);
-    setUploadedImages(url ? [url] : []);
-  }, [data?.avatarPath]);
 
   return (
     <PageWrapper
@@ -171,29 +149,17 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
             <Row>
               <Col span={24}>
                 <UploadImageField
-                  value={renderImageUrl(avatarPath)}
+                  value={renderImageUrl(imageManager.currentUrl)}
                   loading={uploadImageMutation.isPending}
                   control={form.control}
                   name='avatarPath'
-                  onChange={(url) => {
-                    setAvatarPath(url);
-                    setUploadedImages((prev) =>
-                      url ? [...prev, url] : [...prev]
-                    );
-                  }}
+                  onChange={imageManager.trackUpload}
                   size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
                   }}
-                  deleteImageFn={
-                    data?.avatarPath
-                      ? undefined
-                      : () =>
-                          deleteImageMutation.mutateAsync({
-                            filePath: avatarPath
-                          })
-                  }
+                  deleteImageFn={imageManager.handleDeleteOnClick}
                   label='Ảnh đại diện'
                 />
               </Col>
@@ -332,7 +298,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
               </>
             )}
 
-            <>{renderActions(form, { onCancel: handleDeleteFiles })}</>
+            <>{renderActions(form, { onCancel: handleCancel })}</>
             {loading && (
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />

@@ -142,6 +142,11 @@ const route = defineRoute({
         apiConfig.movieItem.update.permissionCode
       ],
       separate: true
+    },
+    getDetailList: {
+      path: '/movie/:id/movie-item/:parentId',
+      auth: true,
+      permissionCode: [apiConfig.movieItem.getList.permissionCode]
     }
   },
   moviePerson: {

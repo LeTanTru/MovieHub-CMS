@@ -27,7 +27,7 @@ type AvatarFieldProps = {
 } & React.HTMLAttributes<HTMLElement>;
 
 export default function AvatarField({
-  size = 50,
+  size = 48,
   previewSize = 200,
   icon,
   src,
