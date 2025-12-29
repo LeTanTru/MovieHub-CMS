@@ -30,21 +30,7 @@ const useQueryParams = <S extends Record<string, any>>() => {
   };
 
   const setQueryParams = (newParams: Partial<S>) => {
-    const params = new URLSearchParams();
-
-    Object.entries(newParams).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        params.set(key, String(value));
-      }
-    });
-
-    const sortedParams = new URLSearchParams();
-    [...params.keys()].sort().forEach((k) => {
-      const v = params.get(k);
-      if (v !== null) sortedParams.set(k, v);
-    });
-
-    const queryString = sortedParams.toString();
+    const queryString = serializeParams(newParams as Record<string, any>);
     router.push(queryString ? `${pathname}?${queryString}` : pathname);
   };
 

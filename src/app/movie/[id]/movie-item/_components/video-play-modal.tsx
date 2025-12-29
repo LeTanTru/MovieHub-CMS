@@ -77,7 +77,7 @@ export default function VideoPlayModal({
           crossOrigin
           playsInline
           preferNativeHLS={false}
-          autoPlay={false}
+          autoPlay
           src={renderVideoUrl(video?.content)}
           onProviderChange={
             video?.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL

@@ -52,7 +52,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
       objectName: 'bình luận',
       queryKey,
       defaultFilters: { movieId },
-      notShowFromSearchParams: ['movieId', 'parentId', 'page', 'size'],
+      notShowFromSearchParams: ['movieId'],
       showNotify: false,
       useInfiniteScroll: true
     }

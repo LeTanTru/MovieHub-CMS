@@ -13,7 +13,7 @@ import {
   languageOptions,
   movieTypeOptions
 } from '@/constants';
-import { useListBase, useNavigate } from '@/hooks';
+import { useListBase, useNavigate, useQueryParams } from '@/hooks';
 import { cn } from '@/lib';
 import { useCategoryListQuery } from '@/queries';
 import { route } from '@/routes';
@@ -41,6 +41,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
         label: category.name
       }))
       .sort((a, b) => a.label.localeCompare(b.label)) || [];
+  const { serializeParams } = useQueryParams();
 
   const { data, pagination, loading, handlers } = useListBase<
     MovieResType,
@@ -144,7 +145,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
           <Link
             href={`${generatePath(route.movieItem.getList.path, {
               id: record.id
-            })}?type=${record.type}`}
+            })}?${serializeParams({ type: record.type, movieTitle: record.title })}`}
             className={cn(
               'text-dodger-blue line-clamp-1 block flex items-center gap-x-1 truncate',
               {

@@ -29,7 +29,8 @@ export default function ReviewList({ queryKey }: { queryKey: string }) {
     options: {
       objectName: 'đánh giá',
       queryKey,
-      defaultHiddenFilters: { movieId },
+      defaultFilters: { movieId },
+      notShowFromSearchParams: ['movieId'],
       showNotify: false,
       useInfiniteScroll: true
     }

@@ -102,8 +102,6 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   setData: (data: T[]) => void;
   loadMore: () => void;
   handleScrollLoadMore: (e: React.UIEvent<HTMLElement>) => void;
-  setHiddenFilter: (key: keyof S, value: S[keyof S] | null) => void;
-  setHiddenFilters: (filters: Partial<S>) => void;
   mappingData: (respose: ApiResponseList<T>) => ApiResponseList<T>;
 };
 
@@ -126,7 +124,6 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
     excludeFromQueryFilter?: string[];
     notShowFromSearchParams?: string[];
     showNotify?: boolean;
-    defaultHiddenFilters?: Partial<S>;
     useInfiniteScroll?: boolean;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
@@ -145,15 +142,12 @@ export default function useListBase<
     excludeFromQueryFilter = [],
     notShowFromSearchParams = [],
     showNotify = true,
-    defaultHiddenFilters = {} as Partial<S>,
     useInfiniteScroll = false
   } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const [data, setData] = useState<T[]>([]);
-  const [hiddenFilters, setHiddenFiltersState] =
-    useState<Partial<S>>(defaultHiddenFilters);
   const { hasPermission } = useValidatePermission();
 
   const [pagination, setPagination] = useState<PaginationType>({
@@ -179,7 +173,6 @@ export default function useListBase<
     const filteredParams = Object.fromEntries(
       Object.entries({
         ...mergedSearchParams,
-        ...hiddenFilters,
         page: mergedSearchParams.page
           ? Number(mergedSearchParams.page) - 1
           : DEFAULT_TABLE_PAGE_START,
@@ -190,7 +183,7 @@ export default function useListBase<
     return {
       ...filteredParams
     } as S;
-  }, [mergedSearchParams, hiddenFilters, pageSize, excludeFromQueryFilter]);
+  }, [mergedSearchParams, pageSize, excludeFromQueryFilter]);
 
   // Clear undefined | null params
   useEffect(() => {
@@ -599,8 +592,7 @@ export default function useListBase<
 
       setQueryParams({
         ...(filteredValues as Partial<S>),
-        ...preservedParams,
-        ...hiddenFilters
+        ...preservedParams
       });
     };
 
@@ -653,31 +645,6 @@ export default function useListBase<
     }
   };
 
-  const setHiddenFilter = (key: keyof S, value: S[keyof S] | null) => {
-    setHiddenFiltersState((prev) => {
-      const newFilters = { ...prev };
-      if (value === null || value === undefined) {
-        delete newFilters[key];
-      } else {
-        newFilters[key] = value;
-      }
-      return newFilters;
-    });
-
-    setPagination((p) => ({ ...p, current: 1 }));
-    setQueryParam('page', null);
-  };
-
-  const setHiddenFilters = (filters: Partial<S>) => {
-    setHiddenFiltersState((prev) => ({
-      ...prev,
-      ...filters
-    }));
-
-    setPagination((p) => ({ ...p, current: 1 }));
-    setQueryParam('page', null);
-  };
-
   // Get total elements and total pages from active query
   const totalElements = useMemo(() => {
     if (useInfiniteScroll) {
@@ -727,8 +694,6 @@ export default function useListBase<
       setData,
       loadMore,
       handleScrollLoadMore,
-      setHiddenFilter,
-      setHiddenFilters,
       mappingData
     };
 
