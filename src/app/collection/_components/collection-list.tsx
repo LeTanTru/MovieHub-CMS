@@ -39,10 +39,10 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
     apiConfig: apiConfig.collection,
     options: {
       queryKey,
-      objectName: 'bộ sưu tập',
-      defaultFilters: {
-        type: COLLECTION_TYPE_TOPIC
-      }
+      objectName: 'bộ sưu tập'
+      // defaultFilters: {
+      //   type: COLLECTION_TYPE_TOPIC
+      // }
     },
     override: (handlers) => {
       handlers.additionalColumns = () => ({
