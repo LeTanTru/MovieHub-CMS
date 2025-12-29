@@ -62,7 +62,7 @@ export default function RichTextField<T extends FieldValues>({
               value={field.value || ''}
               disabled={disabled || readOnly}
               init={{
-                height: height ?? 500,
+                height: height ?? 450,
                 menubar: 'file edit view insert format tools table help',
                 language: 'vi',
                 plugins: [

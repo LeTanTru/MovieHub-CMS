@@ -17,7 +17,6 @@ export type VideoLibraryResType = {
   name: string;
   outroStart: number;
   relativeContentPath: string;
-  shortDescription: string;
   spriteUrl: string;
   state: number;
   status: number;

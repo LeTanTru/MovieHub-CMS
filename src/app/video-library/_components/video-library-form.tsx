@@ -9,7 +9,6 @@ import {
   RichTextField,
   Row,
   SelectField,
-  TextAreaField,
   TimePickerField,
   UploadImageField,
   UploadVideoField
@@ -121,7 +120,6 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
     outroStart: 0,
     introStart: 0,
     name: '',
-    shortDescription: '',
     status: STATUS_ACTIVE,
     thumbnailUrl: '',
     sourceType: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
@@ -138,7 +136,6 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
       outroStart: data?.outroStart ?? 0,
       duration: data?.duration ?? 0,
       name: data?.name ?? '',
-      shortDescription: data?.shortDescription ?? '',
       status: STATUS_ACTIVE,
       thumbnailUrl: data?.thumbnailUrl ?? '',
       sourceType: data?.sourceType ?? VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
@@ -485,17 +482,6 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                 </Row>
               )}
 
-              <Row>
-                <Col span={24}>
-                  <TextAreaField
-                    control={form.control}
-                    name='shortDescription'
-                    label='Mô tả ngắn'
-                    placeholder='Mô tả ngắn'
-                    required
-                  />
-                </Col>
-              </Row>
               <Row>
                 <Col span={24}>
                   <RichTextField
