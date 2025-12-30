@@ -6,7 +6,6 @@ import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
 import { apiConfig, collectionItemErrorMaps, queryKeys } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useCollectionItemListQuery } from '@/queries';
 import { collectionItemSchema } from '@/schemaValidations';
 import {
   CollectionItemBodyType,
@@ -30,10 +29,6 @@ export default function CollectionItemModal({
   const { id: collectionId } = useParams<{
     id: string;
   }>();
-
-  const collectionItemListQuery = useCollectionItemListQuery({
-    params: { collectionId }
-  });
 
   const { loading, isEditing, handleSubmit, renderActions } = useSaveBase<
     CollectionItemResType,
@@ -61,8 +56,7 @@ export default function CollectionItemModal({
 
   const defaultValues: CollectionItemBodyType = {
     collectionId: collectionId,
-    movieId: '',
-    ordering: collectionItemListQuery.data?.data?.totalElements ?? 0
+    movieId: ''
   };
 
   const onSubmit = async (

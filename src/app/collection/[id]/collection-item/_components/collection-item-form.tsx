@@ -6,7 +6,6 @@ import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { apiConfig, collectionItemErrorMaps, ErrorCode } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useCollectionItemListQuery } from '@/queries';
 import { route } from '@/routes';
 import { collectionItemSchema } from '@/schemaValidations';
 import {
@@ -23,10 +22,6 @@ export default function CollectionItemForm({ queryKey }: { queryKey: string }) {
     id: string;
     collectionItemId: string;
   }>();
-
-  const collectionItemListQuery = useCollectionItemListQuery({
-    params: { collectionId }
-  });
 
   const {
     loading,
@@ -52,8 +47,7 @@ export default function CollectionItemForm({ queryKey }: { queryKey: string }) {
 
   const defaultValues: CollectionItemBodyType = {
     collectionId: collectionId,
-    movieId: '',
-    ordering: collectionItemListQuery.data?.data?.totalElements ?? 0
+    movieId: ''
   };
 
   const onSubmit = async (

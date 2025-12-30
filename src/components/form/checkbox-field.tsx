@@ -22,6 +22,7 @@ type CheckboxFieldProps = {
   required?: boolean;
   labelClassName?: string;
   itemClassName?: string;
+  checkboxClassName?: string;
 };
 
 export default function CheckboxField({
@@ -33,7 +34,8 @@ export default function CheckboxField({
   disabled,
   required,
   labelClassName,
-  itemClassName
+  itemClassName,
+  checkboxClassName
 }: CheckboxFieldProps) {
   return (
     <FormField
@@ -49,7 +51,8 @@ export default function CheckboxField({
                   'cursor-pointer transition-colors duration-300 ease-in-out',
                   'data-[state=checked]:bg-primary',
                   'data-[state=unchecked]:bg-muted',
-                  disabled && 'cursor-not-allowed'
+                  disabled && 'cursor-not-allowed',
+                  checkboxClassName
                 )}
                 checked={!!field.value}
                 onCheckedChange={field.onChange}

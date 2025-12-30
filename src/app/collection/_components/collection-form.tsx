@@ -4,6 +4,7 @@ import {
   AutoCompleteField,
   BooleanField,
   Button,
+  CheckboxField,
   Col,
   FieldSet,
   InputField,
@@ -28,7 +29,7 @@ import {
   movieTypeOptions
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useCategoryListQuery, useCollectionListQuery } from '@/queries';
+import { useCategoryListQuery } from '@/queries';
 import { route } from '@/routes';
 import { collectionSchema } from '@/schemaValidations';
 import { CollectionBodyType, CollectionResType, StyleResType } from '@/types';
@@ -38,12 +39,12 @@ import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { PlusIcon, X } from 'lucide-react';
 import { logger } from '@/logger';
+import { omit } from 'lodash';
 
 export default function CollectionForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
 
   const categoryListQuery = useCategoryListQuery();
-  const collectionListQuery = useCollectionListQuery();
 
   const categories =
     categoryListQuery?.data?.data?.content
@@ -76,9 +77,8 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
 
   const defaultValues: CollectionBodyType = {
     colors: ['#000000'],
-    filter: {},
+    filter: { limit: 1, noLimit: false },
     name: '',
-    ordering: 0,
     randomData: false,
     styleId: '',
     type: COLLECTION_TYPE_TOPIC
@@ -102,11 +102,14 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
       }
     }
 
+    const filter = JSON.parse(data?.filter) as CollectionBodyType['filter'];
+
     return {
       colors: parsedColors,
-      filter: data?.filter ? JSON.parse(data?.filter) : {},
+      filter: data?.filter
+        ? { ...filter, noLimit: filter.limit ? false : true }
+        : {},
       name: data?.name ?? '',
-      ordering: data?.ordering ?? 0,
       randomData: false,
       styleId: data?.style?.id?.toString() ?? '',
       type: data?.type ?? COLLECTION_TYPE_TOPIC
@@ -122,8 +125,15 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
     } else {
       const payload = {
         ...values,
-        filter: JSON.stringify(values.filter),
-        ordering: collectionListQuery.data?.data.totalElements ?? 0,
+        filter: JSON.stringify(
+          omit(
+            {
+              ...values.filter,
+              limit: values.filter.noLimit ? null : values.filter.limit
+            },
+            ['noLimit']
+          )
+        ),
         colors: values.colors
       };
       await handleSubmit(payload as any, form, collectionErrorMaps);
@@ -188,7 +198,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
           return (
             <>
               <Row>
-                <Col>
+                <Col span={12}>
                   <InputField
                     control={form.control}
                     name='name'
@@ -197,7 +207,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                     required
                   />
                 </Col>
-                <Col>
+                <Col span={12}>
                   <SelectField
                     control={form.control}
                     name='type'
@@ -280,7 +290,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
               </Row>
               <FieldSet title='Bộ lọc'>
                 <Row>
-                  <Col>
+                  <Col span={12}>
                     <SelectField
                       name='filter.type'
                       control={form.control}
@@ -289,7 +299,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                       placeholder='Thể loại phim'
                     />
                   </Col>
-                  <Col>
+                  <Col span={12}>
                     <SelectField
                       name='filter.ageRating'
                       control={form.control}
@@ -301,7 +311,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                   </Col>
                 </Row>
                 <Row>
-                  <Col>
+                  <Col span={12}>
                     <SelectField
                       name='filter.country'
                       control={form.control}
@@ -310,7 +320,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                       placeholder='Quốc gia'
                     />
                   </Col>
-                  <Col>
+                  <Col span={12}>
                     <SelectField
                       name='filter.language'
                       control={form.control}
@@ -321,7 +331,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                   </Col>
                 </Row>
                 <Row>
-                  <Col>
+                  <Col span={12}>
                     <MultiSelectField
                       control={form.control}
                       name='filter.categoryIds'
@@ -330,13 +340,27 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                       options={categories}
                     />
                   </Col>
-                  <Col>
-                    <NumberField
-                      control={form.control}
-                      name='filter.limit'
-                      label='Giới hạn'
-                      placeholder='Giới hạn'
-                    />
+                  <Col span={12}>
+                    <Row className='mb-0 h-full items-center justify-between'>
+                      <Col span={18} className='my-0'>
+                        <NumberField
+                          control={form.control}
+                          name='filter.limit'
+                          label='Giới hạn'
+                          placeholder='Giới hạn'
+                          min={1}
+                          disabled={!!form.watch('filter.noLimit')}
+                        />
+                      </Col>
+                      <Col span={6} className='my-0 mt-4'>
+                        <CheckboxField
+                          control={form.control}
+                          name='filter.noLimit'
+                          label='Không giới hạn'
+                          checkboxClassName='data-[state=checked]:bg-dodger-blue data-[state=checked]:border-dodger-blue cursor-pointer transition-all duration-100 ease-linear data-[state=unchecked]:text-white'
+                        />
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
                 <Row className='mb-0'>
@@ -370,6 +394,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                           shouldDirty: true
                         });
                         form.setValue('filter.type', 0, { shouldDirty: true });
+                        form.setValue('filter.limit', 1, { shouldDirty: true });
                       }}
                     >
                       Đặt lại bộ lọc

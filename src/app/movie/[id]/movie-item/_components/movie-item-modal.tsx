@@ -131,7 +131,6 @@ export default function MovieItemModal({
       kind: data?.kind ?? kindOptions?.[0]?.value,
       label: data?.label ?? '',
       movieId: movieId,
-      ordering: data?.ordering ?? 0,
       releaseDate: formatDate(data?.releaseDate, DEFAULT_DATE_FORMAT) ?? '',
       status: STATUS_ACTIVE,
       title: data?.title ?? '',

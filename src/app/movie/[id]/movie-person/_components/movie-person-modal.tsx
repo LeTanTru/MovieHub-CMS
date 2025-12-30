@@ -45,11 +45,7 @@ export default function MoviePersonModal({
     kind: kind,
     movieId: movieId,
     personId: '',
-    characterName: '',
-    ordering: Math.max(
-      0,
-      ...(moviePersonList?.map((item) => item.ordering) ?? [])
-    )
+    characterName: ''
   };
 
   const handleSubmit = async (

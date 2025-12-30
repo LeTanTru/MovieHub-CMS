@@ -7,14 +7,14 @@ const filterSchema = z.object({
   country: z.string().optional().nullable(),
   isFeatured: z.boolean().optional().nullable(),
   categoryIds: z.array(z.string()).optional().nullable(),
-  limit: z.number().optional().nullable()
+  limit: z.number().optional().nullable(),
+  noLimit: z.boolean().optional().nullable()
 });
 
 export const collectionSchema = z.object({
   colors: z.array(z.string()),
   filter: filterSchema,
   name: z.string().nonempty('Bắt buộc'),
-  ordering: z.number(),
   randomData: z.boolean(),
   styleId: z.string(),
   type: z.number()

@@ -5,7 +5,6 @@ export const moviePersonSchema = z.object({
   characterName: z.string().optional().nullable(),
   kind: z.number({ error: 'Bắt buộc' }),
   movieId: z.string().nonempty('Bắt buộc'),
-  ordering: z.number().optional().nullable(),
   personId: z.string().nonempty('Bắt buộc')
 });
 
