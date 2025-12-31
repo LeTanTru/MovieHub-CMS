@@ -283,7 +283,10 @@ export default function MovieItemSeasonDetailList({
             generatePath(route.movieItem.getList.path, {
               id: movieId
             }),
-            serializeParams({ type: searchParams.type })
+            serializeParams({
+              type: searchParams.type,
+              movieTitle: searchParams.movieTitle
+            })
           )
         },
         {

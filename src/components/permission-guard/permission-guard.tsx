@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth, useFirstActiveRoute } from '@/hooks';
+import { useAuth, useFirstActiveRoute, useQueryParams } from '@/hooks';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   getAccessTokenFromLocalStorage,
@@ -35,6 +35,7 @@ export default function PermissionGuard({
   const accessToken = getAccessTokenFromLocalStorage();
   const [ready, setReady] = useState(false);
   const pathname = usePathname();
+  const { queryString } = useQueryParams();
   const firstActiveRoute = useFirstActiveRoute();
 
   function pathToRegex(path: string): RegExp {
@@ -79,7 +80,10 @@ export default function PermissionGuard({
     if (!accessToken && !isAuthenticated && !isLoggedOut) {
       if (pathname !== route.login.path) {
         if (pathname !== route.home.path) {
-          setData(storageKeys.PATH_NO_LOGIN, pathname);
+          setData(
+            storageKeys.PATH_NO_LOGIN,
+            queryString ? `${pathname}?${queryString}` : pathname
+          );
         }
         router.replace(route.login.path);
       }
