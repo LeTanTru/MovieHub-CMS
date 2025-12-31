@@ -13,7 +13,12 @@ import {
   languageOptions,
   movieTypeOptions
 } from '@/constants';
-import { useDisclosure, useDragDrop, useListBase } from '@/hooks';
+import {
+  useDisclosure,
+  useDragDrop,
+  useListBase,
+  useQueryParams
+} from '@/hooks';
 import { cn } from '@/lib';
 import { route } from '@/routes';
 import { collectionItemSearchSchema } from '@/schemaValidations';
@@ -29,9 +34,13 @@ import { useParams } from 'next/navigation';
 
 export default function CollectionItemList({ queryKey }: { queryKey: string }) {
   const { id: collectionId } = useParams<{ id: string }>();
+  const { searchParams, serializeParams } = useQueryParams<{
+    type: number;
+    collectionTitle: string;
+  }>();
   const collectionItemModal = useDisclosure(false);
 
-  const { data, loading, handlers, queryString } = useListBase<
+  const { data, loading, handlers } = useListBase<
     CollectionItemResType,
     CollectionItemSearchType
   >({
@@ -39,7 +48,7 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
     options: {
       queryKey,
       objectName: 'chi tiết bộ sưu tập',
-      excludeFromQueryFilter: ['type']
+      excludeFromQueryFilter: ['type', 'collectionTitle']
     },
     override: (handlers) => {
       handlers.additionalParams = () => ({
@@ -210,10 +219,13 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
       breadcrumbs={[
         {
           label: 'Bộ sưu tập',
-          href: renderListPageUrl(route.collection.getList.path, queryString)
+          href: renderListPageUrl(
+            route.collection.getList.path,
+            serializeParams({ type: searchParams.type })
+          )
         },
         {
-          label: 'Chi tiết bộ sưu tập'
+          label: searchParams.collectionTitle ?? 'Chi tiết bộ sưu tập'
         }
       ]}
     >

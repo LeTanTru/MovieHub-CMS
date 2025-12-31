@@ -6,7 +6,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DotLoading } from '@/components/loading';
 import { NoData } from '@/components/no-data';
 import { apiConfig } from '@/constants';
-import { useListBase } from '@/hooks';
+import { useListBase, useQueryParams } from '@/hooks';
 import { route } from '@/routes';
 import { ReviewResType, ReviewSearchType } from '@/types';
 import { useParams } from 'next/navigation';
@@ -15,6 +15,7 @@ import { useCallback } from 'react';
 
 export default function ReviewList({ queryKey }: { queryKey: string }) {
   const { id: movieId } = useParams<{ id: string }>();
+  const { searchParams } = useQueryParams<{ movieTitle: string }>();
 
   const {
     data,
@@ -31,6 +32,7 @@ export default function ReviewList({ queryKey }: { queryKey: string }) {
       queryKey,
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId'],
+      excludeFromQueryFilter: ['movieTitle'],
       showNotify: false,
       useInfiniteScroll: true
     }
@@ -51,6 +53,7 @@ export default function ReviewList({ queryKey }: { queryKey: string }) {
     <PageWrapper
       breadcrumbs={[
         { label: 'Phim', href: route.movie.getList.path },
+        { label: searchParams.movieTitle ?? 'Chi tiết' },
         { label: 'Đánh giá' }
       ]}
     >

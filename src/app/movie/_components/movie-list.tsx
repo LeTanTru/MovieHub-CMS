@@ -22,10 +22,15 @@ import {
   Column,
   MovieResType,
   MovieSearchType,
-  ReviewResType,
   SearchFormProps
 } from '@/types';
-import { formatDate, generatePath, notify, renderImageUrl } from '@/utils';
+import {
+  formatDate,
+  generatePath,
+  notify,
+  renderImageUrl,
+  renderListPageUrl
+} from '@/utils';
 import { MessageSquareHeart, Star } from 'lucide-react';
 import Link from 'next/link';
 import { AiOutlineUser } from 'react-icons/ai';
@@ -66,9 +71,12 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
                 <Button
                   onClick={() =>
                     navigate(
-                      generatePath(route.moviePerson.getList.path, {
-                        id: record.id
-                      })
+                      renderListPageUrl(
+                        generatePath(route.moviePerson.getList.path, {
+                          id: record.id
+                        }),
+                        serializeParams({ movieTitle: record.title })
+                      )
                     )
                   }
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
@@ -87,9 +95,12 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
                 <Button
                   onClick={() =>
                     navigate(
-                      generatePath(route.comment.getList.path, {
-                        id: record.id
-                      })
+                      renderListPageUrl(
+                        generatePath(route.comment.getList.path, {
+                          id: record.id
+                        }),
+                        serializeParams({ movieTitle: record.title })
+                      )
                     )
                   }
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
@@ -101,16 +112,19 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
             </ToolTip>
           );
         },
-        review: (record: ReviewResType, buttonProps?: Record<string, any>) => {
+        review: (record: MovieResType, buttonProps?: Record<string, any>) => {
           return (
             <ToolTip title={`Đánh giá`} sideOffset={0}>
               <span>
                 <Button
                   onClick={() =>
                     navigate(
-                      generatePath(route.review.getList.path, {
-                        id: record.id
-                      })
+                      renderListPageUrl(
+                        generatePath(route.review.getList.path, {
+                          id: record.id
+                        }),
+                        serializeParams({ movieTitle: record.title })
+                      )
                     )
                   }
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'

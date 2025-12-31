@@ -11,7 +11,7 @@ import {
   TAB_MOVIE_PERSON_KIND_ACTOR,
   TAB_MOVIE_PERSON_KIND_DIRECTOR
 } from '@/constants';
-import { useIsMounted } from '@/hooks';
+import { useIsMounted, useQueryParams } from '@/hooks';
 import { route } from '@/routes';
 import { getData, setData } from '@/utils';
 import { useEffect, useState } from 'react';
@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react';
 export default function PersonTab() {
   const [activeTab, setActiveTab] = useState('');
   const isMounted = useIsMounted();
+  const { searchParams } = useQueryParams<{ movieTitle: string }>();
 
   const tabs = [
     {
@@ -62,6 +63,9 @@ export default function PersonTab() {
         {
           label: 'Phim',
           href: route.movie.getList.path
+        },
+        {
+          label: searchParams.movieTitle ?? 'Chi tiết'
         },
         {
           label:
