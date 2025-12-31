@@ -133,6 +133,7 @@ export default function useSaveBase<
               applyFormErrors(form, code, errorMaps);
             } else {
               handlers.handleSubmitError(code);
+              console.log('🚀 ~ handleSubmit ~ code:', code);
             }
           }
         },

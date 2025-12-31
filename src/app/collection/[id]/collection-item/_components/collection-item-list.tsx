@@ -23,7 +23,7 @@ import {
   Column,
   SearchFormProps
 } from '@/types';
-import { formatDate, renderImageUrl } from '@/utils';
+import { formatDate, renderImageUrl, renderListPageUrl } from '@/utils';
 import { PlusIcon, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
@@ -31,14 +31,15 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
   const { id: collectionId } = useParams<{ id: string }>();
   const collectionItemModal = useDisclosure(false);
 
-  const { data, loading, handlers } = useListBase<
+  const { data, loading, handlers, queryString } = useListBase<
     CollectionItemResType,
     CollectionItemSearchType
   >({
     apiConfig: apiConfig.collectionItem,
     options: {
       queryKey,
-      objectName: 'chi tiết bộ sưu tập'
+      objectName: 'chi tiết bộ sưu tập',
+      excludeFromQueryFilter: ['type']
     },
     override: (handlers) => {
       handlers.additionalParams = () => ({
@@ -210,7 +211,7 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
       breadcrumbs={[
         {
           label: 'Bộ sưu tập',
-          href: route.collection.getList.path
+          href: renderListPageUrl(route.collection.getList.path, queryString)
         },
         {
           label: 'Chi tiết bộ sưu tập'

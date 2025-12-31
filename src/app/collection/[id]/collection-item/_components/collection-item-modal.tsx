@@ -4,7 +4,12 @@ import { AutoCompleteField, Col, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
-import { apiConfig, collectionItemErrorMaps, queryKeys } from '@/constants';
+import {
+  apiConfig,
+  collectionItemErrorMaps,
+  ErrorCode,
+  queryKeys
+} from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { collectionItemSchema } from '@/schemaValidations';
 import {
@@ -12,7 +17,7 @@ import {
   CollectionItemResType,
   MovieResType
 } from '@/types';
-import { generatePath } from '@/utils';
+import { generatePath, notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { UseFormReturn } from 'react-hook-form';
@@ -50,6 +55,11 @@ export default function CollectionItemModal({
         queryClient.invalidateQueries({
           queryKey: [`${queryKeys.COLLECTION_ITEM}`]
         });
+      };
+      handlers.handleSubmitError = (code) => {
+        if (code === ErrorCode.COLLECTION_ITEM_ERROR_MAX_ITEM) {
+          notify.error('Số lượng đã đạt tối đa');
+        }
       };
     }
   });

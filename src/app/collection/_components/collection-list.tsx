@@ -6,7 +6,6 @@ import { DragDropTable } from '@/components/table';
 import {
   apiConfig,
   COLLECTION_TYPE_SECTION,
-  COLLECTION_TYPE_TOPIC,
   collectionTypeOptions,
   FieldTypes,
   MAX_PAGE_SIZE
@@ -21,7 +20,7 @@ import {
   Column,
   SearchFormProps
 } from '@/types';
-import { generatePath } from '@/utils';
+import { generatePath, renderListPageUrl } from '@/utils';
 import { Save } from 'lucide-react';
 import { TbListDetails } from 'react-icons/tb';
 
@@ -32,7 +31,7 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
     searchParams: { type }
   } = useQueryParams<CollectionSearchType>();
 
-  const { data, loading, handlers } = useListBase<
+  const { data, loading, handlers, queryString } = useListBase<
     CollectionResType,
     CollectionSearchType
   >({
@@ -66,9 +65,12 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate(
-                      generatePath(route.collectionItem.getList.path, {
-                        id: record.id
-                      })
+                      renderListPageUrl(
+                        generatePath(route.collectionItem.getList.path, {
+                          id: record.id
+                        }),
+                        queryString
+                      )
                     );
                   }}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
