@@ -5,7 +5,12 @@ import CommentInput from './comment-input';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { NoData } from '@/components/no-data';
 import { apiConfig } from '@/constants';
-import { useIsMounted, useListBase, useValidatePermission } from '@/hooks';
+import {
+  useIsMounted,
+  useListBase,
+  useQueryParams,
+  useValidatePermission
+} from '@/hooks';
 import {
   usePinCommentMutation,
   useVoteCommentMutation,
@@ -25,6 +30,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
   const { id: movieId } = useParams<{ id: string }>();
   const isMounted = useIsMounted();
   const queryClient = useQueryClient();
+  const { searchParams } = useQueryParams<{ movieTitle: string }>();
 
   const voteListCommentQuery = useVoteListCommentQuery({ movieId });
   const voteList = useMemo(
@@ -54,7 +60,8 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId'],
       showNotify: false,
-      useInfiniteScroll: true
+      useInfiniteScroll: true,
+      excludeFromQueryFilter: ['movieTitle']
     }
   });
 
@@ -131,6 +138,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
     <PageWrapper
       breadcrumbs={[
         { label: 'Phim', href: route.movie.getList.path },
+        { label: searchParams.movieTitle ?? 'Chi tiết' },
         { label: 'Bình luận' }
       ]}
     >

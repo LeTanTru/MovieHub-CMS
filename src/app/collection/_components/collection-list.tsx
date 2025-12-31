@@ -26,11 +26,10 @@ import { TbListDetails } from 'react-icons/tb';
 export default function CollectionList({ queryKey }: { queryKey: string }) {
   const navigate = useNavigate(false);
 
-  const {
-    searchParams: { type }
-  } = useQueryParams<CollectionSearchType>();
+  const { searchParams, serializeParams } =
+    useQueryParams<CollectionSearchType>();
 
-  const { data, loading, handlers, queryString } = useListBase<
+  const { data, loading, handlers } = useListBase<
     CollectionResType,
     CollectionSearchType
   >({
@@ -68,7 +67,10 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
                         generatePath(route.collectionItem.getList.path, {
                           id: record.id
                         }),
-                        queryString
+                        serializeParams({
+                          type: searchParams.type,
+                          collectionTitle: record.name
+                        })
                       )
                     );
                   }}
@@ -111,7 +113,7 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
         <span className='line-clamp-1 block truncate'>{value}</span>
       )
     },
-    ...(type && +type === COLLECTION_TYPE_SECTION
+    ...(searchParams.type && +searchParams.type === COLLECTION_TYPE_SECTION
       ? [
           {
             title: 'Thiết kế',

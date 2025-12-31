@@ -53,7 +53,8 @@ export default function MoviePersonList({
       queryKey,
       objectName: kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
       defaultFilters: { kind, movieId },
-      notShowFromSearchParams: ['kind', 'movieId']
+      notShowFromSearchParams: ['kind', 'movieId'],
+      excludeFromQueryFilter: ['movieTitle']
     },
     override: (handlers) => {
       handlers.additionalParams = () => ({
