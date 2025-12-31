@@ -102,7 +102,20 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
       }
     }
 
-    const filter = JSON.parse(data?.filter) as CollectionBodyType['filter'];
+    let filter: CollectionBodyType['filter'] = {};
+
+    if (data?.filter) {
+      try {
+        if (typeof data.filter === 'string') {
+          filter = JSON.parse(data.filter);
+        } else if (typeof data.filter === 'object') {
+          filter = data.filter as CollectionBodyType['filter'];
+        }
+      } catch (error) {
+        logger.error('Error while parsing filter', error);
+        filter = {};
+      }
+    }
 
     return {
       colors: parsedColors,
