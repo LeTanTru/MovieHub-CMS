@@ -1,6 +1,5 @@
 'use client';
-
-import { Button, ImageField, ToolTip } from '@/components/form';
+import { ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import { apiConfig, DEFAULT_DATE_FORMAT, FieldTypes } from '@/constants';
@@ -14,7 +13,6 @@ import {
   SearchFormProps
 } from '@/types';
 import { formatDate, renderImageUrl } from '@/utils';
-import { Save } from 'lucide-react';
 
 export default function SidebarList({ queryKey }: { queryKey: string }) {
   const { data, loading, handlers } = useListBase<
@@ -32,15 +30,14 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
     sortColumn,
     loading: loadingUpdateOrdering,
     sortedData,
-    isChanged,
-    onDragEnd,
-    handleUpdate
+    onDragEnd
   } = useDragDrop<MovieSidebarResType>({
     key: `${queryKey}-list`,
     objectName: 'phim',
     data,
     apiConfig: apiConfig.sidebar.updateOrdering,
-    sortField: 'ordering'
+    sortField: 'ordering',
+    updateOnDragEnd: true
   });
 
   const columns: Column<MovieSidebarResType>[] = [
@@ -155,20 +152,6 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
           loading={loading || loadingUpdateOrdering}
           onDragEnd={onDragEnd}
         />
-        {sortedData.length > 1 && (
-          <div className='mr-4 flex justify-end py-4'>
-            <Button
-              onClick={() => handleUpdate()}
-              disabled={!isChanged || loading || loadingUpdateOrdering}
-              className='w-40'
-              variant={'primary'}
-              loading={loading || loadingUpdateOrdering}
-            >
-              <Save />
-              Cập nhật
-            </Button>
-          </div>
-        )}
       </ListPageWrapper>
     </PageWrapper>
   );

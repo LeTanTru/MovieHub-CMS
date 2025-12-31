@@ -21,7 +21,6 @@ import {
   SearchFormProps
 } from '@/types';
 import { generatePath, renderListPageUrl } from '@/utils';
-import { Save } from 'lucide-react';
 import { TbListDetails } from 'react-icons/tb';
 
 export default function CollectionList({ queryKey }: { queryKey: string }) {
@@ -93,15 +92,14 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
     sortColumn,
     loading: loadingUpdateOrdering,
     sortedData,
-    isChanged,
-    onDragEnd,
-    handleUpdate
+    onDragEnd
   } = useDragDrop<CollectionResType>({
     key: `${queryKey}-list`,
     objectName: 'bộ sưu tập',
     data,
     apiConfig: apiConfig.collection.updateOrdering,
-    sortField: 'ordering'
+    sortField: 'ordering',
+    updateOnDragEnd: true
   });
 
   const columns: Column<CollectionResType>[] = [
@@ -247,20 +245,6 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
           loading={loading || loadingUpdateOrdering}
           onDragEnd={onDragEnd}
         />
-        {sortedData.length > 1 && (
-          <div className='mr-4 flex justify-end py-4'>
-            <Button
-              onClick={() => handleUpdate()}
-              disabled={!isChanged || loading || loadingUpdateOrdering}
-              className='w-40'
-              variant={'primary'}
-              loading={loading || loadingUpdateOrdering}
-            >
-              <Save />
-              Cập nhật
-            </Button>
-          </div>
-        )}
       </ListPageWrapper>
     </PageWrapper>
   );

@@ -24,7 +24,7 @@ import {
   SearchFormProps
 } from '@/types';
 import { formatDate, renderImageUrl, renderListPageUrl } from '@/utils';
-import { PlusIcon, Save } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
 export default function CollectionItemList({ queryKey }: { queryKey: string }) {
@@ -66,9 +66,7 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
     sortColumn,
     loading: loadingUpdateOrdering,
     sortedData,
-    isChanged,
-    onDragEnd,
-    handleUpdate
+    onDragEnd
   } = useDragDrop<CollectionItemResType>({
     key: `${queryKey}-list`,
     objectName: 'chi tiết bộ sưu tập',
@@ -79,7 +77,8 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
       id: record.id,
       ordering: index,
       parentId: record.collectionId
-    })
+    }),
+    updateOnDragEnd: true
   });
 
   const handleAddCollectionItem = () => {
@@ -232,20 +231,6 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
           loading={loading || loadingUpdateOrdering}
           onDragEnd={onDragEnd}
         />
-        {sortedData.length > 1 && (
-          <div className='mr-4 flex justify-end py-4'>
-            <Button
-              onClick={() => handleUpdate()}
-              disabled={!isChanged || loading || loadingUpdateOrdering}
-              className='w-40'
-              variant={'primary'}
-              loading={loading || loadingUpdateOrdering}
-            >
-              <Save />
-              Cập nhật
-            </Button>
-          </div>
-        )}
       </ListPageWrapper>
       <CollectionItemModal
         open={collectionItemModal.opened}

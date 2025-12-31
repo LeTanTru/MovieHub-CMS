@@ -19,7 +19,7 @@ import {
   SearchFormProps
 } from '@/types';
 import { notify, renderImageUrl } from '@/utils';
-import { PlusIcon, Save, X } from 'lucide-react';
+import { PlusIcon, X } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { AiOutlineClear, AiOutlineEdit, AiOutlineSave } from 'react-icons/ai';
@@ -127,15 +127,14 @@ export default function MoviePersonList({
     sortColumn,
     loading: loadingUpdateOrdering,
     sortedData,
-    isChanged,
-    onDragEnd,
-    handleUpdate
+    onDragEnd
   } = useDragDrop<MoviePersonResType>({
     key: `${queryKey}-list`,
     objectName: kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
     data,
     apiConfig: apiConfig.moviePerson.updateOrdering,
-    sortField: 'ordering'
+    sortField: 'ordering',
+    updateOnDragEnd: true
   });
 
   useEffect(() => {
@@ -371,20 +370,6 @@ export default function MoviePersonList({
           loading={loading || loadingUpdateOrdering}
           onDragEnd={onDragEnd}
         />
-        {sortedData.length > 1 && (
-          <div className='mr-4 flex justify-end py-4'>
-            <Button
-              onClick={() => handleUpdate()}
-              disabled={!isChanged || loading || loadingUpdateOrdering}
-              className='w-40'
-              variant={'primary'}
-              loading={loading || loadingUpdateOrdering}
-            >
-              <Save />
-              Cập nhật
-            </Button>
-          </div>
-        )}
       </ListPageWrapper>
       <MoviePersonModal
         moviePersonList={data}

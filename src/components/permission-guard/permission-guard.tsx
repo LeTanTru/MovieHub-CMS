@@ -109,7 +109,8 @@ export default function PermissionGuard({
     router,
     firstActiveRoute,
     isLoggedOut,
-    isPublicRoute
+    isPublicRoute,
+    queryString
   ]);
 
   // if logged in, set loading to false

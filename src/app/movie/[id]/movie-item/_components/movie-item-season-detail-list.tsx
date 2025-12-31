@@ -40,7 +40,7 @@ import {
   renderImageUrl,
   renderListPageUrl
 } from '@/utils';
-import { PlayCircle, PlusIcon, Save } from 'lucide-react';
+import { PlayCircle, PlusIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import VideoPlayModal from './video-play-modal';
@@ -173,15 +173,14 @@ export default function MovieItemSeasonDetailList({
     sortColumn,
     loading: loadingUpdateOrdering,
     sortedData,
-    isChanged,
-    onDragEnd,
-    handleUpdate
+    onDragEnd
   } = useDragDrop<MovieItemResType>({
     key: `${queryKey}-list`,
     objectName: 'tập, trailer',
     data,
     apiConfig: apiConfig.movieItem.updateOrdering,
-    sortField: 'ordering'
+    sortField: 'ordering',
+    updateOnDragEnd: true
   });
 
   const columns: Column<MovieItemResType>[] = [
@@ -308,20 +307,6 @@ export default function MovieItemSeasonDetailList({
           loading={loading || loadingUpdateOrdering}
           onDragEnd={onDragEnd}
         />
-        {sortedData.length > 1 && (
-          <div className='mr-4 flex justify-end py-4'>
-            <Button
-              onClick={() => handleUpdate()}
-              disabled={!isChanged || loading || loadingUpdateOrdering}
-              className='w-40'
-              variant={'primary'}
-              loading={loading || loadingUpdateOrdering}
-            >
-              <Save />
-              Cập nhật
-            </Button>
-          </div>
-        )}
       </ListPageWrapper>
       <MovieItemModal
         open={movieItemModal.opened}

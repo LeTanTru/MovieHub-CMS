@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, ImageField } from '@/components/form';
+import { ImageField } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import {
@@ -26,7 +26,6 @@ import {
   renderImageUrl,
   renderListPageUrl
 } from '@/utils';
-import { Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
 export default function MovieItemSeasonList({
@@ -67,15 +66,14 @@ export default function MovieItemSeasonList({
     sortColumn,
     loading: loadingUpdateOrdering,
     sortedData,
-    isChanged,
-    onDragEnd,
-    handleUpdate
+    onDragEnd
   } = useDragDrop<MovieItemResType>({
     key: `${queryKey}-list`,
     objectName: 'mùa',
     data,
     apiConfig: apiConfig.movieItem.updateOrdering,
-    sortField: 'ordering'
+    sortField: 'ordering',
+    updateOnDragEnd: true
   });
 
   const columns: Column<MovieItemResType>[] = [
@@ -183,20 +181,6 @@ export default function MovieItemSeasonList({
           onSelectRow={handleViewDetail}
           rowClassName={() => 'cursor-pointer'}
         />
-        {sortedData.length > 1 && (
-          <div className='mr-4 flex justify-end py-4'>
-            <Button
-              onClick={() => handleUpdate()}
-              disabled={!isChanged || loading || loadingUpdateOrdering}
-              className='w-40'
-              variant={'primary'}
-              loading={loading || loadingUpdateOrdering}
-            >
-              <Save />
-              Cập nhật
-            </Button>
-          </div>
-        )}
       </ListPageWrapper>
     </PageWrapper>
   );
