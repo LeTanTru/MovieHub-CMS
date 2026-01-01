@@ -85,8 +85,9 @@ export default function VideoPlayModal({
               : undefined
           }
           volume={0.5}
+          className='rounded! border-none!'
         >
-          <MediaProvider>
+          <MediaProvider slot='media' className='h-[calc(100%+5px)]!'>
             <Poster
               className='vds-poster'
               src={renderImageUrl(video?.thumbnailUrl)}

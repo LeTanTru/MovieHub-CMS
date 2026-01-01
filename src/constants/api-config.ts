@@ -504,7 +504,8 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.tenantApiUrl}/v1/sns/get-client-token`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'GET_SNS_CONFIG'
+      permissionCode: 'GET_SNS_CONFIG',
+      isRequiredTenantId: true
     },
     sendSignal: {
       baseUrl: `${AppConstants.tenantApiUrl}/v1/sns/send-signal`,
