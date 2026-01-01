@@ -303,17 +303,19 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                   </Col>
                 )}
               </Row>
-              <Row>
-                <Col span={12}>
-                  <BooleanField
-                    control={form.control}
-                    name='fillData'
-                    label='Tự động điền dữ liệu'
-                    className='items-center'
-                    required
-                  />
-                </Col>
-              </Row>
+              {!isEditing && (
+                <Row>
+                  <Col span={12}>
+                    <BooleanField
+                      control={form.control}
+                      name='fillData'
+                      label='Tự động điền dữ liệu'
+                      className='items-center'
+                      required
+                    />
+                  </Col>
+                </Row>
+              )}
               <FieldSet title='Bộ lọc'>
                 <Row>
                   <Col span={12}>
