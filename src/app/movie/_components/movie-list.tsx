@@ -31,7 +31,7 @@ import {
   renderImageUrl,
   renderListPageUrl
 } from '@/utils';
-import { MessageSquareHeart, MessageSquareMore, Star } from 'lucide-react';
+import { MessageSquareMore, Star } from 'lucide-react';
 import Link from 'next/link';
 import { AiOutlineUser } from 'react-icons/ai';
 
