@@ -12,15 +12,21 @@ import {
   SeekBackwardButton,
   SeekForwardButton,
   SettingMenu,
+  SkipIntroButton,
   VolumeToggleButton
 } from '@/components/video-player';
 import { VideoLibraryResType } from '@/types';
 import {
   isHLSProvider,
   MediaPlayer,
+  MediaPlayerInstance,
   MediaProvider,
   MediaProviderAdapter,
-  Poster
+  MediaTimeUpdateEvent,
+  MediaTimeUpdateEventDetail,
+  Poster,
+  TimeSlider,
+  Tooltip
 } from '@vidstack/react';
 import {
   DefaultVideoLayout,
@@ -28,6 +34,9 @@ import {
 } from '@vidstack/react/player/layouts/default';
 import { getData, renderImageUrl, renderVideoUrl, renderVttUrl } from '@/utils';
 import { storageKeys, VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL } from '@/constants';
+import { useRef, useState } from 'react';
+import { cn } from '@/lib';
+import { NextIcon } from '@vidstack/react/icons';
 
 export default function VideoPlayModal({
   open,
@@ -38,6 +47,8 @@ export default function VideoPlayModal({
   open: boolean;
   close: () => void;
 }) {
+  const playerRef = useRef<MediaPlayerInstance>(null);
+  const [showSkip, setShowSkip] = useState<boolean>(true);
   // const textTracks = [
   //   {
   //     src: 'https://files.vidstack.io/sprite-fight/subs/english.vtt',
@@ -62,6 +73,20 @@ export default function VideoPlayModal({
   //     default: true
   //   }
   // ];
+
+  const handleTimeChange = (
+    detail: MediaTimeUpdateEventDetail,
+    nativeEvent: MediaTimeUpdateEvent
+  ) => {
+    if (!video) return;
+
+    const { currentTime } = detail;
+    const shouldShowSkip =
+      currentTime >= video.introStart && currentTime < video.introEnd;
+
+    setShowSkip((prev) => (prev !== shouldShowSkip ? shouldShowSkip : prev));
+  };
+
   return (
     <Modal
       title={video?.name}
@@ -71,6 +96,7 @@ export default function VideoPlayModal({
     >
       <div className='p-4'>
         <MediaPlayer
+          ref={playerRef}
           viewType='video'
           streamType='on-demand'
           logLevel='silent'
@@ -87,8 +113,12 @@ export default function VideoPlayModal({
           }
           volume={0.5}
           className='rounded! border-none!'
+          onTimeUpdate={handleTimeChange}
         >
-          <MediaProvider slot='media' className='h-[calc(100%+5px)]!'>
+          <MediaProvider
+            slot='media'
+            className='h-[calc(100%+5px)]! cursor-pointer'
+          >
             <Poster
               className='vds-poster'
               src={renderImageUrl(video?.thumbnailUrl)}
@@ -111,11 +141,70 @@ export default function VideoPlayModal({
               captionButton: <CaptionButton />,
               beforeSettingsMenu: (
                 <>
+                  <Tooltip.Root>
+                    <Tooltip.Trigger asChild>
+                      <button className='vds-button' aria-label='Next video'>
+                        <NextIcon size={32} />
+                      </button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content
+                      className='vds-tooltip-content'
+                      placement='top'
+                    >
+                      Tập tiếp theo
+                    </Tooltip.Content>
+                  </Tooltip.Root>
                   <SeekBackwardButton />
                   <SeekForwardButton />
                 </>
               ),
-              googleCastButton: null
+              googleCastButton: null,
+              afterTimeSlider: showSkip && (
+                <SkipIntroButton
+                  onClick={() => {
+                    if (playerRef.current && video?.introEnd) {
+                      playerRef.current.currentTime = video.introEnd;
+                    }
+                  }}
+                />
+              ),
+              timeSlider: (
+                <TimeSlider.Root className='group relative mx-[7.5px] inline-flex h-10 w-full cursor-pointer touch-none items-center rounded outline-none select-none aria-hidden:hidden'>
+                  <TimeSlider.Track className='relative z-0 h-[5px] w-full overflow-hidden rounded-sm bg-white/30 ring-sky-400 group-data-focus:ring-[3px]'>
+                    <TimeSlider.TrackFill className='absolute h-full w-(--slider-fill) rounded-sm bg-[#f5f5f5] will-change-[width]' />
+                    <TimeSlider.Progress className='absolute z-10 h-full w-(--slider-progress) rounded-sm bg-[#ffffff80] will-change-[width]' />
+                    {video && (
+                      <IntroRangeHighlight
+                        start={video.introStart || 0}
+                        end={video.introEnd}
+                        duration={video.duration}
+                      />
+                    )}
+                    {/* {video && (
+                      <IntroRangeHighlight
+                        start={video.outroStart}
+                        end={video.duration}
+                        duration={video.duration}
+                      />
+                    )} */}
+                  </TimeSlider.Track>
+
+                  <TimeSlider.Preview
+                    className='pointer-events-none flex flex-col items-center opacity-0 transition-opacity duration-200 data-visible:opacity-100'
+                    noClamp
+                  >
+                    <TimeSlider.Thumbnail.Root
+                      className='block h-(--thumbnail-height) max-h-40 min-h-20 w-(--thumbnail-width) max-w-[180px] min-w-[120px] overflow-hidden border border-white bg-black'
+                      src={renderVttUrl(video?.vttUrl)}
+                    >
+                      <TimeSlider.Thumbnail.Img />
+                    </TimeSlider.Thumbnail.Root>
+                    <TimeSlider.Value className='rounded-sm bg-black px-2 py-px text-[13px] font-medium text-white' />
+                  </TimeSlider.Preview>
+
+                  <TimeSlider.Thumb className='absolute top-1/2 left-(--slider-fill) z-20 h-[15px] w-[15px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cacaca] bg-white opacity-0 ring-white/40 transition-opacity will-change-[left] group-data-active:opacity-100 group-data-dragging:ring-4' />
+                </TimeSlider.Root>
+              )
             }}
           />
         </MediaPlayer>
@@ -138,4 +227,34 @@ function onProviderChange(
       }
     };
   }
+}
+
+function IntroRangeHighlight({
+  start,
+  end,
+  duration
+}: {
+  start: number;
+  end: number;
+  duration?: number;
+}) {
+  if (!duration || duration === 0) return null;
+
+  const left = (start / duration) * 100;
+  const width = ((end - start) / duration) * 100;
+
+  return (
+    <div
+      className={cn(
+        'pointer-events-none absolute top-0 h-full bg-gray-100/50',
+        {
+          'rounded-tl rounded-bl': start === 0
+        }
+      )}
+      style={{
+        left: `${left}%`,
+        width: `${width}%`
+      }}
+    ></div>
+  );
 }

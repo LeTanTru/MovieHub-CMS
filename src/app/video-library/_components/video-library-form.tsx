@@ -178,18 +178,16 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
         introStart:
           timeToSeconds(
             values.introStart ? (values.introStart as string) : '00:00:00'
-          ) || null,
+          ) ?? null,
         introEnd:
           timeToSeconds(
             values.introEnd ? (values.introEnd as string) : '00:00:00'
-          ) || null,
+          ) ?? null,
         outroStart:
           timeToSeconds(
             values.outroStart ? (values.outroStart as string) : '00:00:00'
-          ) || null,
-        duration: timeToSeconds(
-          values.duration ? (values.duration as string) : '00:00:00'
-        ),
+          ) ?? null,
+        duration: values.duration,
         thumbnailUrl: imageManager.currentUrl,
         content: videoManager.currentUrl
       },

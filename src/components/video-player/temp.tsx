@@ -77,6 +77,7 @@ export default function VideoPlayModal({
     detail: MediaTimeUpdateEventDetail,
     nativeEvent: MediaTimeUpdateEvent
   ) => {
+    console.log('🚀 ~ handleTimeChange ~ detail:', detail);
     if (!showSkip || !video?.introEnd) return;
 
     const currentTime = detail.currentTime;
@@ -145,9 +146,9 @@ export default function VideoPlayModal({
               ),
               timeSlider: (
                 <TimeSlider.Root className='group relative mx-[7.5px] inline-flex h-10 w-full cursor-pointer touch-none items-center rounded outline-none select-none aria-hidden:hidden'>
-                  <TimeSlider.Track className='relative z-0 h-[5px] w-full overflow-hidden rounded-sm bg-white/30 ring-sky-400 group-data-[focus]:ring-[3px]'>
-                    <TimeSlider.TrackFill className='absolute h-full w-[var(--slider-fill)] rounded-sm bg-red-500 will-change-[width]' />
-                    <TimeSlider.Progress className='absolute z-10 h-full w-[var(--slider-progress)] rounded-sm bg-white/80 will-change-[width]' />
+                  <TimeSlider.Track className='relative z-0 h-[5px] w-full overflow-hidden rounded-sm bg-white/30 ring-sky-400 group-data-focus:ring-[3px]'>
+                    <TimeSlider.TrackFill className='absolute h-full w-(--slider-fill) rounded-sm bg-red-500 will-change-[width]' />
+                    <TimeSlider.Progress className='absolute z-10 h-full w-(--slider-progress) rounded-sm bg-white/80 will-change-[width]' />
                     {video && (
                       <IntroRangeHighlight
                         start={video.introStart || 0}
@@ -165,11 +166,11 @@ export default function VideoPlayModal({
                   </TimeSlider.Track>
 
                   <TimeSlider.Preview
-                    className='pointer-events-none flex flex-col items-center opacity-0 transition-opacity duration-200 data-[visible]:opacity-100'
+                    className='pointer-events-none flex flex-col items-center opacity-0 transition-opacity duration-200 data-visible:opacity-100'
                     noClamp
                   >
                     <TimeSlider.Thumbnail.Root
-                      className='block h-[var(--thumbnail-height)] max-h-[160px] min-h-[80px] w-[var(--thumbnail-width)] max-w-[180px] min-w-[120px] overflow-hidden border border-white bg-black'
+                      className='block h-(--thumbnail-height) max-h-40 min-h-20 w-(--thumbnail-width) max-w-[180px] min-w-[120px] overflow-hidden border border-white bg-black'
                       src={renderVttUrl(video?.vttUrl)}
                     >
                       <TimeSlider.Thumbnail.Img />
@@ -177,7 +178,7 @@ export default function VideoPlayModal({
                     <TimeSlider.Value className='rounded-sm bg-black px-2 py-px text-[13px] font-medium text-white' />
                   </TimeSlider.Preview>
 
-                  <TimeSlider.Thumb className='absolute top-1/2 left-[var(--slider-fill)] z-20 h-[15px] w-[15px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cacaca] bg-white opacity-0 ring-white/40 transition-opacity will-change-[left] group-data-[active]:opacity-100 group-data-[dragging]:ring-4' />
+                  <TimeSlider.Thumb className='absolute top-1/2 left-(--slider-fill) z-20 h-[15px] w-[15px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cacaca] bg-white opacity-0 ring-white/40 transition-opacity will-change-[left] group-data-active:opacity-100 group-data-dragging:ring-4' />
                 </TimeSlider.Root>
               )
             }}
@@ -203,6 +204,7 @@ function onProviderChange(
     };
   }
 }
+
 function IntroRangeHighlight({
   start,
   end,

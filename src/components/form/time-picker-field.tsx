@@ -58,15 +58,15 @@ export default function TimePickerField({
           minute = Math.floor((field.value % 3600) / 60);
           second = field.value % 60;
 
-          const hh = pad(Math.floor(field.value / 3600));
-          const mm = pad(Math.floor((field.value % 3600) / 60));
-          const ss = pad(field.value % 60);
+          // const hh = pad(Math.floor(field.value / 3600));
+          // const mm = pad(Math.floor((field.value % 3600) / 60));
+          // const ss = pad(field.value % 60);
 
-          const formatted = `${hh}:${mm}:${ss}`;
+          // const formatted = `${hh}:${mm}:${ss}`;
 
-          if (String(field.value) !== formatted) {
-            setTimeout(() => field.onChange(formatted), 0);
-          }
+          // if (String(field.value) !== formatted) {
+          //   setTimeout(() => field.onChange(formatted), 0);
+          // }
         } else if (typeof field.value === 'string') {
           const parts = field.value.split(':').map((v) => parseInt(v));
           hour = isNaN(parts[0]) ? 0 : parts[0];
@@ -131,7 +131,8 @@ export default function TimePickerField({
                     <span
                       suppressHydrationWarning
                       className={cn({
-                        'text-gray-300': !field.value,
+                        'text-gray-300':
+                          field.value === null || field.value === undefined,
                         'text-destructive': !!fieldState.error
                       })}
                     >

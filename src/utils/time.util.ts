@@ -1,4 +1,6 @@
 export function timeToSeconds(time: string): number {
+  if (typeof time === 'number') return time;
+
   const parts = time.split(':');
 
   if (parts.length !== 3) {
