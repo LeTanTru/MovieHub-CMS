@@ -31,7 +31,7 @@ import {
   renderImageUrl,
   renderListPageUrl
 } from '@/utils';
-import { MessageSquareHeart, Star } from 'lucide-react';
+import { MessageSquareHeart, MessageSquareMore, Star } from 'lucide-react';
 import Link from 'next/link';
 import { AiOutlineUser } from 'react-icons/ai';
 
@@ -106,7 +106,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <MessageSquareHeart className='text-dodger-blue size-4' />
+                  <MessageSquareMore className='text-dodger-blue size-4' />
                 </Button>
               </span>
             </ToolTip>
