@@ -92,7 +92,8 @@ export default function VideoPlayModal({
       title={video?.name}
       open={open}
       onClose={close}
-      className='[&_.content]:top-0 [&_.content]:h-fit [&_.content]:w-300!'
+      className='[&_.content]:top-0 [&_.content]:h-fit'
+      width={1200}
     >
       <div className='p-4'>
         <MediaPlayer
@@ -159,7 +160,7 @@ export default function VideoPlayModal({
                 </>
               ),
               googleCastButton: null,
-              afterTimeSlider: showSkip && (
+              afterTimeSlider: showSkip ? (
                 <SkipIntroButton
                   onClick={() => {
                     if (playerRef.current && video?.introEnd) {
@@ -167,6 +168,8 @@ export default function VideoPlayModal({
                     }
                   }}
                 />
+              ) : (
+                <></>
               ),
               timeSlider: (
                 <TimeSlider.Root className='group relative mx-[7.5px] inline-flex h-10 w-full cursor-pointer touch-none items-center rounded outline-none select-none aria-hidden:hidden'>
