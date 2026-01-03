@@ -21,6 +21,7 @@ import { useLoginEmployeeMutation, useLoginManagerMutation } from '@/queries';
 import { omit } from 'lodash';
 
 export default function LoginForm() {
+  'use no memo';
   const loginManagerMutation = useLoginManagerMutation();
   const loginEmployeeMutation = useLoginEmployeeMutation();
   const { setAuthenticated, setLoading } = useAuthStore();
