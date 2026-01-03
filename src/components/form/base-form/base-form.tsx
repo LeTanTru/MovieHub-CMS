@@ -5,7 +5,12 @@ import { cn } from '@/lib';
 import { logger } from '@/logger';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Ref, useEffect } from 'react';
-import { DefaultValues, useForm, UseFormReturn } from 'react-hook-form';
+import {
+  DefaultValues,
+  useForm,
+  UseFormReturn,
+  useFormState
+} from 'react-hook-form';
 
 type AsyncDefaultValues<T> = (payload?: unknown) => Promise<T>;
 
@@ -41,16 +46,23 @@ export default function BaseForm<T extends Record<string, any>>({
     shouldFocusError: false
   });
 
+  const formState = useFormState({ control: form.control });
+
   useEffect(() => {
     if (initialValues) {
       form.reset(initialValues);
     }
   }, [initialValues, form]);
 
-  if (Object.keys(form.formState.errors).length) {
-    logger.info('BaseForm ~ form:', form.formState.errors);
+  if (Object.keys(formState.errors).length) {
+    logger.info('BaseForm ~ form:', formState.errors);
     logger.info('BaseForm ~ form:', form.getValues());
   }
+
+  const enhancedForm = {
+    ...form,
+    formState
+  };
 
   return (
     <Form {...form}>
@@ -61,7 +73,7 @@ export default function BaseForm<T extends Record<string, any>>({
         onSubmit={form.handleSubmit((values) => onSubmit(values, form))}
         onChange={onChange}
       >
-        {children?.(form)}
+        {children?.(enhancedForm as UseFormReturn<T>)}
       </form>
     </Form>
   );
