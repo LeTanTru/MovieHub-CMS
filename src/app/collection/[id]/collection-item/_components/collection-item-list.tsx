@@ -246,7 +246,7 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
       </ListPageWrapper>
       <CollectionItemModal
         open={collectionItemModal.opened}
-        close={collectionItemModal.close}
+        onClose={collectionItemModal.close}
       />
     </PageWrapper>
   );

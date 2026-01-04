@@ -298,7 +298,11 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
               </>
             )}
 
-            <>{renderActions(form, { onCancel: handleCancel })}</>
+            <>
+              {renderActions(form, {
+                onCancel: handleCancel
+              })}
+            </>
             {loading && (
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />
