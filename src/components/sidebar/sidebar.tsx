@@ -334,7 +334,7 @@ const AppSidebar = () => {
 
   useEffect(() => {
     setClientMenu(filterMenuByPermission(menuConfig));
-  }, []);
+  }, [filterMenuByPermission]);
 
   if (!clientMenu)
     return (
