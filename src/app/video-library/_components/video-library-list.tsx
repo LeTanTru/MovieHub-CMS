@@ -180,11 +180,13 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
           changePagination={handlers.changePagination}
         />
       </ListPageWrapper>
-      <VideoPlayModal
-        open={playModal.opened}
-        close={playModal.close}
-        video={selectedVideo}
-      />
+      {selectedVideo && (
+        <VideoPlayModal
+          open={playModal.opened}
+          onClose={playModal.close}
+          video={selectedVideo}
+        />
+      )}
     </PageWrapper>
   );
 }

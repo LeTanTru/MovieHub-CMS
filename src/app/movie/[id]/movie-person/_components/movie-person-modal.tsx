@@ -79,6 +79,7 @@ export default function MoviePersonModal({
       open={open}
       onClose={close}
       className='[&_.content]:bottom-[25%] [&_.content]:h-fit'
+      aria-labelledby='video-modal-title'
     >
       <BaseForm
         defaultValues={defaultValues}

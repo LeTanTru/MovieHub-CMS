@@ -80,6 +80,7 @@ export default function CategoryModal({
       onClose={close}
       title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} danh mục`}
       className='[&_.content]:bottom-[20%] [&_.content]:h-fit'
+      aria-labelledby='video-modal-title'
     >
       <BaseForm
         onSubmit={onSubmit}

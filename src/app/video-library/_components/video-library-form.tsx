@@ -20,7 +20,6 @@ import {
   apiConfig,
   ErrorCode,
   STATUS_ACTIVE,
-  storageKeys,
   VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL,
   VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
   videoLibraryErrorMaps,
@@ -36,7 +35,6 @@ import { route } from '@/routes';
 import { videoLibrarySchema } from '@/schemaValidations';
 import { VideoLibraryBodyType, VideoLibraryResType } from '@/types';
 import {
-  getData,
   renderImageUrl,
   renderListPageUrl,
   renderVideoUrl,
@@ -51,13 +49,6 @@ import {
   defaultLayoutIcons
 } from '@vidstack/react/player/layouts/default';
 import {
-  isHLSProvider,
-  MediaPlayer,
-  MediaProvider,
-  MediaProviderAdapter,
-  Poster
-} from '@vidstack/react';
-import {
   CaptionButton,
   FullscreenToggleButton,
   PiPToggleButton,
@@ -65,10 +56,12 @@ import {
   SeekBackwardButton,
   SeekForwardButton,
   SettingMenu,
+  VideoPlayer,
   VolumeToggleButton
 } from '@/components/video-player';
 import { AxiosProgressEvent } from 'axios';
 import { logger } from '@/logger';
+import { MediaPlayer, MediaProvider } from '@vidstack/react';
 
 export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
@@ -319,7 +312,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                         required
                         onChange={(e) => {
                           const value = e.target.value;
-                          imageManager.trackUpload(value);
+                          videoManager.trackUpload(value);
                           form.setValue('content', value);
                           if (value) {
                             form.clearErrors('content');
@@ -404,54 +397,16 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                   <Col span={24}>
                     {/* Play preview video */}
                     {isEditing && data ? (
-                      <MediaPlayer
-                        autoPlay
-                        crossOrigin
-                        fullscreenOrientation={'none'}
-                        logLevel='silent'
-                        onProviderChange={onProviderChange}
-                        playsInline
-                        preferNativeHLS={false}
-                        src={renderVideoUrl(data.content)}
-                        streamType='on-demand'
-                        viewType='video'
-                        volume={0.5}
-                        className='rounded! border-none!'
-                      >
-                        <MediaProvider slot='media'>
-                          <Poster
-                            className='vds-poster'
-                            src={renderImageUrl(data.thumbnailUrl)}
-                          />
-                          {/* {textTracks.map((track) => (
-                            <Track {...(track as any)} key={track.src} />
-                          ))} */}
-                        </MediaProvider>
-                        <DefaultVideoLayout
-                          thumbnails={renderVttUrl(data.vttUrl)}
-                          icons={defaultLayoutIcons}
-                          slots={{
-                            playButton: <PlayToggleButton />,
-                            muteButton: <VolumeToggleButton />,
-                            fullscreenButton: <FullscreenToggleButton />,
-                            pipButton: <PiPToggleButton />,
-                            settingsMenu: (
-                              <SettingMenu
-                                placement='top end'
-                                tooltipPlacement='top'
-                              />
-                            ),
-                            captionButton: <CaptionButton />,
-                            beforeSettingsMenu: (
-                              <>
-                                <SeekBackwardButton />
-                                <SeekForwardButton />
-                              </>
-                            ),
-                            googleCastButton: null
-                          }}
-                        />
-                      </MediaPlayer>
+                      <VideoPlayer
+                        auth={true}
+                        duration={data.duration}
+                        introEnd={data.introEnd}
+                        introStart={data.introStart}
+                        outroStart={data.outroStart}
+                        source={renderVideoUrl(data.content)}
+                        thumbnailUrl={renderImageUrl(data.thumbnailUrl)}
+                        vttUrl={renderVttUrl(data.vttUrl)}
+                      />
                     ) : (
                       // Upload video
                       <UploadVideoField
@@ -510,20 +465,4 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
       </BaseForm>
     </PageWrapper>
   );
-}
-
-function onProviderChange(
-  provider: MediaProviderAdapter | null
-  // nativeEvent: MediaProviderChangeEvent
-) {
-  if (isHLSProvider(provider)) {
-    provider.config = {
-      xhrSetup(xhr) {
-        xhr.setRequestHeader(
-          'Authorization',
-          `Bearer ${getData(storageKeys.ACCESS_TOKEN)}`
-        );
-      }
-    };
-  }
 }

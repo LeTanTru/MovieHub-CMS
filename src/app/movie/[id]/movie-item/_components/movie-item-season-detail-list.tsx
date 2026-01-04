@@ -70,8 +70,8 @@ export default function MovieItemSeasonDetailList({
   const movieItemModal = useDisclosure(false);
   const [movieItem, setMovieItem] = useState<MovieItemResType | null>();
 
-  const [selectedVideo, setSelectedVideo] = useState<VideoLibraryResType>();
   const playModal = useDisclosure(false);
+  const [selectedVideo, setSelectedVideo] = useState<VideoLibraryResType>();
 
   const { data, loading, handlers } = useListBase<
     MovieItemResType,
@@ -311,16 +311,20 @@ export default function MovieItemSeasonDetailList({
           onDragEnd={onDragEnd}
         />
       </ListPageWrapper>
-      <MovieItemModal
-        open={movieItemModal.opened}
-        close={movieItemModal.close}
-        movieItem={movieItem}
-      />
-      <VideoPlayModal
-        open={playModal.opened}
-        close={playModal.close}
-        video={selectedVideo}
-      />
+      {movieItem && (
+        <MovieItemModal
+          open={movieItemModal.opened}
+          close={movieItemModal.close}
+          movieItem={movieItem}
+        />
+      )}
+      {selectedVideo && (
+        <VideoPlayModal
+          open={playModal.opened}
+          onClose={playModal.close}
+          video={selectedVideo}
+        />
+      )}
     </PageWrapper>
   );
 }

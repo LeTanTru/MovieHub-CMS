@@ -46,7 +46,7 @@ export default function MovieItemModal({
 }: {
   open: boolean;
   close: () => void;
-  movieItem?: MovieItemResType | null;
+  movieItem: MovieItemResType;
 }) {
   const queryClient = useQueryClient();
 
@@ -83,7 +83,7 @@ export default function MovieItemModal({
       queryKey: queryKeys.MOVIE_ITEM,
       objectName: 'mùa',
       pathParams: {
-        id: movieItem?.id
+        id: movieItem.id
       },
       mode: !movieItem ? 'create' : 'edit'
     },
@@ -167,6 +167,7 @@ export default function MovieItemModal({
       onClose={close}
       width={800}
       title={`${isEditing ? 'Cập nhật' : 'Thêm'} ${movieItem ? (movieItem.kind === MOVIE_ITEM_KIND_EPISODE ? 'tập' : 'trailer') : 'tập, trailer'}`}
+      aria-labelledby='video-modal-title'
     >
       <BaseForm
         onSubmit={onSubmit}

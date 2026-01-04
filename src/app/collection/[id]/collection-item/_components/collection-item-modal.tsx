@@ -82,6 +82,7 @@ export default function CollectionItemModal({
       open={open}
       onClose={close}
       className='[&_.content]:bottom-[20%] [&_.content]:h-fit'
+      aria-labelledby='video-modal-title'
     >
       <BaseForm
         onSubmit={onSubmit}

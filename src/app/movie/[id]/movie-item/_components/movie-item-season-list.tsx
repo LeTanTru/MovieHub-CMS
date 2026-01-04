@@ -1,5 +1,6 @@
 'use client';
 
+import VideoPlayModal from './video-play-modal';
 import MovieItemModal from './movie-item-modal';
 import { Button, ImageField, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
@@ -10,6 +11,7 @@ import {
   DEFAULT_DATE_FORMAT,
   MAX_PAGE_SIZE,
   MOVIE_ITEM_KIND_SEASON,
+  MOVIE_TYPE_SINGLE,
   movieItemKindOptions
 } from '@/constants';
 import {
@@ -26,7 +28,8 @@ import {
   Column,
   MovieItemResType,
   MovieItemSearchType,
-  SearchFormProps
+  SearchFormProps,
+  VideoLibraryResType
 } from '@/types';
 import {
   formatDate,
@@ -34,7 +37,7 @@ import {
   renderImageUrl,
   renderListPageUrl
 } from '@/utils';
-import { PlusIcon } from 'lucide-react';
+import { PlayCircle, PlusIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
@@ -53,6 +56,9 @@ export default function MovieItemSeasonList({
 
   const movieItemModal = useDisclosure(false);
   const [movieItem, setMovieItem] = useState<MovieItemResType | null>();
+
+  const playModal = useDisclosure(false);
+  const [selectedVideo, setSelectedVideo] = useState<VideoLibraryResType>();
 
   const { data, loading, handlers } = useListBase<
     MovieItemResType,
@@ -86,6 +92,26 @@ export default function MovieItemSeasonList({
         );
       };
       handlers.additionalColumns = () => ({
+        watchVideo: (
+          record: MovieItemResType,
+          buttonProps?: Record<string, any>
+        ) => (
+          <ToolTip title={`Xem video`} sideOffset={0}>
+            <span>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpenPlayModal(record);
+                }}
+                className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                {...buttonProps}
+                disabled={!record.video || !record.video.duration}
+              >
+                <PlayCircle className='text-dodger-blue size-4' />
+              </Button>
+            </span>
+          </ToolTip>
+        ),
         edit: (record: MovieItemResType, buttonProps?: Record<string, any>) => {
           if (
             !handlers.hasPermission({
@@ -123,6 +149,11 @@ export default function MovieItemSeasonList({
   const handleEditMovieItem = (record: MovieItemResType) => {
     setMovieItem(record);
     movieItemModal.open();
+  };
+
+  const handleOpenPlayModal = (movieItem: MovieItemResType) => {
+    setSelectedVideo(movieItem.video);
+    playModal.open();
   };
 
   const {
@@ -192,6 +223,10 @@ export default function MovieItemSeasonList({
     },
     handlers.renderActionColumn({
       actions: {
+        watchVideo: (record) =>
+          !!record.video &&
+          !!searchParams.type &&
+          +searchParams.type === MOVIE_TYPE_SINGLE,
         edit: true,
         delete: true
       },
@@ -245,11 +280,20 @@ export default function MovieItemSeasonList({
           rowClassName={() => 'cursor-pointer'}
         />
       </ListPageWrapper>
-      <MovieItemModal
-        open={movieItemModal.opened}
-        close={movieItemModal.close}
-        movieItem={movieItem}
-      />
+      {movieItem && (
+        <MovieItemModal
+          open={movieItemModal.opened}
+          close={movieItemModal.close}
+          movieItem={movieItem}
+        />
+      )}
+      {selectedVideo && (
+        <VideoPlayModal
+          open={playModal.opened}
+          onClose={playModal.close}
+          video={selectedVideo}
+        />
+      )}
     </PageWrapper>
   );
 }
