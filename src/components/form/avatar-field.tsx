@@ -56,17 +56,20 @@ export default function AvatarField({
     setIsModalOpen(true);
   };
 
-  const handleWheel = (e: WheelEvent) => {
-    if (!zoomOnScroll) return;
+  const handleWheel = React.useCallback(
+    (e: WheelEvent) => {
+      if (!zoomOnScroll) return;
 
-    e.preventDefault();
+      e.preventDefault();
 
-    setScale((prev) => {
-      let next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
-      next = Math.max(1, Math.min(3, next));
-      return next;
-    });
-  };
+      setScale((prev) => {
+        let next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
+        next = Math.max(1, Math.min(3, next));
+        return next;
+      });
+    },
+    [zoomOnScroll]
+  );
 
   React.useEffect(() => {
     if (!isModalOpen || !previewRef.current) return;
@@ -75,7 +78,7 @@ export default function AvatarField({
     node.addEventListener('wheel', handleWheel, { passive: false });
 
     return () => node.removeEventListener('wheel', handleWheel);
-  }, [isModalOpen]);
+  }, [handleWheel, isModalOpen]);
 
   return (
     <>

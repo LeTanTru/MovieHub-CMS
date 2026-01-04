@@ -54,17 +54,20 @@ export default function ImageField({
     setIsOpen(true);
   };
 
-  const handleWheel = (e: WheelEvent) => {
-    if (!zoomOnScroll) return;
+  const handleWheel = React.useCallback(
+    (e: WheelEvent) => {
+      if (!zoomOnScroll) return;
 
-    e.preventDefault();
+      e.preventDefault();
 
-    setScale((prev) => {
-      let next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
-      next = Math.max(1, Math.min(3, next));
-      return next;
-    });
-  };
+      setScale((prev) => {
+        let next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
+        next = Math.max(1, Math.min(3, next));
+        return next;
+      });
+    },
+    [zoomOnScroll]
+  );
 
   React.useEffect(() => {
     if (!isOpen || !previewRef.current) return;
@@ -73,7 +76,7 @@ export default function ImageField({
     node.addEventListener('wheel', handleWheel, { passive: false });
 
     return () => node.removeEventListener('wheel', handleWheel);
-  }, [isOpen]);
+  }, [handleWheel, isOpen]);
 
   return (
     <>

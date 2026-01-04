@@ -94,7 +94,7 @@ export default function RichTextField<T extends FieldValues>({
                   'emoticons'
                 ],
                 toolbar:
-                  'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+                  'undo redo | bold italic underline strikethrough | fontfamily fontsizeinput blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample code | ltr rtl',
                 placeholder: placeholder,
                 content_style: `
                   body { 
@@ -111,8 +111,8 @@ export default function RichTextField<T extends FieldValues>({
                 paste_auto_cleanup_on_paste: true,
                 branding: false,
                 font_size_input_default_unit: 'px',
+                font_size_formats: '8px 12px 14px 15px 16px 18px 20px 32px',
                 promotion: false,
-                tabfocus_elements: ':prev,:next',
                 setup: (editor: TinyMCEEditor) => {
                   editor.on('keydown', (e: KeyboardEvent) => {
                     if (e.key === 'Tab' && !e.shiftKey) {

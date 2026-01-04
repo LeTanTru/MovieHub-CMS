@@ -145,7 +145,7 @@ export default function AutoCompleteField<
     if (debouncedSearch !== '') {
       query.refetch();
     }
-  }, [debouncedSearch]);
+  }, [debouncedSearch, query]);
 
   const options: AutoCompleteOption<TOption>[] = (
     query.data?.data.content || []
@@ -180,7 +180,7 @@ export default function AutoCompleteField<
 
     getInitialOptions();
     initialFetched.current = true;
-  }, [apiConfig, fieldValue, mappingData]);
+  }, [apiConfig, fieldValue, mappingData, selectedOption?.value]);
 
   const combinedOptions: AutoCompleteOption[] = useMemo(() => {
     const opts = options.filter((opt) => initialOption?.value !== opt.value);
