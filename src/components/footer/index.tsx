@@ -16,7 +16,7 @@ export default function Footer() {
         </Link>
         <Separator orientation='vertical' className='h-4! w-px! bg-gray-500!' />
         <Link
-          href={route.contact.path}
+          href={route.privacy.path}
           className='font-semibold text-slate-800 transition-all duration-200 ease-linear hover:opacity-80'
         >
           Chính sách và bảo mật

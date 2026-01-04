@@ -18,11 +18,11 @@ import { UseFormReturn } from 'react-hook-form';
 export default function CategoryModal({
   open,
   category,
-  close
+  onClose
 }: {
   open: boolean;
   category: CategoryResType | null;
-  close: () => void;
+  onClose: () => void;
 }) {
   const queryClient = useQueryClient();
   const { data, loading, isEditing, handleSubmit, renderActions } = useSaveBase<
@@ -40,7 +40,7 @@ export default function CategoryModal({
     },
     override: (handlers) => {
       handlers.handleSubmitSuccess = () => {
-        close();
+        onClose();
         queryClient.invalidateQueries({
           queryKey: [`${queryKeys.CATEGORY}-list`]
         });
@@ -77,7 +77,7 @@ export default function CategoryModal({
   return (
     <Modal
       open={open}
-      onClose={close}
+      onClose={onClose}
       title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} danh mục`}
       className='[&_.content]:bottom-[20%] [&_.content]:h-fit'
       aria-labelledby='video-modal-title'
@@ -105,7 +105,7 @@ export default function CategoryModal({
 
             <>
               {renderActions(form, {
-                onCancel: close
+                onCancel: onClose
               })}
             </>
             {loading && (

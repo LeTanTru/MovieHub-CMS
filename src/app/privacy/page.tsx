@@ -1,5 +1,3 @@
-'use client';
-
 export default function PrivacyPage() {
   return (
     <div className='flex min-h-screen flex-col gap-12.5 bg-[#191B24] py-10 max-lg:py-5'>

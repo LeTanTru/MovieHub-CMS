@@ -1,4 +1,5 @@
 'use client';
+
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { apiConfig, ErrorCode, FieldTypes } from '@/constants';

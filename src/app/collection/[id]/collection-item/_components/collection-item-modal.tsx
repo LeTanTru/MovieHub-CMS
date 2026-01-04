@@ -24,10 +24,10 @@ import { UseFormReturn } from 'react-hook-form';
 
 export default function CollectionItemModal({
   open,
-  close
+  onClose
 }: {
   open: boolean;
-  close: () => void;
+  onClose: () => void;
 }) {
   const queryClient = useQueryClient();
 
@@ -48,7 +48,7 @@ export default function CollectionItemModal({
     },
     override: (handlers) => {
       handlers.handleSubmitSuccess = () => {
-        close();
+        onClose();
         queryClient.invalidateQueries({
           queryKey: [`${queryKeys.COLLECTION_ITEM}-list`]
         });
@@ -80,7 +80,7 @@ export default function CollectionItemModal({
     <Modal
       title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} chi tiết bộ sưu tập`}
       open={open}
-      onClose={close}
+      onClose={onClose}
       className='[&_.content]:bottom-[20%] [&_.content]:h-fit'
       aria-labelledby='video-modal-title'
     >
@@ -120,7 +120,7 @@ export default function CollectionItemModal({
 
               <>
                 {renderActions(form, {
-                  onCancel: close
+                  onCancel: onClose
                 })}
               </>
               {loading && (

@@ -129,7 +129,7 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
       </ListPageWrapper>
       <CategoryModal
         open={categoryModal.opened}
-        close={categoryModal.close}
+        onClose={categoryModal.close}
         category={selectedCategory}
       />
     </PageWrapper>
