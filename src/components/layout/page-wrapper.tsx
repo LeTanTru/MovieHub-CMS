@@ -1,7 +1,7 @@
 'use client';
 
 import { notFound as notFoundIcon } from '@/assets';
-import Footer from '@/components/footer';
+import { Footer } from '@/components/footer';
 import { Breadcrumb } from '@/components/form';
 import { NotFound } from '@/components/not-found';
 import { useFirstActiveRoute } from '@/hooks';

@@ -1,7 +1,6 @@
 'use client';
 
-import { useIsMounted } from '@/hooks';
-import useValidatePermission from '@/hooks/use-validate-permission';
+import { useIsMounted, useValidatePermission } from '@/hooks';
 
 export default function HasPermission({
   children,

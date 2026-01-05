@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/table';
 import './base-table.css';
 
-import Pagination from '@/components/pagination';
 import { BaseTableProps } from '@/types';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
@@ -18,6 +17,7 @@ import { cn } from '@/lib';
 import { CircleLoading } from '@/components/loading';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { Pagination } from '@/components/pagination';
 
 function getValueByPath<T extends Record<string, any>>(
   obj: T,
