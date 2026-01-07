@@ -1,5 +1,6 @@
 'use client';
 
+import { Activity } from '@/components/activity';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { StarRating } from '@/components/star-rating';
 import {
@@ -127,16 +128,16 @@ export default function ReviewItem({
                 {timeAgo(review.createdDate)}
               </span>
 
-              {review.status === REVIEW_STATUS_HIDE && (
+              <Activity visible={review.status === REVIEW_STATUS_HIDE}>
                 <span title='Đánh giá đã bị ẩn' className='text-gray-500'>
                   <AiOutlineEyeInvisible className='size-4' />
                 </span>
-              )}
-              {review.status === REVIEW_STATUS_SHOW && (
+              </Activity>
+              <Activity visible={review.status === REVIEW_STATUS_SHOW}>
                 <span title='Đánh giá đang hiển thị' className='text-green-500'>
                   <AiOutlineEye className='size-4' />
                 </span>
-              )}
+              </Activity>
             </div>
           </div>
 
@@ -165,7 +166,7 @@ export default function ReviewItem({
                 {review.totalDislike}
               </div>
             </div>
-            {(canChangeStatus || canDelete) && (
+            <Activity visible={canChangeStatus || canDelete}>
               <DropdownMenu>
                 <DropdownMenuTrigger
                   className='border-none bg-transparent shadow-none'
@@ -182,7 +183,7 @@ export default function ReviewItem({
                 >
                   <DropdownMenuGroup>
                     <DropdownMenuItem className='cursor-pointer' asChild>
-                      {canChangeStatus && (
+                      <Activity visible={canChangeStatus}>
                         <Button
                           className='h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
                           variant={'ghost'}
@@ -203,10 +204,10 @@ export default function ReviewItem({
                             </>
                           )}
                         </Button>
-                      )}
+                      </Activity>
                     </DropdownMenuItem>
                     <DropdownMenuItem className='cursor-pointer p-0! transition-all duration-200 ease-linear'>
-                      {canDelete && (
+                      <Activity visible={canDelete}>
                         <AlertDialog>
                           <AlertDialogTrigger className='w-full' asChild>
                             <span onClick={(e) => e.stopPropagation()}>
@@ -243,12 +244,12 @@ export default function ReviewItem({
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
-                      )}
+                      </Activity>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
-            )}
+            </Activity>
           </div>
         </div>
       </div>

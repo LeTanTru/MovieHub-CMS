@@ -12,6 +12,7 @@ import { ReviewResType, ReviewSearchType } from '@/types';
 import { useParams } from 'next/navigation';
 import ReviewItem from './review-item';
 import { useCallback } from 'react';
+import { Activity } from '@/components/activity';
 
 export default function ReviewList({ queryKey }: { queryKey: string }) {
   const { id: movieId } = useParams<{ id: string }>();
@@ -79,8 +80,10 @@ export default function ReviewList({ queryKey }: { queryKey: string }) {
                 onDelete={() => handleDeleteReview(item)}
               />
             ))}
-            {isFetchingMore && <DotLoading className='mt-4' />}
-            {hasMore && (
+            <Activity visible={isFetchingMore}>
+              <DotLoading className='mt-4' />
+            </Activity>
+            <Activity visible={hasMore}>
               <Button
                 variant={'ghost'}
                 className='mx-auto block'
@@ -88,7 +91,7 @@ export default function ReviewList({ queryKey }: { queryKey: string }) {
               >
                 Xem thêm ({totalLeft}) đánh giá
               </Button>
-            )}
+            </Activity>
           </div>
         )}
       </ListPageWrapper>

@@ -1,5 +1,6 @@
 'use client';
 
+import { Activity } from '@/components/activity';
 import {
   Col,
   InputField,
@@ -205,109 +206,107 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                 />
               </Col>
             </Row>
-            {!isEditing && (
-              <>
-                <Row>
-                  <Col>
-                    <PasswordField
-                      control={form.control}
-                      name='password'
-                      label='Mật khẩu'
-                      placeholder='Mật khẩu'
-                      required={!isEditing}
-                    />
-                  </Col>
-                  <Col>
-                    <PasswordField
-                      control={form.control}
-                      name='confirmPassword'
-                      label='Nhập lại mật khẩu'
-                      placeholder='Nhập lại mật khẩu'
-                      required={!isEditing}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <SelectField
-                      options={groupOptions || []}
-                      control={form.control}
-                      name='groupId'
-                      label='Nhóm quyền'
-                      placeholder='Nhóm quyền'
-                      required
-                    />
-                  </Col>
-                  <Col>
-                    <SelectField
-                      options={employeeStatusOptions || []}
-                      control={form.control}
-                      name='status'
-                      label='Trạng thái'
-                      placeholder='Trạng thái'
-                      required
-                    />
-                  </Col>
-                </Row>
-              </>
-            )}
-            {isEditing && (
-              <>
-                <Row>
-                  <Col>
-                    <PasswordField
-                      control={form.control}
-                      name='newPassword'
-                      label='Mật khẩu mới'
-                      placeholder='Mật khẩu mới'
-                      required={!isEditing}
-                    />
-                  </Col>
-                  <Col>
-                    <PasswordField
-                      control={form.control}
-                      name='confirmNewPassword'
-                      label='Nhập lại mật khẩu mới'
-                      placeholder='Nhập lại mật khẩu mới'
-                      required={!isEditing}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <SelectField
-                      options={groupOptions || []}
-                      control={form.control}
-                      name='groupId'
-                      label='Nhóm quyền'
-                      placeholder='Nhóm quyền'
-                      required
-                    />
-                  </Col>
-                  <Col>
-                    <SelectField
-                      options={employeeStatusOptions || []}
-                      control={form.control}
-                      name='status'
-                      label='Trạng thái'
-                      placeholder='Trạng thái'
-                      required
-                    />
-                  </Col>
-                </Row>
-              </>
-            )}
+
+            <Activity visible={!isEditing}>
+              <Row>
+                <Col>
+                  <PasswordField
+                    control={form.control}
+                    name='password'
+                    label='Mật khẩu'
+                    placeholder='Mật khẩu'
+                    required={!isEditing}
+                  />
+                </Col>
+                <Col>
+                  <PasswordField
+                    control={form.control}
+                    name='confirmPassword'
+                    label='Nhập lại mật khẩu'
+                    placeholder='Nhập lại mật khẩu'
+                    required={!isEditing}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <SelectField
+                    options={groupOptions || []}
+                    control={form.control}
+                    name='groupId'
+                    label='Nhóm quyền'
+                    placeholder='Nhóm quyền'
+                    required
+                  />
+                </Col>
+                <Col>
+                  <SelectField
+                    options={employeeStatusOptions || []}
+                    control={form.control}
+                    name='status'
+                    label='Trạng thái'
+                    placeholder='Trạng thái'
+                    required
+                  />
+                </Col>
+              </Row>
+            </Activity>
+
+            <Activity visible={isEditing}>
+              <Row>
+                <Col>
+                  <PasswordField
+                    control={form.control}
+                    name='newPassword'
+                    label='Mật khẩu mới'
+                    placeholder='Mật khẩu mới'
+                    required={!isEditing}
+                  />
+                </Col>
+                <Col>
+                  <PasswordField
+                    control={form.control}
+                    name='confirmNewPassword'
+                    label='Nhập lại mật khẩu mới'
+                    placeholder='Nhập lại mật khẩu mới'
+                    required={!isEditing}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <SelectField
+                    options={groupOptions || []}
+                    control={form.control}
+                    name='groupId'
+                    label='Nhóm quyền'
+                    placeholder='Nhóm quyền'
+                    required
+                  />
+                </Col>
+                <Col>
+                  <SelectField
+                    options={employeeStatusOptions || []}
+                    control={form.control}
+                    name='status'
+                    label='Trạng thái'
+                    placeholder='Trạng thái'
+                    required
+                  />
+                </Col>
+              </Row>
+            </Activity>
 
             <>
               {renderActions(form, {
                 onCancel: handleCancel
               })}
             </>
-            {loading && (
+            <Activity visible={loading}>
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />
               </div>
-            )}
+            </Activity>
           </>
         )}
       </BaseForm>

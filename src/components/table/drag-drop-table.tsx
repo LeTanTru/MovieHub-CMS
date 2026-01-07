@@ -32,6 +32,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Grip } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CircleLoading } from '@/components/loading';
+import { Activity } from '@/components/activity';
 
 function getValueByPath<T extends Record<string, any>>(
   obj: T,
@@ -219,7 +220,7 @@ export default function DragDropTable<T extends Record<any, any>>({
                   </SortableContext>
                 </>
               ) : (
-                !dataSource.length && (
+                <Activity visible={!dataSource.length}>
                   <TableRow className='hover:bg-transparent'>
                     <TableCell
                       colSpan={columns.length}
@@ -236,7 +237,7 @@ export default function DragDropTable<T extends Record<any, any>>({
                       </div>
                     </TableCell>
                   </TableRow>
-                )
+                </Activity>
               )}
             </TableBody>
           </Table>

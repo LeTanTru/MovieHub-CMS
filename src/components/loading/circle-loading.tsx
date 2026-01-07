@@ -5,7 +5,7 @@ export default function CircleLoading({ className }: { className?: string }) {
   return (
     <Loader2
       className={cn(
-        'mx-auto size-6 animate-spin stroke-white stroke-3',
+        'mx-auto size-6 animate-spin stroke-white stroke-2',
         className
       )}
     />
