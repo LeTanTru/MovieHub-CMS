@@ -1,3 +1,4 @@
+import { Activity } from '@/components/activity';
 import { Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
@@ -81,13 +82,13 @@ export default function CategoryModal({
       title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} danh mục`}
       className='[&_.content]:bottom-[20%] [&_.content]:h-fit'
       aria-labelledby='video-modal-title'
+      width={700}
     >
       <BaseForm
         onSubmit={onSubmit}
         defaultValues={defaultValues}
         schema={categorySchema}
         initialValues={initialValues}
-        className='w-175 p-4'
       >
         {(form) => (
           <>
@@ -108,11 +109,11 @@ export default function CategoryModal({
                 onCancel: onClose
               })}
             </>
-            {loading && (
+            <Activity visible={loading}>
               <div className='absolute inset-0 bg-white/80'>
                 <CircleLoading className='stroke-dodger-blue mt-20 size-8' />
               </div>
-            )}
+            </Activity>
           </>
         )}
       </BaseForm>

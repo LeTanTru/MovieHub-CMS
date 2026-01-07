@@ -1,5 +1,6 @@
 'use client';
 
+import { Activity } from '@/components/activity';
 import { AutoCompleteField, Col, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
@@ -83,12 +84,12 @@ export default function CollectionItemModal({
       onClose={onClose}
       className='[&_.content]:bottom-[20%] [&_.content]:h-fit'
       aria-labelledby='video-modal-title'
+      width={700}
     >
       <BaseForm
         onSubmit={onSubmit}
         defaultValues={defaultValues}
         schema={collectionItemSchema}
-        className='w-175 p-4'
       >
         {(form) => {
           return (
@@ -123,11 +124,11 @@ export default function CollectionItemModal({
                   onCancel: onClose
                 })}
               </>
-              {loading && (
+              <Activity visible={loading}>
                 <div className='absolute inset-0 bg-white/80'>
                   <CircleLoading className='stroke-dodger-blue mt-20 size-8' />
                 </div>
-              )}
+              </Activity>
             </>
           );
         }}

@@ -1,3 +1,4 @@
+import { Activity } from '@/components/activity';
 import { cn } from '@/lib';
 
 export default function ListPageWrapper({
@@ -29,7 +30,9 @@ export default function ListPageWrapper({
           }
         )}
       >
-        {searchForm && <div className='flex-1'>{searchForm}</div>}
+        <Activity visible={!!searchForm}>
+          <div className='flex-1'>{searchForm}</div>
+        </Activity>
         <div
           className={cn('flex gap-2', {
             'ml-auto': !searchForm,

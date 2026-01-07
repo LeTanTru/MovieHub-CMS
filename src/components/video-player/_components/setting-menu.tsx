@@ -1,3 +1,4 @@
+import { Activity } from '@/components/activity';
 import { getLanguageLabel } from '@/utils';
 import {
   Menu,
@@ -183,7 +184,7 @@ function VideoQualitySubmenu() {
           className='flex w-full flex-col'
           value={options.selectedValue}
         >
-          {options.map(({ quality, label, value, bitrateText, select }) => (
+          {options.map(({ quality: _, label, value, bitrateText, select }) => (
             <Menu.Radio
               className='ring-media-focus group relative flex w-full cursor-pointer items-center justify-start rounded-sm p-2.5 outline-none select-none data-[focus]:ring-[3px] data-[hocus]:bg-white/10'
               value={value}
@@ -195,11 +196,11 @@ function VideoQualitySubmenu() {
               <span className='ml-2'>
                 {label === 'Auto' ? 'Tự động' : label}
               </span>
-              {bitrateText && (
+              <Activity visible={!!bitrateText}>
                 <span className='ml-auto text-sm text-white/40'>
                   {bitrateText}
                 </span>
-              )}
+              </Activity>
             </Menu.Radio>
           ))}
         </Menu.RadioGroup>

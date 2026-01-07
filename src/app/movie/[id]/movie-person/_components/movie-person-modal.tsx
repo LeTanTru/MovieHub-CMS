@@ -80,12 +80,12 @@ export default function MoviePersonModal({
       onClose={close}
       className='[&_.content]:bottom-[25%] [&_.content]:h-fit'
       aria-labelledby='video-modal-title'
+      width={700}
     >
       <BaseForm
         defaultValues={defaultValues}
         schema={moviePersonSchema}
         onSubmit={handleSubmit}
-        className='w-175'
       >
         {(form) => (
           <>

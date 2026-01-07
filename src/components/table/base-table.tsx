@@ -18,6 +18,7 @@ import { CircleLoading } from '@/components/loading';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Pagination } from '@/components/pagination';
+import { Activity } from '@/components/activity';
 
 function getValueByPath<T extends Record<string, any>>(
   obj: T,
@@ -163,8 +164,7 @@ export default function BaseTable<T extends Record<any, any>>({
                   )} */}
                 </>
               ) : (
-                dataSource.length === 0 &&
-                !loading && (
+                <Activity visible={dataSource.length === 0 && !loading}>
                   <TableRow className='hover:bg-transparent'>
                     <TableCell
                       colSpan={columns.length}
@@ -182,12 +182,12 @@ export default function BaseTable<T extends Record<any, any>>({
                       </div>
                     </TableCell>
                   </TableRow>
-                )
+                </Activity>
               )}
             </TableBody>
           </Table>
         </div>
-        {!(!total || total <= 1) && (
+        <Activity visible={!(!total || total <= 1)}>
           <div className='flex justify-end'>
             <Pagination
               changePagination={changePagination}
@@ -195,7 +195,7 @@ export default function BaseTable<T extends Record<any, any>>({
               totalPages={total}
             />
           </div>
-        )}
+        </Activity>
         <AnimatePresence>
           {loading && (
             <motion.div
