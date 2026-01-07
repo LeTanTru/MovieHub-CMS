@@ -16,6 +16,7 @@ import { useFileUpload } from '@/hooks';
 import { CircleLoading } from '@/components/loading';
 import { logger } from '@/logger';
 import { ApiResponse } from '@/types';
+import { formatBytes } from '@/hooks/use-file-upload';
 
 type UploadFileFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -166,9 +167,7 @@ export default function UploadFileField<T extends FieldValues>({
             )}
           </span>
           {file && (
-            <span className='text-xs opacity-60'>
-              {formatFileSize(file.size)}
-            </span>
+            <span className='text-xs opacity-60'>{formatBytes(file.size)}</span>
           )}
         </div>
 
@@ -208,12 +207,4 @@ export default function UploadFileField<T extends FieldValues>({
       )}
     </div>
   );
-}
-
-function formatFileSize(size: number) {
-  const kb = size / 1024;
-  const mb = kb / 1024;
-
-  if (mb >= 1) return `${mb.toFixed(1)} MB`;
-  return `${kb.toFixed(1)} KB`;
 }
