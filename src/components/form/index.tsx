@@ -15,6 +15,7 @@ export { default as ImageField } from './image-field';
 export { default as InputField } from './input-field';
 export { default as MultiSelectField } from './multi-select-field';
 export { default as NumberField } from './number-field';
+export { default as PasswordField } from './password-field';
 export { default as RadioField } from './radio-group-field';
 export { default as RadioGroupField } from './radio-group-field';
 export { default as RichTextField } from './rich-text-field';
