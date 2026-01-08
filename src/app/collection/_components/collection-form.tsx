@@ -287,14 +287,14 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                 </Col>
                 <Activity visible={type === COLLECTION_TYPE_SECTION}>
                   <Col span={12}>
-                    <AutoCompleteField<any, StyleResType>
+                    <AutoCompleteField
                       control={form.control}
                       name='styleId'
                       label='Thiết kế'
                       placeholder='Thiết kế'
                       required
                       apiConfig={apiConfig.style.getList}
-                      mappingData={(item) => ({
+                      mappingData={(item: StyleResType) => ({
                         label: item.name,
                         value: item.id.toString()
                       })}

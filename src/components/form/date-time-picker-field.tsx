@@ -16,7 +16,7 @@ import {
   FormLabel
 } from '@/components/ui/form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/form';
 import { vi } from 'date-fns/locale';
@@ -31,9 +31,9 @@ import {
 } from '@/components/ui/select';
 import { DATE_TIME_FORMAT } from '@/constants';
 
-type Props = {
-  control: Control<any>;
-  name: string;
+type DateTimePickerFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: FieldPath<T>;
   label?: string;
   description?: string;
   required?: boolean;
@@ -43,7 +43,7 @@ type Props = {
   placeholder?: string;
 };
 
-export default function DateTimePickerField({
+export default function DateTimePickerField<T extends FieldValues>({
   control,
   name,
   label,
@@ -53,7 +53,7 @@ export default function DateTimePickerField({
   labelClassName,
   disabled,
   placeholder
-}: Props) {
+}: DateTimePickerFieldProps<T>) {
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = Array.from({ length: 60 }, (_, i) => i);
   const seconds = Array.from({ length: 60 }, (_, i) => i);

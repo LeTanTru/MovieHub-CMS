@@ -164,7 +164,6 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
                   name='isDefault'
                   label='Mặc định'
                   required
-                  labelClassName='ml-2'
                 />
               </Col>
             </Row>

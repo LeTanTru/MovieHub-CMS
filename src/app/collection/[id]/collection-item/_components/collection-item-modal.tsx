@@ -96,7 +96,7 @@ export default function CollectionItemModal({
             <>
               <Row>
                 <Col span={24}>
-                  <AutoCompleteField<any, MovieResType>
+                  <AutoCompleteField
                     control={form.control}
                     name='movieId'
                     label='Tiêu đề phim'
@@ -109,7 +109,7 @@ export default function CollectionItemModal({
                         { collectionId }
                       )
                     }}
-                    mappingData={(item) => ({
+                    mappingData={(item: MovieResType) => ({
                       label: item.title,
                       value: item.id.toString()
                     })}

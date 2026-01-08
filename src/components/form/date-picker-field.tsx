@@ -1,6 +1,6 @@
 'use client';
 
-import { Control } from 'react-hook-form';
+import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { format, isValid, Locale, parse } from 'date-fns';
 import {
   FormControl,
@@ -32,9 +32,9 @@ import {
 import { DropdownProps } from 'react-day-picker';
 import { DEFAULT_DATE_FORMAT } from '@/constants';
 
-type Props = {
-  control: Control<any>;
-  name: string;
+type DatePickerFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: FieldPath<T>;
   label?: string;
   description?: string;
   className?: string;
@@ -45,7 +45,7 @@ type Props = {
   labelClassName?: string;
 };
 
-export default function DatePickerField({
+export default function DatePickerField<T extends FieldValues>({
   control,
   name,
   label,
@@ -56,7 +56,7 @@ export default function DatePickerField({
   required,
   placeholder,
   labelClassName
-}: Props) {
+}: DatePickerFieldProps<T>) {
   const calendarLocale: Locale = vi;
   const [open, setOpen] = useState(false);
   // const [popoverWidth, setPopoverWidth] = useState<number | undefined>();

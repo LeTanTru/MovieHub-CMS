@@ -304,7 +304,6 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   name='isFeatured'
                   label='Nổi bật'
                   required
-                  labelClassName='ml-2'
                 />
               </Col>
             </Row>

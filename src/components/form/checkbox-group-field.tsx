@@ -1,6 +1,6 @@
 'use client';
 
-import { Control, FieldValues, Path } from 'react-hook-form';
+import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import {
   FormControl,
   FormDescription,
@@ -17,9 +17,9 @@ export type Option = {
   value: string;
 };
 
-type CheckboxGroupFieldProps<T extends FieldValues = any> = {
+type CheckboxGroupFieldProps<T extends FieldValues> = {
   control: Control<T>;
-  name: Path<T>;
+  name: FieldPath<T>;
   label?: string;
   description?: string;
   options?: Option[];

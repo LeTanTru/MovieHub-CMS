@@ -8,13 +8,13 @@ import {
 import { FormControl, FormItem, FormLabel } from '@/components/ui/form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { useState } from 'react';
 import { Button } from '@/components/form';
 
-type Props = {
-  control: Control<any>;
-  name: string;
+type TimePickerFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: FieldPath<T>;
   label?: string;
   required?: boolean;
   format?: 'HH:mm:ss' | 'HH:mm' | 'mm:ss';
@@ -25,7 +25,7 @@ type Props = {
   onChange?: (value: string) => void;
 };
 
-export default function TimePickerField({
+export default function TimePickerField<T extends FieldValues>({
   control,
   name,
   label,
@@ -36,7 +36,7 @@ export default function TimePickerField({
   labelClassName,
   disabled = false,
   onChange
-}: Props) {
+}: TimePickerFieldProps<T>) {
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = Array.from({ length: 60 }, (_, i) => i);
   const seconds = Array.from({ length: 60 }, (_, i) => i);
@@ -70,7 +70,7 @@ export default function TimePickerField({
           //   setTimeout(() => field.onChange(formatted), 0);
           // }
         } else if (typeof field.value === 'string') {
-          const parts = field.value.split(':').map((v) => parseInt(v));
+          const parts = field.value.split(':').map((v: string) => parseInt(v));
           hour = isNaN(parts[0]) ? 0 : parts[0];
           minute = isNaN(parts[1]) ? 0 : parts[1];
           second = isNaN(parts[2]) ? 0 : parts[2];
