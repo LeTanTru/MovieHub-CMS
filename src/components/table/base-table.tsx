@@ -1,5 +1,6 @@
 'use client';
 
+import './base-table.css';
 import {
   Table,
   TableBody,
@@ -8,8 +9,6 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import './base-table.css';
-
 import { BaseTableProps } from '@/types';
 import Image from 'next/image';
 import { emptyData } from '@/assets';

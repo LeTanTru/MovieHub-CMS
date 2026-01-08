@@ -1,4 +1,4 @@
-import menuConfig from '@/constants/menu-config';
+import { menuConfig } from '@/constants';
 import { MenuItem } from '@/types';
 import { validatePermission } from '@/utils/validate-permission.util';
 

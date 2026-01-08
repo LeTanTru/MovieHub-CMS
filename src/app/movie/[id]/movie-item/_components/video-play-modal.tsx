@@ -1,8 +1,5 @@
 'use client';
 
-import '@vidstack/react/player/styles/default/theme.css';
-import '@vidstack/react/player/styles/default/layouts/audio.css';
-import '@vidstack/react/player/styles/default/layouts/video.css';
 import { Modal } from '@/components/modal';
 import { VideoPlayer } from '@/components/video-player';
 import { VideoLibraryResType } from '@/types';

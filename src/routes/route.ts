@@ -1,4 +1,4 @@
-import { apiConfig } from '@/constants';
+import apiConfig from '@/constants/api-config';
 
 export type RouteItem = {
   path?: string;

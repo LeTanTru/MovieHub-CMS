@@ -1,5 +1,6 @@
 'use client';
 
+import './sidebar.css';
 import { ChevronDown, CircleUserRound } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -22,7 +23,6 @@ import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib';
 import { AvatarField, Button } from '@/components/form';
-import './sidebar.css';
 import { MenuItem } from '@/types';
 import { useSidebarStore } from '@/store';
 import {
@@ -32,9 +32,9 @@ import {
   useValidatePermission
 } from '@/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
-import menuConfig from '@/constants/menu-config';
 import { createPortal } from 'react-dom';
 import { renderImageUrl } from '@/utils';
+import { menuConfig } from '@/constants';
 
 function CollapsibleMenuItem({ item }: { item: MenuItem }) {
   const navigate = useNavigate();
@@ -174,9 +174,9 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
                             'mx-auto w-[calc(100%-8px)] justify-start rounded-lg pl-12 font-normal text-white transition-all duration-200 ease-linear hover:text-white active:text-white',
                             {
                               'bg-sidebar-item-active hover:bg-sidebar-item-active active:bg-sidebar-item-active':
-                                sub.path && pathname.includes(sub.path),
+                                sub.path && pathname.startsWith(sub.path),
                               'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu opacity-65 hover:opacity-100':
-                                sub.path && !pathname.includes(sub.path)
+                                sub.path && !pathname.startsWith(sub.path)
                             }
                           )}
                         >
@@ -238,9 +238,9 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
                                 'mx-auto w-full justify-start rounded-lg pl-4 font-normal text-white transition-all duration-200 ease-linear hover:text-white active:text-white',
                                 {
                                   'bg-sidebar-item-active hover:bg-sidebar-item-active active:bg-sidebar-item-active':
-                                    sub.path && pathname.includes(sub.path),
+                                    sub.path && pathname.startsWith(sub.path),
                                   'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu opacity-65 hover:opacity-100':
-                                    sub.path && !pathname.includes(sub.path)
+                                    sub.path && !pathname.startsWith(sub.path)
                                 }
                               )}
                             >

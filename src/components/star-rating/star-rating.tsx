@@ -1,5 +1,5 @@
-import { Activity } from '@/components/activity';
 import './star-rating.css';
+import { Activity } from '@/components/activity';
 
 type StarRatingProps = {
   value: number;

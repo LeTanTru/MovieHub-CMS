@@ -1,5 +1,6 @@
 'use client';
 
+import './rich-text-field.css';
 import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { Editor } from '@tinymce/tinymce-react';
@@ -11,7 +12,6 @@ import {
   FormControl,
   FormMessage
 } from '@/components/ui/form';
-import './rich-text-field.css';
 
 type RichTextFieldProps<T extends FieldValues> = {
   control: Control<T>;
