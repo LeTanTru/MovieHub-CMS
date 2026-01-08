@@ -91,7 +91,7 @@ export default function MoviePersonModal({
           <>
             <Row>
               <Col span={24}>
-                <AutoCompleteField<any, PersonResType>
+                <AutoCompleteField
                   apiConfig={apiConfig.person.autoComplete}
                   control={form.control}
                   mappingData={(item: PersonResType) => {

@@ -16,13 +16,13 @@ import { CalendarIcon } from '@radix-ui/react-icons';
 import { Calendar } from '@/components/ui/calendar';
 import { format, Locale } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { vi } from 'date-fns/locale';
 import { Button } from '@/components/form';
 
-type Props = {
-  control: Control<any>;
-  name: string;
+type DateRangePickerFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: FieldPath<T>;
   label?: string;
   description?: string;
   required?: boolean;
@@ -32,7 +32,7 @@ type Props = {
   disabled?: boolean;
 };
 
-export default function DateRangePickerField({
+export default function DateRangePickerField<T extends FieldValues>({
   control,
   name,
   label,
@@ -42,7 +42,7 @@ export default function DateRangePickerField({
   format: dateFormat = 'dd/MM/yyyy',
   labelClassName,
   disabled
-}: Props) {
+}: DateRangePickerFieldProps<T>) {
   const calendarLocale: Locale = vi;
   return (
     <Controller

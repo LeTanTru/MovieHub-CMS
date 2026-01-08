@@ -174,7 +174,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
               </Row>
               <Row>
                 <Col>
-                  <AutoCompleteField<any, MovieResType>
+                  <AutoCompleteField
                     control={form.control}
                     name='movieId'
                     apiConfig={apiConfig.movie.getList}

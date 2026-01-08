@@ -65,6 +65,7 @@ type AutoCompleteFieldProps<
   disabled?: boolean;
   apiConfig: ApiConfig;
   fetchAll?: boolean;
+  initialOptionParamName?: string;
   onValueChange?: (value: string | number | null) => void;
   mappingData: (option: TOption) => AutoCompleteOption | null;
   renderOption?: (option: AutoCompleteOption<TOption>) => React.ReactNode;
@@ -90,6 +91,7 @@ export default function AutoCompleteField<
   disabled = false,
   apiConfig,
   fetchAll = false,
+  initialOptionParamName,
   onValueChange,
   mappingData,
   renderOption
@@ -166,7 +168,7 @@ export default function AutoCompleteField<
 
     const getInitialOptions = async () => {
       const res = await http.get<ApiResponseList<TOption>>(apiConfig, {
-        params: { id: fieldValue }
+        params: { [initialOptionParamName || 'id']: fieldValue }
       });
       if (res.result && res.data.content.length > 0) {
         const mapped = mappingData(res.data.content[0]);
@@ -180,7 +182,13 @@ export default function AutoCompleteField<
 
     getInitialOptions();
     initialFetched.current = true;
-  }, [apiConfig, fieldValue, mappingData, selectedOption?.value]);
+  }, [
+    apiConfig,
+    fieldValue,
+    initialOptionParamName,
+    mappingData,
+    selectedOption?.value
+  ]);
 
   const combinedOptions: AutoCompleteOption[] = useMemo(() => {
     const opts = options.filter((opt) => initialOption?.value !== opt.value);

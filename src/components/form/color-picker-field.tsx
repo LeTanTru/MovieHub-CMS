@@ -1,6 +1,6 @@
 'use client';
 
-import { Control } from 'react-hook-form';
+import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import {
   FormControl,
   FormDescription,
@@ -11,9 +11,9 @@ import {
 } from '@/components/ui/form';
 import { cn } from '@/lib';
 
-type ColorPickerFieldProps = {
-  control: Control<any>;
-  name: string;
+type ColorPickerFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: FieldPath<T>;
   label?: string;
   description?: string;
   className?: string;
@@ -22,7 +22,7 @@ type ColorPickerFieldProps = {
   labelClassName?: string;
 };
 
-export default function ColorPickerField({
+export default function ColorPickerField<T extends FieldValues>({
   control,
   name,
   label,
@@ -31,7 +31,7 @@ export default function ColorPickerField({
   disabled,
   required,
   labelClassName
-}: ColorPickerFieldProps) {
+}: ColorPickerFieldProps<T>) {
   return (
     <FormField
       control={control}
