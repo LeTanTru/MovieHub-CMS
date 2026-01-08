@@ -184,8 +184,8 @@ export default function UploadImageField<T extends FieldValues>({
   const handleRemove = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      if (deleteImageFn && value) {
-        await deleteImageFn(value);
+      if (deleteImageFn && fieldValue) {
+        await deleteImageFn(fieldValue);
       }
     } catch (err) {
       logger.error('Error while deleting image:', err);
