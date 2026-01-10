@@ -35,6 +35,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { createPortal } from 'react-dom';
 import { renderImageUrl } from '@/utils';
 import { menuConfig } from '@/constants';
+import { useShallow } from 'zustand/react/shallow';
 
 function CollapsibleMenuItem({ item }: { item: MenuItem }) {
   const navigate = useNavigate();
@@ -42,8 +43,14 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
   const { state } = useSidebar();
   const { serializeParams } = useQueryParams();
 
-  const storeOpen = useSidebarStore((s) => s.openMenus[item.key]);
-  const { toggleMenu, setMenu, setSidebarState } = useSidebarStore();
+  const { storeOpen, toggleMenu, setMenu, setSidebarState } = useSidebarStore(
+    useShallow((s) => ({
+      storeOpen: s.openMenus[item.key],
+      toggleMenu: s.toggleMenu,
+      setMenu: s.setMenu,
+      setSidebarState: s.setSidebarState
+    }))
+  );
 
   const [hovered, setHovered] = useState(false);
   const [flyoutHovered, setFlyoutHovered] = useState(false);
@@ -298,7 +305,7 @@ const renderMenu = (items: MenuItem[]) => {
 
 const AppSidebar = () => {
   const { profile } = useAuth();
-  const { hasPermission } = useValidatePermission();
+  const hasPermission = useValidatePermission();
   const [clientMenu, setClientMenu] = useState<MenuItem[]>([]);
   const openLastMenu = useSidebarStore((s) => s.openLastMenu);
   const { state } = useSidebar();

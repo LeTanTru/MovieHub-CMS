@@ -4,12 +4,12 @@ import { Activity } from '@/components/activity';
 import {
   Col,
   InputField,
+  PasswordField,
   Row,
   SelectField,
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import PasswordField from '@/components/form/password-field';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import {

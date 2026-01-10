@@ -50,7 +50,7 @@ export default function ReviewItem({
   review: ReviewResType;
   onDelete: () => void;
 }) {
-  const { hasPermission } = useValidatePermission();
+  const hasPermission = useValidatePermission();
   const queryClient = useQueryClient();
   const changeReviewStatusMutation = useChangeReviewStatusMutation();
 

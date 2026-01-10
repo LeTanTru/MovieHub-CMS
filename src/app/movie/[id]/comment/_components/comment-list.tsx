@@ -42,7 +42,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
   const voteCommentMutation = useVoteCommentMutation();
   const pinCommentMutation = usePinCommentMutation();
 
-  const { hasPermission } = useValidatePermission();
+  const hasPermission = useValidatePermission();
 
   const {
     data,

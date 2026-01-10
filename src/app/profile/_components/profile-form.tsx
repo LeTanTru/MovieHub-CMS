@@ -5,13 +5,13 @@ import {
   Button,
   Col,
   InputField,
+  PasswordField,
   Row,
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import PasswordField from '@/components/form/password-field';
 import { KIND_MANAGER, profileErrorMaps, storageKeys } from '@/constants';
-import { useAuth, useNavigate } from '@/hooks';
+import { useAuth, useFileUploadManager, useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import {
   useDeleteFileMutation,
@@ -32,22 +32,16 @@ import {
   renderImageUrl
 } from '@/utils';
 import { ArrowLeftFromLine, Save } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export default function ProfileForm() {
   const navigate = useNavigate();
-  const { profile } = useAuthStore();
-  const [avatarPath, setAvatarPath] = useState('');
-  const [logoPath, setLogoPath] = useState('');
-  const [uploadedAvatarImages, setUploadedAvatarImages] = useState<string[]>(
-    []
-  );
-  const [uploadedLogoImages, setUploadedLogoImages] = useState<string[]>([]);
+  const profile = useAuthStore((s) => s.profile);
 
   const uploadAvatarMutation = useUploadAvatarMutation();
   const uploadLogoMutation = useUploadLogoMutation();
-  const deleteImageMutation = useDeleteFileMutation();
+  const deleteFileMutation = useDeleteFileMutation();
 
   const { kind } = useAuth();
 
@@ -58,6 +52,20 @@ export default function ProfileForm() {
     kind === KIND_MANAGER
       ? managerUpdateProfileMutation
       : employeeUpdateProfileMutation;
+
+  const avatarImageManager = useFileUploadManager({
+    initialUrl: profile?.avatarPath,
+    deleteFileMutation: deleteFileMutation,
+    isEditing: true,
+    onOpen: true
+  });
+
+  const logoImageManager = useFileUploadManager({
+    initialUrl: profile?.logoPath,
+    deleteFileMutation: deleteFileMutation,
+    isEditing: true,
+    onOpen: true
+  });
 
   const defaultValues: ProfileBodyType = {
     email: '',
@@ -84,56 +92,19 @@ export default function ProfileForm() {
     [profile]
   );
 
-  const deleteFiles = async (files: string[]) => {
-    const validFiles = files.filter(Boolean);
-    if (!validFiles.length) return;
-    await Promise.all(
-      validFiles.map((filePath) =>
-        deleteImageMutation.mutateAsync({ filePath }).catch((err) => {
-          logger.error('Failed to delete file:', filePath, err);
-        })
-      )
-    );
-  };
-
   const onSubmit = async (
     values: ProfileBodyType,
     form: UseFormReturn<ProfileBodyType>
   ) => {
-    // Delete logic for avatar:
-    // - If user removed avatar (avatarPath is empty), delete all uploaded avatars except the original
-    // - If user kept/changed avatar, delete all previous uploads, keep only the current one
-    const avatarFilesToDelete = [];
-    if (!avatarPath) {
-      // User removed avatar - delete all uploaded files except original
-      avatarFilesToDelete.push(
-        ...uploadedAvatarImages.filter((img) => img !== profile?.avatarPath)
-      );
-    } else if (avatarPath !== profile?.avatarPath) {
-      // User changed avatar - delete all previous uploads except the current one
-      avatarFilesToDelete.push(
-        ...uploadedAvatarImages.filter((img) => img !== avatarPath)
-      );
-    }
-
-    // Same logic for logo
-    const logoFilesToDelete = [];
-    if (!logoPath) {
-      logoFilesToDelete.push(
-        ...uploadedLogoImages.filter((img) => img !== profile?.logoPath)
-      );
-    } else if (logoPath !== profile?.logoPath) {
-      logoFilesToDelete.push(
-        ...uploadedLogoImages.filter((img) => img !== logoPath)
-      );
-    }
-
-    const filesToDelete = [...avatarFilesToDelete, ...logoFilesToDelete];
-
-    await deleteFiles(filesToDelete.filter(Boolean));
+    await avatarImageManager.handleSubmit();
+    await logoImageManager.handleSubmit();
 
     await profileMutation.mutateAsync(
-      { ...values, avatarPath, logoPath },
+      {
+        ...values,
+        avatarPath: avatarImageManager.currentUrl,
+        logoPath: logoImageManager.currentUrl
+      },
       {
         onSuccess: (res) => {
           if (res.result) {
@@ -153,29 +124,9 @@ export default function ProfileForm() {
     );
   };
 
-  useEffect(() => {
-    const url = profile?.avatarPath || '';
-    setAvatarPath(url);
-    setUploadedAvatarImages(url ? [url] : []);
-  }, [profile?.avatarPath]);
-
-  useEffect(() => {
-    const url = profile?.logoPath || '';
-    setLogoPath(url);
-    setUploadedLogoImages(url ? [url] : []);
-  }, [profile?.logoPath]);
-
   const handleCancel = async () => {
-    // Delete all files uploaded during this session, keep only the original files
-    const avatarFilesToDelete = uploadedAvatarImages.filter(
-      (img) => img !== profile?.avatarPath
-    );
-    const logoFilesToDelete = uploadedLogoImages.filter(
-      (img) => img !== profile?.logoPath
-    );
-
-    const filesToDelete = [...avatarFilesToDelete, ...logoFilesToDelete];
-    await deleteFiles(filesToDelete.filter(Boolean));
+    await avatarImageManager.handleCancel();
+    await logoImageManager.handleCancel();
 
     const prevPath = getData(storageKeys.PREVIOUS_PATH);
     removeData(storageKeys.PREVIOUS_PATH);
@@ -195,16 +146,11 @@ export default function ProfileForm() {
           <Row>
             <Col span={kind === KIND_MANAGER ? 12 : 24}>
               <UploadImageField
-                value={renderImageUrl(avatarPath)}
+                value={renderImageUrl(avatarImageManager.currentUrl)}
                 loading={uploadAvatarMutation.isPending}
                 name='avatarPath'
                 control={form.control}
-                onChange={(url) => {
-                  setAvatarPath(url);
-                  setUploadedAvatarImages((prev) =>
-                    url ? [...prev, url] : [...prev]
-                  );
-                }}
+                onChange={avatarImageManager.trackUpload}
                 size={150}
                 uploadImageFn={async (file: Blob) => {
                   const res = await uploadAvatarMutation.mutateAsync({
@@ -212,30 +158,18 @@ export default function ProfileForm() {
                   });
                   return res.data?.filePath ?? '';
                 }}
-                deleteImageFn={
-                  profile?.avatarPath
-                    ? undefined
-                    : () =>
-                        deleteImageMutation.mutateAsync({
-                          filePath: avatarPath
-                        })
-                }
+                deleteImageFn={avatarImageManager.handleDeleteOnClick}
                 label='Ảnh đại diện'
               />
             </Col>
             <Activity visible={kind == KIND_MANAGER}>
               <Col span={12}>
                 <UploadImageField
-                  value={renderImageUrl(logoPath)}
+                  value={renderImageUrl(logoImageManager.currentUrl)}
                   loading={uploadLogoMutation.isPending}
                   name='logoPath'
                   control={form.control}
-                  onChange={(url) => {
-                    setLogoPath(url);
-                    setUploadedLogoImages((prev) =>
-                      url ? [...prev, url] : [...prev]
-                    );
-                  }}
+                  onChange={logoImageManager.trackUpload}
                   size={150}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadLogoMutation.mutateAsync({
@@ -243,14 +177,7 @@ export default function ProfileForm() {
                     });
                     return res.data?.filePath ?? '';
                   }}
-                  deleteImageFn={
-                    profile?.logoPath
-                      ? undefined
-                      : () =>
-                          deleteImageMutation.mutateAsync({
-                            filePath: logoPath
-                          })
-                  }
+                  deleteImageFn={logoImageManager.handleDeleteOnClick}
                   label='Logo (16:9)'
                   aspect={16 / 9}
                 />
