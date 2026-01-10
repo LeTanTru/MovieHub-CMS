@@ -10,7 +10,7 @@ export default function HasPermission({
   requiredPermissions: string[];
 }) {
   const isMounted = useIsMounted();
-  const { hasPermission } = useValidatePermission();
+  const hasPermission = useValidatePermission();
 
   if (!isMounted) return null;
 

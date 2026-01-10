@@ -11,8 +11,9 @@ import { apiConfig } from '@/constants';
 import { AuthorInfoType, CommentBodyType, CommentResType } from '@/types';
 import { emojiIcon } from '@/assets';
 import { useCommentStore } from '@/store';
+import { useShallow } from 'zustand/react/shallow';
 
-type Props = {
+type CommentReplyFormProps = {
   parentId: string;
   movieId: string;
   queryKey: string;
@@ -28,7 +29,7 @@ export default function CommentReplyForm({
   defaultMention,
   onSubmitted,
   onCancel
-}: Props) {
+}: CommentReplyFormProps) {
   const formRef = useRef<any>(null);
   const wrapperRef = useClickOutside<HTMLDivElement>(() =>
     setShowPicker(false)
@@ -36,7 +37,13 @@ export default function CommentReplyForm({
   const pickerContainerRef = useRef<HTMLDivElement>(null);
   const [showPicker, setShowPicker] = useState(false);
   const { editingComment, replyingComment, setEditingComment } =
-    useCommentStore();
+    useCommentStore(
+      useShallow((s) => ({
+        editingComment: s.editingComment,
+        replyingComment: s.replyingComment,
+        setEditingComment: s.setEditingComment
+      }))
+    );
 
   const authorInfo = replyingComment
     ? (JSON.parse(replyingComment?.authorInfo) as AuthorInfoType)

@@ -10,7 +10,7 @@ export default function SidebarLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { state } = useSidebarStore();
+  const state = useSidebarStore((s) => s.state);
   return (
     <SidebarProvider
       style={

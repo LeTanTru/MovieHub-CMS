@@ -1,7 +1,14 @@
 'use client';
 
 import { logoWithText } from '@/assets';
-import { Button, Col, InputField, Row, SelectField } from '@/components/form';
+import {
+  Button,
+  Col,
+  InputField,
+  PasswordField,
+  Row,
+  SelectField
+} from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import {
   ErrorCode,
@@ -14,16 +21,21 @@ import { loginSchema } from '@/schemaValidations';
 import { ApiResponse, LoginBodyType, LoginResType } from '@/types';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
-import PasswordField from '@/components/form/password-field';
-import { useAuthStore } from '@/store';
 import envConfig from '@/config';
 import { useLoginEmployeeMutation, useLoginManagerMutation } from '@/queries';
 import { omit } from 'lodash';
+import { useShallow } from 'zustand/react/shallow';
+import { useAuthStore } from '@/store';
 
 export default function LoginForm() {
   const loginManagerMutation = useLoginManagerMutation();
   const loginEmployeeMutation = useLoginEmployeeMutation();
-  const { setAuthenticated, setLoading } = useAuthStore();
+  const { setAuthenticated, setLoading } = useAuthStore(
+    useShallow((s) => ({
+      setAuthenticated: s.setAuthenticated,
+      setLoading: s.setLoading
+    }))
+  );
 
   const loading =
     loginManagerMutation.isPending || loginEmployeeMutation.isPending;

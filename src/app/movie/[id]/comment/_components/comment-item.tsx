@@ -50,8 +50,9 @@ import { useChangeCommenStatusMutation } from '@/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { Activity } from '@/components/activity';
+import { useShallow } from 'zustand/react/shallow';
 
-type Props = {
+type CommentItemProps = {
   comment: CommentResType & { children?: CommentResType[] };
   level: number;
   voteMap: Record<string, number>;
@@ -77,9 +78,9 @@ function CommentItem({
   onDelete,
   renderChildren,
   onReplySuccess
-}: Props) {
+}: CommentItemProps) {
   const queryClient = useQueryClient();
-  const { hasPermission } = useValidatePermission();
+  const hasPermission = useValidatePermission();
 
   const {
     openParentIds,
@@ -89,7 +90,17 @@ function CommentItem({
     openReply,
     closeReply,
     setEditingComment
-  } = useCommentStore();
+  } = useCommentStore(
+    useShallow((s) => ({
+      openParentIds: s.openParentIds,
+      replyingComment: s.replyingComment,
+      editingComment: s.editingComment,
+      setOpenParentIds: s.setOpenParentIds,
+      openReply: s.openReply,
+      closeReply: s.closeReply,
+      setEditingComment: s.setEditingComment
+    }))
+  );
   const isActiveParent = openParentIds.includes(comment.id);
 
   const totalChildren = comment.totalChildren || 0;

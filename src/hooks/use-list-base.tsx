@@ -148,7 +148,7 @@ export default function useListBase<
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const [data, setData] = useState<T[]>([]);
-  const { hasPermission } = useValidatePermission();
+  const hasPermission = useValidatePermission();
 
   const [pagination, setPagination] = useState<PaginationType>({
     current: DEFAULT_TABLE_PAGE_START,

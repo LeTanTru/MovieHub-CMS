@@ -17,6 +17,7 @@ import {
 import { useAuthStore, useSocketStore } from '@/store';
 import { getData, isTokenExpiringSoon, removeData, setData } from '@/utils';
 import { useEffect, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function AppProvider({
   children
@@ -27,8 +28,16 @@ export default function AppProvider({
   const refreshToken = getData(storageKeys.REFRESH_TOKEN);
   const kind = getData(storageKeys.USER_KIND);
   const [clientToken, setClientToken] = useState<string>('');
-  const { isAuthenticated, setLoading, setProfile } = useAuthStore();
-  const { socket, setSocket } = useSocketStore();
+  const { isAuthenticated, setLoading, setProfile } = useAuthStore(
+    useShallow((s) => ({
+      isAuthenticated: s.isAuthenticated,
+      setLoading: s.setLoading,
+      setProfile: s.setProfile
+    }))
+  );
+  const { socket, setSocket } = useSocketStore(
+    useShallow((s) => ({ socket: s.socket, setSocket: s.setSocket }))
+  );
   const managerProfileQuery = useManageProfileQuery();
   const employeeProfileQuery = useEmployeeProfileQuery();
   const getClientTokenMutation = useGetClientTokenMutation();

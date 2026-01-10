@@ -17,6 +17,7 @@ import { useAuthStore } from '@/store';
 import { route } from '@/routes';
 import { storageKeys } from '@/constants';
 import { RouteItem } from '@/routes/route';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function PermissionGuard({
   children
@@ -28,7 +29,12 @@ export default function PermissionGuard({
     permissionCode: userPermissions,
     isAuthenticated
   } = useAuth();
-  const { isLoggedOut, setLoading } = useAuthStore();
+  const { isLoggedOut, setLoading } = useAuthStore(
+    useShallow((s) => ({
+      isLoggedOut: s.isLoggedOut,
+      setLoading: s.setLoading
+    }))
+  );
 
   // const navigate = useNavigate(false);
   const router = useRouter();

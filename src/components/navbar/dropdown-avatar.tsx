@@ -14,13 +14,21 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, CircleUserRound, LogOut, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function DropdownAvatar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { profile, setAuthenticated, setProfile, setIsLoggedOut } =
-    useAuthStore();
+    useAuthStore(
+      useShallow((s) => ({
+        profile: s.profile,
+        setAuthenticated: s.setAuthenticated,
+        setProfile: s.setProfile,
+        setIsLoggedOut: s.setIsLoggedOut
+      }))
+    );
   const { queryString } = useQueryParams();
   const logoutMutation = useLogoutMutation();
 

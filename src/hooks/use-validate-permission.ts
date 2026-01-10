@@ -30,7 +30,7 @@ const useValidatePermission = () => {
       separate
     });
   };
-  return { hasPermission };
+  return hasPermission;
 };
 
 export default useValidatePermission;

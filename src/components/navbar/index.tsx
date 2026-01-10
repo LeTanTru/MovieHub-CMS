@@ -5,9 +5,12 @@ import DropdownAvatar from '@/components/navbar/dropdown-avatar';
 import { useSidebarStore } from '@/store';
 import { DarkModeToggle } from '@/components/dark-mode';
 import { ToolTip } from '@/components/form';
+import { useShallow } from 'zustand/react/shallow';
 
 const Navbar = () => {
-  const { state, setSidebarState } = useSidebarStore();
+  const { state, setSidebarState } = useSidebarStore(
+    useShallow((s) => ({ state: s.state, setSidebarState: s.setSidebarState }))
+  );
   return (
     <nav className='bg-background relative z-10 flex h-16 items-center justify-between p-3 shadow-[0px_0px_10px_5px] shadow-gray-200'>
       {/* LEFT */}
