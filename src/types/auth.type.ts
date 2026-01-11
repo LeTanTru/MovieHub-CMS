@@ -17,17 +17,21 @@ export type LoginResType = {
   jti: string;
 };
 
-export type AuthStoreType = {
+type AuthStoreState = {
   isAuthenticated: boolean;
   profile: ProfileResType | null;
   loading: boolean;
   isLoggedOut: boolean;
+};
 
+type AuthStoreActions = {
   setAuthenticated: (isAuthenticated: boolean) => void;
   setProfile: (profile: ProfileResType | null) => void;
   setLoading: (loading: boolean) => void;
   setIsLoggedOut: (isLogout: boolean) => void;
 };
+
+export type AuthStoreType = AuthStoreState & AuthStoreActions;
 
 export type RefreshTokenBodyType = {
   refresh_token: string;
