@@ -38,20 +38,22 @@ import { UseFormReturn } from 'react-hook-form';
 export default function ProfileForm() {
   const navigate = useNavigate();
   const profile = useAuthStore((s) => s.profile);
+  const { kind } = useAuth();
 
   const uploadAvatarMutation = useUploadAvatarMutation();
   const uploadLogoMutation = useUploadLogoMutation();
   const deleteFileMutation = useDeleteFileMutation();
 
-  const { kind } = useAuth();
-
   const managerUpdateProfileMutation = useManagerUpdateProfileMutation();
   const employeeUpdateProfileMutation = useEmployeeUpdateProfileMutation();
 
-  const profileMutation =
-    kind === KIND_MANAGER
-      ? managerUpdateProfileMutation
-      : employeeUpdateProfileMutation;
+  const profileMutation = useMemo(
+    () =>
+      kind === KIND_MANAGER
+        ? managerUpdateProfileMutation
+        : employeeUpdateProfileMutation,
+    [kind, managerUpdateProfileMutation, employeeUpdateProfileMutation]
+  );
 
   const avatarImageManager = useFileUploadManager({
     initialUrl: profile?.avatarPath,
@@ -96,8 +98,10 @@ export default function ProfileForm() {
     values: ProfileBodyType,
     form: UseFormReturn<ProfileBodyType>
   ) => {
-    await avatarImageManager.handleSubmit();
-    await logoImageManager.handleSubmit();
+    await Promise.all([
+      avatarImageManager.handleSubmit(),
+      logoImageManager.handleSubmit()
+    ]);
 
     await profileMutation.mutateAsync(
       {
@@ -125,8 +129,10 @@ export default function ProfileForm() {
   };
 
   const handleCancel = async () => {
-    await avatarImageManager.handleCancel();
-    await logoImageManager.handleCancel();
+    await Promise.all([
+      avatarImageManager.handleCancel(),
+      logoImageManager.handleCancel()
+    ]);
 
     const prevPath = getData(storageKeys.PREVIOUS_PATH);
     removeData(storageKeys.PREVIOUS_PATH);
@@ -250,7 +256,7 @@ export default function ProfileForm() {
           <Row className='my-0 justify-end'>
             <Col className='w-40!'>
               <Button
-                onClick={() => handleCancel()}
+                onClick={handleCancel}
                 type='button'
                 variant={'ghost'}
                 className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'

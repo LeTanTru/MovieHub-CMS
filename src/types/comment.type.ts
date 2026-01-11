@@ -54,14 +54,18 @@ export type CommentVoteResType = {
   type: number;
 };
 
-export type CommentStoreType = {
+type CommentStoreState = {
   replyingComment: CommentResType | null;
   editingComment: CommentResType | null;
   openParentIds: string[];
+};
 
+type CommentStoreActions = {
   openReply: (replyingComment: CommentResType | null) => void;
   closeReply: () => void;
 
   setEditingComment: (c: CommentResType | null) => void;
   setOpenParentIds: (ids: string[] | ((prev: string[]) => string[])) => void;
 };
+
+export type CommentStoreType = CommentStoreState & CommentStoreActions;

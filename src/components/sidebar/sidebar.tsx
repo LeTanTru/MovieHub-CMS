@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/sidebar';
 import { logo, logoWithText } from '@/assets';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { MouseEvent, useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib';
 import { AvatarField, Button } from '@/components/form';
@@ -27,6 +27,7 @@ import { MenuItem } from '@/types';
 import { useSidebarStore } from '@/store';
 import {
   useAuth,
+  useIsMounted,
   useNavigate,
   useQueryParams,
   useValidatePermission
@@ -304,11 +305,11 @@ const renderMenu = (items: MenuItem[]) => {
 };
 
 const AppSidebar = () => {
+  const isMounted = useIsMounted();
   const { profile } = useAuth();
-  const hasPermission = useValidatePermission();
-  const [clientMenu, setClientMenu] = useState<MenuItem[]>([]);
-  const openLastMenu = useSidebarStore((s) => s.openLastMenu);
   const { state } = useSidebar();
+  const hasPermission = useValidatePermission();
+  const openLastMenu = useSidebarStore((s) => s.openLastMenu);
 
   // handle open last opened menu when sidebar changed state from collapsed -> expanded
   useEffect(() => {
@@ -317,8 +318,8 @@ const AppSidebar = () => {
     }
   }, [state, openLastMenu]);
 
-  const filterMenuByPermission = useCallback(
-    (menu: MenuItem[]): MenuItem[] => {
+  const clientMenu = useMemo(() => {
+    const filterMenuByPermission = (menu: MenuItem[]): MenuItem[] => {
       return menu
         .map((item) => {
           let children: MenuItem[] | undefined;
@@ -335,15 +336,12 @@ const AppSidebar = () => {
           return { ...item, children };
         })
         .filter(Boolean) as MenuItem[];
-    },
-    [hasPermission]
-  );
+    };
 
-  useEffect(() => {
-    setClientMenu(filterMenuByPermission(menuConfig));
-  }, [filterMenuByPermission]);
+    return filterMenuByPermission(menuConfig);
+  }, [hasPermission]);
 
-  if (!clientMenu)
+  if (!isMounted || !clientMenu || clientMenu.length === 0) {
     return (
       <Sidebar
         className='**:data-[sidebar="sidebar"]:bg-sidebar group-data-[side=left]:border-none'
@@ -363,10 +361,13 @@ const AppSidebar = () => {
         </SidebarContent>
       </Sidebar>
     );
+  }
+
   return (
     <Sidebar
       className='**:data-[sidebar="sidebar"]:bg-sidebar group-data-[side=left]:border-none'
       collapsible='icon'
+      suppressHydrationWarning
     >
       <SidebarHeader
         className={cn('px-0 py-0', {
