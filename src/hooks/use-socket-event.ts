@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect } from 'react';
 import { useSocketStore } from '@/store';
 import { logger } from '@/logger';

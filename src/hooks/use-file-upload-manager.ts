@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback, useEffect, useState } from 'react';
 import { logger } from '@/logger';
 
@@ -8,12 +10,12 @@ type UseFileUploadManagerProps = {
   onOpen?: boolean;
 };
 
-export default function useFileUploadManager({
+const useFileUploadManager = ({
   initialUrl = '',
   deleteFileMutation,
   isEditing,
   onOpen = false
-}: UseFileUploadManagerProps) {
+}: UseFileUploadManagerProps) => {
   const [currentUrl, setCurrentUrl] = useState<string>('');
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [originalUrl, setOriginalUrl] = useState<string>('');
@@ -174,4 +176,6 @@ export default function useFileUploadManager({
     getFilesToDeleteOnCancel,
     getFilesToDeleteOnSubmit
   };
-}
+};
+
+export default useFileUploadManager;

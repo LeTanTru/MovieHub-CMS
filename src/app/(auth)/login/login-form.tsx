@@ -4,6 +4,7 @@ import { logoWithText } from '@/assets';
 import {
   Button,
   Col,
+  ImageField,
   InputField,
   PasswordField,
   Row,
@@ -20,7 +21,6 @@ import { logger } from '@/logger';
 import { loginSchema } from '@/schemaValidations';
 import { ApiResponse, LoginBodyType, LoginResType } from '@/types';
 import { notify, setData } from '@/utils';
-import Image from 'next/image';
 import envConfig from '@/config';
 import { useLoginEmployeeMutation, useLoginManagerMutation } from '@/queries';
 import { omit } from 'lodash';
@@ -98,14 +98,24 @@ export default function LoginForm() {
         <>
           <Row className='mb-2 w-full'>
             <Col span={24} className='items-center justify-center px-0'>
-              <div className='bg-sidebar/80 mx-auto flex w-full items-center justify-center rounded py-2'>
+              {/* <div className='bg-sidebar/80 mx-auto flex w-full items-center justify-center rounded py-2'>
                 <Image
                   src={logoWithText.src}
                   width={180}
                   height={50}
                   alt='MovieHub Logo'
                 />
-              </div>
+              </div> */}
+              <ImageField
+                src={logoWithText.src}
+                aspect={0}
+                width={180}
+                height={50}
+                disablePreview
+                showHoverIcon={false}
+                className='bg-sidebar/80 mx-auto flex w-full items-center justify-center rounded py-2'
+                alt='MovieHub Logo'
+              />
             </Col>
           </Row>
           <Row className='w-full flex-col gap-5 *:px-0'>

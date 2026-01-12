@@ -138,7 +138,7 @@ export default function AutoCompleteField<
       }
       return http.get<ApiResponseList<TOption>>(apiConfig, { params });
     },
-    enabled: true
+    enabled: open
   });
 
   const loading = query.isLoading || query.isFetching;

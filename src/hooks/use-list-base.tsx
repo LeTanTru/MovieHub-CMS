@@ -129,10 +129,11 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
 
-export default function useListBase<
-  T extends { id: string },
-  S extends BaseSearchType
->({ apiConfig, options, override }: UseListBaseProps<T, S>) {
+const useListBase = <T extends { id: string }, S extends BaseSearchType>({
+  apiConfig,
+  options,
+  override
+}: UseListBaseProps<T, S>) => {
   const {
     queryKey = '',
     objectName = '',
@@ -721,4 +722,6 @@ export default function useListBase<
     totalElements,
     totalLeft
   };
-}
+};
+
+export default useListBase;

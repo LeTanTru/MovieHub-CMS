@@ -1,12 +1,12 @@
 'use client';
 
-import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { EyeIcon } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { AiOutlineFileImage } from 'react-icons/ai';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type ImageFieldProps = {
   src?: string;
@@ -18,6 +18,7 @@ type ImageFieldProps = {
   previewSize?: number;
   disablePreview?: boolean;
   className?: string;
+  imageClassName?: string;
   previewClassName?: string;
   imagePreviewClassName?: string;
   hoverIcon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
@@ -35,6 +36,7 @@ export default function ImageField({
   previewSize = 500,
   disablePreview = false,
   className,
+  imageClassName,
   previewClassName,
   imagePreviewClassName,
   hoverIcon: HoverIcon = EyeIcon,
@@ -42,10 +44,10 @@ export default function ImageField({
   zoomOnScroll = true,
   ...props
 }: ImageFieldProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [scale, setScale] = React.useState(1);
+  const [isOpen, setIsOpen] = useState(false);
+  const [scale, setScale] = useState(1);
 
-  const previewRef = React.useRef<HTMLDivElement | null>(null);
+  const previewRef = useRef<HTMLDivElement | null>(null);
 
   const openPreview = (e: React.MouseEvent) => {
     if (disablePreview || !src) return;
@@ -54,7 +56,7 @@ export default function ImageField({
     setIsOpen(true);
   };
 
-  const handleWheel = React.useCallback(
+  const handleWheel = useCallback(
     (e: WheelEvent) => {
       if (!zoomOnScroll) return;
 
@@ -69,7 +71,7 @@ export default function ImageField({
     [zoomOnScroll]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isOpen || !previewRef.current) return;
 
     const node = previewRef.current;
@@ -88,7 +90,6 @@ export default function ImageField({
           { 'cursor-pointer': !!src },
           className
         )}
-        style={{ width, height }}
       >
         {src ? (
           aspect ? (
@@ -101,7 +102,7 @@ export default function ImageField({
                 src={src}
                 alt={alt}
                 fill
-                className='rounded object-cover'
+                className={cn('rounded object-cover', imageClassName)}
                 unoptimized
               />
             </AspectRatio>
@@ -111,7 +112,13 @@ export default function ImageField({
               alt={alt}
               width={width}
               height={height}
-              className='h-full w-full object-cover'
+              className={cn(
+                'object-cover',
+                {
+                  'h-full w-full': !imageClassName && !width && !height
+                },
+                imageClassName
+              )}
               unoptimized
             />
           )

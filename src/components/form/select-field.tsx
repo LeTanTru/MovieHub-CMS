@@ -26,6 +26,7 @@ import { Button } from '@/components/form';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
 import { useEffect, useState, useRef } from 'react';
+import { useIsMounted } from '@/hooks';
 
 type SelectFieldProps<
   TFieldValues extends FieldValues,
@@ -91,6 +92,7 @@ export default function SelectField<
   getPrefix = (opt) => opt.prefix,
   onValueChange
 }: SelectFieldProps<TFieldValues, TOption>) {
+  const isMounted = useIsMounted();
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -103,6 +105,8 @@ export default function SelectField<
   useEffect(() => {
     if (!searchValue) setHighlightedIndex(-1);
   }, [searchValue]);
+
+  if (!isMounted) return null;
 
   return (
     <FormField

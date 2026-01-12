@@ -1,8 +1,8 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
 
-export default function useClickOutside<T extends HTMLElement>(
-  onClickOutside: () => void
-) {
+const useClickOutside = <T extends HTMLElement>(onClickOutside: () => void) => {
   const ref = useRef<T | null>(null);
 
   useEffect(() => {
@@ -18,4 +18,6 @@ export default function useClickOutside<T extends HTMLElement>(
   }, [onClickOutside]);
 
   return ref;
-}
+};
+
+export default useClickOutside;

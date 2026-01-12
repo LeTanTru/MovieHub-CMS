@@ -1,6 +1,8 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 
-export default function useIsMounted(): boolean {
+const useIsMounted = () => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -8,4 +10,6 @@ export default function useIsMounted(): boolean {
   }, []);
 
   return isMounted;
-}
+};
+
+export default useIsMounted;
