@@ -280,13 +280,11 @@ export default function MovieItemSeasonList({
           rowClassName={() => 'cursor-pointer'}
         />
       </ListPageWrapper>
-      {movieItem && (
-        <MovieItemModal
-          open={movieItemModal.opened}
-          close={movieItemModal.close}
-          movieItem={movieItem}
-        />
-      )}
+      <MovieItemModal
+        open={movieItemModal.opened}
+        close={movieItemModal.close}
+        movieItem={movieItem}
+      />
       {selectedVideo && (
         <VideoPlayModal
           open={playModal.opened}

@@ -47,7 +47,7 @@ export default function MovieItemModal({
 }: {
   open: boolean;
   close: () => void;
-  movieItem: MovieItemResType;
+  movieItem?: MovieItemResType | null;
 }) {
   const queryClient = useQueryClient();
 
@@ -84,7 +84,7 @@ export default function MovieItemModal({
       queryKey: queryKeys.MOVIE_ITEM,
       objectName: 'mùa',
       pathParams: {
-        id: movieItem.id
+        id: movieItem?.id
       },
       mode: !movieItem ? 'create' : 'edit'
     },

@@ -311,13 +311,11 @@ export default function MovieItemSeasonDetailList({
           onDragEnd={onDragEnd}
         />
       </ListPageWrapper>
-      {movieItem && (
-        <MovieItemModal
-          open={movieItemModal.opened}
-          close={movieItemModal.close}
-          movieItem={movieItem}
-        />
-      )}
+      <MovieItemModal
+        open={movieItemModal.opened}
+        close={movieItemModal.close}
+        movieItem={movieItem}
+      />
       {selectedVideo && (
         <VideoPlayModal
           open={playModal.opened}

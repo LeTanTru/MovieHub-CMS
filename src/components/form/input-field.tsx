@@ -186,7 +186,7 @@ function InputFieldInner<T extends FieldValues>(
                         transformPerspective: 1000,
                         transformOrigin: 'top center'
                       }}
-                      className='absolute top-full left-0 z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-white p-1 shadow-[0px_0px_10px_2px] shadow-gray-200'
+                      className='absolute top-full left-0 z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-white p-1 shadow-[0px_0px_10px_5px] shadow-gray-200'
                     >
                       {filteredOptions.map((option, index) => (
                         <div
