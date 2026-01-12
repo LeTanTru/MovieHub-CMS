@@ -105,7 +105,7 @@ export default function Modal({
             {...rest}
           >
             <motion.div
-              className='content relative my-auto h-[80vh] w-full rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40'
+              className='content scrollbar-none relative flex h-[80vh] w-full flex-col rounded-lg bg-white shadow-[0px_0px_10px_5px] shadow-black/20'
               initial={variants.initial}
               animate={variants.animate}
               exit={variants.exit}
@@ -114,7 +114,7 @@ export default function Modal({
               style={{ maxWidth: width ?? 'auto' }}
             >
               <Activity visible={!!title || !!showClose}>
-                <div className='flex items-center justify-between border-b border-gray-200 px-4'>
+                <div className='flex shrink-0 items-center justify-between border-b border-gray-200 pr-2 pl-4'>
                   <div className='text-base font-semibold text-gray-800'>
                     {title}
                   </div>
@@ -131,27 +131,31 @@ export default function Modal({
                 </div>
               </Activity>
 
-              <div className='relative h-full'>
+              <div className='relative flex-1 overflow-hidden'>
                 <div
                   ref={scrollRef}
-                  className='scrollbar-none h-full overflow-auto rounded-br-lg rounded-bl-lg'
+                  className='scrollbar-none h-full overflow-auto rounded-lg'
                 >
                   {children}
                 </div>
 
                 <AnimatePresence>
-                  <Activity visible={showScrollArrow}>
+                  {showScrollArrow && (
                     <motion.button
-                      initial={{ opacity: 0, y: -10 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{
+                        duration: 0.3,
+                        ease: [0.4, 0, 0.2, 1]
+                      }}
                       onClick={handleScrollDown}
                       className='absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce rounded-full bg-white p-2 shadow-[0px_0px_10px_2px] shadow-gray-300 transition hover:bg-gray-50'
                       aria-label='Scroll down'
                     >
                       <ChevronDown className='size-5 text-slate-800' />
                     </motion.button>
-                  </Activity>
+                  )}
                 </AnimatePresence>
               </div>
             </motion.div>
