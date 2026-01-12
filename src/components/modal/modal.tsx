@@ -105,7 +105,7 @@ export default function Modal({
             {...rest}
           >
             <motion.div
-              className='content scrollbar-none relative flex h-[80vh] w-full flex-col rounded-lg bg-white shadow-[0px_0px_10px_5px] shadow-black/20'
+              className='content scrollbar-none relative flex max-h-[80vh] w-full flex-col rounded-lg bg-white shadow-[0px_0px_10px_5px] shadow-black/20'
               initial={variants.initial}
               animate={variants.animate}
               exit={variants.exit}
@@ -131,31 +131,28 @@ export default function Modal({
                 </div>
               </Activity>
 
-              <div className='relative flex-1 overflow-hidden'>
-                <div
-                  ref={scrollRef}
-                  className='scrollbar-none h-full overflow-auto rounded-lg'
-                >
-                  {children}
-                </div>
+              <div
+                ref={scrollRef}
+                className='scrollbar-none relative flex-1 overflow-auto rounded-lg'
+              >
+                {children}
 
                 <AnimatePresence>
+                  {' '}
                   {showScrollArrow && (
                     <motion.button
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      transition={{
-                        duration: 0.3,
-                        ease: [0.4, 0, 0.2, 1]
-                      }}
+                      transition={{ duration: 0.1, ease: [0.4, 0, 0.2, 1] }}
                       onClick={handleScrollDown}
                       className='absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce rounded-full bg-white p-2 shadow-[0px_0px_10px_2px] shadow-gray-300 transition hover:bg-gray-50'
                       aria-label='Scroll down'
                     >
-                      <ChevronDown className='size-5 text-slate-800' />
+                      {' '}
+                      <ChevronDown className='size-5 text-slate-800' />{' '}
                     </motion.button>
-                  )}
+                  )}{' '}
                 </AnimatePresence>
               </div>
             </motion.div>
