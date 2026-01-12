@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { format, isValid, Locale, parse } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
@@ -30,6 +29,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { DATE_TIME_FORMAT } from '@/constants';
+import { useState } from 'react';
 
 type DateTimePickerFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -57,7 +57,7 @@ export default function DateTimePickerField<T extends FieldValues>({
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = Array.from({ length: 60 }, (_, i) => i);
   const seconds = Array.from({ length: 60 }, (_, i) => i);
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const calendarLocale: Locale = vi;
 
   const parseDate = (value: string) => {

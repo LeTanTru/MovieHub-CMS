@@ -4,6 +4,7 @@ import { Button, Col, Row } from '@/components/form';
 import {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -15,7 +16,6 @@ import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
 import { ApiConfig, ApiResponse, ErrorMaps } from '@/types';
 import { applyFormErrors, http, notify } from '@/utils';
-import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
@@ -44,10 +44,7 @@ type UseSaveBaseProps<R, T> = {
   override?: (handlers: HandlerType<T>) => HandlerType<T> | void;
 };
 
-export default function useSaveBase<
-  R extends FieldValues,
-  T extends FieldValues
->({
+const useSaveBase = <R extends FieldValues, T extends FieldValues>({
   apiConfig,
   options: {
     queryKey = '',
@@ -58,7 +55,7 @@ export default function useSaveBase<
     showNotify = true
   },
   override
-}: UseSaveBaseProps<R, T>) {
+}: UseSaveBaseProps<R, T>) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const isCreate = mode === 'create';
@@ -259,4 +256,6 @@ export default function useSaveBase<
     handleSubmit,
     renderActions
   };
-}
+};
+
+export default useSaveBase;

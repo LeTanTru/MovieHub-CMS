@@ -1,3 +1,5 @@
+'use client';
+
 import { ApiConfig, ApiResponseList } from '@/types';
 import { http } from '@/utils';
 import {
@@ -25,17 +27,13 @@ type UseInfiniteListQueryProps<TData, TParams, TError = unknown> = {
   options?: InfiniteListQueryOptions<TData, TError>;
 };
 
-export default function useInfiniteListQuery<
-  TData,
-  TParams = void,
-  TError = unknown
->({
+const useInfiniteListQuery = <TData, TParams = void, TError = unknown>({
   queryKey,
   apiConfig,
   params,
   options,
   enabled
-}: UseInfiniteListQueryProps<TData, TParams, TError>) {
+}: UseInfiniteListQueryProps<TData, TParams, TError>) => {
   const query = useInfiniteQuery<
     ApiResponseList<TData>,
     TError,
@@ -61,4 +59,6 @@ export default function useInfiniteListQuery<
   });
 
   return { ...query, data: query.data?.pages?.[0] };
-}
+};
+
+export default useInfiniteListQuery;

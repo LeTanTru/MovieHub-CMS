@@ -1,12 +1,12 @@
 'use client';
 
-import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { EyeIcon } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { AiOutlineUser } from 'react-icons/ai';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type AvatarFieldProps = {
   size?: number;
@@ -44,10 +44,10 @@ export default function AvatarField({
   alt,
   ...props
 }: AvatarFieldProps) {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [scale, setScale] = React.useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [scale, setScale] = useState(1);
 
-  const previewRef = React.useRef<HTMLDivElement | null>(null);
+  const previewRef = useRef<HTMLDivElement | null>(null);
 
   const handleClick = (e: React.MouseEvent) => {
     if (disablePreview || !src) return;
@@ -56,7 +56,7 @@ export default function AvatarField({
     setIsModalOpen(true);
   };
 
-  const handleWheel = React.useCallback(
+  const handleWheel = useCallback(
     (e: WheelEvent) => {
       if (!zoomOnScroll) return;
 
@@ -71,7 +71,7 @@ export default function AvatarField({
     [zoomOnScroll]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isModalOpen || !previewRef.current) return;
 
     const node = previewRef.current;
