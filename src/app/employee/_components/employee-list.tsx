@@ -14,7 +14,7 @@ import {
 import { useListBase } from '@/hooks';
 import { useChangeEmployeeStatusMutation, useGroupListQuery } from '@/queries';
 import { employeeSearchSchema } from '@/schemaValidations';
-import {
+import type {
   Column,
   EmployeeResType,
   EmployeeSearchType,

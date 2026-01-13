@@ -7,7 +7,7 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 type TooltipProps = {
   title: ReactNode;

@@ -10,7 +10,7 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb';
 import { Fragment } from 'react';
-import { ReusableBreadcrumbProps } from '@/types';
+import type { ReusableBreadcrumbProps } from '@/types';
 import { useIsMounted } from '@/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
 

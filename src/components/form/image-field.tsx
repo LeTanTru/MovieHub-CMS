@@ -7,10 +7,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { AiOutlineFileImage } from 'react-icons/ai';
 import {
-  ComponentType,
-  HTMLAttributes,
-  MouseEvent,
-  SVGProps,
+  type ComponentType,
+  type HTMLAttributes,
+  type MouseEvent,
+  type SVGProps,
   useCallback,
   useEffect,
   useRef,

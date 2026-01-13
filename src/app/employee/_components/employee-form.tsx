@@ -28,11 +28,11 @@ import {
 } from '@/queries';
 import { route } from '@/routes';
 import { employeeSchema } from '@/schemaValidations';
-import { EmployeeBodyType, EmployeeResType } from '@/types';
+import type { EmployeeBodyType, EmployeeResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function EmployeeForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();

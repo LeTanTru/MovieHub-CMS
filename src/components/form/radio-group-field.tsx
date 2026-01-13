@@ -1,6 +1,6 @@
 'use client';
 
-import { FieldValues } from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import {
   FormControl,
   FormField,
@@ -17,8 +17,8 @@ export type Option = {
 };
 
 type RadioGroupFieldProps<T extends FieldValues> = {
-  name: keyof T & string;
-  control: any;
+  name: FieldPath<T>;
+  control: Control<T>;
   label?: string;
   options: Option[];
   direction?: 'row' | 'col';

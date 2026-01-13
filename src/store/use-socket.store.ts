@@ -1,4 +1,4 @@
-import { SocketStoreType } from '@/types';
+import type { SocketStoreType } from '@/types';
 import { create } from 'zustand';
 
 const useSocketStore = create<SocketStoreType>((set) => ({

@@ -34,7 +34,7 @@ import {
 } from '@/queries';
 import { route } from '@/routes';
 import { movieSchema } from '@/schemaValidations';
-import { MovieBodyType, MovieResType } from '@/types';
+import type { MovieBodyType, MovieResType } from '@/types';
 import { formatDate, renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';

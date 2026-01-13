@@ -16,7 +16,7 @@ import {
 } from '@/queries';
 import { useAuthStore, useSocketStore } from '@/store';
 import { getData, isTokenExpiringSoon, removeData, setData } from '@/utils';
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function AppProvider({ children }: { children: ReactNode }) {

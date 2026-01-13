@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  Ref,
+  type Ref,
   useCallback,
   useRef,
   useState,

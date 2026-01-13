@@ -14,7 +14,7 @@ import {
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { personSearchSchema } from '@/schemaValidations';
-import {
+import type {
   Column,
   PersonResType,
   PersonSearchType,

@@ -5,7 +5,7 @@ import { BaseTable } from '@/components/table';
 import { apiConfig } from '@/constants';
 import { useListBase } from '@/hooks';
 import { groupSearchSchema } from '@/schemaValidations';
-import {
+import type {
   Column,
   GroupResType,
   GroupSearchType,

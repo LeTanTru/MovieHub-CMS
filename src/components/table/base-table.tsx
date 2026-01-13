@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { BaseTableProps } from '@/types';
+import type { BaseTableProps } from '@/types';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
 import { cn } from '@/lib';

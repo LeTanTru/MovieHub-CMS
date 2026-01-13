@@ -18,7 +18,7 @@ import {
 } from '@/constants';
 import { logger } from '@/logger';
 import { loginSchema } from '@/schemaValidations';
-import { ApiResponse, LoginBodyType, LoginResType } from '@/types';
+import type { ApiResponse, LoginBodyType, LoginResType } from '@/types';
 import { notify, setData } from '@/utils';
 import envConfig from '@/config';
 import { useLoginEmployeeMutation, useLoginManagerMutation } from '@/queries';

@@ -1,6 +1,6 @@
 'use client';
 
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import {
   FormControl,
   FormDescription,
@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 type CheckboxFieldProps<T extends FieldValues> = {
   control: Control<T>;

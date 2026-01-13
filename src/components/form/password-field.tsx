@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useState } from 'react';
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 
 type InputFieldProps<T extends FieldValues> = {
   control: Control<T>;

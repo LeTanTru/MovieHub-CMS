@@ -1,4 +1,5 @@
 'use client';
+
 import { SeekButton, Tooltip } from '@vidstack/react';
 import { SeekBackward10Icon } from '@vidstack/react/icons';
 

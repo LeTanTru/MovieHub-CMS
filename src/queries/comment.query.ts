@@ -1,5 +1,5 @@
 import { apiConfig, queryKeys } from '@/constants';
-import {
+import type {
   ApiResponse,
   ApiResponseList,
   ChangeCommentStatusBodyType,

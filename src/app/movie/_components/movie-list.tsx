@@ -18,7 +18,7 @@ import { cn } from '@/lib';
 import { useCategoryListQuery } from '@/queries';
 import { route } from '@/routes';
 import { movieSearchSchema } from '@/schemaValidations';
-import {
+import type {
   Column,
   MovieResType,
   MovieSearchType,

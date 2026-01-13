@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import {
   Command,
   CommandEmpty,
@@ -25,7 +25,13 @@ import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/form';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
-import { MouseEvent, ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  type MouseEvent,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 
 type MultiSelectFieldProps<
   TFieldValues extends FieldValues,

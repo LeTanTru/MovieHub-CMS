@@ -14,9 +14,9 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import { DEFAULT_COL_SPAN, FieldTypes } from '@/constants';
 import { cn } from '@/lib';
-import { ApiConfig, AutoCompleteOption, SearchFormProps } from '@/types';
+import type { ApiConfig, AutoCompleteOption, SearchFormProps } from '@/types';
 import { BrushCleaning, Search } from 'lucide-react';
-import { FieldValues, UseFormReturn } from 'react-hook-form';
+import type { FieldValues, UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 
 function buildDefaultValues<S extends FieldValues>(

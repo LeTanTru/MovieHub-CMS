@@ -8,7 +8,7 @@ import { BaseTable } from '@/components/table';
 import { apiConfig, ErrorCode } from '@/constants';
 import { useDisclosure, useListBase } from '@/hooks';
 import { categorySearchSchema } from '@/schemaValidations';
-import {
+import type {
   CategoryResType,
   CategorySearchType,
   Column,

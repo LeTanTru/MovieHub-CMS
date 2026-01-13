@@ -22,7 +22,7 @@ import {
 import { cn } from '@/lib';
 import { route } from '@/routes';
 import { collectionItemSearchSchema } from '@/schemaValidations';
-import {
+import type {
   CollectionItemResType,
   CollectionItemSearchType,
   Column,

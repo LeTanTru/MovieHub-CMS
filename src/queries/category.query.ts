@@ -1,5 +1,5 @@
 import { apiConfig, MAX_PAGE_SIZE, queryKeys } from '@/constants';
-import { ApiResponseList, CategoryResType } from '@/types';
+import type { ApiResponseList, CategoryResType } from '@/types';
 import { http } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 

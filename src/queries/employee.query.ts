@@ -1,5 +1,5 @@
 import { apiConfig, queryKeys } from '@/constants';
-import { ApiResponse } from '@/types';
+import type { ApiResponse } from '@/types';
 import { http } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 

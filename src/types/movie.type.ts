@@ -1,6 +1,6 @@
 import { movieSchema, movieSearchSchema } from '@/schemaValidations';
-import { CategoryResType } from '@/types/category.type';
-import { BaseSearchType } from '@/types/search.type';
+import type { CategoryResType } from '@/types/category.type';
+import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 
 export type MovieResType = {

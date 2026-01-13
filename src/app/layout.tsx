@@ -2,7 +2,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import NextTopLoader from 'nextjs-toploader';
-import { ReactNode, Suspense } from 'react';
+import { type ReactNode, Suspense } from 'react';
 import {
   AppProvider,
   QueryProvider,

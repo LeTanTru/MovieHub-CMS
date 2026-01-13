@@ -8,13 +8,14 @@ import {
 import {
   FormControl,
   FormDescription,
+  FormField,
   FormItem,
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
-import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { Button } from '@/components/form';
 import { CalendarIcon } from 'lucide-react';
 import { format, Locale } from 'date-fns';
@@ -45,7 +46,7 @@ export default function DateRangePickerField<T extends FieldValues>({
 }: DateRangePickerFieldProps<T>) {
   const calendarLocale: Locale = vi;
   return (
-    <Controller
+    <FormField
       name={name}
       control={control}
       render={({ field, fieldState }) => (

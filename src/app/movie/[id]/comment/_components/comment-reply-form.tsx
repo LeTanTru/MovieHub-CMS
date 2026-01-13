@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { useClickOutside, useSaveBase } from '@/hooks';
 import { commentSchema } from '@/schemaValidations';
 import { apiConfig } from '@/constants';
-import { AuthorInfoType, CommentBodyType, CommentResType } from '@/types';
+import type { AuthorInfoType, CommentBodyType, CommentResType } from '@/types';
 import { emojiIcon } from '@/assets';
 import { useCommentStore } from '@/store';
 import { useShallow } from 'zustand/react/shallow';

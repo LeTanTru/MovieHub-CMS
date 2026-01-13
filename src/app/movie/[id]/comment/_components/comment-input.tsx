@@ -6,12 +6,12 @@ import { BaseForm } from '@/components/form/base-form';
 import { apiConfig } from '@/constants';
 import { useClickOutside, useSaveBase } from '@/hooks';
 import { commentSchema } from '@/schemaValidations';
-import { CommentBodyType, CommentResType } from '@/types';
+import type { CommentBodyType, CommentResType } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { Send } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function CommentInput({
   queryKey,

@@ -4,7 +4,7 @@ import Navbar from '@/components/navbar';
 import { AppSidebar } from '@/components/sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { useSidebarStore } from '@/store';
-import { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 export default function SidebarLayout({ children }: { children: ReactNode }) {
   const state = useSidebarStore((s) => s.state);

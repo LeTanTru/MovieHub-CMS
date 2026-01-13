@@ -8,7 +8,7 @@ import { NoData } from '@/components/no-data';
 import { apiConfig } from '@/constants';
 import { useListBase, useQueryParams } from '@/hooks';
 import { route } from '@/routes';
-import { ReviewResType, ReviewSearchType } from '@/types';
+import type { ReviewResType, ReviewSearchType } from '@/types';
 import { useParams } from 'next/navigation';
 import ReviewItem from './review-item';
 import { useCallback } from 'react';

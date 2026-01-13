@@ -9,12 +9,12 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import {
-  ComponentPropsWithoutRef,
-  ForwardedRef,
-  ReactNode,
+  type ComponentPropsWithoutRef,
+  type ForwardedRef,
+  type ReactNode,
   forwardRef,
   useEffect,
   useRef,

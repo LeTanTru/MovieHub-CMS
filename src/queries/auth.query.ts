@@ -1,6 +1,6 @@
 import envConfig from '@/config';
 import { apiConfig, queryKeys } from '@/constants';
-import {
+import type {
   ApiResponse,
   LoginBodyType,
   LoginResType,

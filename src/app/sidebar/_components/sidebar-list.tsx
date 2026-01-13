@@ -1,4 +1,5 @@
 'use client';
+
 import { ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
@@ -6,7 +7,7 @@ import { apiConfig, DEFAULT_DATE_FORMAT, FieldTypes } from '@/constants';
 import { useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { movieSidebarSearchSchema } from '@/schemaValidations';
-import {
+import type {
   Column,
   MovieSidebarResType,
   MovieSidebarSearchType,

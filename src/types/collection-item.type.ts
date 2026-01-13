@@ -2,8 +2,8 @@ import {
   collectionItemSchema,
   collectionItemSearchSchema
 } from '@/schemaValidations';
-import { MovieResType } from '@/types/movie.type';
-import { BaseSearchType } from '@/types/search.type';
+import type { MovieResType } from '@/types/movie.type';
+import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 
 export type CollectionItemResType = {

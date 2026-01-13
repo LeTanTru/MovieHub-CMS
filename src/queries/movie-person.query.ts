@@ -1,5 +1,5 @@
 import { apiConfig, queryKeys } from '@/constants';
-import { ApiResponse, MoviePersonBodyType } from '@/types';
+import type { ApiResponse, MoviePersonBodyType } from '@/types';
 import { http } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 

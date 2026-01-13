@@ -1,9 +1,9 @@
 'use client';
 
 import { logger } from '@/logger';
-import { ApiConfig, ApiResponse, Column } from '@/types';
+import type { ApiConfig, ApiResponse, Column } from '@/types';
 import { http, notify } from '@/utils';
-import { DragEndEvent } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';

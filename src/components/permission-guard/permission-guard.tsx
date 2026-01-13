@@ -9,14 +9,14 @@ import {
   setData,
   validatePermission
 } from '@/utils';
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
 import { motion } from 'framer-motion';
 import { Loader } from 'lucide-react';
 import { useAuthStore } from '@/store';
 import { route } from '@/routes';
 import { storageKeys } from '@/constants';
-import { RouteItem } from '@/routes/route';
+import type { RouteItem } from '@/routes/route';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function PermissionGuard({ children }: { children: ReactNode }) {

@@ -6,7 +6,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { apiConfig, ErrorCode } from '@/constants';
 import { useListBase } from '@/hooks';
-import { Column, StyleResType, StyleSearchType } from '@/types';
+import type { Column, StyleResType, StyleSearchType } from '@/types';
 import { notify, renderImageUrl } from '@/utils';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 

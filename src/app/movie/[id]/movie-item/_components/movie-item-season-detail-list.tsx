@@ -26,7 +26,7 @@ import {
 import { cn } from '@/lib';
 import { route } from '@/routes';
 import { movieItemSearchSchema } from '@/schemaValidations';
-import {
+import type {
   Column,
   MovieItemResType,
   MovieItemSearchType,

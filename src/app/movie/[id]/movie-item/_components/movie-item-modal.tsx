@@ -30,7 +30,7 @@ import {
 import { useFileUploadManager, useQueryParams, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { movieItemSchema } from '@/schemaValidations';
-import {
+import type {
   MovieItemBodyType,
   MovieItemResType,
   VideoLibraryResType

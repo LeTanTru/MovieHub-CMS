@@ -17,11 +17,11 @@ import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
 import { styleSchema } from '@/schemaValidations';
-import { StyleBodyType, StyleResType } from '@/types';
+import type { StyleBodyType, StyleResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function StyleForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();

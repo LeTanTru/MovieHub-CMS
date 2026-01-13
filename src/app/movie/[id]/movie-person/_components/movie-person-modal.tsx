@@ -11,7 +11,7 @@ import {
 import { logger } from '@/logger';
 import { useCreateMoviePersonMutation } from '@/queries';
 import { moviePersonSchema } from '@/schemaValidations';
-import {
+import type {
   ApiResponseList,
   MoviePersonBodyType,
   MoviePersonResType,
@@ -19,7 +19,7 @@ import {
 } from '@/types';
 import { notify, renderImageUrl } from '@/utils';
 import { InfiniteData, UseInfiniteQueryResult } from '@tanstack/react-query';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function MoviePersonModal({
   moviePersonList,

@@ -1,6 +1,6 @@
 'use client';
 
-import { ApiConfig, ApiResponseList } from '@/types';
+import type { ApiConfig, ApiResponseList } from '@/types';
 import { http } from '@/utils';
 import {
   useInfiniteQuery,

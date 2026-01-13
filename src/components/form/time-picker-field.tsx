@@ -5,10 +5,15 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
-import { FormControl, FormItem, FormLabel } from '@/components/ui/form';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel
+} from '@/components/ui/form';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { useState } from 'react';
 import { Button } from '@/components/form';
 
@@ -47,7 +52,7 @@ export default function TimePickerField<T extends FieldValues>({
   const showSecond = timeFormat.includes('ss');
 
   return (
-    <Controller
+    <FormField
       name={name}
       control={control}
       render={({ field, fieldState }) => {

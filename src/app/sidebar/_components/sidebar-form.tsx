@@ -18,7 +18,7 @@ import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
 import { movieSidebarSchema } from '@/schemaValidations';
-import {
+import type {
   MovieResType,
   MovieSidebarBodyType,
   MovieSidebarResType

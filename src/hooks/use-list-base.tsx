@@ -15,6 +15,7 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import {
   DEFAULT_TABLE_PAGE_SIZE,
   DEFAULT_TABLE_PAGE_START,
@@ -25,7 +26,7 @@ import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
 import useValidatePermission from '@/hooks/use-validate-permission';
 import { logger } from '@/logger';
-import {
+import type {
   ApiConfig,
   ApiResponse,
   ApiResponseList,
@@ -36,7 +37,6 @@ import {
   SearchFormProps
 } from '@/types';
 import { convertUTCToLocal, http, notify } from '@/utils';
-import { Separator } from '@radix-ui/react-separator';
 import {
   keepPreviousData,
   useMutation,
@@ -46,7 +46,13 @@ import {
 import { Info, PlusIcon, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ReactNode, UIEvent, useEffect, useMemo, useState } from 'react';
+import {
+  type ReactNode,
+  type UIEvent,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
 type HandlerType<T extends { id: string }, S extends BaseSearchType> = {

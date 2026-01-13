@@ -1,4 +1,4 @@
-import { CommentStoreType } from '@/types';
+import type { CommentStoreType } from '@/types';
 import { create } from 'zustand';
 
 const useCommentStore = create<CommentStoreType>((set) => ({

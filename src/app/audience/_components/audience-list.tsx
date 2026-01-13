@@ -14,7 +14,7 @@ import {
 import { useListBase } from '@/hooks';
 import { useChangeAudienceStatusMutation } from '@/queries';
 import { audienceSearchSchema } from '@/schemaValidations';
-import {
+import type {
   AudienceResType,
   AudienceSearchType,
   Column,

@@ -1,5 +1,5 @@
 import { apiConfig, MAX_PAGE_SIZE, queryKeys } from '@/constants';
-import {
+import type {
   ApiResponse,
   ApiResponseList,
   MovieItemResType,

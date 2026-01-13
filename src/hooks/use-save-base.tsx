@@ -14,12 +14,12 @@ import {
 } from '@/components/ui/alert-dialog';
 import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
-import { ApiConfig, ApiResponse, ErrorMaps } from '@/types';
+import type { ApiConfig, ApiResponse, ErrorMaps } from '@/types';
 import { applyFormErrors, http, notify } from '@/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
-import { FieldValues, UseFormReturn } from 'react-hook-form';
+import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
 type HandlerType<T> = {
   // additionParams: () => { [key: string]: any };

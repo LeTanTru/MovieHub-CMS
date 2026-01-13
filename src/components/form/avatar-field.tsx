@@ -7,9 +7,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { AiOutlineUser } from 'react-icons/ai';
 import {
-  HTMLAttributes,
-  MouseEvent,
-  ReactNode,
+  type HTMLAttributes,
+  type MouseEvent,
+  type ReactNode,
   useCallback,
   useEffect,
   useRef,

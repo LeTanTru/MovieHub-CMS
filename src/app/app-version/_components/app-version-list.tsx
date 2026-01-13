@@ -6,7 +6,7 @@ import { apiConfig, ErrorCode, FieldTypes } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { appVersionSearchSchema } from '@/schemaValidations';
-import {
+import type {
   AppVersionResType,
   AppVersionSearchType,
   Column,

@@ -1,8 +1,8 @@
 'use client';
 
 import {
-  MouseEvent,
-  ReactNode,
+  type MouseEvent,
+  type ReactNode,
   useCallback,
   useEffect,
   useRef,
@@ -36,13 +36,13 @@ import { cn } from '@/lib';
 import { useFileUpload } from '@/hooks';
 import { logger } from '@/logger';
 import {
-  Control,
-  FieldPath,
-  FieldValues,
+  type Control,
+  type FieldPath,
+  type FieldValues,
   useController
 } from 'react-hook-form';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { ApiResponse } from '@/types';
+import type { ApiResponse } from '@/types';
 
 type Area = { x: number; y: number; width: number; height: number };
 

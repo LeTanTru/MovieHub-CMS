@@ -32,11 +32,15 @@ import { useSaveBase } from '@/hooks';
 import { useCategoryListQuery } from '@/queries';
 import { route } from '@/routes';
 import { collectionSchema } from '@/schemaValidations';
-import { CollectionBodyType, CollectionResType, StyleResType } from '@/types';
+import type {
+  CollectionBodyType,
+  CollectionResType,
+  StyleResType
+} from '@/types';
 import { renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 import { PlusIcon, X } from 'lucide-react';
 import { logger } from '@/logger';
 import { Activity } from '@/components/activity';

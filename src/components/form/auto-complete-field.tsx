@@ -8,7 +8,12 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import { Control, FieldPath, FieldValues, useWatch } from 'react-hook-form';
+import {
+  type Control,
+  type FieldPath,
+  type FieldValues,
+  useWatch
+} from 'react-hook-form';
 import {
   Command,
   CommandEmpty,
@@ -24,7 +29,7 @@ import {
 import { cn } from '@/lib/utils';
 import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/form';
-import { ApiConfig, ApiResponseList } from '@/types';
+import type { ApiConfig, ApiResponseList } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import { http } from '@/utils';
 import {
@@ -35,7 +40,7 @@ import {
 import debounce from 'lodash/debounce';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { CircleLoading } from '@/components/loading';
 
 type AutoCompleteOption<T = any> = {

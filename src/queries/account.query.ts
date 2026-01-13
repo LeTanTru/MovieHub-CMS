@@ -1,6 +1,6 @@
 import { apiConfig, queryKeys } from '@/constants';
 import { useAuthStore } from '@/store';
-import { ApiResponse, ProfileBodyType, ProfileResType } from '@/types';
+import type { ApiResponse, ProfileBodyType, ProfileResType } from '@/types';
 import { http } from '@/utils';
 import { useMutation, useQuery } from '@tanstack/react-query';
 

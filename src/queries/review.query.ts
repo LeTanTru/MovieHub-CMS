@@ -1,5 +1,5 @@
 import { apiConfig, queryKeys } from '@/constants';
-import { ChangeReviewStatusBodyType } from '@/types';
+import type { ChangeReviewStatusBodyType } from '@/types';
 import { http } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 

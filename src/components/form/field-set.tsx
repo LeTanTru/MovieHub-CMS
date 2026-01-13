@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 type FieldSetProps = {
   title?: string;

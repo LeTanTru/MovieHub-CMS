@@ -1,11 +1,15 @@
 'use client';
 
-import { memo, ReactNode } from 'react';
+import { memo, type ReactNode } from 'react';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { Ellipsis, Info, Mars, Pin, Reply, Venus } from 'lucide-react';
 import { cn } from '@/lib';
 import { convertUTCToLocal, renderImageUrl, timeAgo } from '@/utils';
-import { AuthorInfoType, CommentResType, CommentSearchType } from '@/types';
+import type {
+  AuthorInfoType,
+  CommentResType,
+  CommentSearchType
+} from '@/types';
 import {
   apiConfig,
   COMMENT_STATUS_HIDE,

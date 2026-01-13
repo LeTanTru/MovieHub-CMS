@@ -1,4 +1,4 @@
-import { SidebarStateType } from '@/types';
+import type { SidebarStateType } from '@/types';
 import { create } from 'zustand';
 
 const useSidebarStore = create<SidebarStateType>((set) => ({

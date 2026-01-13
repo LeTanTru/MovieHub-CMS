@@ -19,11 +19,11 @@ import {
 } from '@/components/ui/sidebar';
 import { logo, logoWithText } from '@/assets';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MouseEvent, useEffect, useMemo, useState } from 'react';
+import { type MouseEvent, useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib';
 import { AvatarField, Button } from '@/components/form';
-import { MenuItem } from '@/types';
+import type { MenuItem } from '@/types';
 import { useSidebarStore } from '@/store';
 import {
   useAuth,

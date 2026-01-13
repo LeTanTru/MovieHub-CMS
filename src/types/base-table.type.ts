@@ -1,7 +1,7 @@
-import { PaginationType } from '@/types/table.type';
-import { DragEndEvent } from '@dnd-kit/core';
-import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
-import { CSSProperties, ReactNode } from 'react';
+import type { PaginationType } from '@/types/table.type';
+import type { DragEndEvent } from '@dnd-kit/core';
+import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
+import type { CSSProperties, ReactNode } from 'react';
 
 export type Column<T> = {
   title: string;

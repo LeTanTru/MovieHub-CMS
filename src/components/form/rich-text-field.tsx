@@ -1,7 +1,7 @@
 'use client';
 
 import './rich-text-field.css';
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import {
   FormField,

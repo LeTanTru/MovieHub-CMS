@@ -1,3 +1,5 @@
+'use client';
+
 import { Activity } from '@/components/activity';
 import { Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
@@ -11,10 +13,10 @@ import {
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { categorySchema } from '@/schemaValidations';
-import { CategoryBodyType, CategoryResType } from '@/types';
+import type { CategoryBodyType, CategoryResType } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function CategoryModal({
   open,
@@ -26,29 +28,27 @@ export default function CategoryModal({
   onClose: () => void;
 }) {
   const queryClient = useQueryClient();
-  const { data, loading, isEditing, handleSubmit, renderActions } = useSaveBase<
-    CategoryResType,
-    CategoryBodyType
-  >({
-    apiConfig: apiConfig.category,
-    options: {
-      queryKey: queryKeys.CATEGORY,
-      objectName: 'danh mục',
-      pathParams: {
-        id: category?.id
+  const { data, loading, isEditing, itemQuery, handleSubmit, renderActions } =
+    useSaveBase<CategoryResType, CategoryBodyType>({
+      apiConfig: apiConfig.category,
+      options: {
+        queryKey: queryKeys.CATEGORY,
+        objectName: 'danh mục',
+        pathParams: {
+          id: category?.id
+        },
+        mode: !category ? 'create' : 'edit'
       },
-      mode: !category ? 'create' : 'edit'
-    },
-    override: (handlers) => {
-      handlers.handleSubmitSuccess = () => {
-        onClose();
-        queryClient.invalidateQueries({
-          queryKey: [`${queryKeys.CATEGORY}-list`]
-        });
-        queryClient.invalidateQueries({ queryKey: [queryKeys.CATEGORY] });
-      };
-    }
-  });
+      override: (handlers) => {
+        handlers.handleSubmitSuccess = () => {
+          onClose();
+          queryClient.invalidateQueries({
+            queryKey: [`${queryKeys.CATEGORY}-list`]
+          });
+          itemQuery.refetch();
+        };
+      }
+    });
 
   const defaultValues: CategoryBodyType = {
     name: '',

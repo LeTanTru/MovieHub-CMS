@@ -32,7 +32,7 @@ import {
 import { useValidatePermission } from '@/hooks';
 import { cn } from '@/lib';
 import { useChangeReviewStatusMutation } from '@/queries';
-import { ReviewResType } from '@/types';
+import type { ReviewResType } from '@/types';
 import { convertUTCToLocal, renderImageUrl, timeAgo } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { Ellipsis, Info, Mars, Venus } from 'lucide-react';

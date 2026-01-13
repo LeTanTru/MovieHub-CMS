@@ -30,7 +30,7 @@ import {
 } from '@/queries';
 import { route } from '@/routes';
 import { videoLibrarySchema } from '@/schemaValidations';
-import { VideoLibraryBodyType, VideoLibraryResType } from '@/types';
+import type { VideoLibraryBodyType, VideoLibraryResType } from '@/types';
 import {
   renderImageUrl,
   renderListPageUrl,
@@ -40,9 +40,9 @@ import {
 } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 import { VideoPlayer } from '@/components/video-player';
-import { AxiosProgressEvent } from 'axios';
+import type { AxiosProgressEvent } from 'axios';
 import { logger } from '@/logger';
 import { Activity } from '@/components/activity';
 

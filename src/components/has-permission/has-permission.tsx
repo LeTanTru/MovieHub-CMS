@@ -1,7 +1,7 @@
 'use client';
 
 import { useIsMounted, useValidatePermission } from '@/hooks';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export default function HasPermission({
   children,

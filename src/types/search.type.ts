@@ -1,7 +1,7 @@
-import { ApiConfig } from '@/types/api.type';
-import { ReactNode } from 'react';
-import { FieldValues } from 'react-hook-form';
-import { ZodObject } from 'zod';
+import type { ApiConfig } from '@/types/api.type';
+import type { ReactNode } from 'react';
+import type { FieldValues } from 'react-hook-form';
+import type { ZodObject } from 'zod';
 
 export type BaseSearchType = {
   id?: string;

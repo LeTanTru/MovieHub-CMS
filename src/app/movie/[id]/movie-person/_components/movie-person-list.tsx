@@ -12,7 +12,7 @@ import { useDisclosure, useDragDrop, useListBase } from '@/hooks';
 import { logger } from '@/logger';
 import { useUpdateMoviePersonMutation } from '@/queries';
 import { moviePersonSearchSchema } from '@/schemaValidations';
-import {
+import type {
   Column,
   MoviePersonResType,
   MoviePersonSearchType,
@@ -23,7 +23,7 @@ import { PlusIcon, X } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { AiOutlineClear, AiOutlineEdit, AiOutlineSave } from 'react-icons/ai';
-import z from 'zod';
+import { z } from 'zod';
 
 export default function MoviePersonList({
   queryKey,

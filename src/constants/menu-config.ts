@@ -1,7 +1,7 @@
 import apiConfig from '@/constants/api-config';
 import { COLLECTION_TYPE_TOPIC } from '@/constants/constant';
 import { route } from '@/routes';
-import { MenuItem } from '@/types';
+import type { MenuItem } from '@/types';
 import { Film, LucideLayoutGrid, Settings, UserRound } from 'lucide-react';
 
 const menuConfig: MenuItem[] = [

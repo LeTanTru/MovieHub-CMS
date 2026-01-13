@@ -14,7 +14,7 @@ import { useDragDrop, useListBase, useNavigate, useQueryParams } from '@/hooks';
 import { logger } from '@/logger';
 import { route } from '@/routes';
 import { collectionSearchSchema } from '@/schemaValidations';
-import {
+import type {
   CollectionResType,
   CollectionSearchType,
   Column,

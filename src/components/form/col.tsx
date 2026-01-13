@@ -1,4 +1,4 @@
-import { PropsWithChildren, HTMLAttributes } from 'react';
+import type { PropsWithChildren, HTMLAttributes } from 'react';
 import { cn } from '@/lib';
 
 type ColProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {

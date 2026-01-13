@@ -16,7 +16,7 @@ import {
 } from '@/constants';
 import { useDisclosure, useListBase, useSocketEvent } from '@/hooks';
 import { videoLibrarySearchSchema } from '@/schemaValidations';
-import {
+import type {
   Column,
   SearchFormProps,
   VideoLibraryResType,

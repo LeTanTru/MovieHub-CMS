@@ -17,7 +17,7 @@ import {
   useVoteListCommentQuery
 } from '@/queries';
 import { route } from '@/routes';
-import { CommentResType, CommentSearchType } from '@/types';
+import type { CommentResType, CommentSearchType } from '@/types';
 import { useParams } from 'next/navigation';
 import { useMemo, useCallback } from 'react';
 import CommentItem from './comment-item';

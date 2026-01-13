@@ -2,7 +2,7 @@
 
 import { Modal } from '@/components/modal';
 import { VideoPlayer } from '@/components/video-player';
-import { VideoLibraryResType } from '@/types';
+import type { VideoLibraryResType } from '@/types';
 import { renderImageUrl, renderVideoUrl, renderVttUrl } from '@/utils';
 import { VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL } from '@/constants';
 

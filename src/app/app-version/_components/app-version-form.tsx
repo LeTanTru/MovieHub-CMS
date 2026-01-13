@@ -18,12 +18,12 @@ import { logger } from '@/logger';
 import { useDeleteFileMutation, useUploadFileMutation } from '@/queries';
 import { route } from '@/routes';
 import { appVersionSchema } from '@/schemaValidations';
-import { AppVersionBodyType, AppVersionResType } from '@/types';
+import type { AppVersionBodyType, AppVersionResType } from '@/types';
 import { renderListPageUrl } from '@/utils';
-import { AxiosProgressEvent } from 'axios';
+import type { AxiosProgressEvent } from 'axios';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function AppVersionForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();

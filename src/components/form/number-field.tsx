@@ -10,13 +10,13 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import {
-  Control,
-  FieldPath,
-  FieldValues,
+  type Control,
+  type FieldPath,
+  type FieldValues,
   useController
 } from 'react-hook-form';
 import { cn } from '@/lib/utils';
-import { ReactNode, useState, useEffect } from 'react';
+import { type ReactNode, useState, useEffect } from 'react';
 import Button from '@/components/form/button';
 import ToolTip from '@/components/form/tooltip';
 

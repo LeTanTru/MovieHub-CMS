@@ -1,6 +1,6 @@
 import envConfig from '@/config';
 import { storageKeys } from '@/constants';
-import { ApiConfig, Payload } from '@/types';
+import type { ApiConfig, Payload } from '@/types';
 import {
   getAccessTokenFromLocalStorage,
   removeAccessTokenFromLocalStorage,
@@ -8,7 +8,11 @@ import {
   isTokenExpired,
   getCookiesServer
 } from '@/utils';
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, {
+  AxiosError,
+  type AxiosRequestConfig,
+  type AxiosResponse
+} from 'axios';
 
 const isClient = () => typeof window !== 'undefined';
 

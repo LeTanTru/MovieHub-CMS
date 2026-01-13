@@ -1,6 +1,6 @@
 import { Activity } from '@/components/activity';
 import { cn } from '@/lib';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export default function ListPageWrapper({
   className,

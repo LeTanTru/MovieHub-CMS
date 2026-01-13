@@ -1,11 +1,17 @@
 'use client';
 
-import { useState, useEffect, useRef, ReactNode, MouseEvent } from 'react';
+import {
+  useState,
+  useEffect,
+  useRef,
+  type ReactNode,
+  type MouseEvent
+} from 'react';
 import { VideoIcon, XIcon } from 'lucide-react';
 import {
-  Control,
-  FieldPath,
-  FieldValues,
+  type Control,
+  type FieldPath,
+  type FieldValues,
   useController
 } from 'react-hook-form';
 
@@ -15,7 +21,7 @@ import { cn } from '@/lib';
 import { useFileUpload } from '@/hooks';
 import { CircleLoading } from '@/components/loading';
 import { logger } from '@/logger';
-import { ApiResponse } from '@/types';
+import type { ApiResponse } from '@/types';
 
 type UploadVideoFieldProps<T extends FieldValues> = {
   control: Control<T>;

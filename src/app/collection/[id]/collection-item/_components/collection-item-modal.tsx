@@ -13,7 +13,7 @@ import {
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { collectionItemSchema } from '@/schemaValidations';
-import {
+import type {
   CollectionItemBodyType,
   CollectionItemResType,
   MovieResType
@@ -21,7 +21,7 @@ import {
 import { generatePath, notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function CollectionItemModal({
   open,

@@ -6,11 +6,11 @@ import {
   useId,
   useRef,
   useState,
-  ForwardedRef,
+  type ForwardedRef,
   useImperativeHandle,
-  ReactNode,
-  TextareaHTMLAttributes,
-  ReactElement
+  type ReactNode,
+  type TextareaHTMLAttributes,
+  type ReactElement
 } from 'react';
 import {
   FormControl,
@@ -20,7 +20,7 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 
 type TextAreaFieldProps<T extends FieldValues> = {

@@ -10,12 +10,12 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { BaseTableProps, DragDropTableProps } from '@/types';
+import type { BaseTableProps, DragDropTableProps } from '@/types';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
 import { cn } from '@/lib';
 
-import { useState, useRef, useEffect, CSSProperties } from 'react';
+import { useState, useRef, useEffect, type CSSProperties } from 'react';
 import {
   DndContext,
   PointerSensor,

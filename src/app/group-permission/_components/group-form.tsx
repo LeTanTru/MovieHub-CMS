@@ -24,14 +24,14 @@ import {
 } from '@/queries';
 import { route } from '@/routes';
 import { groupSchema } from '@/schemaValidations';
-import { GroupBodyType, PermissionResType } from '@/types';
+import type { GroupBodyType, PermissionResType } from '@/types';
 import { applyFormErrors, notify, renderListPageUrl } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { ArrowLeftFromLine, Save } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 export default function GroupForm() {
   const navigate = useNavigate();
