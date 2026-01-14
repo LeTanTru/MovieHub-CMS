@@ -40,13 +40,19 @@ import { convertUTCToLocal, http, notify } from '@/utils';
 import {
   keepPreviousData,
   useMutation,
-  useQuery,
+  useInfiniteQuery,
   useQueryClient
 } from '@tanstack/react-query';
 import { Info, PlusIcon, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import {
+  type ReactNode,
+  type UIEvent,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
 type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
@@ -100,12 +106,17 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
     separate?: boolean | undefined;
   }) => boolean;
   setData: (data: T[]) => void;
+  loadMore: () => void;
+  handleScrollLoadMore: (e: UIEvent<HTMLElement>) => void;
   mappingData: (response: ApiResponseList<T>) => ApiResponseList<T>;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
 
-type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
+type UseInfiniteListBaseProps<
+  T extends { id: string },
+  S extends BaseSearchType
+> = {
   apiConfig: {
     getList: ApiConfig;
     getById?: ApiConfig;
@@ -126,11 +137,14 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
 
-const useListBase = <T extends { id: string }, S extends BaseSearchType>({
+const useInfiniteListBase = <
+  T extends { id: string },
+  S extends BaseSearchType
+>({
   apiConfig,
   options,
   override
-}: UseListBaseProps<T, S>) => {
+}: UseInfiniteListBaseProps<T, S>) => {
   const {
     queryKey = '',
     objectName = '',
@@ -199,17 +213,25 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
 
   const additionalParams = () => ({});
 
-  // Regular query for pagination
-  const listQuery = useQuery({
-    queryKey: [`${queryKey}-list`, queryFilter],
-    queryFn: () =>
+  // Infinite Query for infinite scroll
+  const infiniteQuery = useInfiniteQuery({
+    queryKey: [`${queryKey}-infinite`, queryFilter],
+    queryFn: ({ pageParam = 0 }) =>
       http.get<ApiResponseList<T>>(apiConfig.getList, {
         params: {
           ...queryFilter,
+          page: pageParam,
+          size: pageSize,
           ...handlers.additionalParams()
         },
         pathParams: { ...handlers.additionalPathParams() }
       }),
+    getNextPageParam: (lastPage, allPages) => {
+      const currentPage = allPages.length - 1;
+      const totalPages = lastPage.data.totalPages ?? 0;
+      return currentPage < totalPages - 1 ? currentPage + 1 : undefined;
+    },
+    initialPageParam: 0,
     enabled,
     placeholderData: keepPreviousData
   });
@@ -226,18 +248,11 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
 
   // Update data from query results
   useEffect(() => {
-    setData(listQuery.data?.data.content || []);
-  }, [listQuery.data]);
-
-  // Pagination
-  const current = searchParams['page'];
-  useEffect(() => {
-    setPagination((p) => ({
-      ...p,
-      current: current ? Number(current) : DEFAULT_TABLE_PAGE_START + 1,
-      total: listQuery.data?.data.totalPages ?? 0
-    }));
-  }, [current, listQuery.data]);
+    const allData =
+      infiniteQuery.data?.pages.flatMap((page) => page.data.content || []) ||
+      [];
+    setData(allData);
+  }, [infiniteQuery.data]);
 
   const changePagination = (page: number) => {
     setPagination({ ...pagination, current: page });
@@ -265,7 +280,9 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
       onSuccess: (res) => {
         if (res.result) {
           if (showNotify) notify.success(`Xoá ${objectName} thành công`);
-          queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
+          queryClient.invalidateQueries({
+            queryKey: [`${queryKey}-infinite`]
+          });
           options?.onSuccess?.();
         } else {
           if (res.code) {
@@ -563,27 +580,51 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
 
   const invalidateQueries = () => {
     queryClient.invalidateQueries({
-      queryKey: [`${queryKey}-list`, queryFilter]
+      queryKey: [`${queryKey}-infinite`, queryFilter]
     });
   };
 
   const renderReloadButton = () => (
     <Button
-      disabled={listQuery.isFetching}
-      onClick={() => listQuery.refetch()}
+      disabled={infiniteQuery.isFetching}
+      onClick={() => infiniteQuery.refetch()}
       variant={'primary'}
     >
       <RefreshCcw />
     </Button>
   );
 
+  // Load more using useInfiniteQuery
+  const loadMore = () => {
+    if (infiniteQuery.hasNextPage && !infiniteQuery.isFetchingNextPage) {
+      infiniteQuery.fetchNextPage();
+    }
+  };
+
+  const handleScrollLoadMore = (e: UIEvent<HTMLElement>) => {
+    const target = e.currentTarget;
+
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 100) {
+      loadMore();
+    }
+  };
+
   const totalElements = useMemo(() => {
-    return listQuery.data?.data.totalElements ?? 0;
-  }, [listQuery.data]);
+    return infiniteQuery.data?.pages[0]?.data.totalElements ?? 0;
+  }, [infiniteQuery.data]);
 
   const totalPages = useMemo(() => {
-    return listQuery.data?.data.totalPages ?? 0;
-  }, [listQuery.data]);
+    return infiniteQuery.data?.pages[0]?.data.totalPages ?? 0;
+  }, [infiniteQuery.data]);
+
+  const totalLeft = useMemo(() => {
+    const currentPageList = infiniteQuery.data?.pageParams;
+    if (currentPageList?.length) {
+      const currentPage = currentPageList[currentPageList.length - 1] as number;
+      return totalElements - (currentPage + 1) * pageSize;
+    }
+    return 0;
+  }, [infiniteQuery.data?.pageParams, pageSize, totalElements]);
 
   const mappingData = (response: ApiResponseList<T>) => {
     return response;
@@ -608,6 +649,8 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
       handleDeleteError,
       hasPermission,
       setData,
+      loadMore,
+      handleScrollLoadMore,
       mappingData
     };
 
@@ -620,14 +663,17 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
   return {
     data,
     pagination,
-    loading: listQuery.isLoading || deleteMutation.isPending,
+    loading: infiniteQuery.isLoading,
     handlers,
     queryFilter,
-    listQuery,
+    listQuery: infiniteQuery,
     queryString,
+    isFetchingMore: infiniteQuery.isFetchingNextPage,
+    hasMore: infiniteQuery.hasNextPage,
     totalPages,
-    totalElements
+    totalElements,
+    totalLeft
   };
 };
 
-export default useListBase;
+export default useInfiniteListBase;

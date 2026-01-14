@@ -6,7 +6,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DotLoading } from '@/components/loading';
 import { NoData } from '@/components/no-data';
 import { apiConfig } from '@/constants';
-import { useListBase, useQueryParams } from '@/hooks';
+import { useInfiniteListBase, useQueryParams } from '@/hooks';
 import { route } from '@/routes';
 import type { ReviewResType, ReviewSearchType } from '@/types';
 import { useParams } from 'next/navigation';
@@ -26,7 +26,7 @@ export default function ReviewList({ queryKey }: { queryKey: string }) {
     hasMore,
     totalLeft,
     totalElements
-  } = useListBase<ReviewResType, ReviewSearchType>({
+  } = useInfiniteListBase<ReviewResType, ReviewSearchType>({
     apiConfig: apiConfig.review,
     options: {
       objectName: 'đánh giá',
@@ -34,8 +34,7 @@ export default function ReviewList({ queryKey }: { queryKey: string }) {
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId'],
       excludeFromQueryFilter: ['movieTitle'],
-      showNotify: false,
-      useInfiniteScroll: true
+      showNotify: false
     }
   });
 

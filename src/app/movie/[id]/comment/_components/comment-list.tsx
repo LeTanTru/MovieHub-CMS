@@ -6,8 +6,8 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { NoData } from '@/components/no-data';
 import { apiConfig } from '@/constants';
 import {
+  useInfiniteListBase,
   useIsMounted,
-  useListBase,
   useQueryParams,
   useValidatePermission
 } from '@/hooks';
@@ -53,7 +53,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
     hasMore,
     totalLeft,
     totalElements
-  } = useListBase<CommentResType, CommentSearchType>({
+  } = useInfiniteListBase<CommentResType, CommentSearchType>({
     apiConfig: apiConfig.comment,
     options: {
       objectName: 'bình luận',
@@ -61,7 +61,6 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId'],
       showNotify: false,
-      useInfiniteScroll: true,
       excludeFromQueryFilter: ['movieTitle']
     }
   });

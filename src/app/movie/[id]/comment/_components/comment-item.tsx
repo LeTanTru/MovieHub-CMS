@@ -41,7 +41,7 @@ import {
 import CommentReplyForm from './comment-reply-form';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCommentStore } from '@/store';
-import { useAuth, useInfiniteListQuery, useValidatePermission } from '@/hooks';
+import { useAuth, useInfiniteListBase, useValidatePermission } from '@/hooks';
 import { DotLoading } from '@/components/loading';
 import {
   DropdownMenu,
@@ -108,16 +108,28 @@ function CommentItem({
   const isActiveParent = openParentIds.includes(comment.id);
 
   const totalChildren = comment.totalChildren || 0;
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteListQuery<CommentResType, CommentSearchType>({
-      apiConfig: apiConfig.comment.getList,
-      queryKey: [queryKeys.COMMENT, comment.id],
+
+  const {
+    data: commentList,
+    loading: isLoading,
+    hasMore: hasNextPage,
+    isFetchingMore: isFetchingNextPage,
+    handlers
+  } = useInfiniteListBase<CommentResType, CommentSearchType>({
+    apiConfig: {
+      getList: apiConfig.comment.getList
+    },
+    options: {
+      queryKey: `${queryKeys.COMMENT}-${comment.id}`,
+      objectName: 'bình luận',
+      pageSize: DEFAULT_TABLE_PAGE_SIZE,
       enabled: isActiveParent,
-      params: {
-        parentId: comment.id,
-        size: DEFAULT_TABLE_PAGE_SIZE
-      }
-    });
+      defaultFilters: {
+        parentId: comment.id
+      },
+      notShowFromSearchParams: ['parentId']
+    }
+  });
 
   const authorInfo = JSON.parse(comment.authorInfo) as AuthorInfoType;
   const replyToInfo = comment.replyToInfo
@@ -153,7 +165,6 @@ function CommentItem({
     requiredPermissions: [apiConfig.comment.vote.permissionCode]
   });
 
-  const commentList = data?.data?.content || [];
   const commentListSize = commentList.length;
   const isOpen = isActiveParent;
 
@@ -166,7 +177,7 @@ function CommentItem({
     const parentIdToInvalidate = level === 0 ? comment.id : rootId;
 
     await queryClient.invalidateQueries({
-      queryKey: [queryKeys.COMMENT, parentIdToInvalidate]
+      queryKey: [`${queryKeys.COMMENT}-${parentIdToInvalidate}-infinite`]
     });
   };
 
@@ -206,7 +217,7 @@ function CommentItem({
   };
 
   const handleFetchNextPage = () => {
-    fetchNextPage();
+    handlers.loadMore();
   };
 
   const handleHideReplies = (parentId: string) => {
@@ -223,7 +234,7 @@ function CommentItem({
     });
     if (comment.parent)
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.COMMENT, comment.parent.id]
+        queryKey: [`${queryKeys.COMMENT}-${comment.parent.id}-infinite`]
       });
     else
       queryClient.invalidateQueries({
@@ -235,7 +246,7 @@ function CommentItem({
     onVote(id, type, () => {
       if (comment.parent)
         queryClient.invalidateQueries({
-          queryKey: [queryKeys.COMMENT, comment.parent.id]
+          queryKey: [`${queryKeys.COMMENT}-${comment.parent.id}-infinite`]
         });
       else
         queryClient.invalidateQueries({

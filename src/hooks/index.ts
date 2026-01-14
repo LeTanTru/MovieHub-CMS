@@ -4,7 +4,7 @@ export { default as useFileUploadManager } from './use-file-upload-manager';
 export { default as useDisclosure } from './use-disclosure';
 export { default as useDragDrop } from './use-drag-drop';
 export { default as useFirstActiveRoute } from './use-first-active-route';
-export { default as useInfiniteListQuery } from './use-inifinite-list-query';
+export { default as useInfiniteListBase } from './use-inifinite-list-base';
 export { default as useIsMounted } from './use-is-mounted';
 export { default as useListBase } from './use-list-base';
 export { default as useNavigate } from './use-navigate';

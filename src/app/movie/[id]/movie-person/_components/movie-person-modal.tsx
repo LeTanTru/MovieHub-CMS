@@ -18,7 +18,7 @@ import type {
   PersonResType
 } from '@/types';
 import { notify, renderImageUrl } from '@/utils';
-import { InfiniteData, UseInfiniteQueryResult } from '@tanstack/react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 import type { UseFormReturn } from 'react-hook-form';
 
 export default function MoviePersonModal({
@@ -33,10 +33,7 @@ export default function MoviePersonModal({
   movieId: string;
   kind: number;
   open: boolean;
-  listQuery: UseInfiniteQueryResult<
-    InfiniteData<ApiResponseList<MoviePersonResType>, unknown>,
-    Error
-  >;
+  listQuery: UseQueryResult<ApiResponseList<MoviePersonResType>, Error>;
   close: () => void;
 }) {
   const createMoviePersonMutation = useCreateMoviePersonMutation();
