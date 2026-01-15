@@ -64,7 +64,7 @@ export default function ContactPage() {
               <div className='h-3 w-3 shrink-0'>
                 <img
                   alt='Telegram'
-                  src='https://www.rophim.li/images/social/telegram-icon-black.svg'
+                  src='https://www.rophim.moi/images/social/telegram-icon-black.svg'
                 />
               </div>
               <span>Telegram:</span>
@@ -83,7 +83,7 @@ export default function ContactPage() {
               <div className='h-3 w-3 shrink-0'>
                 <img
                   alt='Discord'
-                  src='https://www.rophim.li/images/social/discord-icon-black.svg'
+                  src='https://www.rophim.moi/images/social/discord-icon-black.svg'
                 />
               </div>
               <span>Discord:</span>
@@ -102,7 +102,7 @@ export default function ContactPage() {
               <div className='h-3 w-3 shrink-0'>
                 <img
                   alt='Facebook'
-                  src='https://www.rophim.li/images/social/facebook-icon-black.svg'
+                  src='https://www.rophim.moi/images/social/facebook-icon-black.svg'
                 />
               </div>
               <span>Facebook:</span>
@@ -121,7 +121,7 @@ export default function ContactPage() {
               <div className='h-3 w-3 shrink-0'>
                 <img
                   alt='Instagram'
-                  src='https://www.rophim.li/images/social/instagram-icon-black.svg'
+                  src='https://www.rophim.moi/images/social/instagram-icon-black.svg'
                 />
               </div>
               <span>Instagram:</span>
@@ -140,7 +140,7 @@ export default function ContactPage() {
               <div className='h-3 w-3 shrink-0'>
                 <img
                   alt='X'
-                  src='https://www.rophim.li/images/social/x-icon-black.svg'
+                  src='https://www.rophim.moi/images/social/x-icon-black.svg'
                 />
               </div>
               <span>X:</span>

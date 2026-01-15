@@ -1,22 +1,170 @@
 import envConfig from '@/config';
-import { storageKeys } from '@/constants';
-import type { ApiConfig, Payload } from '@/types';
+import { apiConfig, storageKeys } from '@/constants';
+import { logger } from '@/logger';
+import type {
+  ApiConfig,
+  ApiResponse,
+  Payload,
+  RefreshTokenResType
+} from '@/types';
 import {
   getAccessTokenFromLocalStorage,
   removeAccessTokenFromLocalStorage,
   getData,
+  getRefreshTokenFromLocalStorage,
+  removeRefreshTokenFromLocalStorage,
+  setAccessTokenToLocalStorage,
+  setRefreshTokenToLocalStorage,
   isTokenExpired,
-  getCookiesServer
+  getAccessTokenFromCookie,
+  getRefreshTokenFromCookie,
+  removeAccessTokenFromCookie,
+  removeRefreshTokenFromCookie,
+  setAccessTokenToCookie,
+  setRefreshTokenToCookie
 } from '@/utils';
 import axios, {
   AxiosError,
+  HttpStatusCode,
+  type InternalAxiosRequestConfig,
   type AxiosRequestConfig,
   type AxiosResponse
 } from 'axios';
 
 const isClient = () => typeof window !== 'undefined';
-
+const axiosInstance = axios.create();
 // const TIME_OUT = 10000;
+
+type RequestConfigWithRetry = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
+
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value?: any) => void;
+  reject: (error?: any) => void;
+}> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  logger.info(failedQueue);
+  failedQueue = [];
+};
+
+const refreshToken = async () => {
+  try {
+    let token: string | null = null;
+    if (isClient()) {
+      token = getRefreshTokenFromLocalStorage();
+    } else {
+      token = await getRefreshTokenFromCookie();
+    }
+    if (!token || isTokenExpired(token)) {
+      if (isClient()) {
+        removeAccessTokenFromLocalStorage();
+        removeRefreshTokenFromLocalStorage();
+        // window.location.href = route.login.path;
+      } else {
+        await removeAccessTokenFromCookie();
+        await removeRefreshTokenFromCookie();
+      }
+      return;
+    }
+    const response: ApiResponse<RefreshTokenResType> = await axios.post(
+      apiConfig.auth.refreshToken.baseUrl,
+      {
+        refresh_token: token,
+        grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN
+      },
+      {
+        headers: {
+          Authorization: `Basic ${btoa(`${envConfig.NEXT_PUBLIC_APP_USERNAME}:${envConfig.NEXT_PUBLIC_APP_PASSWORD}`)}`
+        }
+      }
+    );
+    const data = response.data;
+    if (data) {
+      const newAccessToken = data.access_token;
+      const newRefreshToken = data.refresh_token;
+      if (isClient()) {
+        if (newAccessToken) setAccessTokenToLocalStorage(newAccessToken);
+        if (newRefreshToken) setRefreshTokenToLocalStorage(newRefreshToken);
+      } else {
+        if (newAccessToken) await setAccessTokenToCookie(newAccessToken);
+        if (newRefreshToken) await setRefreshTokenToCookie(newRefreshToken);
+      }
+    }
+    return response.data?.access_token;
+  } catch (error) {
+    logger.error('Error while refreshing access token', error);
+  }
+};
+
+axiosInstance.interceptors.response.use(
+  (res) => res,
+  async (error: AxiosError) => {
+    logger.error('Error in http util', error);
+    const originalConfig = error.config as RequestConfigWithRetry;
+    if (originalConfig && error.status === HttpStatusCode.Unauthorized) {
+      if (
+        originalConfig._retry ||
+        originalConfig.url?.includes(apiConfig.auth.refreshToken.baseUrl)
+      ) {
+        if (isClient()) {
+          removeAccessTokenFromLocalStorage();
+          removeRefreshTokenFromLocalStorage();
+          // window.location.href = route.login.path;
+        } else {
+          await removeAccessTokenFromCookie();
+          await removeRefreshTokenFromCookie();
+        }
+      }
+
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            if (originalConfig.headers) {
+              originalConfig.headers['Authorization'] = `Bearer ${token}`;
+            }
+            return axiosInstance.request(originalConfig);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
+      originalConfig._retry = true;
+      isRefreshing = true;
+
+      try {
+        const newAccessToken = await refreshToken();
+
+        if (originalConfig.headers && newAccessToken) {
+          originalConfig.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        }
+
+        processQueue(null, newAccessToken);
+        isRefreshing = false;
+
+        return axiosInstance.request(originalConfig);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        isRefreshing = false;
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export const sendRequest = async <T>(
   apiConfig: ApiConfig,
@@ -39,13 +187,8 @@ export const sendRequest = async <T>(
   if (!ignoreAuth) {
     if (isClient()) {
       accessToken = getAccessTokenFromLocalStorage();
-      if (isTokenExpired(accessToken)) {
-        removeAccessTokenFromLocalStorage();
-        accessToken = null;
-      }
     } else {
-      const { sessionToken } = await getCookiesServer();
-      accessToken = sessionToken;
+      accessToken = await getAccessTokenFromCookie();
     }
   }
 
@@ -119,7 +262,7 @@ export const sendRequest = async <T>(
       };
     }
 
-    const response: AxiosResponse = await axios.request<T>(axiosConfig);
+    const response: AxiosResponse = await axiosInstance.request<T>(axiosConfig);
     return response.data;
   } catch (error: any) {
     const err = error as AxiosError;
@@ -127,7 +270,7 @@ export const sendRequest = async <T>(
   }
 };
 
-const http = {
+export const http = {
   get<T>(apiConfig: ApiConfig, payload?: Payload) {
     return sendRequest<T>(apiConfig, payload);
   },
@@ -144,5 +287,3 @@ const http = {
     return sendRequest<T>(apiConfig, payload);
   }
 };
-
-export { http };

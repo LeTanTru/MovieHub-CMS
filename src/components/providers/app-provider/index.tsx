@@ -8,104 +8,110 @@ import {
   socketSendCMDs,
   storageKeys
 } from '@/constants';
+import { logger } from '@/logger';
 import {
   useEmployeeProfileQuery,
   useGetClientTokenMutation,
-  useManageProfileQuery,
-  useRefreshTokenMutation
+  useManageProfileQuery
 } from '@/queries';
 import { useAuthStore, useSocketStore } from '@/store';
-import { getData, isTokenExpiringSoon, removeData, setData } from '@/utils';
+import { getData, isTokenExpired, removeData } from '@/utils';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function AppProvider({ children }: { children: ReactNode }) {
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
-  const refreshToken = getData(storageKeys.REFRESH_TOKEN);
   const kind = getData(storageKeys.USER_KIND);
   const [clientToken, setClientToken] = useState<string>('');
-  const { isAuthenticated, setLoading, setProfile } = useAuthStore(
+  const { setLoading, setProfile } = useAuthStore(
     useShallow((s) => ({
       isAuthenticated: s.isAuthenticated,
       setLoading: s.setLoading,
       setProfile: s.setProfile
     }))
   );
-  const { socket, setSocket } = useSocketStore(
+  const { setSocket } = useSocketStore(
     useShallow((s) => ({ socket: s.socket, setSocket: s.setSocket }))
   );
-  const managerProfileQuery = useManageProfileQuery();
-  const employeeProfileQuery = useEmployeeProfileQuery();
-  const getClientTokenMutation = useGetClientTokenMutation();
-  const refreshTokenMutation = useRefreshTokenMutation();
+
+  const isValidKind =
+    kind && (+kind === KIND_MANAGER || +kind === KIND_EMPLOYEE);
+  const shouldFetchProfile = !!accessToken && !!isValidKind;
+
+  const managerProfileQuery = useManageProfileQuery(
+    shouldFetchProfile && +kind === KIND_MANAGER
+  );
+  const employeeProfileQuery = useEmployeeProfileQuery(
+    shouldFetchProfile && +kind === KIND_EMPLOYEE
+  );
+  const { mutateAsync: getClientToken } = useGetClientTokenMutation();
 
   const profileQuery =
     kind && +kind === KIND_MANAGER ? managerProfileQuery : employeeProfileQuery;
 
-  useEffect(
-    () => setLoading(profileQuery.isLoading || profileQuery.isFetching),
-    [profileQuery.isFetching, profileQuery.isLoading, setLoading]
-  );
+  useEffect(() => {
+    setLoading(profileQuery.isLoading || profileQuery.isFetching);
+  }, [profileQuery.isFetching, profileQuery.isLoading, setLoading]);
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!profileQuery.data) return;
 
-    if (!kind) return;
+    if (profileQuery.data.result && profileQuery.data.data) {
+      setProfile(profileQuery.data.data);
+    } else {
+      const code = profileQuery.data.code;
+      if (code === ErrorCode.EMPLOYEE_ERROR_NOT_FOUND) {
+        removeData(storageKeys.ACCESS_TOKEN);
+        removeData(storageKeys.REFRESH_TOKEN);
+        removeData(storageKeys.USER_KIND);
+      }
+    }
+  }, [profileQuery.data, setProfile]);
+
+  useEffect(() => {
+    if (!profileQuery.error) return;
+    logger.error('Error while fetching profile', profileQuery.error);
+  }, [profileQuery.error]);
+
+  useEffect(() => {
+    if (!accessToken || !kind) return;
 
     if (+kind !== KIND_MANAGER && +kind !== KIND_EMPLOYEE) {
       removeData(storageKeys.ACCESS_TOKEN);
       removeData(storageKeys.REFRESH_TOKEN);
       removeData(storageKeys.USER_KIND);
+    }
+  }, [accessToken, kind]);
+
+  useEffect(() => {
+    if (!accessToken || isTokenExpired(accessToken)) {
+      setClientToken('');
       return;
     }
 
-    const handleGetProfile = async () => {
-      const res = await profileQuery.refetch();
-      if (res.data?.result && res.data.data) {
-        setProfile(res.data.data);
-      } else {
-        const code = res.data?.code;
-        if (code === ErrorCode.EMPLOYEE_ERROR_NOT_FOUND) {
-          removeData(storageKeys.ACCESS_TOKEN);
-          removeData(storageKeys.REFRESH_TOKEN);
-          removeData(storageKeys.USER_KIND);
+    if (clientToken) return;
+
+    let isMounted = true;
+
+    const handleGetClientToken = async () => {
+      try {
+        const res = await getClientToken({
+          appName: envConfig.NEXT_PUBLIC_APP_NAME
+        });
+        if (res.data?.token && isMounted) {
+          setClientToken(res.data.token);
         }
+      } catch (error) {
+        logger.error('Error while getting client token', error);
       }
     };
 
-    handleGetProfile();
-  }, [accessToken, isAuthenticated, kind]);
-
-  useEffect(() => {
-    if (!accessToken) return;
-
-    const handleGetClientToken = async () => {
-      const res = await getClientTokenMutation.mutateAsync({
-        appName: envConfig.NEXT_PUBLIC_APP_NAME
-      });
-      if (res.data?.token) setClientToken(res.data.token);
-    };
-
     handleGetClientToken();
-  }, [accessToken]);
 
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.onopen = () => {
-      const payload = {
-        cmd: 'CLIENT_VERIFY_TOKEN',
-        platform: 0,
-        clientVersion: '1.0',
-        lang: 'vi',
-        token: clientToken,
-        app: 'CLIENT_APP',
-        data: { app: 'CLIENT_APP' }
-      };
-
-      if (clientToken) socket.send(JSON.stringify(payload));
+    return () => {
+      isMounted = false;
     };
-  }, [clientToken]);
+  }, [accessToken, clientToken, getClientToken]);
 
   useEffect(() => {
     if (!clientToken) return;
@@ -153,30 +159,7 @@ export default function AppProvider({ children }: { children: ReactNode }) {
       if (pingInterval) clearInterval(pingInterval);
       socket.close();
     };
-  }, [clientToken]);
-
-  useEffect(() => {
-    if (!refreshToken) return;
-
-    const handleRefreshToken = async () => {
-      const res = await refreshTokenMutation.mutateAsync({
-        refresh_token: refreshToken,
-        grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN
-      });
-
-      if (res?.access_token) {
-        setData(storageKeys.ACCESS_TOKEN, res?.access_token);
-      }
-
-      if (res?.refresh_token) {
-        setData(storageKeys.REFRESH_TOKEN, res?.refresh_token);
-      }
-    };
-
-    if (isTokenExpiringSoon(accessToken)) {
-      handleRefreshToken();
-    }
-  }, []);
+  }, [clientToken, setSocket]);
 
   return <>{children}</>;
 }
