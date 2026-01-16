@@ -58,15 +58,15 @@ export default function ReviewList({ queryKey }: { queryKey: string }) {
       ]}
     >
       <ListPageWrapper>
-        {data.length === 0 ? (
-          <NoData content='Chưa có đánh giá nào' />
-        ) : loading ? (
+        {loading ? (
           <div className='space-y-4 p-4'>
             <h4 className='skeleton ml-4 h-5 w-20'></h4>
             {Array.from({ length: 8 }).map((_, index) => (
               <ReviewItemSkeleton key={index} />
             ))}
           </div>
+        ) : data.length === 0 ? (
+          <NoData content='Chưa có đánh giá nào' />
         ) : (
           <div className='mt-4 p-4'>
             <h4 className='-mb-2 ml-2 font-semibold text-black'>

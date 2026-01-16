@@ -138,11 +138,11 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
 
   // show overlay
   const showOverlay =
-    (!isAuthenticated && pathname !== route.login.path) ||
-    !ready ||
-    loading ||
-    (isAuthenticated && pathname === route.login.path) ||
-    (isAuthenticated && pathname === route.home.path);
+    (!isAuthenticated && pathname !== route.login.path) || // not login and not in login page
+    !ready || // not ready
+    loading || // app is loading
+    (isAuthenticated && pathname === route.login.path) || // logged in and in login page
+    (isAuthenticated && pathname === route.home.path); // logged in and path = '/'
 
   // check authorization
   if (!hasPermission && isAuthenticated && ready) {

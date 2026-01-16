@@ -151,15 +151,15 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
           <CommentInput queryKey={queryKey} movieId={movieId} />
         </Activity>
 
-        {data.length === 0 ? (
-          <NoData content='Chưa có bình luận nào' />
-        ) : loading ? (
+        {loading ? (
           <div className='space-y-4 px-4'>
             <h4 className='skeleton ml-4 h-5 w-20'></h4>
             {Array.from({ length: 8 }).map((_, index) => (
               <CommentItemSkeleton key={index} />
             ))}
           </div>
+        ) : data.length === 0 ? (
+          <NoData content='Chưa có bình luận nào' />
         ) : (
           <div className='mt-4 px-4 pb-4'>
             <h4 className='-mb-2 ml-2 font-semibold text-black'>

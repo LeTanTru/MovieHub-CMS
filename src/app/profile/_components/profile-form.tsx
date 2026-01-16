@@ -91,7 +91,13 @@ export default function ProfileForm() {
       confirmPassword: '',
       newPassword: ''
     }),
-    [profile]
+    [
+      profile?.avatarPath,
+      profile?.email,
+      profile?.fullName,
+      profile?.logoPath,
+      profile?.phone
+    ]
   );
 
   const onSubmit = async (
