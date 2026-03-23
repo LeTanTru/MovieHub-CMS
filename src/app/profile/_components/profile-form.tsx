@@ -186,7 +186,7 @@ export default function ProfileForm() {
               <Button
                 onClick={handleCancel}
                 type='button'
-                variant={'ghost'}
+                variant='ghost'
                 className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
               >
                 <ArrowLeftFromLine />
@@ -196,7 +196,7 @@ export default function ProfileForm() {
             <Col className='w-40!'>
               <Button
                 disabled={!form.formState.isDirty || updateProfileLoading}
-                variant={'primary'}
+                variant='primary'
                 loading={updateProfileLoading}
               >
                 <Save />

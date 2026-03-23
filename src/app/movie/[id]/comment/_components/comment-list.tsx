@@ -162,7 +162,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
             {isFetchingMore && <DotLoading className='mt-4' />}
             {hasMore && (
               <Button
-                variant={'ghost'}
+                variant='ghost'
                 className='mx-auto block'
                 onClick={handlers.loadMore}
               >

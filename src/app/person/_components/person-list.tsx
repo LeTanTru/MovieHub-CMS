@@ -73,13 +73,13 @@ export default function PersonList({
         <>
           <span
             className='line-clamp-1 block truncate'
-            title={`${record.otherName}`}
+            title={record.otherName}
           >
             {record.otherName}
           </span>
           <span
             className='line-clamp-1 block truncate text-xs text-zinc-500'
-            title={`${record.name}`}
+            title={record.name}
           >
             {record.name}
           </span>

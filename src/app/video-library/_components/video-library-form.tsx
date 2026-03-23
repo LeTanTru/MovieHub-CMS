@@ -202,7 +202,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
         { label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} video` }
       ]}
       notFound={responseCode === ErrorCode.VIDEO_LIBRARY_ERROR_NOT_FOUND}
-      notFoundContent={'Không tìm thấy video này'}
+      notFoundContent='Không tìm thấy video này'
     >
       <BaseForm
         onSubmit={onSubmit}

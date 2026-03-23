@@ -149,7 +149,7 @@ export default function MovieItemSeasonDetailList({
           <HasPermission
             requiredPermissions={[apiConfig.movieItem.create.permissionCode]}
           >
-            <Button variant={'primary'} onClick={handleAddMovieItem}>
+            <Button variant='primary' onClick={handleAddMovieItem}>
               <PlusIcon />
               Thêm mới
             </Button>

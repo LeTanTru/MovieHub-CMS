@@ -62,7 +62,7 @@ export default function GroupPermissionList({
                 apiConfig.groupPermission.update.permissionCode as string
               ]}
             >
-              <ToolTip title={`Cập nhật nhóm quyền`}>
+              <ToolTip title='Cập nhật nhóm quyền'>
                 <span>
                   <Button
                     onClick={() => handleEditClick(record)}
@@ -188,7 +188,7 @@ export default function GroupPermissionList({
               apiConfig.groupPermission.create.permissionCode
             ]}
           >
-            <Button onClick={handleAdd} variant={'primary'}>
+            <Button onClick={handleAdd} variant='primary'>
               <PlusIcon />
               Thêm mới
             </Button>

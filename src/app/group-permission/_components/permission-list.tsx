@@ -223,7 +223,7 @@ export default function PermissionList() {
                 >
                   <div className='flex items-center justify-between border-b border-solid border-b-gray-200 py-2 pr-2 pl-4'>
                     <div className='font-semibold'>{group}</div>
-                    <ToolTip sideOffset={8} title={`Thêm quyền`}>
+                    <ToolTip sideOffset={8} title='Thêm quyền'>
                       <Plus
                         className='stroke-main-color size-4 cursor-pointer transition-all duration-200 ease-linear hover:opacity-80'
                         onClick={() => handleAdd(group)}
@@ -287,7 +287,7 @@ export default function PermissionList() {
                                           </Button>
                                         </AlertDialogCancel>
                                         <Button
-                                          variant={'primary'}
+                                          variant='primary'
                                           onClick={() =>
                                             handleDelete(permission)
                                           }
@@ -436,7 +436,7 @@ export default function PermissionList() {
                   <Button
                     onClick={handleClose}
                     type='button'
-                    variant={'ghost'}
+                    variant='ghost'
                     className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
                   >
                     <ArrowLeftFromLine />
@@ -451,7 +451,7 @@ export default function PermissionList() {
                       updatePermissionLoading
                     }
                     type='submit'
-                    variant={'primary'}
+                    variant='primary'
                     className='w-full'
                     loading={createPermissionLoading || updatePermissionLoading}
                   >

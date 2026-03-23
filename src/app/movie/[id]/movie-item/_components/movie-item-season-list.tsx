@@ -85,7 +85,7 @@ export default function MovieItemSeasonList({
           <HasPermission
             requiredPermissions={[apiConfig.movieItem.create.permissionCode]}
           >
-            <Button variant={'primary'} onClick={handleAddMovieItem}>
+            <Button variant='primary' onClick={handleAddMovieItem}>
               <PlusIcon />
               Thêm mới
             </Button>
@@ -97,7 +97,7 @@ export default function MovieItemSeasonList({
           record: MovieItemResType,
           buttonProps?: Record<string, any>
         ) => (
-          <ToolTip title={`Xem video`} sideOffset={0}>
+          <ToolTip title='Xem video' sideOffset={0}>
             <span>
               <Button
                 onClick={(e) => {

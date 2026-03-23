@@ -445,7 +445,7 @@ function CommentItem({
                       {canChangeStatus && (
                         <Button
                           className='hover:bg-accent/80 h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
-                          variant={'ghost'}
+                          variant='ghost'
                           onClick={() =>
                             handleChangeCommentStatus(
                               comment.id,
@@ -474,7 +474,7 @@ function CommentItem({
                           <AlertDialogTrigger className='w-full' asChild>
                             <span onClick={(e) => e.stopPropagation()}>
                               <Button
-                                variant={'ghost'}
+                                variant='ghost'
                                 className='text-destructive hover:text-destructive/50 h-fit w-full justify-start border-none bg-transparent p-2! shadow-none hover:bg-transparent'
                               >
                                 <AiOutlineDelete className='size-5' />

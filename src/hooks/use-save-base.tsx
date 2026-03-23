@@ -165,7 +165,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
         {!form.formState.isDirty ? (
           <Button
             type='button'
-            variant={'outline'}
+            variant='outline'
             onClick={() => {
               if (listPageUrl) {
                 navigate.push(getBackPath());
@@ -183,7 +183,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
             <AlertDialogTrigger asChild>
               <Button
                 type='button'
-                variant={'outline'}
+                variant='outline'
                 className='border border-red-500 text-red-500 hover:border-red-500/50 hover:text-red-500/50'
               >
                 <ArrowLeftFromLine />
@@ -227,7 +227,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
         <Button
           disabled={!form.formState.isDirty || mutation.isPending}
           type='submit'
-          variant={'primary'}
+          variant='primary'
           loading={mutation.isPending}
         >
           <Save />

@@ -3,6 +3,7 @@
 import { Button, ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
+import { Badge } from '@/components/ui/badge';
 import { apiConfig, DEFAULT_DATE_FORMAT, FieldTypes } from '@/constants';
 import { useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
@@ -151,7 +152,7 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
           </span>
           <span
             className='line-clamp-1 block truncate text-xs text-zinc-500'
-            title={`${record.movie.originalTitle}`}
+            title={record.movie.originalTitle}
           >
             {record.movie.originalTitle}
           </span>
@@ -188,17 +189,17 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
       dataIndex: 'status',
       render: (_, record) => (
         <div className='flex items-center justify-center gap-2'>
-          <span
+          <Badge
+            variant='outline'
             className={cn(
-              'min-w-15 rounded-md border border-solid px-4 py-0.5 text-sm',
-              {
-                'border-red-200 bg-red-50 text-red-400': !record.active,
-                'border-green-200 bg-green-50 text-green-400': record.active
-              }
+              'text-sm font-normal',
+              record.active
+                ? 'border-green-400 bg-green-100 text-green-600'
+                : 'border-red-400 bg-red-100 text-red-600'
             )}
           >
             {record.active ? 'Hiện' : 'Ẩn'}
-          </span>
+          </Badge>
         </div>
       ),
       width: 120,
