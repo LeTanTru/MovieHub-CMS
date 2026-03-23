@@ -9,7 +9,7 @@ import {
   STATUS_ACTIVE,
   STATUS_LOCK,
   employeeStatusOptions,
-  userKinds
+  userKindOptions
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { useChangeAudienceStatusMutation } from '@/queries';
@@ -149,7 +149,9 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
       dataIndex: 'kind',
       width: 120,
       render: (value) => {
-        const label = userKinds.find((kind) => kind.value === value)?.label;
+        const label = userKindOptions.find(
+          (kind) => kind.value === value
+        )?.label;
         return (
           <span className='line-clamp-1 block truncate' title={label}>
             {label ?? '------'}
@@ -174,7 +176,7 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
       key: 'kind',
       placeholder: 'Vai trò',
       type: FieldTypes.SELECT,
-      options: userKinds
+      options: userKindOptions
     },
     {
       key: 'status',

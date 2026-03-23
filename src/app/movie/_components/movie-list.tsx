@@ -71,7 +71,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
               <span>
                 <Button
                   onClick={() =>
-                    navigate(
+                    navigate.push(
                       renderListPageUrl(
                         generatePath(route.moviePerson.getList.path, {
                           id: record.id
@@ -95,7 +95,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
               <span>
                 <Button
                   onClick={() =>
-                    navigate(
+                    navigate.push(
                       renderListPageUrl(
                         generatePath(route.comment.getList.path, {
                           id: record.id
@@ -119,7 +119,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
               <span>
                 <Button
                   onClick={() =>
-                    navigate(
+                    navigate.push(
                       renderListPageUrl(
                         generatePath(route.review.getList.path, {
                           id: record.id

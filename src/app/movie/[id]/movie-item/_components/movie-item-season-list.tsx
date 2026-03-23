@@ -250,7 +250,7 @@ export default function MovieItemSeasonList({
   ];
 
   const handleViewDetail = (record: MovieItemResType) => {
-    navigate(
+    navigate.push(
       renderListPageUrl(
         generatePath(route.movieItem.getDetailList.path, {
           id: movieId,

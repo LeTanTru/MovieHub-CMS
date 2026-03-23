@@ -81,7 +81,7 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate(
+                    navigate.push(
                       renderListPageUrl(
                         generatePath(route.collectionItem.getList.path, {
                           id: record.id

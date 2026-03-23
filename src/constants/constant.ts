@@ -7,21 +7,9 @@ export const UPLOAD_AVATAR = 'AVATAR';
 export const UPLOAD_VIDEO = 'VIDEO';
 export const UPLOAD_SYSTEM = 'SYSTEM';
 
-export const KIND_ADMIN = 1;
-export const KIND_MANAGER = 2;
-export const KIND_EMPLOYEE = 3;
-export const KIND_INTERNAL = 4;
-export const KIND_COMPANY = 6;
-export const KIND_USER = 10;
-export const KIND_USER_VIP = 11;
-
 export const GROUP_KIND_ADMIN = 1;
-export const GROUP_KIND_MANAGER = 2;
-export const GROUP_KIND_EMPLOYEE = 3;
-export const GROUP_KIND_INTERNAL = 4;
-export const GROUP_KIND_COMPANY = 6;
-export const GROUP_KIND_USER = 10;
-export const GROUP_KIND_USER_VIP = 11;
+export const GROUP_KIND_EMPLOYEE = 2;
+export const GROUP_KIND_USER = 3;
 
 export const STATUS_PENDING = 0;
 export const STATUS_ACTIVE = 1;
@@ -42,9 +30,6 @@ export const DATE_DAY_TIME_FORMAT = 'EEEE HH:mm:ss dd/MM/yyyy';
 export const DEFAULT_DATE_FORMAT_UTC = 'MM/dd/yyyy';
 export const DATE_TIME_FORMAT_UTC = 'HH:mm:ss MM/dd/yyyy';
 export const DATE_DAY_TIME_FORMAT_UTC = 'EEEE HH:mm:ss MM/dd/yyyy';
-
-export const LOGIN_TYPE_MANAGER = 1;
-export const LOGIN_TYPE_EMPLOYEE = 2;
 
 export const PERSON_KIND_ACTOR = 1;
 export const PERSON_KIND_DIRECTOR = 2;

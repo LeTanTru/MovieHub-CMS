@@ -7,12 +7,40 @@ const useNavigate = (startLoader: boolean = true) => {
   const router = useRouter();
   const loading = useTopLoader();
 
-  const navigate = (path: string) => {
-    router.push(path);
+  const startLoading = () => {
     if (startLoader) loading.start();
   };
 
-  return navigate;
+  const push = (path: string) => {
+    startLoading();
+    router.push(path);
+  };
+
+  const replace = (path: string) => {
+    startLoading();
+    router.replace(path);
+  };
+
+  const prefetch = (path: string) => {
+    router.prefetch(path);
+  };
+
+  const back = () => {
+    startLoading();
+    router.back();
+  };
+
+  const forward = () => {
+    startLoading();
+    router.forward();
+  };
+
+  const refresh = () => {
+    startLoading();
+    router.refresh();
+  };
+
+  return { push, replace, prefetch, back, forward, refresh };
 };
 
 export default useNavigate;

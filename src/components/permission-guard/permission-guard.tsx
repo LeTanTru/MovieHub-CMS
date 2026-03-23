@@ -1,7 +1,12 @@
 'use client';
 
-import { useAuth, useFirstActiveRoute, useQueryParams } from '@/hooks';
-import { usePathname, useRouter } from 'next/navigation';
+import {
+  useAuth,
+  useFirstActiveRoute,
+  useNavigate,
+  useQueryParams
+} from '@/hooks';
+import { usePathname } from 'next/navigation';
 import {
   getAccessTokenFromLocalStorage,
   getData,
@@ -28,8 +33,7 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
 
   const isLoggedOut = useAuthStore((s) => s.isLoggedOut);
 
-  // const navigate = useNavigate(false);
-  const router = useRouter();
+  const navigate = useNavigate(false);
   const accessToken = getAccessTokenFromLocalStorage();
   const [ready, setReady] = useState(false);
   const pathname = usePathname();
@@ -83,7 +87,7 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
             queryString ? `${pathname}?${queryString}` : pathname
           );
         }
-        router.replace(route.login.path);
+        navigate.replace(route.login.path);
       }
       return;
     }
@@ -91,7 +95,7 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
     if (isAuthenticated) {
       if (pathname === route.home.path || pathname === route.login.path) {
         if (pathname !== firstActiveRoute) {
-          router.replace(
+          navigate.replace(
             getData(storageKeys.PATH_NO_LOGIN) ||
               firstActiveRoute ||
               route.profile.savePage.path
@@ -104,7 +108,7 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
     accessToken,
     isAuthenticated,
     pathname,
-    router,
+    navigate,
     firstActiveRoute,
     isLoggedOut,
     isPublicRoute,
@@ -166,6 +170,11 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
           opacity: loading ? 1 : 0,
           zIndex: loading ? 9999 : -9999,
           display: loading ? 'flex' : 'none'
+        }}
+        exit={{
+          opacity: 0,
+          zIndex: -9999,
+          display: 'none'
         }}
         className='fixed inset-0 z-50 flex h-dvh w-full items-center justify-center bg-white'
       >

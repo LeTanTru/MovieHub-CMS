@@ -9,13 +9,12 @@ import {
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { KIND_MANAGER, profileErrorMaps, storageKeys } from '@/constants';
+import { GROUP_KIND_ADMIN, profileErrorMaps, storageKeys } from '@/constants';
 import { useAuth, useFileUploadManager, useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import {
   useDeleteFileMutation,
-  useUpdateManagerProfileMutation,
-  useUpdateProfileEmployeeMutation,
+  useUpdateProfileMutation,
   useUploadAvatarMutation,
   useUploadLogoMutation
 } from '@/queries';
@@ -45,22 +44,8 @@ export default function ProfileForm() {
     useUploadLogoMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
-  const {
-    mutateAsync: managerUpdateProfileMutate,
-    isPending: updateManagerProfileLoading
-  } = useUpdateManagerProfileMutation();
-  const {
-    mutateAsync: employeeUpdateProfileMutate,
-    isPending: updateEmployeeProfileLoading
-  } = useUpdateProfileEmployeeMutation();
-
-  const profileMutation = useMemo(
-    () =>
-      kind === KIND_MANAGER
-        ? managerUpdateProfileMutate
-        : employeeUpdateProfileMutate,
-    [employeeUpdateProfileMutate, kind, managerUpdateProfileMutate]
-  );
+  const { mutateAsync: updateProfileMutate, isPending: updateProfileLoading } =
+    useUpdateProfileMutation();
 
   const avatarImageManager = useFileUploadManager({
     initialUrl: profile?.avatarPath,
@@ -114,7 +99,7 @@ export default function ProfileForm() {
     await Promise.all([
       avatarImageManager.handleSubmit(),
       logoImageManager.handleSubmit(),
-      profileMutation(
+      updateProfileMutate(
         {
           ...values,
           avatarPath: avatarImageManager.currentUrl,
@@ -148,7 +133,7 @@ export default function ProfileForm() {
 
     const prevPath = getData(storageKeys.PREVIOUS_PATH);
     removeData(storageKeys.PREVIOUS_PATH);
-    navigate(prevPath ?? route.home.path);
+    navigate.push(prevPath ?? route.home.path);
   };
 
   return (
@@ -162,7 +147,7 @@ export default function ProfileForm() {
       {(form) => (
         <>
           <Row>
-            <Col span={kind === KIND_MANAGER ? 12 : 24}>
+            <Col span={kind === GROUP_KIND_ADMIN ? 12 : 24}>
               <UploadImageField
                 value={renderImageUrl(avatarImageManager.currentUrl)}
                 loading={uploadAvatarLoading}
@@ -180,7 +165,7 @@ export default function ProfileForm() {
                 label='Ảnh đại diện'
               />
             </Col>
-            {kind == KIND_MANAGER && (
+            {kind == GROUP_KIND_ADMIN && (
               <Col span={12}>
                 <UploadImageField
                   value={renderImageUrl(logoImageManager.currentUrl)}
@@ -280,15 +265,9 @@ export default function ProfileForm() {
             </Col>
             <Col className='w-40!'>
               <Button
-                disabled={
-                  !form.formState.isDirty ||
-                  updateManagerProfileLoading ||
-                  updateEmployeeProfileLoading
-                }
+                disabled={!form.formState.isDirty || updateProfileLoading}
                 variant={'primary'}
-                loading={
-                  updateManagerProfileLoading || updateEmployeeProfileLoading
-                }
+                loading={updateProfileLoading}
               >
                 <Save />
                 Cập nhật

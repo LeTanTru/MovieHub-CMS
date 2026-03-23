@@ -81,7 +81,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
     mutationKey: [`create-${queryKey}`],
     mutationFn: (body: T) =>
       apiConfig.create
-        ? http.get<ApiResponse<any>>(apiConfig.create, {
+        ? http.post<ApiResponse<any>>(apiConfig.create, {
             body
           })
         : Promise.resolve({ result: false, code: 'NO_API_CONFIG' } as any)
@@ -91,7 +91,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
     mutationKey: [`update-${queryKey}`],
     mutationFn: (body: T) =>
       apiConfig.update
-        ? http.get<ApiResponse<any>>(apiConfig.update, {
+        ? http.put<ApiResponse<any>>(apiConfig.update, {
             body
           })
         : Promise.resolve({ result: false, code: 'NO_API_CONFIG' } as any)
@@ -129,7 +129,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
                 `${isCreate ? 'Thêm mới' : 'Cập nhật'} ${objectName} thành công`
               );
             if (listPageUrl) {
-              navigate(getBackPath());
+              navigate.push(getBackPath());
             }
             handlers.handleSubmitSuccess();
           } else {
@@ -168,7 +168,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
             variant={'outline'}
             onClick={() => {
               if (listPageUrl) {
-                navigate(getBackPath());
+                navigate.push(getBackPath());
               } else {
                 options?.onCancel?.();
               }
@@ -210,7 +210,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
                 <AlertDialogAction
                   onClick={() => {
                     if (listPageUrl) {
-                      navigate(listPageUrl);
+                      navigate.push(listPageUrl);
                     }
                     options?.onCancel?.();
                   }}

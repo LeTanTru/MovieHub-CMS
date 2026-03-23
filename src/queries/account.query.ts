@@ -4,54 +4,29 @@ import type { ApiResponse, ProfileBodyType, ProfileResType } from '@/types';
 import { http } from '@/utils';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-export const useManagerProfileQuery = (enabled: boolean = false) => {
+export const useProfileQuery = (enabled: boolean = false) => {
   return useQuery({
-    queryKey: [`manage-${queryKeys.PROFILE}`],
+    queryKey: [queryKeys.PROFILE],
     queryFn: () =>
-      http.get<ApiResponse<ProfileResType>>(apiConfig.customer.getProfile),
+      http.get<ApiResponse<ProfileResType>>(apiConfig.account.getProfile),
     enabled: enabled
   });
 };
 
-export const useUpdateManagerProfileMutation = () => {
+export const useUpdateProfileMutation = () => {
   return useMutation({
-    mutationKey: [`update-${queryKeys.PROFILE}-manager`],
+    mutationKey: [`update-${queryKeys.PROFILE}`],
     mutationFn: (body: ProfileBodyType) =>
-      http.put<ApiResponse<any>>(apiConfig.customer.updateProfile, {
+      http.put<ApiResponse<any>>(apiConfig.account.updateProfile, {
         body
       }),
     onSuccess: async (res) => {
       if (res.result) {
         const res = await http.get<ApiResponse<ProfileResType>>(
-          apiConfig.customer.getProfile
+          apiConfig.account.getProfile
         );
         useAuthStore.getState().setProfile(res.data!);
       }
-    }
-  });
-};
-
-export const useEmployeeProfileQuery = (enabled: boolean = false) => {
-  return useQuery({
-    queryKey: [`employee-${queryKeys.PROFILE}`],
-    queryFn: () =>
-      http.get<ApiResponse<ProfileResType>>(apiConfig.employee.getProfile),
-    enabled: enabled
-  });
-};
-
-export const useUpdateProfileEmployeeMutation = () => {
-  return useMutation({
-    mutationKey: [`update-${queryKeys.PROFILE}-manager`],
-    mutationFn: (body: ProfileBodyType) =>
-      http.put<ApiResponse<any>>(apiConfig.employee.updateProfile, {
-        body
-      }),
-    onSuccess: async () => {
-      const res = await http.get<ApiResponse<ProfileResType>>(
-        apiConfig.employee.getProfile
-      );
-      useAuthStore.getState().setProfile(res.data!);
     }
   });
 };

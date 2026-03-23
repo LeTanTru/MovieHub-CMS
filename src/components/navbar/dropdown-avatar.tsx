@@ -44,16 +44,20 @@ export default function DropdownAvatar() {
       onSuccess: (res) => {
         if (res.result) {
           notify.success('Đăng xuất thành công');
-          removeData(storageKeys.PATH_NO_LOGIN);
-          removeData(storageKeys.PREVIOUS_PATH);
 
-          removeData(storageKeys.ACCESS_TOKEN);
-          removeData(storageKeys.REFRESH_TOKEN);
-          removeData(storageKeys.USER_KIND);
+          removeData([
+            storageKeys.PATH_NO_LOGIN,
+            storageKeys.PREVIOUS_PATH,
+
+            storageKeys.ACCESS_TOKEN,
+            storageKeys.REFRESH_TOKEN,
+            storageKeys.USER_KIND
+          ]);
 
           setProfile(null);
           setIsLoggedOut(true);
-          navigate(route.login.path);
+          setLoading(true);
+          navigate.push(route.login.path);
         } else {
           notify.error('Đăng xuất thất bại');
         }
@@ -61,13 +65,12 @@ export default function DropdownAvatar() {
       onError: (error) => {
         logger.error('Error while logging out', error);
         notify.error('Có lỗi xảy ra khi đăng xuất');
+      },
+      onSettled: () => {
+        setLoading(false);
       }
     });
   };
-
-  useEffect(() => {
-    setLoading(logoutLoading);
-  }, [logoutLoading, setLoading]);
 
   const handleProfileClick = () => {
     if (getData(storageKeys.PREVIOUS_PATH) === pathname) {
@@ -78,7 +81,7 @@ export default function DropdownAvatar() {
       storageKeys.PREVIOUS_PATH,
       queryString ? `${pathname}?${queryString}` : pathname
     );
-    navigate(route.profile.savePage.path);
+    navigate.push(route.profile.savePage.path);
   };
 
   useEffect(() => {

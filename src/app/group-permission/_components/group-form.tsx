@@ -148,7 +148,7 @@ export default function GroupForm() {
           await queryClient.invalidateQueries({
             queryKey: [`${queryKeys.GROUP}-list`]
           });
-          navigate(route.group.getList.path);
+          navigate.push(route.group.getList.path);
         } else {
           const errCode = res.code;
           if (errCode) {
@@ -350,7 +350,7 @@ export default function GroupForm() {
             <Row className='my-0 justify-end'>
               <Col className='w-40!'>
                 <Button
-                  onClick={() => navigate(route.group.getList.path)}
+                  onClick={() => navigate.push(route.group.getList.path)}
                   type='button'
                   variant='outline'
                   className='border-destructive text-destructive hover:border-destructive/80 hover:text-destructive/80'

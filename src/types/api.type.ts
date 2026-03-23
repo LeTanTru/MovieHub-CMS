@@ -7,7 +7,6 @@ export type ApiConfig = {
   headers?: Record<string, string>;
   method: HttpMethod;
   permissionCode?: string;
-  isRequiredTenantId?: boolean;
   isRequiredXClientType?: boolean;
   ignoreAuth?: boolean;
   isUpload?: boolean;

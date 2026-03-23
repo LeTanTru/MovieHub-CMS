@@ -99,7 +99,7 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
     if (sub.query) query = serializeParams(sub.query);
     setSidebarState('expanded');
     if (query) path = `${path}?${query}`;
-    navigate(path);
+    navigate.push(path);
   };
 
   // handle show float sub menu when sidebar state is collapsed

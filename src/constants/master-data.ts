@@ -10,16 +10,8 @@ import {
   GENDER_MALE,
   GENDER_OTHER,
   GROUP_KIND_ADMIN,
-  GROUP_KIND_COMPANY,
   GROUP_KIND_EMPLOYEE,
-  GROUP_KIND_INTERNAL,
-  GROUP_KIND_MANAGER,
   GROUP_KIND_USER,
-  GROUP_KIND_USER_VIP,
-  KIND_USER,
-  KIND_USER_VIP,
-  LOGIN_TYPE_EMPLOYEE,
-  LOGIN_TYPE_MANAGER,
   MOVIE_IS_FEATURED,
   MOVIE_IS_NOT_FEATURED,
   MOVIE_ITEM_KIND_EPISODE,
@@ -59,34 +51,14 @@ export const groupKinds = [
     color: '#EF4444'
   },
   {
-    label: 'MANAGER',
-    value: GROUP_KIND_MANAGER,
-    color: '#F59E0B'
-  },
-  {
     label: 'EMPLOYEE',
     value: GROUP_KIND_EMPLOYEE,
     color: '#3B82F6'
   },
   {
-    label: 'INTERNAL',
-    value: GROUP_KIND_INTERNAL,
-    color: '#8B5CF6'
-  },
-  {
-    label: 'COMPANY',
-    value: GROUP_KIND_COMPANY,
-    color: '#6366F1'
-  },
-  {
     label: 'USER',
     value: GROUP_KIND_USER,
     color: '#10B981'
-  },
-  {
-    label: 'USER VIP',
-    value: GROUP_KIND_USER_VIP,
-    color: '#D946EF'
   }
 ];
 
@@ -176,25 +148,10 @@ export const queryKeys = {
   VIDEO_LIBRARY: 'video-library'
 };
 
-export const loginOptions = [
-  {
-    label: 'Quản lý',
-    value: LOGIN_TYPE_MANAGER
-  },
-  {
-    label: 'Nhân viên',
-    value: LOGIN_TYPE_EMPLOYEE
-  }
-];
-
-export const userKinds = [
+export const userKindOptions = [
   {
     label: 'Người dùng',
-    value: KIND_USER
-  },
-  {
-    label: 'Người dùng VIP',
-    value: KIND_USER_VIP
+    value: GROUP_KIND_USER
   }
 ];
 

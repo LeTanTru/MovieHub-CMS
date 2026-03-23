@@ -1,106 +1,65 @@
 'use client';
 
-import { logoWithText } from '@/assets';
-import {
-  Button,
-  Col,
-  InputField,
-  PasswordField,
-  Row,
-  SelectField
-} from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import {
-  ErrorCode,
-  KIND_MANAGER,
-  LOGIN_TYPE_MANAGER,
-  loginOptions,
-  storageKeys
-} from '@/constants';
+import { Button, Col, InputField, PasswordField, Row } from '@/components/form';
 import { logger } from '@/logger';
 import { loginSchema } from '@/schemaValidations';
-import type { ApiResponse, LoginBodyType, LoginResType } from '@/types';
+import { logoWithText } from '@/assets';
 import { notify, setData } from '@/utils';
-import envConfig from '@/config';
-import {
-  useEmployeeProfileQuery,
-  useLoginEmployeeMutation,
-  useLoginManagerMutation,
-  useManagerProfileQuery
-} from '@/queries';
+import { route } from '@/routes';
+import { storageKeys } from '@/constants';
 import { useAppLoadingStore, useAuthStore } from '@/store';
+import { useFirstActiveRoute, useNavigate } from '@/hooks';
+import { useLoginMutation, useProfileQuery } from '@/queries';
+import envConfig from '@/config';
 import Image from 'next/image';
+import type { LoginBodyType, LoginResType } from '@/types';
 
 export default function LoginForm() {
-  const { refetch: getManagerProfile } = useManagerProfileQuery();
-  const { refetch: getEmployeeProfile } = useEmployeeProfileQuery();
+  const navigate = useNavigate();
 
-  const { mutateAsync: loginManagerMutate, isPending: loginManagerLoading } =
-    useLoginManagerMutation();
-  const { mutateAsync: loginEmployeeMutate, isPending: loginEmployeeLoading } =
-    useLoginEmployeeMutation();
+  const firstActiveRoute = useFirstActiveRoute();
+
+  const { mutateAsync: loginMutate, isPending: loginLoading } =
+    useLoginMutation();
+
+  const { refetch: getProfile, isLoading: profileLoading } = useProfileQuery();
 
   const setLoading = useAppLoadingStore((s) => s.setLoading);
   const setProfile = useAuthStore((s) => s.setProfile);
 
-  const loading = loginManagerLoading || loginEmployeeLoading;
-
   const defaultValues: LoginBodyType = {
     username: '',
     password: '',
-    grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE,
-    tenantId: envConfig.NEXT_PUBLIC_TENANT_ID,
-    loginType: LOGIN_TYPE_MANAGER
-  };
-
-  const handleLoginSuccess = async (res: LoginResType | ApiResponse<any>) => {
-    if ((res as ApiResponse<any>).result === false) {
-      const code = (res as ApiResponse<any>).code;
-      if (code === ErrorCode.ACCOUNT_ERROR_LOCKED) {
-        notify.error('Tài khoản đã bị khóa, vui lòng liên hệ quản trị viên');
-      }
-    } else {
-      const _res = res as LoginResType;
-      notify.success('Đăng nhập thành công');
-      setData(storageKeys.ACCESS_TOKEN, _res?.access_token!);
-      setData(storageKeys.REFRESH_TOKEN, _res?.refresh_token!);
-      setData(storageKeys.USER_KIND, _res?.user_kind?.toString()!);
-      const profileQuery =
-        _res.user_kind && +_res.user_kind === KIND_MANAGER
-          ? getManagerProfile
-          : getEmployeeProfile;
-      const profile = await profileQuery();
-      if (profile.data?.data) {
-        setProfile(profile.data?.data);
-        setLoading(true);
-      }
-    }
-  };
-
-  const handleLoginError = (error: Error) => {
-    logger.error('Error while logging in', error);
-    notify.error('Đăng nhập thất bại');
+    grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE
   };
 
   const onSubmit = async (values: LoginBodyType) => {
-    const payload: Omit<LoginBodyType, 'loginType'> = {
-      grant_type: values.grant_type,
-      password: values.password,
-      tenantId: values.tenantId,
-      username: values.username
-    };
+    await loginMutate(values, {
+      onSuccess: async (res: LoginResType) => {
+        const accessToken = res.access_token;
+        const refreshToken = res.refresh_token;
+        const userKind = res.user_kind;
 
-    if (values.loginType === LOGIN_TYPE_MANAGER) {
-      await loginManagerMutate(payload as any, {
-        onSuccess: handleLoginSuccess,
-        onError: handleLoginError
-      });
-    } else {
-      await loginEmployeeMutate(values, {
-        onSuccess: handleLoginSuccess,
-        onError: handleLoginError
-      });
-    }
+        setData(storageKeys.ACCESS_TOKEN, accessToken);
+        setData(storageKeys.REFRESH_TOKEN, refreshToken);
+        setData(storageKeys.USER_KIND, String(userKind));
+
+        const profileData = await getProfile();
+        const profile = profileData?.data?.data;
+
+        if (profile) {
+          setProfile(profile);
+          setLoading(profileLoading);
+          navigate.push(firstActiveRoute ?? route.home.path);
+        }
+        notify.success('Đăng nhập thành công');
+      },
+      onError: (error: Error) => {
+        logger.error('Error while logging in', error);
+        notify.error('Đăng nhập thất bại');
+      }
+    });
   };
 
   return (
@@ -112,7 +71,7 @@ export default function LoginForm() {
     >
       {(form) => (
         <>
-          <Row className='mb-2 w-full'>
+          <Row className='mb-2'>
             <Col span={24} className='items-center justify-center px-0'>
               <div className='bg-sidebar/80 mx-auto flex w-full items-center justify-center rounded py-2'>
                 <Image
@@ -124,7 +83,12 @@ export default function LoginForm() {
               </div>
             </Col>
           </Row>
-          <Row className='w-full flex-col gap-5 *:px-0'>
+          <Row className='border-b'>
+            <Col span={24} className='items-center justify-center px-0'>
+              <h1 className='text-xl font-bold uppercase'>Đăng nhập</h1>
+            </Col>
+          </Row>
+          <Row className='flex-col gap-5 *:px-0'>
             <Col span={24}>
               <InputField
                 name='username'
@@ -143,32 +107,13 @@ export default function LoginForm() {
                 required
               />
             </Col>
-            {/* <Col span={24}>
-              <InputField
-                name='tenantId'
-                control={form.control}
-                label='Mã thuê bao (Tenant Id)'
-                placeholder='Mã thuê bao (Tenant Id)'
-                required
-              />
-            </Col> */}
-            <Col span={24}>
-              <SelectField
-                options={loginOptions}
-                name='loginType'
-                control={form.control}
-                label='Vai trò'
-                placeholder='Vai trò'
-                required
-              />
-            </Col>
           </Row>
-          <Row className='mb-0 w-full'>
+          <Row className='mb-0'>
             <Col className='my-0 px-0' span={24}>
               <Button
-                disabled={!form.formState.isDirty || loading}
-                variant={'primary'}
-                loading={loading}
+                disabled={!form.formState.isDirty || loginLoading}
+                variant='primary'
+                loading={loginLoading}
               >
                 Đăng nhập
               </Button>

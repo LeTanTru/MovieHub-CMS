@@ -269,7 +269,7 @@ const useInfiniteListBase = <
   const handleEditClick = (id: string) => {
     const query = serializeParams(searchParams);
     const path = query ? `${pathname}/${id}?${query}` : `${pathname}/${id}`;
-    navigate(path);
+    navigate.push(path);
   };
 
   const handleDeleteClick = async (

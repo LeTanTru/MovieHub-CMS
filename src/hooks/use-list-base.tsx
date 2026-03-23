@@ -254,7 +254,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
   const handleEditClick = (id: string) => {
     const query = serializeParams(searchParams);
     const path = query ? `${pathname}/${id}?${query}` : `${pathname}/${id}`;
-    navigate(path);
+    navigate.push(path);
   };
 
   const handleDeleteClick = async (

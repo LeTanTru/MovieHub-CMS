@@ -12,7 +12,7 @@ export default function Row({ children, className, ...rest }: RowProps) {
   return (
     <div
       className={cn(
-        '-mx-2 flex flex-wrap',
+        '-mx-2 flex w-full flex-wrap',
         {
           'mb-6': childrenLength > 0,
           'mb-0': childrenLength === 0

@@ -20,7 +20,8 @@
 //   return NextResponse.next();
 // }
 
-// export const config = {
-//   matcher: ['/((?!api|trpc|_next|_vercel|.*\\..*).*)']
-// };
 export function proxy() {}
+
+export const config = {
+  matcher: ['/((?!api|trpc|_next|_vercel|.*\\..*).*)']
+};
