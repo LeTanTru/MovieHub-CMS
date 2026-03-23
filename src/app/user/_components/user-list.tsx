@@ -12,31 +12,32 @@ import {
   userKindOptions
 } from '@/constants';
 import { useListBase } from '@/hooks';
-import { useChangeAudienceStatusMutation } from '@/queries';
-import { audienceSearchSchema } from '@/schemaValidations';
+import { useChangeUserStatusMutation } from '@/queries';
+import { userSearchSchema } from '@/schemaValidations';
 import type {
-  AudienceResType,
-  AudienceSearchType,
+  UserResType,
+  UserSearchType,
   Column,
-  SearchFormProps
+  SearchFormProps,
+  ApiResponse
 } from '@/types';
 import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
-export default function AudienceList({ queryKey }: { queryKey: string }) {
+export default function UserList({ queryKey }: { queryKey: string }) {
   const { data, pagination, loading, handlers, listQuery } = useListBase<
-    AudienceResType,
-    AudienceSearchType
+    UserResType,
+    UserSearchType
   >({
     apiConfig: apiConfig.user,
     options: {
       queryKey,
-      objectName: 'khán giả'
+      objectName: 'người dùng'
     },
     override: (handlers) => {
       handlers.additionalColumns = () => ({
         changeStatus: (
-          record: AudienceResType,
+          record: UserResType,
           buttonProps?: Record<string, any>
         ) => {
           if (
@@ -77,9 +78,9 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
   });
 
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
-    useChangeAudienceStatusMutation();
+    useChangeUserStatusMutation();
 
-  const handleChangeStatus = async (record: AudienceResType) => {
+  const handleChangeStatus = async (record: UserResType) => {
     const message =
       record.status === STATUS_ACTIVE
         ? 'Khóa tài khoản thành công'
@@ -90,7 +91,7 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
         status: record.status === STATUS_ACTIVE ? STATUS_LOCK : STATUS_ACTIVE
       },
       {
-        onSuccess: (res) => {
+        onSuccess: (res: ApiResponse<any>) => {
           if (res.result) {
             listQuery.refetch();
             notify.success(message);
@@ -100,7 +101,7 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
     );
   };
 
-  const columns: Column<AudienceResType>[] = [
+  const columns: Column<UserResType>[] = [
     {
       title: '#',
       dataIndex: 'avatarPath',
@@ -166,7 +167,7 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
     })
   ];
 
-  const searchFields: SearchFormProps<AudienceSearchType>['searchFields'] = [
+  const searchFields: SearchFormProps<UserSearchType>['searchFields'] = [
     { key: 'fullName', placeholder: 'Họ tên' },
     {
       key: 'phone',
@@ -187,11 +188,11 @@ export default function AudienceList({ queryKey }: { queryKey: string }) {
   ];
 
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Khán giả' }]}>
+    <PageWrapper breadcrumbs={[{ label: 'Người dùng' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: audienceSearchSchema
+          schema: userSearchSchema
         })}
         addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}

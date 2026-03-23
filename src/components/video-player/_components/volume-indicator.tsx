@@ -3,24 +3,51 @@
 import { useIndicator } from '@/components/video-player/video-player';
 import { useMediaState } from '@vidstack/react';
 import { AnimatePresence, m } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
+
+type IndicatorState = {
+  showIndicator: boolean;
+};
+
+type IndicatorAction = { type: 'show' } | { type: 'hide' };
+
+const initialState: IndicatorState = {
+  showIndicator: false
+};
+
+function indicatorReducer(
+  state: IndicatorState,
+  action: IndicatorAction
+): IndicatorState {
+  switch (action.type) {
+    case 'show':
+      return { showIndicator: true };
+    case 'hide':
+      return { ...state, showIndicator: false };
+    default:
+      return state;
+  }
+}
 
 export default function VolumeIndicator() {
   const volume = useMediaState('volume');
-  const [showIndicator, setShowIndicator] = useState(false);
+  const [{ showIndicator }, dispatch] = useReducer(
+    indicatorReducer,
+    initialState
+  );
   const { currentAction } = useIndicator();
 
   useEffect(() => {
     if (currentAction === 'initial' || currentAction === 'volume') {
-      setShowIndicator(true);
+      dispatch({ type: 'show' });
 
       const timeout = setTimeout(() => {
-        setShowIndicator(false);
+        dispatch({ type: 'hide' });
       }, 800);
 
       return () => clearTimeout(timeout);
     } else {
-      setShowIndicator(false);
+      dispatch({ type: 'hide' });
     }
   }, [volume, currentAction]);
 

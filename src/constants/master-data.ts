@@ -126,7 +126,6 @@ export const genderOptions: OptionType[] = [
 export const queryKeys = {
   ADMIN: 'admin',
   APP_VERSION: 'app-version',
-  AUDIENCE: 'audience',
   CATEGORY: 'category',
   COLLECTION_ITEM: 'collection-item',
   COLLECTION: 'collection',
@@ -148,6 +147,7 @@ export const queryKeys = {
   SIDEBAR: 'sidebar',
   SNS_CONFIG: 'sns-config',
   STYLE: 'style',
+  USER: 'user',
   VIDEO_LIBRARY: 'video-library'
 };
 

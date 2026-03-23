@@ -3,7 +3,6 @@
 import { Activity } from '@/components/activity';
 import { cn } from '@/lib';
 import { TimeSlider as BaseTimeSlider } from '@vidstack/react';
-import { useMemo } from 'react';
 
 export default function TimeSlider({
   introStart,
@@ -70,17 +69,13 @@ function IntroRangeHighlight({
   end: number;
   duration: number;
 }) {
-  const styles = useMemo(() => {
-    const left = (start / duration) * 100;
-    const width = ((end - start) / duration) * 100;
-
-    return {
-      left: `${left}%`,
-      width: `${width}%`
-    };
-  }, [start, end, duration]);
-
-  const isAtStart = useMemo(() => start === 0, [start]);
+  const left = (start / duration) * 100;
+  const width = ((end - start) / duration) * 100;
+  const styles = {
+    left: `${left}%`,
+    width: `${width}%`
+  };
+  const isAtStart = start === 0;
 
   return (
     <div

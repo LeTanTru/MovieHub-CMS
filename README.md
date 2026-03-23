@@ -2,43 +2,34 @@
 
 <h1 align="center">MovieHub CMS Tenant</h1>
 
-MovieHub CMS Tenant is the **administration console** for a multi-tenant movie platform.  
-It helps internal teams manage the full content lifecycle: catalog setup, people metadata, media assets, publishing structure, access control, and UI configuration.
+MovieHub CMS Tenant is the internal administration console for a multi-tenant movie platform.  
+It is used by operations teams to manage catalog content, metadata, publishing assets, user access, and tenant-level UI configuration.
 
 ## Project Summary
 
-This project is a modern web CMS built with **Next.js 16 (App Router) + TypeScript** for reliability, scalability, and maintainability.
+This repository contains a CMS built with **Next.js 16 (App Router) + TypeScript**.  
+The system centralizes movie-platform back-office workflows across:
 
-At a high level, it provides:
+- User administration (admins, employees, audiences, role/permission groups)
+- Movie domain management (categories, people, movies, movie items, comments, reviews)
+- Media and rich-content management (video library and editor-integrated flows)
+- UI/tenant configuration (sidebar, styles, collections)
+- System-level management (permission administration and app-version features)
 
-- Centralized movie operations: categories, movies, movie items, comments, and reviews.
-- Talent and metadata management: actors/directors and related entities.
-- Media workflows: video library and rich content editing.
-- Access governance: employee/audience management, roles, and permissions.
-- Tenant-level customization: sidebar highlights, style presets, and content collections.
-- System administration: permission controls and app-level operational settings.
-
-The app uses a feature-oriented `src/` structure with reusable components, query hooks, validation schemas, and state stores to keep business logic modular and consistent across modules.
-
-## Key Functional Areas
-
-- User management: employees, audiences, and role/permission groups.
-- Movie management: categories, people (actors/directors), video library, movies, movie items, comments, and reviews.
-- UI management: sidebar highlights, style presets, and content collections.
-- System management: app versioning and permission administration.
+The app follows a feature-oriented structure under `src/`, with shared hooks, query modules, validation schemas, and reusable UI/form primitives.
 
 ## Tech Stack
 
-- Framework: Next.js (App Router), React 19, TypeScript.
-- Data & state: TanStack Query, Zustand.
-- Forms & validation: React Hook Form, Zod.
-- UI: Tailwind CSS, Radix UI, Framer Motion, Lucide icons.
-- Media/editor: HLS.js, Vidstack, TinyMCE.
+- Framework: Next.js (App Router), React 19, TypeScript
+- Data/state: TanStack Query, Zustand
+- Forms/validation: React Hook Form, Zod
+- UI: Tailwind CSS, Radix UI, Framer Motion
+- Media/editor: HLS.js, Vidstack, TinyMCE
 
 ## Prerequisites
 
-- Node.js 20+ (recommended).
-- Yarn package manager.
+- Node.js 20+
+- Yarn
 
 ## Getting Started
 
@@ -48,29 +39,28 @@ The app uses a feature-oriented `src/` structure with reusable components, query
 yarn
 ```
 
-2. Create environment configuration:
+2. Create environment file:
 
 ```bash
-# macOS/Linux
-cp .env.example .env
-
 # Windows PowerShell
 Copy-Item .env.example .env
+
+# macOS/Linux
+cp .env.example .env
 ```
 
-3. Fill all required variables in `.env`:
+3. Fill required environment variables in `.env`:
 
 - `NEXT_PUBLIC_NODE_ENV`
-- `NEXT_PUBLIC_API_META_ENDPOINT_URL`
-- `NEXT_PUBLIC_API_TENANT_ENDPOINT_URL`
+- `NEXT_PUBLIC_AUTH_API_URL`
+- `NEXT_PUBLIC_API_URL`
 - `NEXT_PUBLIC_API_MEDIA_URL`
 - `NEXT_PUBLIC_APP_USERNAME`
 - `NEXT_PUBLIC_APP_PASSWORD`
 - `NEXT_PUBLIC_URL`
 - `NEXT_PUBLIC_TINYMCE_URL`
-- `NEXT_PUBLIC_API_SOCKET`
+- `NEXT_PUBLIC_API_SOCKET_URL`
 - `NEXT_PUBLIC_GRANT_TYPE`
-- `NEXT_PUBLIC_TENANT_ID`
 - `NEXT_PUBLIC_APP_NAME`
 - `NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN`
 - `NEXT_PUBLIC_MEDIA_HOST`
@@ -82,32 +72,28 @@ Copy-Item .env.example .env
 yarn dev
 ```
 
-The app runs on `http://localhost:3001`.
+Application runs at `http://localhost:3001`.
 
-## Available Scripts
+## Scripts
 
-- `yarn dev` — start local development server on port `3001`.
-- `yarn clean-dev` — clear build cache and run dev server.
-- `yarn build` — create production build.
-- `yarn start` — run production server on port `3001`.
-- `yarn lint` — run ESLint.
-- `yarn format` — format code with Prettier.
+- `yarn dev`: Start dev server on port `3001`
+- `yarn clean-dev`: Remove `.next` and start dev server
+- `yarn build`: Build production bundle
+- `yarn start`: Start production server on port `3001`
+- `yarn lint`: Run ESLint
+- `yarn format`: Run Prettier
 
 ## Project Structure
 
 ```text
 src/
-  app/                # Next.js app routes and feature pages
-  components/         # Reusable UI and form components
-  constants/          # API config, menu config, app constants
-  hooks/              # Custom React hooks
-  queries/            # Data fetching/mutation hooks
-  routes/             # Route definitions and permission mapping
+  app/                # Next.js routes and feature pages
+  components/         # Shared components and UI/form building blocks
+  constants/          # API config, app constants, menu/query keys
+  hooks/              # Reusable client hooks
+  queries/            # TanStack Query hooks by domain
+  routes/             # Route metadata and permission mapping
   schemaValidations/  # Zod schemas
   store/              # Zustand stores
-  utils/              # Shared utilities
+  utils/              # Shared utilities (HTTP, storage, formatting, etc.)
 ```
-
-## Author
-
-Developed by [Lê Tấn Trụ](https://github.com/LeTanTru).

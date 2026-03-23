@@ -6,12 +6,15 @@ import { VideoPlayer } from '@/components/video-player';
 import type { VideoLibraryResType } from '@/types';
 import {
   getAccessTokenFromLocalStorage,
+  isMobileDevice,
+  isTabletDevice,
   renderImageUrl,
   renderVideoUrl,
   renderVttUrl
 } from '@/utils';
 import { VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL } from '@/constants';
 import { useEffect, useRef, useState } from 'react';
+import envConfig from '@/config';
 
 export default function VideoPlayModal({
   open,
@@ -89,6 +92,13 @@ export default function VideoPlayModal({
           outroStart={video.outroStart}
           token={getAccessTokenFromLocalStorage() || ''}
           title={video.name}
+          volume={
+            envConfig.NEXT_PUBLIC_NODE_ENV === 'development'
+              ? 0
+              : isMobileDevice() || isTabletDevice()
+                ? 1
+                : 0.5
+          }
         />
       </div>
     </Modal>

@@ -13,7 +13,7 @@ import QualitySubmenu from './quality-submenu';
 import SpeedSubmenu from './speed-submenu';
 import VolumeSubmenu from './volume-submenu';
 
-export type SettingsProps = {
+type SettingsProps = {
   placement: MenuPlacement;
   tooltipPlacement: TooltipPlacement;
 };

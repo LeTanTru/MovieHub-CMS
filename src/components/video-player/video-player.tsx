@@ -42,13 +42,15 @@ import {
 import {
   createContext,
   useContext,
-  useEffect,
+  useCallback,
   useRef,
   useState,
   forwardRef,
   ComponentProps
 } from 'react';
 import { cn } from '@/lib';
+
+import './video-player.css';
 
 type IndicatorAction = 'initial' | 'play-pause' | 'volume' | 'none';
 const IndicatorContext = createContext<{
@@ -81,6 +83,7 @@ type VideoPlayerProps = Omit<
   onNextClick?: () => void;
   onPrevClick?: () => void;
   onSeeked?: (currentTime: number) => void;
+  hideVolumeIndicator?: boolean;
 };
 
 const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
@@ -102,6 +105,7 @@ const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
       onNextClick,
       onPrevClick,
       onSeeked,
+      hideVolumeIndicator = false,
       onTimeUpdate,
       onEnded,
       autoPlay = true,
@@ -111,18 +115,23 @@ const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
     },
     ref
   ) {
-    const playerRef = useRef<MediaPlayerInstance>(null);
+    const playerRef = useRef<MediaPlayerInstance | null>(null);
     const [showSkipIntro, setShowSkipIntro] = useState<boolean>(false);
     const [showSkipOutro, setShowSkipOutro] = useState<boolean>(false);
     const [currentAction, setCurrentAction] =
       useState<IndicatorAction>('initial');
 
-    // Expose internal ref to parent
-    if (typeof ref === 'function') {
-      ref(playerRef.current);
-    } else if (ref) {
-      ref.current = playerRef.current;
-    }
+    const setPlayerRefs = useCallback(
+      (instance: MediaPlayerInstance | null) => {
+        playerRef.current = instance;
+        if (typeof ref === 'function') {
+          ref(instance);
+        } else if (ref) {
+          ref.current = instance;
+        }
+      },
+      [ref]
+    );
 
     /*
     * Set pointer to 'fine' for both touch and mouse devices
@@ -168,11 +177,6 @@ const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
     }, []);
     */
 
-    useEffect(() => {
-      setShowSkipIntro(false);
-      setShowSkipOutro(false);
-    }, [duration, introEnd, introStart, onNextClick, outroStart, skipOutro]);
-
     const handleTimeChange = (
       detail: MediaTimeUpdateEventDetail,
       nativeEvent: MediaTimeUpdateEvent
@@ -201,7 +205,7 @@ const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
     return (
       <IndicatorContext.Provider value={{ currentAction, setCurrentAction }}>
         <MediaPlayer
-          ref={playerRef}
+          ref={setPlayerRefs}
           viewType='video'
           streamType='on-demand'
           logLevel='silent'
@@ -211,10 +215,7 @@ const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
           autoPlay={autoPlay}
           fullscreenOrientation={'none'}
           volume={volume}
-          className={cn(
-            'video-player relative h-full rounded-none! border-none!',
-            className
-          )}
+          className={cn('video-player', className)}
           onProviderChange={
             auth ? (provider) => onProviderChange(provider, token) : undefined
           }
@@ -284,13 +285,13 @@ const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
                   vttUrl={vttUrl}
                 />
               ),
-              centerControlsGroupCenter: (
+              bufferingIndicator: (
                 <>
                   <PlayPauseIndicator />
-                  <VolumeIndicator />
+                  <BufferingIndicator />
+                  {!hideVolumeIndicator && <VolumeIndicator />}
                 </>
               ),
-              bufferingIndicator: <BufferingIndicator />,
               ...slots
             }}
           />
