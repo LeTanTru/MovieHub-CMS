@@ -2,84 +2,77 @@ import { z } from 'zod';
 
 export const profileSchema = z
   .object({
-    email: z.string().nonempty('Bắt buộc').email('Email không đúng định dạng'),
     fullName: z.string().nonempty('Bắt buộc'),
     avatarPath: z.string().optional(),
-    phone: z
-      .string()
-      .regex(/^0\d{9}$/, 'Số điện thoại không hợp lệ')
-      .optional(),
 
-    oldPassword: z.string().optional().nullable(),
-    newPassword: z.string().optional().nullable(),
-    confirmPassword: z.string().optional().nullable(),
-
-    logoPath: z.string().optional()
+    oldPassword: z.string().nonempty('Bắt buộc'),
+    password: z.string().optional().nullable(),
+    confirmPassword: z.string().optional().nullable()
   })
   .superRefine((data, ctx) => {
-    if (data.oldPassword && !data.newPassword) {
+    const hasOld = !!data.oldPassword;
+    const hasNew = !!data.password;
+    const hasConfirm = !!data.confirmPassword;
+
+    if (hasOld && !hasNew && !hasConfirm) return;
+
+    if (hasNew && !hasConfirm) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ['newPassword'],
-        message: 'Vui lòng nhập mật khẩu mới'
-      });
-      return;
-    }
-
-    if (data.newPassword) {
-      const pwd = data.newPassword;
-
-      if (pwd.length < 8) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['newPassword'],
-          message: 'Mật khẩu tối thiểu 8 ký tự'
-        });
-      }
-
-      if (!/[A-Z]/.test(pwd)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['newPassword'],
-          message: 'Mật khẩu phải có ít nhất 1 chữ hoa'
-        });
-      }
-
-      if (!/[a-z]/.test(pwd)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['newPassword'],
-          message: 'Mật khẩu phải có ít nhất 1 chữ thường'
-        });
-      }
-
-      if (!/[0-9]/.test(pwd)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['newPassword'],
-          message: 'Mật khẩu phải có ít nhất 1 chữ số'
-        });
-      }
-
-      if (!/[^A-Za-z0-9]/.test(pwd)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['newPassword'],
-          message: 'Mật khẩu phải có ít nhất 1 ký tự đặc biệt'
-        });
-      }
-    }
-
-    if (!data.oldPassword && data.newPassword && data.confirmPassword) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['oldPassword'],
+        path: ['confirmPassword'],
         message: 'Bắt buộc'
       });
     }
 
-    if (data.newPassword || data.confirmPassword) {
-      if (data.newPassword !== data.confirmPassword) {
+    if (!hasNew && hasConfirm) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['password'],
+        message: 'Bắt buộc'
+      });
+      return;
+    }
+
+    if (hasNew) {
+      const pwd = data.password!;
+
+      if (pwd.length < 8) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['password'],
+          message: 'Mật khẩu tối thiểu 8 ký tự'
+        });
+      }
+      if (!/[A-Z]/.test(pwd)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['password'],
+          message: 'Mật khẩu phải có ít nhất 1 chữ hoa'
+        });
+      }
+      if (!/[a-z]/.test(pwd)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['password'],
+          message: 'Mật khẩu phải có ít nhất 1 chữ thường'
+        });
+      }
+      if (!/[0-9]/.test(pwd)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['password'],
+          message: 'Mật khẩu phải có ít nhất 1 chữ số'
+        });
+      }
+      if (!/[^A-Za-z0-9]/.test(pwd)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['password'],
+          message: 'Mật khẩu phải có ít nhất 1 ký tự đặc biệt'
+        });
+      }
+
+      if (hasConfirm && data.password !== data.confirmPassword) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['confirmPassword'],
@@ -102,7 +95,10 @@ export const accountSearchSchema = z.object({
 export const accountSchema = (isEditing: boolean) =>
   z
     .object({
-      email: z.string().nonempty('Bắt buộc'),
+      email: z
+        .string()
+        .nonempty('Bắt buộc')
+        .check(z.email('Email không hợp lệ')),
       password: isEditing
         ? z.string().optional()
         : z

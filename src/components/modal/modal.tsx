@@ -139,7 +139,7 @@ export default function Modal({
           )}
           <m.div
             className={cn(
-              'fixed inset-0 z-20 flex items-center justify-center',
+              'fixed inset-0 z-20 flex items-center justify-center overflow-auto',
               className
             )}
             initial={{ opacity: 0 }}

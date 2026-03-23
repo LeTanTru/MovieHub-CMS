@@ -1,35 +1,41 @@
 'use client';
 
-import { emptyData } from '@/assets';
-import { Button, Col, InputField, Row, TextAreaField } from '@/components/form';
+import {
+  Button,
+  Col,
+  InputField,
+  Row,
+  SelectField,
+  TextAreaField
+} from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
-import { CircleLoading } from '@/components/loading';
+import { NoData } from '@/components/no-data';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   DEFAULT_TABLE_PAGE_START,
   ErrorCode,
   groupErrorMaps,
-  MAX_PAGE_SIZE,
-  queryKeys
+  groupKinds,
+  MAX_PAGE_SIZE
 } from '@/constants';
-import { useNavigate, useQueryParams } from '@/hooks';
+import { useNavigate } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import {
+  useCreateGroupMutation,
+  useGroupPermissionListQuery,
   useGroupQuery,
   usePermissionListQuery,
-  useCreateGroupMutation,
   useUpdateGroupMutation
 } from '@/queries';
 import { route } from '@/routes';
 import { groupSchema } from '@/schemaValidations';
 import type { GroupBodyType, PermissionResType } from '@/types';
-import { applyFormErrors, notify, renderListPageUrl } from '@/utils';
+import { applyFormErrors, notify } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { ArrowLeftFromLine, Save } from 'lucide-react';
-import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
@@ -39,40 +45,48 @@ export default function GroupForm() {
   const { id } = useParams<{ id: string }>();
   const isCreate = id === 'create';
   const queryClient = useQueryClient();
-  const { queryString } = useQueryParams();
 
-  const {
-    data: groupData,
-    isLoading: groupLoading,
-    isFetching: groupFetching
-  } = useGroupQuery(id);
-  const {
-    data: permissionListData,
-    isLoading: permissionListLoading,
-    isFetching: permissionListFetching
-  } = usePermissionListQuery({
+  const { data: groupData } = useGroupQuery(id);
+  const { data: permissionListData } = usePermissionListQuery({
     page: DEFAULT_TABLE_PAGE_START,
     size: MAX_PAGE_SIZE
   });
+  const { data: groupPermissionListData } = useGroupPermissionListQuery({
+    page: DEFAULT_TABLE_PAGE_START,
+    size: MAX_PAGE_SIZE
+  });
+
+  const group = groupData?.data;
+  const groupPermissions = useMemo(() => {
+    return groupPermissionListData?.data?.content || [];
+  }, [groupPermissionListData?.data?.content]);
+  const permissions = permissionListData?.data.content;
 
   const { mutateAsync: createGroupMutate, isPending: createGroupLoading } =
     useCreateGroupMutation();
   const { mutateAsync: updateGroupMutate, isPending: updateGroupLoading } =
     useUpdateGroupMutation();
 
-  const groupedPermissions = [...(permissionListData?.data?.content || [])]
-    .sort(
-      (a, b) =>
-        (a.groupPermission?.ordering ?? 0) - (b.groupPermission?.ordering ?? 0)
-    )
-    .reduce((acc, permission) => {
-      const group = permission.groupPermission.name || 'Unknown';
-      if (!acc[group]) {
-        acc[group] = [];
+  const groupedPermissions = (permissions || []).reduce((acc, permission) => {
+    const group = permission.groupPermission.name || 'Unknown';
+    if (!acc[group]) {
+      acc[group] = [];
+    }
+    acc[group].push(permission);
+    return acc;
+  }, {} as any);
+
+  (groupPermissions || [])
+    .map((group) => group.name)
+    .forEach((groupName) => {
+      if (!groupedPermissions[groupName]) {
+        groupedPermissions[groupName] = [];
       }
-      acc[group].push(permission);
-      return acc;
-    }, {} as any);
+    });
+
+  const sortedGroupPermissions = useMemo(() => {
+    return [...groupPermissions].sort((a, b) => a.ordering - b.ordering);
+  }, [groupPermissions]);
 
   const defaultValues: GroupBodyType = {
     name: '',
@@ -82,16 +96,11 @@ export default function GroupForm() {
 
   const initialValues: GroupBodyType = useMemo(
     () => ({
-      description: groupData?.data?.description ?? '',
-      name: groupData?.data?.name ?? '',
-      permissions:
-        groupData?.data?.permissions?.map((g) => g.id.toString()) ?? []
+      description: group?.description ?? '',
+      name: group?.name ?? '',
+      permissions: group?.permissions.map((g) => g.id.toString()) ?? []
     }),
-    [
-      groupData?.data?.description,
-      groupData?.data?.name,
-      groupData?.data?.permissions
-    ]
+    [group?.description, group?.name, group?.permissions]
   );
 
   // const onSubmit = async (
@@ -105,9 +114,9 @@ export default function GroupForm() {
   //       onSuccess: (res) => {
   //         if (res.result) {
   //           notify.success(
-  //             `${isCreate ? 'Thêm mới' : 'Cập nhật'} quyền thành công`
+  //             `${isCreate ? 'Thêm mới' : 'Cập nhật'} vai trò thành công`
   //           );
-  //           queryClient.invalidateQueries({ queryKey: [queryKeys.GROUP, id] });
+  //           queryClient.invalidateQueries({ queryKey: ['group', id] });
   //           navigate(route.group.getList.path);
   //         } else {
   //           const errCode = res.code;
@@ -133,21 +142,15 @@ export default function GroupForm() {
   ) => {
     const mutation = isCreate ? createGroupMutate : updateGroupMutate;
 
-    const { kind: _, ...valuesWithoutKind } = values;
-    const payload = isCreate ? values : { ...valuesWithoutKind, id };
+    const { kind: _, ...rest } = values;
 
-    await mutation(payload, {
+    await mutation(isCreate ? values : { ...rest, id }, {
       onSuccess: async (res) => {
         if (res.result) {
           notify.success(
-            `${isCreate ? 'Thêm mới' : 'Cập nhật'} quyền thành công`
+            `${isCreate ? 'Thêm mới' : 'Cập nhật'} vai trò thành công`
           );
-          await queryClient.invalidateQueries({
-            queryKey: [queryKeys.GROUP, id]
-          });
-          await queryClient.invalidateQueries({
-            queryKey: [`${queryKeys.GROUP}-list`]
-          });
+          await queryClient.invalidateQueries({ queryKey: ['group', id] });
           navigate.push(route.group.getList.path);
         } else {
           const errCode = res.code;
@@ -169,14 +172,11 @@ export default function GroupForm() {
   return (
     <PageWrapper
       breadcrumbs={[
-        {
-          label: 'Quyền',
-          href: renderListPageUrl(route.group.getList.path, queryString)
-        },
-        { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} quyền` }
+        { label: 'Vai trò', href: route.group.getList.path },
+        { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} vai trò` }
       ]}
       notFound={groupData?.code === ErrorCode.GROUP_ERROR_NOT_FOUND}
-      notFoundContent='Không tìm thấy quyền này'
+      notFoundContent='Không tìm thấy vai trò này'
     >
       <BaseForm
         defaultValues={defaultValues}
@@ -191,11 +191,25 @@ export default function GroupForm() {
                 <InputField
                   control={form.control}
                   name='name'
-                  label='Tên quyền'
-                  placeholder='Nhập tên quyền'
+                  label='Tên nhóm'
+                  placeholder='Nhập tên nhóm'
                   required
                 />
               </Col>
+              {isCreate && (
+                <Col>
+                  <SelectField
+                    getLabel={(option) => option.label}
+                    getValue={(option) => option.value}
+                    options={groupKinds}
+                    control={form.control}
+                    name='kind'
+                    label='Nhóm'
+                    placeholder='Chọn nhóm'
+                    required
+                  />
+                </Col>
+              )}
             </Row>
             <Row>
               <Col span={24}>
@@ -210,13 +224,14 @@ export default function GroupForm() {
             </Row>
             <Row>
               <Col className='gap-y-4' span={24}>
-                {Object.keys(groupedPermissions).map((gp) => {
-                  const permissions = groupedPermissions[gp];
+                {sortedGroupPermissions.map((groupPermission) => {
+                  const group = groupPermission.name;
+                  const permissions = groupedPermissions[group];
                   return (
-                    <Card key={gp} className='text-sm'>
+                    <Card key={group} className='text-sm'>
                       <CardHeader className='flex flex-row items-center gap-x-2 border-b px-4 py-2'>
                         <Checkbox
-                          id={`select-all-${gp}`}
+                          id={`select-all-${group}`}
                           checked={
                             permissions.length > 0 &&
                             permissions.every((p: PermissionResType) =>
@@ -267,15 +282,15 @@ export default function GroupForm() {
                         />
                         <label
                           className='cursor-pointer select-none'
-                          htmlFor={`select-all-${gp}`}
+                          htmlFor={`select-all-${group}`}
                         >
-                          {gp}
+                          {group}
                         </label>
                       </CardHeader>
                       <CardContent className='p-4'>
                         <div
                           className={cn('grid gap-4', {
-                            'grid-cols-4 max-[1560px]:grid-cols-3':
+                            'grid-cols-5 max-[1560px]:grid-cols-4 max-[1366px]:grid-cols-3':
                               permissions?.length > 0
                           })}
                         >
@@ -330,15 +345,19 @@ export default function GroupForm() {
                               );
                             })
                           ) : (
-                            <div className='flex w-full flex-col items-center justify-center gap-y-2'>
-                              <Image
-                                src={emptyData.src}
-                                alt='Empty'
-                                width={150}
-                                height={80}
-                              />
-                              <p>Không có dữ liệu</p>
-                            </div>
+                            <NoData
+                              content='Không có dữ liệu'
+                              className='min-h-[30vh] [&_img]:w-40'
+                            />
+                            // <div className='flex w-full flex-col items-center justify-center gap-y-2'>
+                            //   <Image
+                            //     src={emptyData.src}
+                            //     alt='Empty'
+                            //     width={150}
+                            //     height={80}
+                            //   />
+                            //   <p>Không có dữ liệu</p>
+                            // </div>
                           )}
                         </div>
                       </CardContent>
@@ -347,13 +366,13 @@ export default function GroupForm() {
                 })}
               </Col>
             </Row>
-            <Row className='my-0 justify-end'>
+            <Row className='mb-0 justify-end'>
               <Col className='w-40!'>
                 <Button
                   onClick={() => navigate.push(route.group.getList.path)}
                   type='button'
-                  variant='outline'
-                  className='border-destructive text-destructive hover:border-destructive/80 hover:text-destructive/80'
+                  variant={'ghost'}
+                  className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
                 >
                   <ArrowLeftFromLine />
                   Hủy
@@ -368,20 +387,13 @@ export default function GroupForm() {
                   }
                   type='submit'
                   variant={'primary'}
+                  loading={createGroupLoading || updateGroupLoading}
                 >
                   <Save />
                   {isCreate ? 'Thêm' : 'Cập nhật'}
                 </Button>
               </Col>
             </Row>
-            {groupLoading ||
-              groupFetching ||
-              permissionListLoading ||
-              (permissionListFetching && (
-                <div className='absolute inset-0 bg-white/80'>
-                  <CircleLoading className='stroke-main-color mt-20 size-8' />
-                </div>
-              ))}
           </>
         )}
       </BaseForm>

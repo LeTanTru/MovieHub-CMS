@@ -9,14 +9,13 @@ import {
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { GROUP_KIND_ADMIN, profileErrorMaps, storageKeys } from '@/constants';
-import { useAuth, useFileUploadManager, useNavigate } from '@/hooks';
+import { profileErrorMaps, storageKeys } from '@/constants';
+import { useFileUploadManager, useNavigate } from '@/hooks';
 import { logger } from '@/logger';
 import {
   useDeleteFileMutation,
   useUpdateProfileMutation,
-  useUploadAvatarMutation,
-  useUploadLogoMutation
+  useUploadAvatarMutation
 } from '@/queries';
 import { route } from '@/routes';
 import { profileSchema } from '@/schemaValidations';
@@ -36,12 +35,9 @@ import type { UseFormReturn } from 'react-hook-form';
 export default function ProfileForm() {
   const navigate = useNavigate();
   const profile = useAuthStore((s) => s.profile);
-  const { kind } = useAuth();
 
   const { mutateAsync: uploadAvatarMutate, isPending: uploadAvatarLoading } =
     useUploadAvatarMutation();
-  const { mutateAsync: uploadLogoMutate, isPending: uploadLogoLoading } =
-    useUploadLogoMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const { mutateAsync: updateProfileMutate, isPending: updateProfileLoading } =
@@ -54,22 +50,12 @@ export default function ProfileForm() {
     onOpen: true
   });
 
-  const logoImageManager = useFileUploadManager({
-    initialUrl: profile?.logoPath,
-    deleteFileMutate: deleteFileMutate,
-    isEditing: true,
-    onOpen: true
-  });
-
   const defaultValues: ProfileBodyType = {
-    email: '',
     fullName: '',
     avatarPath: '',
-    phone: '',
     oldPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-    logoPath: ''
+    password: '',
+    confirmPassword: ''
   };
 
   const initialValues: ProfileBodyType = useMemo(
@@ -77,19 +63,11 @@ export default function ProfileForm() {
       email: profile?.email ?? '',
       fullName: profile?.fullName ?? '',
       avatarPath: profile?.avatarPath ?? '',
-      phone: profile?.phone ?? '',
       oldPassword: '',
-      logoPath: profile?.logoPath ?? '',
       confirmPassword: '',
       newPassword: ''
     }),
-    [
-      profile?.avatarPath,
-      profile?.email,
-      profile?.fullName,
-      profile?.logoPath,
-      profile?.phone
-    ]
+    [profile?.avatarPath, profile?.email, profile?.fullName]
   );
 
   const onSubmit = async (
@@ -98,12 +76,10 @@ export default function ProfileForm() {
   ) => {
     await Promise.all([
       avatarImageManager.handleSubmit(),
-      logoImageManager.handleSubmit(),
       updateProfileMutate(
         {
           ...values,
-          avatarPath: avatarImageManager.currentUrl,
-          logoPath: logoImageManager.currentUrl
+          avatarPath: avatarImageManager.currentUrl
         },
         {
           onSuccess: (res) => {
@@ -126,10 +102,7 @@ export default function ProfileForm() {
   };
 
   const handleCancel = async () => {
-    await Promise.all([
-      avatarImageManager.handleCancel(),
-      logoImageManager.handleCancel()
-    ]);
+    await Promise.all([avatarImageManager.handleCancel()]);
 
     const prevPath = getData(storageKeys.PREVIOUS_PATH);
     removeData(storageKeys.PREVIOUS_PATH);
@@ -147,14 +120,14 @@ export default function ProfileForm() {
       {(form) => (
         <>
           <Row>
-            <Col span={kind === GROUP_KIND_ADMIN ? 12 : 24}>
+            <Col span={24}>
               <UploadImageField
                 value={renderImageUrl(avatarImageManager.currentUrl)}
                 loading={uploadAvatarLoading}
                 name='avatarPath'
                 control={form.control}
                 onChange={avatarImageManager.trackUpload}
-                size={150}
+                size={120}
                 uploadImageFn={async (file: Blob) => {
                   const res = await uploadAvatarMutate({
                     file
@@ -163,39 +136,6 @@ export default function ProfileForm() {
                 }}
                 deleteImageFn={avatarImageManager.handleDeleteOnClick}
                 label='Ảnh đại diện'
-              />
-            </Col>
-            {kind == GROUP_KIND_ADMIN && (
-              <Col span={12}>
-                <UploadImageField
-                  value={renderImageUrl(logoImageManager.currentUrl)}
-                  loading={uploadLogoLoading}
-                  name='logoPath'
-                  control={form.control}
-                  onChange={logoImageManager.trackUpload}
-                  size={150}
-                  uploadImageFn={async (file: Blob) => {
-                    const res = await uploadLogoMutate({
-                      file
-                    });
-                    return res.data?.filePath ?? '';
-                  }}
-                  deleteImageFn={logoImageManager.handleDeleteOnClick}
-                  label='Logo (16:9)'
-                  aspect={16 / 9}
-                  defaultCrop={false}
-                />
-              </Col>
-            )}
-          </Row>
-          <Row>
-            <Col span={24}>
-              <InputField
-                control={form.control}
-                name='email'
-                label='Email'
-                placeholder='Nhập email'
-                required
               />
             </Col>
           </Row>
@@ -212,11 +152,11 @@ export default function ProfileForm() {
           </Row>
           <Row>
             <Col span={24}>
-              <InputField
+              <PasswordField
                 control={form.control}
-                name='phone'
-                label='Số điện thoại'
-                placeholder='Số điện thoại'
+                name='oldPassword'
+                label='Mật khẩu hiện tại'
+                placeholder='Mật khẩu hiện tại'
                 required
               />
             </Col>
@@ -225,17 +165,7 @@ export default function ProfileForm() {
             <Col span={24}>
               <PasswordField
                 control={form.control}
-                name='oldPassword'
-                label='Mật khẩu hiện tại'
-                placeholder='Mật khẩu hiện tại'
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col span={24}>
-              <PasswordField
-                control={form.control}
-                name='newPassword'
+                name='password'
                 label='Mật khẩu mới'
                 placeholder='Mật khẩu mới'
               />

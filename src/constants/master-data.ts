@@ -124,6 +124,7 @@ export const genderOptions: OptionType[] = [
 ];
 
 export const queryKeys = {
+  ADMIN: 'admin',
   APP_VERSION: 'app-version',
   AUDIENCE: 'audience',
   CATEGORY: 'category',
@@ -132,12 +133,14 @@ export const queryKeys = {
   COMMENT: 'comment',
   EMPLOYEE: 'employee',
   FILE: 'file',
+  GROUP_PERMISSION: 'group-permission',
   GROUP: 'group',
   LOGIN: 'login',
   LOGOUT: 'logout',
   MOVIE_ITEM: 'movie-item',
   MOVIE_PERSON: 'movie-person',
   MOVIE: 'movie',
+  PERMISSION: 'permission',
   PERSON: 'person',
   PROFILE: 'profile',
   REFRESH_TOKEN: 'refresh-token',

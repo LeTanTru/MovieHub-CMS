@@ -42,7 +42,7 @@ export default function PersonList({
     },
     override: (handlers) => {
       handlers.handleDeleteError = (code) => {
-        if (code === ErrorCode.PERSON_ERROR_MOVIE_PERSON_EXISTED) {
+        if (code === ErrorCode.PERSON_ERROR_MOVIE_PERSON_EXIST) {
           const message =
             kind === PERSON_KIND_ACTOR
               ? 'Diễn viên này có phim đang liên kết'

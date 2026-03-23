@@ -12,16 +12,19 @@ export const employeeSchema = (isEditing: boolean) =>
   z
     .object({
       avatarPath: z.string().optional().nullable(),
-      email: z.string().min(1, 'Bắt buộc').email('Email không đúng định dạng'),
-      fullName: z.string().min(1, 'Bắt buộc'),
-      groupId: z.string().min(1, 'Bắt buộc'),
+      email: z
+        .string()
+        .nonempty('Bắt buộc')
+        .check(z.email('Email không hợp lệ')),
+      fullName: z.string().nonempty('Bắt buộc'),
+      groupId: z.string().nonempty('Bắt buộc'),
       phone: z
         .string()
         .regex(/^0\d{9}$/, 'Số điện thoại không hợp lệ')
         .optional(),
       status: z.number(),
 
-      username: z.string().min(1, 'Bắt buộc'),
+      username: z.string().nonempty('Bắt buộc'),
 
       password: z.string().optional().nullable(),
 

@@ -184,17 +184,13 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-            </Row>
-            <Row>
-              <Col>
+              <Col className='flex-row gap-4'>
                 <BooleanField
                   control={form.control}
                   name='forceUpdate'
                   label='Bắt buộc cập nhật'
                   required
                 />
-              </Col>
-              <Col>
                 <BooleanField
                   control={form.control}
                   name='isLatest'
@@ -203,7 +199,6 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
                 />
               </Col>
             </Row>
-
             <>
               {renderActions(form, {
                 onCancel: handleCancel

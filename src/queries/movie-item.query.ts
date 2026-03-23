@@ -16,7 +16,7 @@ export const useMovieItemListQuery = ({
   enabled: boolean;
 }) => {
   return useQuery({
-    queryKey: [`${queryKeys.MOVIE_ITEM}-list-query`],
+    queryKey: [`${queryKeys.MOVIE_ITEM}-list`],
     queryFn: () =>
       http.get<ApiResponseList<MovieItemResType>>(apiConfig.movieItem.getList, {
         params: {

@@ -43,7 +43,7 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
     },
     override: (handlers) => {
       handlers.handleDeleteError = (code) => {
-        if (code === ErrorCode.VIDEO_LIBRARY_ERROR_MOVIE_ITEM_EXISTED) {
+        if (code === ErrorCode.VIDEO_LIBRARY_ERROR_MOVIE_ITEM_EXIST) {
           notify.error('Video này có mục phim đang liên kết');
         }
       };

@@ -71,8 +71,8 @@ export default function LoginForm() {
     >
       {(form) => (
         <>
-          <Row className='mb-2'>
-            <Col span={24} className='items-center justify-center px-0'>
+          <Row>
+            <Col span={24} className='items-center justify-center'>
               <div className='bg-sidebar/80 mx-auto flex w-full items-center justify-center rounded py-2'>
                 <Image
                   src={logoWithText.src}
@@ -83,12 +83,14 @@ export default function LoginForm() {
               </div>
             </Col>
           </Row>
-          <Row className='border-b'>
-            <Col span={24} className='items-center justify-center px-0'>
-              <h1 className='text-xl font-bold uppercase'>Đăng nhập</h1>
+          <Row>
+            <Col span={24} className='items-center justify-center'>
+              <h1 className='text-xl font-bold text-zinc-800 uppercase'>
+                Đăng nhập
+              </h1>
             </Col>
           </Row>
-          <Row className='flex-col gap-5 *:px-0'>
+          <Row>
             <Col span={24}>
               <InputField
                 name='username'
@@ -98,6 +100,8 @@ export default function LoginForm() {
                 required
               />
             </Col>
+          </Row>
+          <Row>
             <Col span={24}>
               <PasswordField
                 name='password'

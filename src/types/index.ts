@@ -13,6 +13,7 @@ export * from './comment.type';
 export * from './employee.type';
 export * from './file.type';
 export * from './form-error.type';
+export * from './group-permission.type';
 export * from './group.type';
 export * from './menu-config.type';
 export * from './movie-item.type';

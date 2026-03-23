@@ -77,14 +77,14 @@ export default function SearchForm<S extends FieldValues>({
     form: UseFormReturn<Record<string, unknown>>
   ) => {
     return (
-      <Row className='mx-0 mb-0 flex-nowrap'>
+      <Row className='mb-0 flex-nowrap'>
         <Col
           span={24}
-          className={cn('my-0', {
+          className={cn({
             grow: searchFields.length >= 4
           })}
         >
-          <Row className={cn('mr-0 mb-0 grid grid-cols-4 gap-2 *:my-0 *:p-0')}>
+          <Row gutter={4} className='mb-0 grid grid-cols-4 gap-2'>
             {searchFields.map((sf) => {
               switch (sf.type) {
                 case FieldTypes.SELECT: {
@@ -92,7 +92,7 @@ export default function SearchForm<S extends FieldValues>({
                     <Col
                       key={sf.key as string}
                       span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn('w-full!')}
+                      style={{ width: '100%' }}
                     >
                       <SelectField
                         control={form.control}
@@ -116,7 +116,7 @@ export default function SearchForm<S extends FieldValues>({
                     <Col
                       key={sf.key as string}
                       span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn('w-full!')}
+                      style={{ width: '100%' }}
                     >
                       <MultiSelectField
                         control={form.control}
@@ -140,7 +140,7 @@ export default function SearchForm<S extends FieldValues>({
                     <Col
                       key={sf.key as string}
                       span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn('w-full!')}
+                      style={{ width: '100%' }}
                     >
                       <AutoCompleteField
                         apiConfig={sf.apiConfig as ApiConfig}
@@ -163,7 +163,7 @@ export default function SearchForm<S extends FieldValues>({
                     <Col
                       key={sf.key as string}
                       span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn('w-full!')}
+                      style={{ width: '100%' }}
                     >
                       <DateTimePickerField
                         control={form.control}
@@ -195,7 +195,7 @@ export default function SearchForm<S extends FieldValues>({
                     <Col
                       key={sf.key as string}
                       span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn('w-full!')}
+                      style={{ width: '100%' }}
                     >
                       <InputField
                         control={form.control}

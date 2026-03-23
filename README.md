@@ -2,8 +2,23 @@
 
 <h1 align="center">MovieHub CMS Tenant</h1>
 
-MovieHub CMS Tenant is a **multi-module content management system** for operating a movie platform.  
-It is built with **Next.js 16 + TypeScript** and provides internal tools for managing movie data, users, permissions, UI configuration, and tenant-level settings.
+MovieHub CMS Tenant is the **administration console** for a multi-tenant movie platform.  
+It helps internal teams manage the full content lifecycle: catalog setup, people metadata, media assets, publishing structure, access control, and UI configuration.
+
+## Project Summary
+
+This project is a modern web CMS built with **Next.js 16 (App Router) + TypeScript** for reliability, scalability, and maintainability.
+
+At a high level, it provides:
+
+- Centralized movie operations: categories, movies, movie items, comments, and reviews.
+- Talent and metadata management: actors/directors and related entities.
+- Media workflows: video library and rich content editing.
+- Access governance: employee/audience management, roles, and permissions.
+- Tenant-level customization: sidebar highlights, style presets, and content collections.
+- System administration: permission controls and app-level operational settings.
+
+The app uses a feature-oriented `src/` structure with reusable components, query hooks, validation schemas, and state stores to keep business logic modular and consistent across modules.
 
 ## Key Functional Areas
 

@@ -3,24 +3,20 @@ import { cn } from '@/lib';
 
 type ColProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {
   span?: number;
-  gutter?: number;
 };
 
 export default function Col({
   children,
   className,
   span = 12,
-  gutter = 0,
   ...rest
 }: ColProps) {
-  const width = gutter
-    ? `calc(${(span * 100) / 24}% - ${gutter}px)`
-    : `${(span * 100) / 24}%`;
+  const width = `${(span * 100) / 24}%`;
 
   return (
     <div
-      style={{ width }}
-      className={cn('mb-1 flex flex-col px-2', className)}
+      style={{ width: `calc(${width} - var(--gutter))` }}
+      className={cn('flex flex-col', className)}
       {...rest}
     >
       {children}
