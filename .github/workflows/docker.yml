@@ -1,11 +1,11 @@
-name: Build, Push, Deploy  CMS MovieHub
+name: Build, Push, Deploy CMS MovieHub
 
 on:
   push:
     branches: ['main']
 
 jobs:
-  docker:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -50,6 +50,11 @@ jobs:
       - name: Push Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
       - name: Install OpenVPN
         run: |
           sudo apt-get update
@@ -76,7 +81,6 @@ jobs:
       - name: Deploy to VPS
         run: |
           ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
-
             docker pull ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
 
             docker stop cms-moviehub || true
@@ -87,11 +91,16 @@ jobs:
               --restart unless-stopped \
               --name cms-moviehub \
               ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
-
           EOF
 
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build-and-push, deploy]
+    if: always()
+
+    steps:
       - name: Notify Discord (Success)
-        if: success()
+        if: ${{ needs.build-and-push.result == 'success' && needs.deploy.result == 'success' }}
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           COMMIT_MSG: ${{ github.event.head_commit.message }}
@@ -100,7 +109,6 @@ jobs:
           BRANCH: ${{ github.ref_name }}
           REPO: ${{ github.repository }}
           SERVER_URL: ${{ github.server_url }}
-          RUN_ID: ${{ github.run_id }}
           TIMESTAMP: ${{ github.event.head_commit.timestamp }}
         run: |
           PAYLOAD=$(jq -n \
@@ -128,12 +136,11 @@ jobs:
             }')
           curl -s -o /dev/null -w "%{http_code}" \
             -H "Content-Type: application/json" \
-            -X POST \
-            -d "$PAYLOAD" \
+            -X POST -d "$PAYLOAD" \
             "$DISCORD_WEBHOOK_URL"
 
       - name: Notify Discord (Failure)
-        if: failure()
+        if: ${{ needs.build-and-push.result == 'failure' || needs.deploy.result == 'failure' }}
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           COMMIT_MSG: ${{ github.event.head_commit.message }}
@@ -159,7 +166,7 @@ jobs:
                 title: $title,
                 color: 15158332,
                 fields: [
-                  { name: "📦 Project", value: "fe-moviehub", inline: true },
+                  { name: "📦 Project", value: "cms-moviehub", inline: true },
                   { name: "🌿 Branch",  value: $branch,       inline: true },
                   { name: "👤 Author",  value: $actor,        inline: true },
                   { name: "📝 Commit",  value: ("[`\($sha)`](\($commit_url))"), inline: false },
@@ -172,6 +179,5 @@ jobs:
             }')
           curl -s -o /dev/null -w "%{http_code}" \
             -H "Content-Type: application/json" \
-            -X POST \
-            -d "$PAYLOAD" \
+            -X POST -d "$PAYLOAD" \
             "$DISCORD_WEBHOOK_URL"
