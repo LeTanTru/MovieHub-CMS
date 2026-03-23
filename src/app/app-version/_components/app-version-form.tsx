@@ -115,7 +115,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
         { label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} phiên bản ứng dụng` }
       ]}
       notFound={responseCode === ErrorCode.APP_VERSION_ERROR_NOT_FOUND}
-      notFoundContent={'Không tìm thấy phiên bản ứng dụng này'}
+      notFoundContent='Không tìm thấy phiên bản ứng dụng này'
     >
       <BaseForm
         onSubmit={onSubmit}

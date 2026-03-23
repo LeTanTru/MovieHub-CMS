@@ -272,7 +272,7 @@ export default function UploadImageField<T extends FieldValues>({
         )}
         <div className='relative inline-flex'>
           <Button
-            variant={'ghost'}
+            variant='ghost'
             type='button'
             style={{
               width: size * aspect,
@@ -292,7 +292,7 @@ export default function UploadImageField<T extends FieldValues>({
             onDragLeave={handleDragLeave}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            title={'Tải ảnh lên'}
+            title='Tải ảnh lên'
             data-dragging={isDragging || undefined}
             aria-label={value ? 'Thay ảnh' : 'Tải lên'}
           >
@@ -499,7 +499,7 @@ export default function UploadImageField<T extends FieldValues>({
                   </Button>
                   <Button
                     type='button'
-                    variant={'primary'}
+                    variant='primary'
                     className='-my-1 w-25'
                     onClick={handleApply}
                     disabled={!previewUrl || loading}

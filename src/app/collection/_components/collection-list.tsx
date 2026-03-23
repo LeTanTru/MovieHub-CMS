@@ -115,7 +115,7 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
             return null;
 
           return (
-            <ToolTip title={`Xem thiết kế`} sideOffset={0}>
+            <ToolTip title='Xem thiết kế' sideOffset={0}>
               <span>
                 <Button
                   onClick={(e) => {

@@ -44,7 +44,7 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
           <HasPermission
             requiredPermissions={[apiConfig.category.create.permissionCode]}
           >
-            <Button variant={'primary'} onClick={handleAddCategory}>
+            <Button variant='primary' onClick={handleAddCategory}>
               <PlusIcon />
               Thêm mới
             </Button>
@@ -60,7 +60,7 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
           )
             return null;
           return (
-            <ToolTip title={`Cập nhật thể loại`} sideOffset={0}>
+            <ToolTip title='Cập nhật thể loại' sideOffset={0}>
               <span>
                 <Button
                   onClick={(e) => {

@@ -204,7 +204,7 @@ export default function ReviewItem({
                       {canChangeStatus && (
                         <Button
                           className='h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
-                          variant={'ghost'}
+                          variant='ghost'
                           onClick={() =>
                             handleChangeCommentStatus(review.id, review.status)
                           }

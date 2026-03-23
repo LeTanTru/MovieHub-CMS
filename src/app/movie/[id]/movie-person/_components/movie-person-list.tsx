@@ -69,7 +69,7 @@ export default function MoviePersonList({
           <HasPermission
             requiredPermissions={[apiConfig.moviePerson.create.permissionCode]}
           >
-            <Button onClick={() => moviePersonModal.open()} variant={'primary'}>
+            <Button onClick={() => moviePersonModal.open()} variant='primary'>
               <PlusIcon />
               Thêm {kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}
             </Button>
@@ -234,13 +234,13 @@ export default function MoviePersonList({
         <>
           <span
             className='line-clamp-1 block truncate'
-            title={`${record.person.otherName}`}
+            title={record.person.otherName}
           >
             {record.person.otherName}
           </span>
           <span
             className='line-clamp-1 block truncate text-xs text-zinc-500'
-            title={`${record.person.name}`}
+            title={record.person.name}
           >
             {record.person.name}
           </span>
@@ -310,7 +310,7 @@ export default function MoviePersonList({
                       <div className='flex items-center'>
                         <ToolTip title='Xóa' sideOffset={0}>
                           <Button
-                            variant={'ghost'}
+                            variant='ghost'
                             type='button'
                             className='h-8! w-8! p-0!'
                             onClick={() => {
@@ -331,7 +331,7 @@ export default function MoviePersonList({
                         />
                         <ToolTip title='Hủy' sideOffset={0}>
                           <Button
-                            variant={'ghost'}
+                            variant='ghost'
                             type='button'
                             className='h-8! w-8! p-0!'
                             onClick={() => {

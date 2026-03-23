@@ -145,7 +145,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
         { label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} nhân viên` }
       ]}
       notFound={responseCode === ErrorCode.EMPLOYEE_ERROR_NOT_FOUND}
-      notFoundContent={'Không tìm thấy nhân viên này'}
+      notFoundContent='Không tìm thấy nhân viên này'
     >
       <BaseForm
         onSubmit={onSubmit}

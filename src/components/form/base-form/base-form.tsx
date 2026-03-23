@@ -17,14 +17,12 @@ import {
   useFormState
 } from 'react-hook-form';
 
-type AsyncDefaultValues<T> = (payload?: unknown) => Promise<T>;
-
 type BaseFormProps<T extends Record<string, any>> = Omit<
   FormHTMLAttributes<HTMLFormElement>,
   'children' | 'onSubmit'
 > & {
   ref?: Ref<HTMLFormElement>;
-  defaultValues: DefaultValues<T> | AsyncDefaultValues<T>;
+  defaultValues: DefaultValues<T>;
   initialValues?: T;
   mode?: 'onBlur' | 'onChange' | 'onSubmit' | 'onTouched' | 'all';
   schema: any;

@@ -471,7 +471,7 @@ const useInfiniteListBase = <
     return (
       <HasPermission requiredPermissions={[apiConfig.create.permissionCode]}>
         <Link href={path}>
-          <Button variant={'primary'}>
+          <Button variant='primary'>
             <PlusIcon />
             Thêm mới
           </Button>
@@ -588,7 +588,7 @@ const useInfiniteListBase = <
     <Button
       disabled={infiniteQuery.isFetching}
       onClick={() => infiniteQuery.refetch()}
-      variant={'primary'}
+      variant='primary'
     >
       <RefreshCcw />
     </Button>

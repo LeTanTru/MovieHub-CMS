@@ -128,7 +128,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
         }
       ]}
       notFound={responseCode === ErrorCode.MOVIE_ITEM_ERROR_NOT_FOUND}
-      notFoundContent={`Không tìm thấy phim này`}
+      notFoundContent='Không tìm thấy phim này'
     >
       <BaseForm
         onSubmit={onSubmit}

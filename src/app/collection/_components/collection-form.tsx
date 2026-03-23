@@ -190,7 +190,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
         { label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} bộ sưu tập` }
       ]}
       notFound={responseCode === ErrorCode.COLLECTION_ERROR_NOT_FOUND}
-      notFoundContent={'Không tìm thấy bộ sưu tập này'}
+      notFoundContent='Không tìm thấy bộ sưu tập này'
     >
       <BaseForm
         onSubmit={onSubmit}
@@ -263,7 +263,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                 <Col span={12}>
                   <div className='space-y-2'>
                     <label className='ml-2 text-sm font-medium'>
-                      Màu (chọn ít nhất 2){' '}
+                      Màu (chọn ít nhất 2)
                       <span className='text-red-500'>*</span>
                     </label>
                     <div className='mt-1 space-y-2'>

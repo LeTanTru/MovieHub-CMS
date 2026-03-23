@@ -461,7 +461,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
     return (
       <HasPermission requiredPermissions={[apiConfig.create.permissionCode]}>
         <Link href={path}>
-          <Button variant={'primary'}>
+          <Button variant='primary'>
             <PlusIcon />
             Thêm mới
           </Button>
@@ -578,7 +578,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
     <Button
       disabled={listQuery.isFetching}
       onClick={() => listQuery.refetch()}
-      variant={'primary'}
+      variant='primary'
     >
       <RefreshCcw />
     </Button>

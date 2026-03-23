@@ -67,7 +67,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
       handlers.additionalColumns = () => ({
         person: (record: MovieResType, buttonProps?: Record<string, any>) => {
           return (
-            <ToolTip title={`Diễn viên & đạo diễn`} sideOffset={0}>
+            <ToolTip title='Diễn viên & đạo diễn' sideOffset={0}>
               <span>
                 <Button
                   onClick={() =>
@@ -91,7 +91,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
         },
         comment: (record: MovieResType, buttonProps?: Record<string, any>) => {
           return (
-            <ToolTip title={`Bình luận`} sideOffset={0}>
+            <ToolTip title='Bình luận' sideOffset={0}>
               <span>
                 <Button
                   onClick={() =>
@@ -115,7 +115,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
         },
         review: (record: MovieResType, buttonProps?: Record<string, any>) => {
           return (
-            <ToolTip title={`Đánh giá`} sideOffset={0}>
+            <ToolTip title='Đánh giá' sideOffset={0}>
               <span>
                 <Button
                   onClick={() =>
@@ -194,7 +194,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
           </Link>
           <span
             className='line-clamp-1 block truncate text-xs text-zinc-500'
-            title={`${record.originalTitle}`}
+            title={record.originalTitle}
           >
             {record.originalTitle}
           </span>

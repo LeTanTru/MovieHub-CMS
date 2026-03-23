@@ -142,7 +142,7 @@ export default function CommentInput({
                       type='button'
                       onClick={() => setShowPicker((prev) => !prev)}
                       className='flex w-fit items-center justify-center hover:bg-transparent'
-                      variant={'ghost'}
+                      variant='ghost'
                       disabled={loading}
                     >
                       <Image
@@ -154,7 +154,7 @@ export default function CommentInput({
                     </Button>
                     <Button
                       loading={loading}
-                      variant={'primary'}
+                      variant='primary'
                       className='w-20!'
                       disabled={!form.watch('content')}
                     >

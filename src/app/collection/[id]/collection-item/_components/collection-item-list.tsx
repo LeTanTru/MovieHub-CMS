@@ -60,7 +60,7 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
               apiConfig.collectionItem.create.permissionCode
             ]}
           >
-            <Button variant={'primary'} onClick={handleAddCollectionItem}>
+            <Button variant='primary' onClick={handleAddCollectionItem}>
               <PlusIcon />
               Thêm mới
             </Button>
@@ -145,7 +145,7 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
           </span>
           <span
             className='line-clamp-1 block truncate text-xs text-zinc-500'
-            title={`${record.movie.originalTitle}`}
+            title={record.movie.originalTitle}
           >
             {record.movie.originalTitle}
           </span>

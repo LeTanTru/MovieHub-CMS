@@ -224,7 +224,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
         }
       ]}
       notFound={responseCode === ErrorCode.MOVIE_ERROR_NOT_FOUND}
-      notFoundContent={`Không tìm thấy phim này`}
+      notFoundContent='Không tìm thấy phim này'
     >
       <BaseForm
         onSubmit={onSubmit}

@@ -371,7 +371,7 @@ export default function GroupForm() {
                 <Button
                   onClick={() => navigate.push(route.group.getList.path)}
                   type='button'
-                  variant={'ghost'}
+                  variant='ghost'
                   className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
                 >
                   <ArrowLeftFromLine />
@@ -386,7 +386,7 @@ export default function GroupForm() {
                     updateGroupLoading
                   }
                   type='submit'
-                  variant={'primary'}
+                  variant='primary'
                   loading={createGroupLoading || updateGroupLoading}
                 >
                   <Save />

@@ -125,7 +125,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
         { label: `${!isEditing ? 'Thêm mới' : 'Cập nhật'} thiết kế` }
       ]}
       notFound={responseCode === ErrorCode.STYLE_ERROR_NOT_FOUND}
-      notFoundContent={'Không tìm thấy thiết kế này'}
+      notFoundContent='Không tìm thấy thiết kế này'
     >
       <BaseForm
         onSubmit={onSubmit}

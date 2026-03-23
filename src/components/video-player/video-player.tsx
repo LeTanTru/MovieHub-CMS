@@ -213,7 +213,7 @@ const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
           playsInline
           preferNativeHLS={false}
           autoPlay={autoPlay}
-          fullscreenOrientation={'none'}
+          fullscreenOrientation='none'
           volume={volume}
           className={cn('video-player', className)}
           onProviderChange={
