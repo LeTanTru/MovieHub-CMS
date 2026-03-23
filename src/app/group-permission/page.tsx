@@ -1,11 +1,7 @@
-import { GroupList } from '@/app/group-permission/_components';
-import { queryKeys } from '@/constants';
-import type { Metadata } from 'next';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Quyền'
-};
+import { GroupTab } from '@/app/group-permission/_components';
 
-export default function GroupListPage() {
-  return <GroupList queryKey={queryKeys.GROUP} />;
+export default function GroupPermissionPage() {
+  return <GroupTab />;
 }

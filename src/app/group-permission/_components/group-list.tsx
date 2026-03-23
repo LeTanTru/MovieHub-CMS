@@ -1,8 +1,9 @@
 'use client';
 
-import { ListPageWrapper, PageWrapper } from '@/components/layout';
+import { ListPageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
-import { apiConfig } from '@/constants';
+import { Badge } from '@/components/ui/badge';
+import { apiConfig, FieldTypes, groupKinds } from '@/constants';
 import { useListBase } from '@/hooks';
 import { groupSearchSchema } from '@/schemaValidations';
 import type {
@@ -20,7 +21,7 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
     apiConfig: apiConfig.group,
     options: {
       queryKey,
-      objectName: 'quyền'
+      objectName: 'vai trò'
     }
   });
 
@@ -28,6 +29,27 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
     {
       title: 'Tên',
       dataIndex: 'name'
+    },
+    {
+      title: 'Nhóm',
+      dataIndex: 'kind',
+      render: (value) => {
+        const groupKind = groupKinds.find((gk) => gk.value === value);
+        return (
+          <Badge
+            className='text-sm font-normal'
+            style={{
+              borderColor: `${groupKind?.color}80`,
+              color: `${groupKind?.color}`,
+              backgroundColor: `${groupKind?.color}10`
+            }}
+          >
+            {groupKind?.label}
+          </Badge>
+        );
+      },
+      width: 120,
+      align: 'center'
     },
     handlers.renderActionColumn({
       actions: {
@@ -38,27 +60,32 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
   ];
 
   const searchFields: SearchFormProps<GroupSearchType>['searchFields'] = [
-    { key: 'name', placeholder: 'Tên quyền' }
+    { key: 'name', placeholder: 'Tên vai trò' },
+    {
+      key: 'kind',
+      type: FieldTypes.SELECT,
+      options: groupKinds,
+      placeholder: 'Vai trò',
+      submitOnChanged: true
+    }
   ];
 
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Quyền' }]}>
-      <ListPageWrapper
-        searchForm={handlers.renderSearchForm({
-          searchFields,
-          schema: groupSearchSchema
-        })}
-        addButton={handlers.renderAddButton()}
-        reloadButton={handlers.renderReloadButton()}
-      >
-        <BaseTable
-          columns={columns}
-          dataSource={data?.sort((a, b) => a.kind - b.kind)}
-          pagination={pagination}
-          loading={loading}
-          changePagination={handlers.changePagination}
-        />
-      </ListPageWrapper>
-    </PageWrapper>
+    <ListPageWrapper
+      searchForm={handlers.renderSearchForm({
+        searchFields,
+        schema: groupSearchSchema
+      })}
+      addButton={handlers.renderAddButton()}
+      reloadButton={handlers.renderReloadButton()}
+    >
+      <BaseTable
+        columns={columns}
+        dataSource={data?.sort((a, b) => a.kind - b.kind)}
+        pagination={pagination}
+        loading={loading}
+        changePagination={handlers.changePagination}
+      />
+    </ListPageWrapper>
   );
 }

@@ -1,0 +1,268 @@
+'use client';
+
+import {
+  Col,
+  InputField,
+  PasswordField,
+  Row,
+  SelectField,
+  UploadImageField
+} from '@/components/form';
+import { BaseForm } from '@/components/form/base-form';
+import { PageWrapper } from '@/components/layout';
+import { CircleLoading } from '@/components/loading';
+import {
+  adminErrorMaps,
+  apiConfig,
+  ErrorCode,
+  GROUP_KIND_ADMIN,
+  STATUS_ACTIVE,
+  statusOptions
+} from '@/constants';
+import { useFileUploadManager, useSaveBase } from '@/hooks';
+import {
+  useDeleteFileMutation,
+  useGroupListQuery,
+  useUploadAvatarMutation
+} from '@/queries';
+import { route } from '@/routes';
+import { accountSchema } from '@/schemaValidations';
+import type { AccountBodyType, AccountResType } from '@/types';
+import { renderImageUrl, renderListPageUrl } from '@/utils';
+import { useParams } from 'next/navigation';
+import type { UseFormReturn } from 'react-hook-form';
+
+export default function AdminForm({ queryKey }: { queryKey: string }) {
+  const { id } = useParams<{ id: string }>();
+
+  const { data: groupData } = useGroupListQuery({ kind: GROUP_KIND_ADMIN });
+  const groupList = groupData?.data.content || [];
+  const groupOptions = groupList.map((item) => ({
+    label: item.name,
+    value: item.id.toString()
+  }));
+
+  const { mutateAsync: uploadImageMutate, isPending: uploadImageLoading } =
+    useUploadAvatarMutation();
+  const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
+
+  const {
+    data,
+    loading,
+    isEditing,
+    queryString,
+    responseCode,
+    handleSubmit,
+    renderActions
+  } = useSaveBase<AccountResType, AccountBodyType>({
+    apiConfig: {
+      create: apiConfig.account.create,
+      update: apiConfig.account.update,
+      getById: apiConfig.account.getById
+    },
+    options: {
+      queryKey,
+      objectName: 'quản trị viên',
+      listPageUrl: route.admin.getList.path,
+      pathParams: {
+        id
+      },
+      mode: id === 'create' ? 'create' : 'edit'
+    }
+  });
+
+  const defaultValues: AccountBodyType = {
+    username: '',
+    email: '',
+    fullName: '',
+    groupId: '',
+    password: '',
+    avatarPath: '',
+    status: 0,
+    confirmPassword: '',
+    phone: ''
+  };
+
+  const initialValues: AccountBodyType = {
+    username: data?.username ?? '',
+    email: data?.email ?? '',
+    fullName: data?.fullName ?? '',
+    groupId: data?.group?.id?.toString() ?? '',
+    password: '',
+    avatarPath: data?.avatarPath ?? '',
+    status: data?.status ?? STATUS_ACTIVE,
+    confirmPassword: '',
+    phone: data?.phone ?? ''
+  };
+
+  const imageManager = useFileUploadManager({
+    initialUrl: data?.avatarPath,
+    deleteFileMutate: deleteFileMutate,
+    isEditing,
+    onOpen: true
+  });
+
+  const handleCancel = async () => {
+    await imageManager.handleCancel();
+  };
+
+  const onSubmit = async (
+    values: AccountBodyType,
+    form: UseFormReturn<AccountBodyType>
+  ) => {
+    await Promise.all([
+      imageManager.handleSubmit(),
+
+      handleSubmit(
+        {
+          ...values,
+          avatarPath: imageManager.currentUrl,
+          kind: GROUP_KIND_ADMIN
+        },
+        form,
+        adminErrorMaps
+      )
+    ]);
+  };
+
+  return (
+    <PageWrapper
+      breadcrumbs={[
+        {
+          label: 'Quản trị viên',
+          href: renderListPageUrl(route.admin.getList.path, queryString)
+        },
+        { label: `${!data ? 'Thêm mới' : 'Cập nhật'} quản trị viên` }
+      ]}
+      notFound={responseCode === ErrorCode.ACCOUNT_ERROR_NOT_FOUND}
+      notFoundContent='Không tìm thấy quản trị viên này'
+    >
+      <BaseForm
+        onSubmit={onSubmit}
+        defaultValues={defaultValues}
+        schema={accountSchema(isEditing)}
+        initialValues={initialValues}
+      >
+        {(form) => (
+          <>
+            <Row>
+              <Col span={24}>
+                <UploadImageField
+                  value={renderImageUrl(imageManager.currentUrl)}
+                  loading={uploadImageLoading}
+                  control={form.control}
+                  name='avatarPath'
+                  onChange={imageManager.trackUpload}
+                  size={120}
+                  uploadImageFn={async (file: Blob) => {
+                    const res = await uploadImageMutate({ file });
+                    return res.data?.filePath ?? '';
+                  }}
+                  label='Ảnh đại diện'
+                  deleteImageFn={imageManager.handleDeleteOnClick}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <InputField
+                  control={form.control}
+                  name='username'
+                  label='Tên đăng nhập'
+                  placeholder='Tên đăng nhập'
+                  required
+                  disabled={isEditing}
+                />
+              </Col>
+              <Col>
+                <InputField
+                  control={form.control}
+                  name='fullName'
+                  label='Họ tên nhân viên'
+                  placeholder='Họ tên nhân viên'
+                  required
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <InputField
+                  control={form.control}
+                  name='email'
+                  label='Email'
+                  placeholder='Email'
+                  required
+                />
+              </Col>
+              <Col>
+                <InputField
+                  control={form.control}
+                  name='phone'
+                  label='Số điện thoại'
+                  placeholder='Số điện thoại'
+                  required
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <PasswordField
+                  control={form.control}
+                  name='password'
+                  label='Mật khẩu'
+                  placeholder='Mật khẩu'
+                  required={!isEditing}
+                />
+              </Col>
+              <Col>
+                <PasswordField
+                  control={form.control}
+                  name='confirmPassword'
+                  label='Nhập lại mật khẩu'
+                  placeholder='Nhập lại mật khẩu'
+                  required={!isEditing}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <SelectField
+                  getLabel={(opt) => opt.label}
+                  getValue={(opt) => opt.value}
+                  options={groupOptions || []}
+                  control={form.control}
+                  name='groupId'
+                  label='Nhóm quyền'
+                  placeholder='Nhóm quyền'
+                  required
+                />
+              </Col>
+              <Col>
+                <SelectField
+                  getLabel={(opt) => opt.label}
+                  getValue={(opt) => opt.value}
+                  options={statusOptions || []}
+                  control={form.control}
+                  name='status'
+                  label='Trạng thái'
+                  placeholder='Trạng thái'
+                  required
+                />
+              </Col>
+            </Row>
+            <>
+              {renderActions(form, {
+                onCancel: handleCancel
+              })}
+            </>
+            {loading && (
+              <div className='absolute inset-0 bg-white/80'>
+                <CircleLoading className='stroke-main-color mt-20 size-8' />
+              </div>
+            )}
+          </>
+        )}
+      </BaseForm>
+    </PageWrapper>
+  );
+}

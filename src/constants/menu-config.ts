@@ -9,8 +9,18 @@ const menuConfig: MenuItem[] = [
     key: 'user-management',
     label: 'Quản lý người dùng',
     icon: UserRound,
-    permissionCode: [apiConfig.employee.getList.permissionCode],
+    permissionCode: [
+      apiConfig.account.getList.permissionCode,
+      apiConfig.employee.getList.permissionCode,
+      apiConfig.user.getList.permissionCode
+    ],
     children: [
+      {
+        key: 'admin-list',
+        label: 'Quản trị viên',
+        path: route.admin.getList.path,
+        permissionCode: [apiConfig.account.getList.permissionCode]
+      },
       {
         key: 'employee-list',
         label: 'Nhân viên',
@@ -109,8 +119,8 @@ const menuConfig: MenuItem[] = [
         permissionCode: [apiConfig.appVersion.getList.permissionCode]
       },
       {
-        key: 'permission',
-        label: 'Quyền',
+        key: 'role',
+        label: 'Vai trò',
         path: route.group.getList.path,
         permissionCode: [apiConfig.group.getList.permissionCode]
       }

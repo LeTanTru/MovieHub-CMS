@@ -160,7 +160,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
     form: UseFormReturn<T>,
     options?: { onCancel?: () => void }
   ) => (
-    <Row className='mx-0 my-0 justify-end gap-x-4 *:px-0'>
+    <Row className='mb-0 justify-end'>
       <Col className='w-40!'>
         {!form.formState.isDirty ? (
           <Button

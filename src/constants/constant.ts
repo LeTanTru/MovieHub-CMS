@@ -84,3 +84,7 @@ export const EMPTY_OBJECT = {};
 export const EMPTY_ARRAY = [];
 
 export const WEB_PLATFORM = 0;
+
+export const TAB_GROUP = 'group-list';
+export const TAB_GROUP_PERMISSION = 'group-permission-list';
+export const TAB_PERMISSION = 'permission-list';

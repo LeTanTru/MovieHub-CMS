@@ -7,6 +7,7 @@ export * from './collection.query';
 export * from './comment.query';
 export * from './employee.query';
 export * from './file.query';
+export * from './group-permission.query';
 export * from './group.query';
 export * from './movie-item.query';
 export * from './movie-person.query';

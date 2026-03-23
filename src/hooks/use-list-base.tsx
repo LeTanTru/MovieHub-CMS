@@ -227,7 +227,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
   // Update data from query results
   useEffect(() => {
     setData(listQuery.data?.data.content || []);
-  }, [listQuery.data]);
+  }, [listQuery.data?.data.content]);
 
   // Pagination
   const current = searchParams['page'];

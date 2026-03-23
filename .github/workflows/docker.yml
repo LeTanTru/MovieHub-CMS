@@ -1,4 +1,4 @@
-name: Build, Push, Deploy Tenant CMS MovieHub
+name: Build, Push, Deploy  CMS MovieHub
 
 on:
   push:
@@ -27,29 +27,28 @@ jobs:
           context: .
           push: false
           load: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/tenant-moviehub:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
           build-args: |
             NEXT_PUBLIC_NODE_ENV=${{ secrets.NEXT_PUBLIC_NODE_ENV }}
-            NEXT_PUBLIC_API_META_ENDPOINT_URL=${{ secrets.NEXT_PUBLIC_API_META_ENDPOINT_URL }}
-            NEXT_PUBLIC_API_TENANT_ENDPOINT_URL=${{ secrets.NEXT_PUBLIC_API_TENANT_ENDPOINT_URL }}
+            NEXT_PUBLIC_AUTH_API_URL=${{ secrets.NEXT_PUBLIC_AUTH_API_URL }}
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_API_MEDIA_URL=${{ secrets.NEXT_PUBLIC_API_MEDIA_URL }}
             NEXT_PUBLIC_APP_USERNAME=${{ secrets.NEXT_PUBLIC_APP_USERNAME }}
             NEXT_PUBLIC_APP_PASSWORD=${{ secrets.NEXT_PUBLIC_APP_PASSWORD }}
             NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }}
             NEXT_PUBLIC_TINYMCE_URL=${{ secrets.NEXT_PUBLIC_TINYMCE_URL }}
-            NEXT_PUBLIC_API_SOCKET=${{ secrets.NEXT_PUBLIC_API_SOCKET }}
+            NEXT_PUBLIC_API_SOCKET_URL=${{ secrets.NEXT_PUBLIC_API_SOCKET_URL }}
             NEXT_PUBLIC_GRANT_TYPE=${{ secrets.NEXT_PUBLIC_GRANT_TYPE }}
-            NEXT_PUBLIC_TENANT_ID=${{ secrets.NEXT_PUBLIC_TENANT_ID }}
             NEXT_PUBLIC_APP_NAME=${{ secrets.NEXT_PUBLIC_APP_NAME }}
             NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN=${{ secrets.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN }}
             NEXT_PUBLIC_MEDIA_HOST=${{ secrets.NEXT_PUBLIC_MEDIA_HOST }}
             NEXT_PUBLIC_CLIENT_TYPE=${{ secrets.NEXT_PUBLIC_CLIENT_TYPE }}
 
       - name: Show Image Size
-        run: docker images ${{ secrets.DOCKER_USERNAME }}/tenant-moviehub:latest
+        run: docker images ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
 
       - name: Push Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/tenant-moviehub:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
 
       - name: Install OpenVPN
         run: |
@@ -78,16 +77,16 @@ jobs:
         run: |
           ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
 
-            docker pull ${{ secrets.DOCKER_USERNAME }}/tenant-moviehub:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
 
-            docker stop tenant-moviehub || true
-            docker rm tenant-moviehub || true
+            docker stop cms-moviehub || true
+            docker rm cms-moviehub || true
 
             docker run -d \
               -p 3001:3001 \
               --restart unless-stopped \
-              --name tenant-moviehub \
-              ${{ secrets.DOCKER_USERNAME }}/tenant-moviehub:latest
+              --name cms-moviehub \
+              ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
 
           EOF
 
@@ -117,7 +116,7 @@ jobs:
                 title: $title,
                 color: 3066993,
                 fields: [
-                  { name: "📦 Project", value: "tenant-moviehub", inline: true },
+                  { name: "📦 Project", value: "cms-moviehub", inline: true },
                   { name: "🌿 Branch",  value: $branch,       inline: true },
                   { name: "👤 Author",  value: $actor,        inline: true },
                   { name: "📝 Commit",  value: ("[`\($sha)`](\($commit_url))"), inline: false },

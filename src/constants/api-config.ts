@@ -30,23 +30,26 @@ const apiConfig = defineApiConfig({
     }
   },
   account: {
-    createAdmin: {
+    create: {
       baseUrl: `${AppConstants.authApiUrl}/v1/account/create-admin`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'ACC_C'
+      permissionCode: 'ACC_C_AD',
+      isRequiredXClientType: true
     },
     delete: {
       baseUrl: `${AppConstants.authApiUrl}/v1/account/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
-      permissionCode: 'ACC_D'
+      permissionCode: 'ACC_D',
+      isRequiredXClientType: true
     },
     getById: {
       baseUrl: `${AppConstants.authApiUrl}/v1/account/get/:id`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'ACC_V'
+      permissionCode: 'ACC_V',
+      isRequiredXClientType: true
     },
     getList: {
       baseUrl: `${AppConstants.authApiUrl}/v1/account/list`,
@@ -57,18 +60,22 @@ const apiConfig = defineApiConfig({
     getProfile: {
       baseUrl: `${AppConstants.authApiUrl}/v1/account/profile`,
       method: 'GET',
-      headers: baseHeader
+      headers: baseHeader,
+      isRequiredXClientType: true
     },
-    updateAdmin: {
+    update: {
       baseUrl: `${AppConstants.authApiUrl}/v1/account/update-admin`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'ACC_U'
+      permissionCode: 'ACC_U_AD',
+      isRequiredXClientType: true
     },
     updateProfile: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/account/update-profile`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/account/update-profile-admin`,
       method: 'PUT',
-      headers: baseHeader
+      headers: baseHeader,
+      permissionCode: 'ACC_U_PROFILE_AD',
+      isRequiredXClientType: true
     }
   },
   category: {
@@ -223,28 +230,28 @@ const apiConfig = defineApiConfig({
   },
   group: {
     create: {
-      baseUrl: `${AppConstants.apiUrl}/v1/group/create`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/group/create`,
       method: 'POST',
       headers: baseHeader,
       permissionCode: 'GR_C',
       isRequiredXClientType: true
     },
     getById: {
-      baseUrl: `${AppConstants.apiUrl}/v1/group/get/:id`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/group/get/:id`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'GR_V',
       isRequiredXClientType: true
     },
     getList: {
-      baseUrl: `${AppConstants.apiUrl}/v1/group/list`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/group/list`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'GR_L',
       isRequiredXClientType: true
     },
     update: {
-      baseUrl: `${AppConstants.apiUrl}/v1/group/update`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/group/update`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'GR_U',
@@ -253,72 +260,72 @@ const apiConfig = defineApiConfig({
   },
   groupPermission: {
     create: {
-      baseUrl: `${AppConstants.apiUrl}/v1/group-permission/create`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/group-permission/create`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'GR_P_C',
+      permissionCode: 'GR_PER_C',
       isRequiredXClientType: true
     },
     delete: {
-      baseUrl: `${AppConstants.apiUrl}/v1/group-permission/delete/:id`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/group-permission/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
-      permissionCode: 'GR_P_D',
+      permissionCode: 'GR_PER_D',
       isRequiredXClientType: true
     },
     getList: {
-      baseUrl: `${AppConstants.apiUrl}/v1/group-permission/list`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/group-permission/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'GR_P_L',
+      permissionCode: 'GR_PER_L',
       isRequiredXClientType: true
     },
     update: {
-      baseUrl: `${AppConstants.apiUrl}/v1/group-permission/update`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/group-permission/update`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'GR_P_U',
+      permissionCode: 'GR_PER_U',
       isRequiredXClientType: true
     },
     updateOrdering: {
-      baseUrl: `${AppConstants.apiUrl}/v1/group-permission/update-ordering`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/group-permission/update-ordering`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'GR_P_U',
+      permissionCode: 'GR_PER_U',
       isRequiredXClientType: true
     }
   },
   permission: {
     create: {
-      baseUrl: `${AppConstants.apiUrl}/v1/permission/create`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/permission/create`,
       method: 'POST',
       headers: baseHeader,
       permissionCode: 'PER_C',
       isRequiredXClientType: true
     },
     delete: {
-      baseUrl: `${AppConstants.apiUrl}/v1/permission/delete/:id`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/permission/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'PER_D',
       isRequiredXClientType: true
     },
     getList: {
-      baseUrl: `${AppConstants.apiUrl}/v1/permission/list`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/permission/list`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'PER_L',
       isRequiredXClientType: true
     },
     getListByIds: {
-      baseUrl: `${AppConstants.apiUrl}/v1/permission/list-by-ids`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/permission/list-by-ids`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'PER_L',
       isRequiredXClientType: true
     },
     update: {
-      baseUrl: `${AppConstants.apiUrl}/v1/permission/update`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/permission/update`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'PER_U',

@@ -1,9 +1,9 @@
 import { SidebarLayout } from '@/components/layout';
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Quyền'
+  title: 'Vai trò'
 };
 
 export default function GroupPermissionLayout({

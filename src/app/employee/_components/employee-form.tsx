@@ -243,8 +243,8 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                       options={groupOptions || []}
                       control={form.control}
                       name='groupId'
-                      label='Quyền'
-                      placeholder='Quyền'
+                      label='Vai trò'
+                      placeholder='Vai trò'
                       required
                     />
                   </Col>
@@ -290,8 +290,8 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                       options={groupOptions || []}
                       control={form.control}
                       name='groupId'
-                      label='Quyền'
-                      placeholder='Quyền'
+                      label='Vai trò'
+                      placeholder='Vai trò'
                       required
                     />
                   </Col>
