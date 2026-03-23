@@ -48,9 +48,9 @@ const route = defineRoute({
       separate: true
     }
   },
-  audience: {
+  user: {
     getList: {
-      path: '/audience',
+      path: '/user',
       auth: true,
       permissionCode: [apiConfig.user.getList.permissionCode]
     }

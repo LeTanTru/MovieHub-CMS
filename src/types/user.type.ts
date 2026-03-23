@@ -1,8 +1,8 @@
-import { audienceSearchSchema } from '@/schemaValidations';
+import { userSearchSchema } from '@/schemaValidations';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 
-export type AudienceResType = {
+export type UserResType = {
   avatarPath: string;
   createdDate: string;
   email: string;
@@ -33,5 +33,4 @@ export type AudienceResType = {
   username: string;
 };
 
-export type AudienceSearchType = z.infer<typeof audienceSearchSchema> &
-  BaseSearchType;
+export type UserSearchType = z.infer<typeof userSearchSchema> & BaseSearchType;

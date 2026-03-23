@@ -1,6 +1,6 @@
 export * from './account.schema';
 export * from './app-version.schema';
-export * from './audience.schema';
+export * from './user.schema';
 export * from './auth.schema';
 export * from './category.schema';
 export * from './collection-item.schema';

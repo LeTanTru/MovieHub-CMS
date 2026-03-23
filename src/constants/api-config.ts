@@ -538,35 +538,35 @@ const apiConfig = defineApiConfig({
   },
   user: {
     changeStatus: {
-      baseUrl: `${AppConstants.apiUrl}/v1/user/change-status`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/user/change-status`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'USR_U',
       isRequiredXClientType: true
     },
     delete: {
-      baseUrl: `${AppConstants.apiUrl}/v1/user/delete/:id`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/user/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'USR_D',
       isRequiredXClientType: true
     },
     getById: {
-      baseUrl: `${AppConstants.apiUrl}/v1/user/get/:id`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/user/get/:id`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'USR_V',
       isRequiredXClientType: true
     },
     getList: {
-      baseUrl: `${AppConstants.apiUrl}/v1/user/list`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/user/list`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'USR_L',
       isRequiredXClientType: true
     },
     update: {
-      baseUrl: `${AppConstants.apiUrl}/v1/user/update`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/user/update`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'USR_U',

@@ -28,9 +28,9 @@ const menuConfig: MenuItem[] = [
         permissionCode: [apiConfig.employee.getList.permissionCode]
       },
       {
-        key: 'audience-list',
-        label: 'Khán giả',
-        path: route.audience.getList.path,
+        key: 'user-list',
+        label: 'Người dùng',
+        path: route.user.getList.path,
         permissionCode: [apiConfig.user.getList.permissionCode]
       }
     ]

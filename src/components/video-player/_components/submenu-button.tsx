@@ -2,7 +2,7 @@
 
 import { Menu } from '@vidstack/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@vidstack/react/icons';
-import { ElementType } from 'react';
+import type { ElementType } from 'react';
 
 type SubmenuButtonProps = {
   label: string;

@@ -33,6 +33,8 @@ import { videoLibrarySchema } from '@/schemaValidations';
 import type { VideoLibraryBodyType, VideoLibraryResType } from '@/types';
 import {
   getAccessTokenFromLocalStorage,
+  isMobileDevice,
+  isTabletDevice,
   renderImageUrl,
   renderListPageUrl,
   renderVideoUrl,
@@ -45,6 +47,7 @@ import type { UseFormReturn } from 'react-hook-form';
 import { VideoPlayer } from '@/components/video-player';
 import type { AxiosProgressEvent } from 'axios';
 import { logger } from '@/logger';
+import envConfig from '@/config';
 
 export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
@@ -404,6 +407,13 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                           src={validatedContent}
                           thumbnailUrl={renderImageUrl(imageManager.currentUrl)}
                           vttUrl={validatedVttUrl || ''}
+                          volume={
+                            envConfig.NEXT_PUBLIC_NODE_ENV === 'development'
+                              ? 0
+                              : isMobileDevice() || isTabletDevice()
+                                ? 1
+                                : 0.5
+                          }
                         />
                       </Col>
                     </Row>
@@ -437,6 +447,13 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                         vttUrl={renderVttUrl(data.vttUrl)}
                         token={getAccessTokenFromLocalStorage() || ''}
                         skipOutro={true}
+                        volume={
+                          envConfig.NEXT_PUBLIC_NODE_ENV === 'development'
+                            ? 0
+                            : isMobileDevice() || isTabletDevice()
+                              ? 1
+                              : 0.5
+                        }
                       />
                     ) : (
                       // Upload video

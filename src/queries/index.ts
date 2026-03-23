@@ -1,5 +1,4 @@
 export * from './account.query';
-export * from './audience.query';
 export * from './auth.query';
 export * from './category.query';
 export * from './collection-item.query';
@@ -14,3 +13,4 @@ export * from './movie-person.query';
 export * from './permission.query';
 export * from './review.query';
 export * from './sidebar.query';
+export * from './user.query';
