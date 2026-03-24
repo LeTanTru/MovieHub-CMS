@@ -16,7 +16,7 @@ import {
 } from '@/utils';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
-import { m } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { Loader } from 'lucide-react';
 import { useAppLoadingStore, useAuthStore } from '@/store';
 import { route } from '@/routes';
@@ -154,7 +154,7 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
   }
 
   return (
-    <>
+    <AnimatePresence>
       <m.div
         key='content'
         initial={{ opacity: 0 }}
@@ -169,17 +169,16 @@ export default function PermissionGuard({ children }: { children: ReactNode }) {
         animate={{
           opacity: loading ? 1 : 0,
           zIndex: loading ? 9999 : -9999,
-          display: loading ? 'flex' : 'none'
+          display: 'flex'
         }}
         exit={{
           opacity: 0,
-          zIndex: -9999,
-          display: 'none'
+          zIndex: -9999
         }}
         className='fixed inset-0 z-50 flex h-dvh w-full items-center justify-center bg-white'
       >
         <Loader className='size-8 animate-spin' />
       </m.div>
-    </>
+    </AnimatePresence>
   );
 }
