@@ -28,7 +28,6 @@ import { useSidebarStore } from '@/store';
 import {
   useAuth,
   useIsMounted,
-  useNavigate,
   useQueryParams,
   useValidatePermission
 } from '@/hooks';
@@ -39,7 +38,6 @@ import { menuConfig } from '@/constants';
 import { useShallow } from 'zustand/react/shallow';
 
 function CollapsibleMenuItem({ item }: { item: MenuItem }) {
-  const navigate = useNavigate();
   const pathname = usePathname();
   const { state } = useSidebar();
   const { serializeParams } = useQueryParams();
@@ -91,15 +89,11 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
     }
   }, [item.children, pathname, item.key, setMenu]);
 
-  // handle click on sub menu item
-  const handleSubItemClick = (sub: MenuItem) => {
-    let path = sub.path;
-    let query = '';
-    if (!path || pathname === path) return;
-    if (sub.query) query = serializeParams(sub.query);
-    setSidebarState('expanded');
-    if (query) path = `${path}?${query}`;
-    navigate.push(path);
+  const getSubItemHref = (sub: MenuItem) => {
+    if (!sub.path) return null;
+    if (!sub.query) return sub.path;
+    const query = serializeParams(sub.query);
+    return query ? `${sub.path}?${query}` : sub.path;
   };
 
   // handle show float sub menu when sidebar state is collapsed
@@ -170,29 +164,39 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
                   sub.children ? (
                     <CollapsibleMenuItem key={sub.key} item={sub} />
                   ) : (
-                    <SidebarMenuItem key={sub.key}>
-                      <SidebarMenuButton
-                        className='m-1 min-h-10 rounded-none focus-visible:ring-0!'
-                        asChild
-                      >
-                        <Button
-                          variant='ghost'
-                          onClick={() => handleSubItemClick(sub)}
-                          className={cn(
-                            'mx-auto w-[calc(100%-8px)] justify-start rounded-lg pl-12 font-normal text-white transition-all duration-200 ease-linear hover:text-white active:text-white',
-                            {
-                              'bg-sidebar-item-active hover:bg-sidebar-item-active active:bg-sidebar-item-active':
-                                sub.path && pathname.startsWith(sub.path),
-                              'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu opacity-65 hover:opacity-100':
-                                sub.path && !pathname.startsWith(sub.path)
-                            }
-                          )}
-                        >
-                          {sub.icon && <sub.icon />}
-                          <span>{sub.label}</span>
-                        </Button>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                    (() => {
+                      const subHref = getSubItemHref(sub);
+                      return (
+                        <SidebarMenuItem key={sub.key}>
+                          <SidebarMenuButton
+                            className={cn(
+                              'm-1 mx-auto min-h-10 w-[calc(100%-8px)] justify-start rounded-lg pl-12 font-normal text-white transition-all duration-200 ease-linear hover:text-white focus-visible:ring-0! active:text-white',
+                              {
+                                'bg-sidebar-item-active hover:bg-sidebar-item-active active:bg-sidebar-item-active':
+                                  sub.path && pathname.startsWith(sub.path),
+                                'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu opacity-65 hover:opacity-100':
+                                  sub.path && !pathname.startsWith(sub.path)
+                              }
+                            )}
+                            asChild
+                          >
+                            <Link
+                              href={subHref || '#'}
+                              onClick={(e) => {
+                                if (!subHref || pathname === sub.path) {
+                                  e.preventDefault();
+                                  return;
+                                }
+                                setSidebarState('expanded');
+                              }}
+                            >
+                              {sub.icon && <sub.icon />}
+                              <span>{sub.label}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    })()
                   )
                 )}
               </SidebarMenu>
@@ -229,34 +233,40 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
                       sub.children ? (
                         <CollapsibleMenuItem key={sub.key} item={sub} />
                       ) : (
-                        <SidebarMenuItem key={sub.key}>
-                          <SidebarMenuButton
-                            className='min-h-10 rounded-none focus-visible:ring-0!'
-                            asChild
-                          >
-                            <Button
-                              variant='ghost'
-                              onClick={() => {
-                                handleSubItemClick(sub);
-                                setHovered(false);
-                                setFlyoutHovered(false);
-                                setSidebarState('collapsed');
-                              }}
-                              className={cn(
-                                'mx-auto w-full justify-start rounded-lg pl-4 font-normal text-white transition-all duration-200 ease-linear hover:text-white active:text-white',
-                                {
-                                  'bg-sidebar-item-active hover:bg-sidebar-item-active active:bg-sidebar-item-active':
-                                    sub.path && pathname.startsWith(sub.path),
-                                  'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu opacity-65 hover:opacity-100':
-                                    sub.path && !pathname.startsWith(sub.path)
-                                }
-                              )}
-                            >
-                              {sub.icon && <sub.icon />}
-                              <span>{sub.label}</span>
-                            </Button>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
+                        (() => {
+                          const subHref = getSubItemHref(sub);
+                          return (
+                            <SidebarMenuItem key={sub.key}>
+                              <SidebarMenuButton
+                                className={cn(
+                                  'mx-auto min-h-10 w-full justify-start rounded-lg pl-4 font-normal text-white transition-all duration-200 ease-linear hover:text-white focus-visible:ring-0! active:text-white',
+                                  {
+                                    'bg-sidebar-item-active hover:bg-sidebar-item-active active:bg-sidebar-item-active':
+                                      sub.path && pathname.startsWith(sub.path),
+                                    'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu opacity-65 hover:opacity-100':
+                                      sub.path && !pathname.startsWith(sub.path)
+                                  }
+                                )}
+                                asChild
+                              >
+                                <Link
+                                  href={subHref || '#'}
+                                  onClick={(e) => {
+                                    if (!subHref || pathname === sub.path) {
+                                      e.preventDefault();
+                                    }
+                                    setHovered(false);
+                                    setFlyoutHovered(false);
+                                    setSidebarState('collapsed');
+                                  }}
+                                >
+                                  {sub.icon && <sub.icon />}
+                                  <span>{sub.label}</span>
+                                </Link>
+                              </SidebarMenuButton>
+                            </SidebarMenuItem>
+                          );
+                        })()
                       )
                     )}
                   </SidebarMenu>
