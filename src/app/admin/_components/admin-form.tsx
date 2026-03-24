@@ -52,6 +52,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     isEditing,
     queryString,
     responseCode,
+    onFormChange,
     handleSubmit,
     renderActions
   } = useSaveBase<AccountResType, AccountBodyType>({
@@ -142,6 +143,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={accountSchema(isEditing)}
         initialValues={initialValues}
+        onFormChange={onFormChange}
       >
         {(form) => (
           <>

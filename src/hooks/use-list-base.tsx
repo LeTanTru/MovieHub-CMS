@@ -341,7 +341,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
               </ToolTip>
             </span>
           </AlertDialogTrigger>
-          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-md p-4'>
+          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-md gap-0 p-4'>
             <AlertDialogHeader>
               <AlertDialogTitle className='content flex flex-nowrap items-center gap-2 text-sm font-normal'>
                 <Info className='size-8 fill-orange-500 stroke-white' />
@@ -354,7 +354,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
                 <Button
                   onClick={(e) => e.stopPropagation()}
                   variant='outline'
-                  className='w-20 border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
+                  className='h-8 border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
                 >
                   Không
                 </Button>
@@ -364,7 +364,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
                   e.stopPropagation();
                   handleDeleteClick(record.id);
                 }}
-                className='bg-main-color hover:bg-main-color/80 w-20 cursor-pointer transition-all duration-200 ease-linear'
+                className='bg-main-color hover:bg-main-color/80 h-8 cursor-pointer transition-all duration-200 ease-linear'
               >
                 Có
               </AlertDialogAction>
