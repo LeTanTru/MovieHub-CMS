@@ -135,7 +135,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
       >
         {(form) => (
           <>
-            <Row>
+            <Row gutter={0}>
               <Col>
                 <UploadImageField
                   value={renderImageUrl(imageMobileManager.currentUrl)}

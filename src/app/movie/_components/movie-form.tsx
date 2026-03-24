@@ -234,7 +234,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
       >
         {(form) => (
           <>
-            <Row>
+            <Row gutter={0}>
               <Col span={8}>
                 <UploadImageField
                   value={renderImageUrl(posterImageManager.currentUrl)}
@@ -367,8 +367,8 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   options={movieTypeOptions}
                   control={form.control}
                   name='type'
-                  label='Thể loại'
-                  placeholder='Thể loại'
+                  label='Phân loại'
+                  placeholder='Phân loại'
                   required
                   disabled={isEditing}
                 />
