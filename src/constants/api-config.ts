@@ -174,55 +174,55 @@ const apiConfig = defineApiConfig({
   },
   employee: {
     changeStatus: {
-      baseUrl: `${AppConstants.apiUrl}/v1/employee/change-status`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/employee/change-status`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'EM_U',
       isRequiredXClientType: true
     },
     create: {
-      baseUrl: `${AppConstants.apiUrl}/v1/employee/create`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/employee/create`,
       method: 'POST',
       headers: baseHeader,
       permissionCode: 'EM_C',
       isRequiredXClientType: true
     },
     delete: {
-      baseUrl: `${AppConstants.apiUrl}/v1/employee/delete/:id`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/employee/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'EM_D',
       isRequiredXClientType: true
     },
     getById: {
-      baseUrl: `${AppConstants.apiUrl}/v1/employee/get/:id`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/employee/get/:id`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'EM_V',
       isRequiredXClientType: true
     },
     getList: {
-      baseUrl: `${AppConstants.apiUrl}/v1/employee/list`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/employee/list`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'EM_L',
       isRequiredXClientType: true
     },
     getProfile: {
-      baseUrl: `${AppConstants.apiUrl}/v1/employee/profile`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/employee/profile`,
       method: 'GET',
       headers: baseHeader,
       isRequiredXClientType: true
     },
     update: {
-      baseUrl: `${AppConstants.apiUrl}/v1/employee/update`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/employee/update`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'EM_U',
       isRequiredXClientType: true
     },
     updateProfile: {
-      baseUrl: `${AppConstants.apiUrl}/v1/employee/update-profile`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/employee/update-profile`,
       method: 'PUT',
       headers: baseHeader,
       isRequiredXClientType: true

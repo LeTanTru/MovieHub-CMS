@@ -139,8 +139,8 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
         {(form) => {
           return (
             <>
-              <Row>
-                <Col span={12}>
+              <Row gutter={0}>
+                <Col>
                   <UploadImageField
                     value={renderImageUrl(webImageManager.currentUrl)}
                     loading={uploadImageLoading}
@@ -163,7 +163,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                     required
                   />
                 </Col>
-                <Col span={12}>
+                <Col>
                   <UploadImageField
                     value={renderImageUrl(mobileImageManager.currentUrl)}
                     loading={uploadImageLoading}
