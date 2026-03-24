@@ -22,7 +22,7 @@ import { m, AnimatePresence } from 'framer-motion';
 import { type MouseEvent, useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib';
-import { AvatarField, Button } from '@/components/form';
+import { AvatarField } from '@/components/form';
 import type { MenuItem } from '@/types';
 import { useSidebarStore } from '@/store';
 import {
