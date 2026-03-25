@@ -8,11 +8,10 @@ import { apiConfig, DEFAULT_DATE_FORMAT, FieldTypes } from '@/constants';
 import { useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
-import { useChangeStatusSidebarMutation } from '@/queries';
+import { useChangeActiveSidebarMutation } from '@/queries';
 import { movieSidebarSearchSchema } from '@/schemaValidations';
 import type {
   Column,
-  MovieSidebarBodyType,
   MovieSidebarResType,
   MovieSidebarSearchType,
   SearchFormProps
@@ -22,7 +21,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 export default function SidebarList({ queryKey }: { queryKey: string }) {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusPending } =
-    useChangeStatusSidebarMutation();
+    useChangeActiveSidebarMutation();
 
   const { data, loading, handlers } = useListBase<
     MovieSidebarResType,
@@ -48,31 +47,27 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
 
           const statusLabel = record.active ? 'Ẩn' : 'Hiện';
 
-          const payload: MovieSidebarBodyType & { id: string } = {
-            id: record.id,
-            active: !record.active,
-            movieId: record.movie.id,
-            mainColor: record.mainColor,
-            mobileThumbnailUrl: record.mobileThumbnailUrl,
-            webThumbnailUrl: record.webThumbnailUrl,
-            description: record.description
-          };
-
           const handleChangeStatus = async () => {
-            await changeStatusMutate(payload, {
-              onSuccess: (res) => {
-                if (res.result) {
-                  notify.success('Cập nhật trạng thái thành công');
-                  handlers.invalidateQueries();
-                } else {
-                  notify.error('Cập nhật trạng thái thất bại');
-                }
+            await changeStatusMutate(
+              {
+                id: record.id,
+                active: !record.active
               },
-              onError: (error) => {
-                logger.error('Error while changing status:', error);
-                notify.error('Có lỗi xảy ra, vui lòng thử lại sau.');
+              {
+                onSuccess: (res) => {
+                  if (res.result) {
+                    notify.success('Cập nhật trạng thái thành công');
+                    handlers.invalidateQueries();
+                  } else {
+                    notify.error('Cập nhật trạng thái thất bại');
+                  }
+                },
+                onError: (error) => {
+                  logger.error('Error while changing status:', error);
+                  notify.error('Có lỗi xảy ra, vui lòng thử lại sau.');
+                }
               }
-            });
+            );
           };
 
           const Icon = record.active ? AiOutlineEyeInvisible : AiOutlineEye;
@@ -188,30 +183,21 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
       title: 'Trạng thái',
       dataIndex: 'status',
       render: (_, record) => (
-        <div className='flex items-center justify-center gap-2'>
-          <Badge
-            variant='outline'
-            className={cn(
-              'text-sm font-normal',
-              record.active
-                ? 'border-green-400 bg-green-100 text-green-600'
-                : 'border-red-400 bg-red-100 text-red-600'
-            )}
-          >
-            {record.active ? 'Hiện' : 'Ẩn'}
-          </Badge>
-        </div>
+        <Badge
+          variant='outline'
+          className={cn('text-sm font-normal', {
+            'border-green-400 bg-green-100 text-green-600': record.active,
+            'border-red-400 bg-red-100 text-red-600': !record.active
+          })}
+        >
+          {record.active ? 'Hiện' : 'Ẩn'}
+        </Badge>
       ),
       width: 120,
       align: 'center'
     },
     handlers.renderActionColumn({
       actions: {
-        person: handlers.hasPermission({
-          requiredPermissions: [
-            apiConfig.moviePerson.getList.permissionCode as string
-          ]
-        }),
         edit: true,
         changeStatus: true,
         delete: true

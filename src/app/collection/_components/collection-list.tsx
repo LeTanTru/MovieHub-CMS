@@ -35,11 +35,7 @@ import StyleInfoModal from './style-info-modal';
 
 export default function CollectionList({ queryKey }: { queryKey: string }) {
   const navigate = useNavigate(false);
-  const {
-    opened: openedStyleModal,
-    open: openStyleModal,
-    close: closeStyleModal
-  } = useDisclosure(false);
+  const { opened, open, close } = useDisclosure();
   const [selectedCollection, setSelectedCollection] =
     useState<CollectionResType | null>(null);
 
@@ -121,7 +117,7 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedCollection(record);
-                    openStyleModal();
+                    open();
                   }}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
@@ -279,8 +275,8 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
 
       {selectedCollection && (
         <StyleInfoModal
-          opened={openedStyleModal}
-          onClose={closeStyleModal}
+          opened={opened}
+          onClose={close}
           style={selectedCollection.style}
         />
       )}

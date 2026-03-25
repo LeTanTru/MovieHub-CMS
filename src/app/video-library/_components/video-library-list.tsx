@@ -29,7 +29,11 @@ import { AiFillWarning } from 'react-icons/ai';
 import { RiCheckboxCircleFill, RiLoader2Fill } from 'react-icons/ri';
 
 export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
-  const playModal = useDisclosure(false);
+  const {
+    opened: openedPlayModal,
+    open: openPlayModal,
+    close: closePlayModal
+  } = useDisclosure();
   const [selectedVideo, setSelectedVideo] = useState<VideoLibraryResType>();
 
   const { data, pagination, loading, handlers, listQuery } = useListBase<
@@ -72,7 +76,7 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
 
   const handleOpenPlayModal = (video: VideoLibraryResType) => {
     setSelectedVideo(video);
-    playModal.open();
+    openPlayModal();
   };
 
   const columns: Column<VideoLibraryResType>[] = [
@@ -188,8 +192,8 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
       </ListPageWrapper>
       {selectedVideo && (
         <VideoPlayModal
-          open={playModal.opened}
-          onClose={playModal.close}
+          open={openedPlayModal}
+          onClose={closePlayModal}
           video={selectedVideo}
         />
       )}

@@ -37,6 +37,7 @@ import {
   formatDate,
   formatSecondsToHMS,
   generatePath,
+  notify,
   renderImageUrl,
   renderListPageUrl
 } from '@/utils';
@@ -48,6 +49,9 @@ import { HasPermission } from '@/components/has-permission';
 import MovieItemModal from './movie-item-modal';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { Badge } from '@/components/ui/badge';
+import { useMarkLatestMovieItemMutation } from '@/queries';
+import { IoCheckmarkDone } from 'react-icons/io5';
+import { logger } from '@/logger';
 
 export default function MovieItemSeasonDetailList({
   queryKey
@@ -68,11 +72,22 @@ export default function MovieItemSeasonDetailList({
     searchParams: { type }
   } = useQueryParams<{ type: string }>();
 
-  const movieItemModal = useDisclosure(false);
+  const {
+    opened: openedMovieItemModal,
+    open: openMovieItemModal,
+    close: closeMovieItemModal
+  } = useDisclosure();
   const [movieItem, setMovieItem] = useState<MovieItemResType | null>();
 
-  const playModal = useDisclosure(false);
+  const {
+    opened: openedPlayModal,
+    open: openPlayModal,
+    close: closePlayModal
+  } = useDisclosure();
   const [selectedVideo, setSelectedVideo] = useState<VideoLibraryResType>();
+
+  const { mutateAsync: markLatestMutate, isPending: markLatestPending } =
+    useMarkLatestMovieItemMutation();
 
   const { data, loading, handlers } = useListBase<
     MovieItemResType,
@@ -90,61 +105,129 @@ export default function MovieItemSeasonDetailList({
       notShowFromSearchParams: ['movieId', 'parentId']
     },
     override: (handlers) => {
-      handlers.additionalColumns = () => ({
-        watchVideo: (
-          record: MovieItemResType,
-          buttonProps?: Record<string, any>
-        ) => (
-          <ToolTip title='Xem video' sideOffset={0}>
-            <span>
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleOpenPlayModal(record);
-                }}
-                className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
-                disabled={!record.video || !record.video.duration}
-                variant='ghost'
-                {...buttonProps}
-              >
-                <PlayCircle className='text-main-color size-4' />
-              </Button>
-            </span>
-          </ToolTip>
-        ),
-        edit: (record: MovieItemResType, buttonProps?: Record<string, any>) => {
-          if (
-            !handlers.hasPermission({
-              requiredPermissions: [apiConfig.movieItem.update.permissionCode]
-            })
-          )
-            return null;
-
-          return (
-            <ToolTip
-              title={`Cập nhật ${getMovieTypeLabel(type)}`}
-              sideOffset={0}
-            >
+      handlers.additionalColumns = () => {
+        const handleOpenPlayModal = (movieItem: MovieItemResType) => {
+          setSelectedVideo(movieItem.video);
+          openPlayModal();
+        };
+        return {
+          watchVideo: (
+            record: MovieItemResType,
+            buttonProps?: Record<string, any>
+          ) => (
+            <ToolTip title='Xem video' sideOffset={0}>
               <span>
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleEditMovieItem(record);
+                    handleOpenPlayModal(record);
                   }}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  disabled={!record.video || !record.video.duration}
+                  variant='ghost'
                   {...buttonProps}
                 >
-                  <AiOutlineEdit className='text-main-color size-4' />
+                  <PlayCircle className='text-main-color size-4' />
                 </Button>
               </span>
             </ToolTip>
-          );
-        }
-      });
+          ),
+          edit: (
+            record: MovieItemResType,
+            buttonProps?: Record<string, any>
+          ) => {
+            if (
+              !handlers.hasPermission({
+                requiredPermissions: [apiConfig.movieItem.update.permissionCode]
+              })
+            )
+              return null;
+
+            const handleEditMovieItem = (record: MovieItemResType) => {
+              setMovieItem(record);
+              openMovieItemModal();
+            };
+
+            return (
+              <ToolTip
+                title={`Cập nhật ${getMovieTypeLabel(type)}`}
+                sideOffset={0}
+              >
+                <span>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditMovieItem(record);
+                    }}
+                    className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                    {...buttonProps}
+                  >
+                    <AiOutlineEdit className='text-main-color size-4' />
+                  </Button>
+                </span>
+              </ToolTip>
+            );
+          },
+          markLatest: (
+            record: MovieItemResType,
+            buttonProps?: Record<string, any>
+          ) => {
+            if (
+              !handlers.hasPermission({
+                requiredPermissions: [apiConfig.movieItem.update.permissionCode]
+              })
+            )
+              return null;
+
+            const handleMarkLatest = (record: MovieItemResType) => {
+              markLatestMutate(record.id, {
+                onSuccess: (res) => {
+                  if (res.result) {
+                    notify.success(
+                      `Đánh dấu phần "${record.label}" là phần mới nhất thành công`
+                    );
+                    handlers.invalidateQueries();
+                  }
+                },
+                onError: (error) => {
+                  logger.error('Error while mark latest movie item', error);
+                  notify.error(
+                    `Đánh dấu phần "${record.label}" là phần mới nhất thất bại`
+                  );
+                }
+              });
+            };
+
+            return (
+              <ToolTip
+                title={`Đánh dấu phần ${record.label} là mới nhất`}
+                sideOffset={0}
+              >
+                <span>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMarkLatest(record);
+                    }}
+                    className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                    {...buttonProps}
+                  >
+                    <IoCheckmarkDone className='text-main-color size-4' />
+                  </Button>
+                </span>
+              </ToolTip>
+            );
+          }
+        };
+      };
       handlers.additionalParams = () => ({
         size: MAX_PAGE_SIZE
       });
       handlers.renderAddButton = () => {
+        const handleAddMovieItem = () => {
+          setMovieItem(null);
+          openMovieItemModal();
+        };
         return (
           <HasPermission
             requiredPermissions={[apiConfig.movieItem.create.permissionCode]}
@@ -158,21 +241,6 @@ export default function MovieItemSeasonDetailList({
       };
     }
   });
-
-  const handleAddMovieItem = () => {
-    setMovieItem(null);
-    movieItemModal.open();
-  };
-
-  const handleEditMovieItem = (record: MovieItemResType) => {
-    setMovieItem(record);
-    movieItemModal.open();
-  };
-
-  const handleOpenPlayModal = (movieItem: MovieItemResType) => {
-    setSelectedVideo(movieItem.video);
-    playModal.open();
-  };
 
   const {
     sortColumn,
@@ -265,8 +333,13 @@ export default function MovieItemSeasonDetailList({
         watchVideo: (record) =>
           (!!type && +type !== MOVIE_TYPE_SERIES) ||
           record.kind !== MOVIE_ITEM_KIND_SEASON,
+        markLatest: (record) =>
+          record.kind === MOVIE_ITEM_KIND_EPISODE && !record.isLatest,
         edit: true,
         delete: true
+      },
+      columnProps: {
+        width: 150
       }
     })
   ];
@@ -330,19 +403,19 @@ export default function MovieItemSeasonDetailList({
         <DragDropTable
           columns={columns}
           dataSource={sortedData}
-          loading={loading || loadingUpdateOrdering}
+          loading={loading || loadingUpdateOrdering || markLatestPending}
           onDragEnd={onDragEnd}
         />
       </ListPageWrapper>
       <MovieItemModal
-        open={movieItemModal.opened}
-        onClose={movieItemModal.close}
+        open={openedMovieItemModal}
+        onClose={closeMovieItemModal}
         movieItem={movieItem}
       />
       {selectedVideo && (
         <VideoPlayModal
-          open={playModal.opened}
-          onClose={playModal.close}
+          open={openedPlayModal}
+          onClose={closePlayModal}
           video={selectedVideo}
         />
       )}

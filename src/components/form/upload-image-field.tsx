@@ -270,16 +270,16 @@ export default function UploadImageField<T extends FieldValues>({
             {required && <span className='text-destructive'>*</span>}
           </FormLabel>
         )}
-        <div className='relative inline-flex'>
+        <div className='relative inline-flex flex-col justify-center'>
           <Button
-            variant='ghost'
+            variant='outline'
             type='button'
             style={{
               width: size * aspect,
               height: size
             }}
             className={cn(
-              'border-input hover:bg-accent/50 focus-visible:border-ring relative flex cursor-pointer items-center justify-center overflow-hidden border border-dashed p-0 transition-colors outline-none focus-visible:ring-[3px]',
+              'border-input hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-main-color relative flex cursor-pointer items-center justify-center overflow-hidden border border-dashed p-0 transition-all duration-200 ease-linear outline-none focus-visible:border-transparent focus-visible:ring-2',
               className,
               {
                 'border border-solid border-red-500': !!error,
@@ -345,14 +345,14 @@ export default function UploadImageField<T extends FieldValues>({
               tabIndex={-1}
             />
           </label>
+          {error?.message && (
+            <div className='animate-in fade-in -mb-6 flex min-h-6 items-end justify-center'>
+              <p className='text-destructive text-sm leading-5.5'>
+                {error.message}
+              </p>
+            </div>
+          )}
         </div>
-        {error?.message && (
-          <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
-            <p className='text-destructive text-sm leading-5.5'>
-              {error.message}
-            </p>
-          </div>
-        )}
       </div>
 
       {showCrop && (

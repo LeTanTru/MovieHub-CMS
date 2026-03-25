@@ -130,111 +130,112 @@ export default function NumberField<T extends FieldValues>({
           )}
 
           <FormControl>
-            <div className='relative flex items-center'>
-              <div className='relative flex-1'>
-                {prefixIcon && (
-                  <div className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2'>
-                    {prefixIcon}
-                  </div>
-                )}
-                <Input
-                  placeholder={placeholder}
-                  type='text'
-                  disabled={disabled}
-                  readOnly={readOnly}
-                  value={raw}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setRaw(val);
-
-                    const parsed = parseNumber(val);
-                    if (parsed !== undefined) {
-                      field.onChange(parsed);
-                    } else if (val === '' || val === '.' || val === '-') {
-                      field.onChange(undefined);
-                    }
-                  }}
-                  onBlur={() => {
-                    if (field.value !== undefined) {
-                      setRaw(formatNumber(field.value));
-                    } else {
-                      setRaw('0');
-                    }
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'ArrowUp') {
-                      e.preventDefault();
-                      increment();
-                    }
-                    if (e.key === 'ArrowDown') {
-                      e.preventDefault();
-                      decrement();
-                    }
-                  }}
-                  className={cn(
-                    className,
-                    'pt-0! font-normal shadow-none focus-visible:border-transparent focus-visible:ring-2',
-                    {
-                      'pl-10': prefixIcon,
-                      'pr-10': suffixIcon,
-                      'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/80 text-gray-500':
-                        disabled,
-                      'border-red-500 focus-visible:ring-red-500':
-                        fieldState.error,
-                      'focus-visible:ring-main-color': !fieldState.error,
-                      'pb-[0.25px]': !field.value,
-                      'pb-[0.5px]': !!field.value
-                    }
+            <div>
+              <div className='relative flex items-center'>
+                <div className='relative flex-1'>
+                  {prefixIcon && (
+                    <div className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2'>
+                      {prefixIcon}
+                    </div>
                   )}
-                />
-                {suffixIcon && (
-                  <div className='text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2'>
-                    {suffixIcon}
-                  </div>
-                )}
-              </div>
+                  <Input
+                    placeholder={placeholder}
+                    type='text'
+                    disabled={disabled}
+                    readOnly={readOnly}
+                    value={raw}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setRaw(val);
 
-              <div className='ml-1 flex flex-col gap-1'>
-                <ToolTip title='Tăng' sideOffset={8}>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    size='icon'
-                    onClick={increment}
-                    disabled={
-                      disabled ||
-                      (max !== undefined && (field.value ?? 0) >= max)
-                    }
-                    className='h-4 w-4 rounded'
-                  >
-                    +
-                  </Button>
-                </ToolTip>
-                <ToolTip title='Giảm' sideOffset={8}>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    size='icon'
-                    onClick={decrement}
-                    disabled={
-                      disabled ||
-                      (min !== undefined && (field.value ?? 0) <= min)
-                    }
-                    className='h-4 w-4 rounded'
-                  >
-                    –
-                  </Button>
-                </ToolTip>
+                      const parsed = parseNumber(val);
+                      if (parsed !== undefined) {
+                        field.onChange(parsed);
+                      } else if (val === '' || val === '.' || val === '-') {
+                        field.onChange(undefined);
+                      }
+                    }}
+                    onBlur={() => {
+                      if (field.value !== undefined) {
+                        setRaw(formatNumber(field.value));
+                      } else {
+                        setRaw('0');
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        increment();
+                      }
+                      if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        decrement();
+                      }
+                    }}
+                    className={cn(
+                      className,
+                      'pt-0! font-normal shadow-none focus-visible:border-transparent focus-visible:ring-2',
+                      {
+                        'pl-10': prefixIcon,
+                        'pr-10': suffixIcon,
+                        'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/80 text-gray-500':
+                          disabled,
+                        'border-red-500 focus-visible:ring-red-500':
+                          fieldState.error,
+                        'focus-visible:ring-main-color': !fieldState.error,
+                        'pb-[0.25px]': !field.value,
+                        'pb-[0.5px]': !!field.value
+                      }
+                    )}
+                  />
+                  {suffixIcon && (
+                    <div className='text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2'>
+                      {suffixIcon}
+                    </div>
+                  )}
+                </div>
+
+                <div className='ml-1 flex flex-col gap-1'>
+                  <ToolTip title='Tăng' sideOffset={8}>
+                    <Button
+                      type='button'
+                      variant='outline'
+                      size='icon'
+                      onClick={increment}
+                      disabled={
+                        disabled ||
+                        (max !== undefined && (field.value ?? 0) >= max)
+                      }
+                      className='h-4 w-4 rounded'
+                    >
+                      +
+                    </Button>
+                  </ToolTip>
+                  <ToolTip title='Giảm' sideOffset={8}>
+                    <Button
+                      type='button'
+                      variant='outline'
+                      size='icon'
+                      onClick={decrement}
+                      disabled={
+                        disabled ||
+                        (min !== undefined && (field.value ?? 0) <= min)
+                      }
+                      className='h-4 w-4 rounded'
+                    >
+                      –
+                    </Button>
+                  </ToolTip>
+                </div>
               </div>
+              {description && <FormDescription>{description}</FormDescription>}
+              {fieldState.error && (
+                <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                  <FormMessage className='leading-5.5' />
+                </div>
+              )}
             </div>
           </FormControl>
-
-          {description && <FormDescription>{description}</FormDescription>}
-          {fieldState.error && (
-            <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
-              <FormMessage className='leading-5.5' />
-            </div>
-          )}
         </FormItem>
       )}
     />

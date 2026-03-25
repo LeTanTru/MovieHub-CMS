@@ -44,6 +44,7 @@ type ImageFieldProps = {
   previewClassName?: string;
   imagePreviewClassName?: string;
   hoverIcon?: ComponentType<SVGProps<SVGSVGElement>>;
+  hoverIconClassName?: string;
   zoomOnScroll?: boolean;
 } & HTMLAttributes<HTMLDivElement>;
 
@@ -55,7 +56,7 @@ export default function ImageField({
   width,
   height,
   aspect = 1,
-  previewAspect = 1 / 1,
+  previewAspect = 16 / 9,
   previewSize = 500,
   disablePreview = false,
   originalSize = false,
@@ -66,6 +67,7 @@ export default function ImageField({
   previewClassName,
   imagePreviewClassName,
   hoverIcon: HoverIcon = EyeIcon,
+  hoverIconClassName,
   zoomOnScroll = true,
   ...props
 }: ImageFieldProps) {
@@ -120,8 +122,6 @@ export default function ImageField({
     (e: WheelEvent) => {
       if (!zoomOnScroll) return;
 
-      e.preventDefault();
-
       setScale((prev) => {
         let next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
         next = Math.max(1, Math.min(3, next));
@@ -135,7 +135,7 @@ export default function ImageField({
     if (!open || !previewRef.current) return;
 
     const node = previewRef.current;
-    node.addEventListener('wheel', handleWheel, { passive: false });
+    node.addEventListener('wheel', handleWheel, { passive: true });
 
     return () => node.removeEventListener('wheel', handleWheel);
   }, [handleWheel, open]);
@@ -169,8 +169,16 @@ export default function ImageField({
       <div
         {...props}
         onClick={props?.onClick ?? openPreview}
+        role='button'
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (!shouldDisablePreview) setOpen(true);
+          }
+        }}
         className={cn(
-          'relative rounded border bg-gray-100 shadow-sm select-none',
+          'relative rounded border bg-gray-100 shadow-sm select-none dark:bg-black/15',
           {
             'cursor-pointer': !shouldDisablePreview,
             'flex items-center justify-center bg-black': originalSize
@@ -248,7 +256,12 @@ export default function ImageField({
 
         {!shouldDisablePreview && (
           <div className='absolute inset-0 flex items-center justify-center rounded bg-black/30 opacity-0 transition-opacity hover:opacity-100'>
-            <HoverIcon className='h-7 w-7 text-white' />
+            <HoverIcon
+              className={cn(
+                'max-h-1/2 max-w-1/2 text-white',
+                hoverIconClassName
+              )}
+            />
           </div>
         )}
       </div>

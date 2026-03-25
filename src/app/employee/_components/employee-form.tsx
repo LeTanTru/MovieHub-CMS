@@ -53,6 +53,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
     isEditing,
     queryString,
     responseCode,
+    onFormChange,
     handleSubmit,
     renderActions
   } = useSaveBase<EmployeeResType, EmployeeBodyType>({
@@ -152,6 +153,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={employeeSchema(isEditing)}
         initialValues={initialValues}
+        onFormChange={onFormChange}
       >
         {(form) => (
           <>

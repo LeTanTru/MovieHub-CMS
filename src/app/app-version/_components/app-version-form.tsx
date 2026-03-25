@@ -35,6 +35,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
     isEditing,
     queryString,
     responseCode,
+    onFormChange,
     handleSubmit,
     renderActions
   } = useSaveBase<AppVersionResType, AppVersionBodyType>({
@@ -122,6 +123,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={appVersionSchema}
         initialValues={initialValues}
+        onFormChange={onFormChange}
       >
         {(form) => (
           <>
@@ -184,7 +186,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col className='flex-row gap-4'>
+              <Col className='flex-row items-end gap-8'>
                 <BooleanField
                   control={form.control}
                   name='forceUpdate'

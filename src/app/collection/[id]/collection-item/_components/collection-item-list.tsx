@@ -38,7 +38,7 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
     type: number;
     collectionTitle: string;
   }>();
-  const collectionItemModal = useDisclosure(false);
+  const { opened, open, close } = useDisclosure();
 
   const { data, loading, handlers } = useListBase<
     CollectionItemResType,
@@ -90,7 +90,7 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
   });
 
   const handleAddCollectionItem = () => {
-    collectionItemModal.open();
+    open();
   };
 
   const columns: Column<CollectionItemResType>[] = [
@@ -261,10 +261,7 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
           onDragEnd={onDragEnd}
         />
       </ListPageWrapper>
-      <CollectionItemModal
-        open={collectionItemModal.opened}
-        onClose={collectionItemModal.close}
-      />
+      <CollectionItemModal open={opened} onClose={close} />
     </PageWrapper>
   );
 }

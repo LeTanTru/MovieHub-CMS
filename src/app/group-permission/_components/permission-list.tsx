@@ -51,7 +51,7 @@ import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import MediaQuery from 'react-responsive';
 
 export default function PermissionList() {
-  const { opened, open, close } = useDisclosure(false);
+  const { opened, open, close } = useDisclosure();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isFormChanged, setIsFormChange] = useState<boolean>(false);
   const [selectedGroupPermissionId, setSelectedGroupPermissionId] =

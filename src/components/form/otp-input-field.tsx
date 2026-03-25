@@ -61,41 +61,47 @@ export default function OtpInputField<T extends FieldValues>({
             </FormLabel>
           )}
           <FormControl>
-            <InputOTP
-              maxLength={length}
-              {...field}
-              className={cn('flex justify-center', className)}
-              containerClassName={cn('w-full', containerClassName)}
-            >
-              <InputOTPGroup
-                className={cn('w-full justify-center gap-x-2', groupClassName)}
+            <div>
+              {' '}
+              <InputOTP
+                maxLength={length}
+                {...field}
+                className={cn('flex justify-center', className)}
+                containerClassName={cn('w-full', containerClassName)}
               >
-                {Array.from({ length: length }).map((_, i) => (
-                  <InputOTPSlot
-                    className={cn(
-                      'data-[active=true]:ring-green-primary h-12 w-12 rounded-md border-l text-base data-[active=true]:border-none data-[active=true]:ring-2',
-                      {
-                        'border-red-500 data-[active=true]:ring-red-500':
-                          !!fieldState.error
-                      }
-                    )}
-                    key={i}
-                    index={i}
-                  />
-                ))}
-              </InputOTPGroup>
-            </InputOTP>
-          </FormControl>
-          {description && (
-            <FormDescription className='text-center'>
-              {description}
-            </FormDescription>
-          )}
-          {fieldState.error && (
-            <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
-              <FormMessage className='leading-5.5' />
+                <InputOTPGroup
+                  className={cn(
+                    'w-full justify-center gap-x-2',
+                    groupClassName
+                  )}
+                >
+                  {Array.from({ length: length }).map((_, i) => (
+                    <InputOTPSlot
+                      className={cn(
+                        'data-[active=true]:ring-green-primary h-12 w-12 rounded-md border-l text-base data-[active=true]:border-none data-[active=true]:ring-2',
+                        {
+                          'border-red-500 data-[active=true]:ring-red-500':
+                            !!fieldState.error
+                        }
+                      )}
+                      key={i}
+                      index={i}
+                    />
+                  ))}
+                </InputOTPGroup>
+              </InputOTP>
+              {description && (
+                <FormDescription className='text-center'>
+                  {description}
+                </FormDescription>
+              )}
+              {fieldState.error && (
+                <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                  <FormMessage className='leading-5.5' />
+                </div>
+              )}
             </div>
-          )}
+          </FormControl>
         </FormItem>
       )}
     />

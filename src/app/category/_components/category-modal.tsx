@@ -44,7 +44,7 @@ export default function CategoryModal({
       mode: !category ? 'create' : 'edit'
     },
     override: (handlers) => {
-      handlers.handleSubmitSuccess = async () => {
+      handlers.handleSubmitSuccess = () => {
         onClose();
       };
     }
@@ -75,10 +75,15 @@ export default function CategoryModal({
     );
   };
 
+  const handleClose = () => {
+    onClose();
+    onFormChange(false);
+  };
+
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} thể loại`}
       bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3'
       aria-labelledby='category-modal-title'

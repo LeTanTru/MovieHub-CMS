@@ -83,3 +83,8 @@ export type MovieSidebarBodyType = z.infer<typeof movieSidebarSchema>;
 
 export type MovieSidebarSearchType = z.infer<typeof movieSidebarSearchSchema> &
   BaseSearchType;
+
+export type MovieSidebarChangeActiveBodyType = {
+  id: string;
+  active: boolean;
+};

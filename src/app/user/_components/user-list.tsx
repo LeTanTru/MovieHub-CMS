@@ -145,22 +145,6 @@ export default function UserList({ queryKey }: { queryKey: string }) {
       ),
       align: 'center'
     },
-    {
-      title: 'Vai trò',
-      dataIndex: 'kind',
-      width: 120,
-      render: (value) => {
-        const label = userKindOptions.find(
-          (kind) => kind.value === value
-        )?.label;
-        return (
-          <span className='line-clamp-1 block truncate' title={label}>
-            {label ?? '------'}
-          </span>
-        );
-      },
-      align: 'center'
-    },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({
       actions: { changeStatus: true, delete: false }

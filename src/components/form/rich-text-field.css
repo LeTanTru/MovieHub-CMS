@@ -15,20 +15,20 @@
   box-shadow:
     0 0 0 0px #fff,
     0 0 0 calc(2px + 0px) var(--color-main-color),
-    0 0 #0000;
+    0 0 #0000 !important;
 }
 
-label[data-error='true'] ~ .tox-tinymce {
+div[data-slot='form-control'][aria-invalid='true'] .tox-tinymce {
   border: 1px solid var(--color-red-500) !important;
 }
 
-label[data-error='true'] ~ .tox-tinymce.tox-edit-focus {
+div[data-slot='form-control'][aria-invalid='true'] .tox-tinymce.tox-edit-focus {
   border: 1px solid transparent !important;
 
   box-shadow:
     0 0 0 0px #fff,
     0 0 0 calc(2px + 0px) var(--color-red-500),
-    0 0 #0000;
+    0 0 #0000 !important;
 }
 
 .tox-tbtn {

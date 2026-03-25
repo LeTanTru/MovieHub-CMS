@@ -1,39 +1,14 @@
-import { apiConfig, MAX_PAGE_SIZE, queryKeys } from '@/constants';
-import type {
-  ApiResponse,
-  ApiResponseList,
-  MovieItemResType,
-  MovieItemSearchType
-} from '@/types';
+import { apiConfig, queryKeys } from '@/constants';
+import { ApiResponse } from '@/types';
 import { http } from '@/utils';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-export const useMovieItemListQuery = ({
-  params,
-  enabled
-}: {
-  params: MovieItemSearchType;
-  enabled: boolean;
-}) => {
-  return useQuery({
-    queryKey: [`${queryKeys.MOVIE_ITEM}-list`],
-    queryFn: () =>
-      http.get<ApiResponseList<MovieItemResType>>(apiConfig.movieItem.getList, {
-        params: {
-          ...params,
-          size: MAX_PAGE_SIZE
-        }
-      }),
-    enabled
-  });
-};
-
-export const useUpdateOrderingMovieItemMutation = () => {
+export const useMarkLatestMovieItemMutation = () => {
   return useMutation({
-    mutationKey: [`update-ordering-${queryKeys.MOVIE_ITEM}`],
-    mutationFn: (body: { id: string; ordering: number }[]) =>
-      http.post<ApiResponse<any>>(apiConfig.movieItem.updateOrdering, {
-        body
+    mutationKey: [`mark-latest-${queryKeys.MOVIE_ITEM}`],
+    mutationFn: (id: string) =>
+      http.put<ApiResponse<any>>(apiConfig.movieItem.markLatest, {
+        pathParams: { id }
       })
   });
 };

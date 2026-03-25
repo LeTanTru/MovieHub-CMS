@@ -25,7 +25,7 @@ export default function Row({
       style={
         {
           '--gutter': `${_gutter}px`,
-          gap: _gutter * 2
+          gap: (_gutter * childCount) / (childCount - 1 || childCount)
         } as CSSProperties
       }
       {...rest}

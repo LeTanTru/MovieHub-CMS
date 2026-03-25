@@ -76,12 +76,11 @@ export default function AppVersionList({ queryKey }: { queryKey: string }) {
         <div className='flex items-center justify-center gap-2'>
           <Badge
             variant='outline'
-            className={cn(
-              'text-sm font-normal',
-              record.forceUpdate
-                ? 'border-red-400 bg-red-100 text-red-600'
-                : 'border-green-400 bg-green-100 text-green-600'
-            )}
+            className={cn('text-sm font-normal', {
+              'border-red-400 bg-red-100 text-red-600': record.forceUpdate,
+              'border-green-400 bg-green-100 text-green-600':
+                !record.forceUpdate
+            })}
           >
             {record.forceUpdate
               ? 'Bắt buộc cập nhật'
@@ -90,12 +89,10 @@ export default function AppVersionList({ queryKey }: { queryKey: string }) {
 
           <Badge
             variant='outline'
-            className={cn(
-              'text-sm font-normal',
-              record.isLatest
-                ? 'border-blue-400 bg-blue-100 text-blue-600'
-                : 'border-gray-400 bg-gray-100 text-gray-600'
-            )}
+            className={cn('text-sm font-normal', {
+              'border-blue-400 bg-blue-100 text-blue-600': record.isLatest,
+              'border-gray-400 bg-gray-100 text-gray-600': !record.isLatest
+            })}
           >
             {record.isLatest ? 'Mới nhất' : 'Cũ'}
           </Badge>

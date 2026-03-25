@@ -52,7 +52,7 @@ export default function ColorPickerField<T extends FieldValues>({
                   value={field.value || '#000000'}
                   onChange={field.onChange}
                   disabled={disabled}
-                  className='border-input bg-background h-10 w-10 cursor-pointer rounded border p-0'
+                  className='border-input bg-background focus-visible:ring-main-color h-10 w-10 cursor-pointer rounded border p-0 transition-all duration-200 ease-linear focus-visible:ring-2'
                 />
               </FormControl>
               <span className='bg-muted rounded border px-2 py-1 text-sm'>

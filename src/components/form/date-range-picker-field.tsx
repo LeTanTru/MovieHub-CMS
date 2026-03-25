@@ -61,17 +61,20 @@ export default function DateRangePickerField<T extends FieldValues>({
               {required && <span className='text-destructive'>*</span>}
             </FormLabel>
           )}
-          <Popover>
-            <PopoverTrigger asChild>
-              <FormControl>
+          <FormControl>
+            <Popover>
+              <PopoverTrigger asChild>
                 <Button
                   disabled={disabled}
                   variant='outline'
+                  role='combobox'
                   className={cn(
-                    'hover:border-input w-full justify-between text-left font-normal text-black shadow-none hover:text-black',
-                    !field.value && 'text-muted-foreground',
+                    'w-full justify-between text-left font-normal text-black opacity-100',
+                    'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
+                    'data-[state=open]:border-main-color data-[state=open]:ring-main-color hover:border-input px-3! shadow-none hover:text-black data-[state=open]:ring-1',
                     {
-                      'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
+                      'text-gray-300 hover:text-gray-300': !field.value,
+                      'border-red-500 hover:border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
                         fieldState.error
                     }
                   )}
@@ -90,26 +93,30 @@ export default function DateRangePickerField<T extends FieldValues>({
                   )}
                   <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
                 </Button>
-              </FormControl>
-            </PopoverTrigger>
-            <PopoverContent sideOffset={8} className='w-auto p-0' align='start'>
-              <Calendar
-                initialFocus
-                locale={calendarLocale}
-                mode='range'
-                defaultMonth={field.value?.from}
-                selected={field.value}
-                onSelect={field.onChange}
-                numberOfMonths={2}
-              />
-            </PopoverContent>
-          </Popover>
-          {description && <FormDescription>{description}</FormDescription>}
-          {fieldState.error && (
-            <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
-              <FormMessage className='leading-5.5' />
-            </div>
-          )}
+              </PopoverTrigger>
+              <PopoverContent
+                sideOffset={8}
+                className='w-auto p-0'
+                align='start'
+              >
+                <Calendar
+                  initialFocus
+                  locale={calendarLocale}
+                  mode='range'
+                  defaultMonth={field.value?.from}
+                  selected={field.value}
+                  onSelect={field.onChange}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+            {description && <FormDescription>{description}</FormDescription>}
+            {fieldState.error && (
+              <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                <FormMessage className='leading-5.5' />
+              </div>
+            )}
+          </FormControl>
         </FormItem>
       )}
     />

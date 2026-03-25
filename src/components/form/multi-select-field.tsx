@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  FormControl,
   FormDescription,
   FormField,
   FormItem,
@@ -260,169 +261,173 @@ export default function MultiSelectField<
               </FormLabel>
             )}
 
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  ref={triggerRef}
-                  type='button'
-                  variant='outline'
-                  role='combobox'
-                  disabled={disabled}
-                  className={cn(
-                    'focus-visible:border-main-color hover:border-input focus-visiborder-input h-auto min-h-9 w-full justify-between border py-0 pr-3! pl-1! text-black shadow-none hover:text-black focus:ring-0',
-                    {
-                      'cursor-not-allowed border-gray-300 bg-gray-200/80 text-gray-500':
-                        disabled,
-                      'ring-main-color border-transparent ring-2': open,
-                      'border-red-500 ring-1 ring-red-500 hover:border-red-500':
-                        !!fieldState.error
-                    }
-                  )}
-                >
-                  {selectedValues.length ? (
-                    <div
-                      className={cn('flex min-w-0 flex-1 items-center gap-1', {
-                        'flex-wrap': isMultiLine,
-                        'overflow-hidden': !isMultiLine
-                      })}
-                    >
-                      {visibleValues.map((val) => {
-                        const option = options.find((o) => getValue(o) === val);
-                        if (!option) return null;
-                        return (
-                          <span
-                            key={val}
-                            className='flex shrink-0 items-center gap-1 rounded bg-gray-200/60 py-1 pr-1 pl-1.5 text-sm'
-                          >
-                            {getLabel(option)}
-                            <span
-                              className='flex items-center justify-center rounded-sm transition-colors hover:bg-gray-300/60'
-                              onClick={(e) => handleRemove(val, e)}
-                              onMouseDown={(e) => e.stopPropagation()}
-                            >
-                              <X className='h-3 w-3' />
-                            </span>
-                          </span>
-                        );
-                      })}
-
-                      {/* +N badge — only in single-line mode */}
-                      {!isMultiLine && hiddenCount > 0 && (
-                        <span className='bg-main-color/15 text-main-color shrink-0 rounded px-1.5 py-[2.2px] text-xs font-medium'>
-                          +{hiddenCount}
-                        </span>
+            <FormControl>
+              <div>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      ref={triggerRef}
+                      type='button'
+                      variant='outline'
+                      role='combobox'
+                      disabled={disabled}
+                      className={cn(
+                        'hover:border-input focus-visible:border-input dark:hover:border-input dark:bg-input/30 dark:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 pl-1! text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 dark:text-white dark:hover:text-white',
+                        {
+                          'ring-main-color border-transparent! ring-2': open,
+                          '[&>div>span]:text-gray-300': fieldState.invalid,
+                          'border-red-500 ring-red-500': !!fieldState.error
+                        }
                       )}
-                    </div>
-                  ) : (
-                    <span className='truncate pl-2 text-gray-300'>
-                      {placeholder}
-                    </span>
-                  )}
-                  <ChevronDown className='ml-2 shrink-0 opacity-50' />
-                </Button>
-              </PopoverTrigger>
-
-              {description && (
-                <FormDescription className='ml-1.5'>
-                  {description}
-                </FormDescription>
-              )}
-
-              <PopoverContent
-                sideOffset={8}
-                className='w-(--radix-popover-trigger-width) p-0'
-              >
-                <Command
-                  className='bg-background'
-                  shouldFilter={false}
-                  ref={commandRef}
-                >
-                  <CommandInput
-                    placeholder={searchText}
-                    value={searchValue}
-                    onValueChange={setSearchValue}
-                    onKeyDown={(e) => {
-                      if (!filteredOptions.length) return;
-                      if (e.key === 'ArrowDown') {
-                        e.preventDefault();
-                        setHighlightedIndex((prev) =>
-                          prev < filteredOptions.length - 1 ? prev + 1 : 0
-                        );
-                      } else if (e.key === 'ArrowUp') {
-                        e.preventDefault();
-                        setHighlightedIndex((prev) =>
-                          prev > 0 ? prev - 1 : filteredOptions.length - 1
-                        );
-                      } else if (e.key === 'Enter') {
-                        e.preventDefault();
-                        const option = filteredOptions[highlightedIndex];
-                        if (option) handleSelect(getValue(option));
-                      }
-                    }}
-                  />
-
-                  <CommandEmpty className='mx-auto py-4 text-center text-sm'>
-                    <Image
-                      src={emptyData.src}
-                      width={120}
-                      height={50}
-                      className='mx-auto mb-2'
-                      alt={notFoundContent as string}
-                    />
-                    {notFoundContent}
-                  </CommandEmpty>
-
-                  <CommandGroup
-                    className='max-h-100 overflow-y-auto'
-                    onMouseLeave={() => {
-                      setHighlightedIndex(-1);
-                      if (commandRef.current) {
-                        const items =
-                          commandRef.current.querySelectorAll('[cmdk-item]');
-                        items.forEach((item) => {
-                          item.setAttribute('data-selected', 'false');
-                          item.setAttribute('aria-selected', 'false');
-                        });
-                      }
-                    }}
-                  >
-                    {filteredOptions.map((opt, idx) => {
-                      const val = getValue(opt);
-                      const isSelected = selectedValues.includes(val);
-                      return (
-                        <CommandItem
-                          key={val}
-                          onMouseEnter={() => setHighlightedIndex(idx)}
-                          onMouseLeave={() => setHighlightedIndex(-1)}
-                          onSelect={() => handleSelect(val)}
+                    >
+                      {selectedValues.length ? (
+                        <div
                           className={cn(
-                            'block cursor-pointer truncate rounded-none transition-all first:rounded-tl first:rounded-tr last:rounded-br last:rounded-bl data-[state=active]:bg-transparent',
+                            'flex min-w-0 flex-1 items-center gap-1',
                             {
-                              'bg-accent text-accent-foreground':
-                                highlightedIndex === idx,
-                              'bg-main-color/10': isSelected
+                              'flex-wrap': isMultiLine,
+                              'overflow-hidden': !isMultiLine
                             }
                           )}
                         >
-                          {getPrefix?.(opt) && (
-                            <span className='mr-1 font-mono text-xs opacity-70'>
-                              {getPrefix(opt)}
+                          {visibleValues.map((val) => {
+                            const option = options.find(
+                              (o) => getValue(o) === val
+                            );
+                            if (!option) return null;
+                            return (
+                              <span
+                                key={val}
+                                className='flex shrink-0 items-center gap-1 rounded bg-gray-200/60 py-1 pr-1 pl-1.5 text-sm'
+                              >
+                                {getLabel(option)}
+                                <span
+                                  className='flex items-center justify-center rounded-sm transition-colors hover:bg-gray-300/60'
+                                  onClick={(e) => handleRemove(val, e)}
+                                  onMouseDown={(e) => e.stopPropagation()}
+                                >
+                                  <X className='h-3 w-3' />
+                                </span>
+                              </span>
+                            );
+                          })}
+
+                          {/* +N badge — only in single-line mode */}
+                          {!isMultiLine && hiddenCount > 0 && (
+                            <span className='bg-main-color/15 text-main-color shrink-0 rounded px-1.5 py-[2.2px] text-xs font-medium'>
+                              +{hiddenCount}
                             </span>
                           )}
-                          {getLabel(opt)}
-                        </CommandItem>
-                      );
-                    })}
-                  </CommandGroup>
-                </Command>
-              </PopoverContent>
-            </Popover>
+                        </div>
+                      ) : (
+                        <span className='truncate pl-2 text-gray-300'>
+                          {placeholder}
+                        </span>
+                      )}
+                      <ChevronDown className='ml-2 shrink-0 opacity-50' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    sideOffset={8}
+                    className='w-(--radix-popover-trigger-width) p-0'
+                  >
+                    <Command
+                      className='bg-background'
+                      shouldFilter={false}
+                      ref={commandRef}
+                    >
+                      <CommandInput
+                        placeholder={searchText}
+                        value={searchValue}
+                        onValueChange={setSearchValue}
+                        onKeyDown={(e) => {
+                          if (!filteredOptions.length) return;
+                          if (e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            setHighlightedIndex((prev) =>
+                              prev < filteredOptions.length - 1 ? prev + 1 : 0
+                            );
+                          } else if (e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            setHighlightedIndex((prev) =>
+                              prev > 0 ? prev - 1 : filteredOptions.length - 1
+                            );
+                          } else if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const option = filteredOptions[highlightedIndex];
+                            if (option) handleSelect(getValue(option));
+                          }
+                        }}
+                      />
 
-            {fieldState.error && (
-              <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
-                <FormMessage className='leading-5.5' />
+                      <CommandEmpty className='mx-auto py-4 text-center text-sm'>
+                        <Image
+                          src={emptyData.src}
+                          width={120}
+                          height={50}
+                          className='mx-auto mb-2'
+                          alt={notFoundContent as string}
+                        />
+                        {notFoundContent}
+                      </CommandEmpty>
+
+                      <CommandGroup
+                        className='max-h-100 overflow-y-auto'
+                        onMouseLeave={() => {
+                          setHighlightedIndex(-1);
+                          if (commandRef.current) {
+                            const items =
+                              commandRef.current.querySelectorAll(
+                                '[cmdk-item]'
+                              );
+                            items.forEach((item) => {
+                              item.setAttribute('data-selected', 'false');
+                              item.setAttribute('aria-selected', 'false');
+                            });
+                          }
+                        }}
+                      >
+                        {filteredOptions.map((opt, idx) => {
+                          const val = getValue(opt);
+                          const isSelected = selectedValues.includes(val);
+                          return (
+                            <CommandItem
+                              key={val}
+                              onMouseEnter={() => setHighlightedIndex(idx)}
+                              onMouseLeave={() => setHighlightedIndex(-1)}
+                              onSelect={() => handleSelect(val)}
+                              className={cn(
+                                'block cursor-pointer truncate rounded-none transition-all first:rounded-tl first:rounded-tr last:rounded-br last:rounded-bl data-[state=active]:bg-transparent',
+                                {
+                                  'bg-accent text-accent-foreground':
+                                    highlightedIndex === idx,
+                                  'bg-main-color/10': isSelected
+                                }
+                              )}
+                            >
+                              {getPrefix?.(opt) && (
+                                <span className='mr-1 font-mono text-xs opacity-70'>
+                                  {getPrefix(opt)}
+                                </span>
+                              )}
+                              {getLabel(opt)}
+                            </CommandItem>
+                          );
+                        })}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                {description && (
+                  <FormDescription>{description}</FormDescription>
+                )}
+                {fieldState.error && (
+                  <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                    <FormMessage className='leading-5.5' />
+                  </div>
+                )}
               </div>
-            )}
+            </FormControl>
           </FormItem>
         );
       }}

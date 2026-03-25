@@ -125,6 +125,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
       {
         onSuccess: async (res) => {
           if (res.result) {
+            setIsFormChanged(false);
             await Promise.all([
               queryClient.invalidateQueries({
                 queryKey: [queryKey]
@@ -336,7 +337,9 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
     );
   };
 
-  const handleSubmitSuccess = () => {};
+  const handleSubmitSuccess = () => {
+    setIsFormChanged(false);
+  };
 
   const handleSubmitError = (code: string) => {};
 

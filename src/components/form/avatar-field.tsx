@@ -6,8 +6,10 @@ import Image from 'next/image';
 import { m, AnimatePresence } from 'framer-motion';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import {
+  ComponentType,
   type HTMLAttributes,
   type MouseEvent,
+  SVGProps,
   useCallback,
   useEffect,
   useMemo,
@@ -36,6 +38,8 @@ type AvatarFieldProps = {
   previewAspect?: number;
   alt?: string;
   zoomOnScroll?: boolean;
+  hoverIcon?: ComponentType<SVGProps<SVGSVGElement>>;
+  hoverIconClassName?: string;
 } & HTMLAttributes<HTMLElement>;
 
 export default function AvatarField({
@@ -53,6 +57,8 @@ export default function AvatarField({
   previewAspect = 1,
   zoomOnScroll = true,
   alt,
+  hoverIcon: HoverIcon = EyeIcon,
+  hoverIconClassName,
   ...props
 }: AvatarFieldProps) {
   const isMounted = useIsMounted();
@@ -110,7 +116,6 @@ export default function AvatarField({
   const handleWheel = useCallback(
     (e: WheelEvent) => {
       if (!zoomOnScroll) return;
-      e.preventDefault();
       setScale((prev) => {
         const next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
         return Math.max(1, Math.min(3, next));
@@ -122,7 +127,7 @@ export default function AvatarField({
   useEffect(() => {
     if (!open || !previewRef.current) return;
     const node = previewRef.current;
-    node.addEventListener('wheel', handleWheel, { passive: false });
+    node.addEventListener('wheel', handleWheel, { passive: true });
     return () => node.removeEventListener('wheel', handleWheel);
   }, [handleWheel, open]);
 
@@ -155,6 +160,14 @@ export default function AvatarField({
       <div
         {...props}
         onClick={props?.onClick ?? handleClick}
+        role='button'
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (!shouldDisablePreview) setOpen(true);
+          }
+        }}
         className={cn(
           'relative',
           { 'cursor-pointer': !shouldDisablePreview },
@@ -200,7 +213,12 @@ export default function AvatarField({
 
         {!shouldDisablePreview && (
           <div className='absolute inset-0 flex items-center justify-center rounded-full bg-black/30 opacity-0 transition-all duration-200 ease-linear hover:opacity-100'>
-            <EyeIcon className='h-6 w-6 text-white' />
+            <HoverIcon
+              className={cn(
+                'max-h-1/2 max-w-1/2 text-white',
+                hoverIconClassName
+              )}
+            />
           </div>
         )}
       </div>

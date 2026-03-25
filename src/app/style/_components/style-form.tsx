@@ -35,6 +35,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
     isEditing,
     queryString,
     responseCode,
+    onFormChange,
     handleSubmit,
     renderActions
   } = useSaveBase<StyleResType, StyleBodyType>({
@@ -132,6 +133,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={styleSchema}
         initialValues={initialValues}
+        onFormChange={onFormChange}
       >
         {(form) => (
           <>

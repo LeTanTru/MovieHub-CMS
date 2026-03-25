@@ -27,14 +27,15 @@ import {
   languageOptions,
   movieTypeOptions
 } from '@/constants';
-import { useSaveBase } from '@/hooks';
+import { useQueryParams, useSaveBase } from '@/hooks';
 import { useCategoryListQuery } from '@/queries';
 import { route } from '@/routes';
 import { collectionSchema } from '@/schemaValidations';
-import type {
-  CollectionBodyType,
-  CollectionResType,
-  StyleResType
+import {
+  CollectionSearchType,
+  type CollectionBodyType,
+  type CollectionResType,
+  type StyleResType
 } from '@/types';
 import { renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
@@ -45,6 +46,8 @@ import { logger } from '@/logger';
 
 export default function CollectionForm({ queryKey }: { queryKey: string }) {
   const { id } = useParams<{ id: string }>();
+  const { searchParams } = useQueryParams<CollectionSearchType>();
+  const type = searchParams.type;
 
   const { data: categoryListData } = useCategoryListQuery();
 
@@ -62,6 +65,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
     isEditing,
     queryString,
     responseCode,
+    onFormChange,
     handleSubmit,
     renderActions
   } = useSaveBase<CollectionResType, CollectionBodyType>({
@@ -83,7 +87,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
     name: '',
     randomData: false,
     styleId: '',
-    type: COLLECTION_TYPE_TOPIC,
+    type: COLLECTION_TYPE_SECTION,
     fillData: false
   };
 
@@ -128,7 +132,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
       name: data?.name ?? '',
       randomData: false,
       styleId: data?.style?.id?.toString() ?? '',
-      type: data?.type ?? COLLECTION_TYPE_SECTION,
+      type: (data?.type ?? type) ? Number(type) : COLLECTION_TYPE_TOPIC,
       fillData: data?.fillData ?? false
     };
   }, [
@@ -137,7 +141,8 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
     data?.filter,
     data?.name,
     data?.style?.id,
-    data?.type
+    data?.type,
+    type
   ]);
 
   const onSubmit = async (
@@ -197,6 +202,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={collectionSchema}
         initialValues={initialValues}
+        onFormChange={onFormChange}
       >
         {(form) => {
           const colors = form.watch('colors') || ['#000000', '#000000'];
@@ -336,7 +342,6 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                       control={form.control}
                       name='fillData'
                       label='Tự động điền dữ liệu'
-                      className='items-center'
                       required
                     />
                   </Col>

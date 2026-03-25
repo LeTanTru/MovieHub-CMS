@@ -119,7 +119,7 @@ export default function MovieItemModal({
           notify.error('Vui lòng chọn phần để thêm');
         }
       };
-      handlers.handleSubmitSuccess = async () => {
+      handlers.handleSubmitSuccess = () => {
         onClose();
       };
     }
@@ -223,10 +223,15 @@ export default function MovieItemModal({
     ]);
   };
 
+  const handleClose = () => {
+    onClose();
+    onFormChange(false);
+  };
+
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       bodyWrapperClassName='h-[80vh] max-[1537px]:w-225 max-[1367px]:w-200'
       title={`${isEditing ? 'Cập nhật' : 'Thêm'} ${objectName}`}
       aria-labelledby='movie-item-modal-title'
@@ -342,12 +347,13 @@ export default function MovieItemModal({
                     />
                   </Col>
                 )}
-                {kind !== MOVIE_TYPE_TRAILER && (
-                  <Col className='mt-6 justify-center'>
+                {kind !== MOVIE_TYPE_TRAILER && !isEditing && (
+                  <Col className='mb-3 justify-end'>
                     <CheckboxField
                       control={form.control}
                       name='isLatest'
                       label='Đánh dấu là mới nhất'
+                      required
                     />
                   </Col>
                 )}
