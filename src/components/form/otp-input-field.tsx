@@ -62,7 +62,6 @@ export default function OtpInputField<T extends FieldValues>({
           )}
           <FormControl>
             <div>
-              {' '}
               <InputOTP
                 maxLength={length}
                 {...field}

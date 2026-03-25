@@ -110,43 +110,44 @@ const TextAreaField = <T extends FieldValues>(
             )}
 
             <FormControl>
-              <Textarea
-                id={id}
-                placeholder={placeholder}
-                disabled={disabled}
-                readOnly={readOnly}
-                maxLength={maxLength}
-                rows={rows ?? 4}
-                className={cn(
-                  floatLabel && 'bg-background pt-6',
-                  'focus-visible:ring-main-color min-h-40 w-full pt-4 break-all shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
-                  {
-                    'focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-red-500!':
-                      !!fieldState.error
-                  },
-                  className
+              <div>
+                <Textarea
+                  id={id}
+                  placeholder={placeholder}
+                  disabled={disabled}
+                  readOnly={readOnly}
+                  maxLength={maxLength}
+                  rows={rows ?? 4}
+                  className={cn(
+                    floatLabel && 'bg-background pt-6',
+                    'focus-visible:ring-main-color min-h-40 w-full pt-4 break-all shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
+                    {
+                      'border-red-500 focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-red-500':
+                        !!fieldState.error
+                    },
+                    className
+                  )}
+                  {...field}
+                  {...rest}
+                  ref={internalRef}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    resizeTextarea();
+                    rest.onChange?.(e);
+                  }}
+                />
+                {maxLength && (
+                  <div className='text-muted-foreground absolute top-1 right-1.5 text-xs leading-none'>
+                    {charCount}/{maxLength}
+                  </div>
                 )}
-                {...field}
-                {...rest}
-                ref={internalRef}
-                onChange={(e) => {
-                  field.onChange(e);
-                  resizeTextarea();
-                  rest.onChange?.(e);
-                }}
-              />
+                {fieldState.error && (
+                  <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                    <FormMessage className='leading-5.5' />
+                  </div>
+                )}
+              </div>
             </FormControl>
-
-            {maxLength && (
-              <div className='text-muted-foreground absolute top-1 right-1.5 text-xs leading-none'>
-                {charCount}/{maxLength}
-              </div>
-            )}
-            {fieldState.error && (
-              <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
-                <FormMessage className='leading-5.5' />
-              </div>
-            )}
           </div>
         </FormItem>
       )}

@@ -156,7 +156,12 @@ export default function TimePickerField<T extends FieldValues>({
                         }
                       )}
                     >
-                      <span suppressHydrationWarning className='text-gray-300'>
+                      <span
+                        suppressHydrationWarning
+                        className={cn({
+                          'text-gray-300': !hasValue
+                        })}
+                      >
                         {formatDisplay(hour, minute, second)}
                       </span>
                       {clearable && hasValue && !disabled && (

@@ -328,6 +328,7 @@ export default function MovieItemModal({
                         placeholder='Tổng số tập'
                         required
                         type='number'
+                        min={0}
                       />
                     </Col>
                   )}

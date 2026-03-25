@@ -59,6 +59,9 @@ export default function MovieItemSeasonList({
     movieTitle: string;
   }>();
 
+  const type = searchParams.type;
+  const movieTitle = searchParams.movieTitle;
+
   const {
     opened: openedMovieItemModal,
     open: openMovieItemModal,
@@ -306,11 +309,10 @@ export default function MovieItemSeasonList({
     handlers.renderActionColumn({
       actions: {
         watchVideo: (record) =>
-          !!record.video &&
-          !!searchParams.type &&
-          +searchParams.type === MOVIE_TYPE_SINGLE,
+          !!record.video && !!type && +type === MOVIE_TYPE_SINGLE,
         edit: true,
-        markLatest: (record) => !record.isLatest,
+        markLatest: (record) =>
+          !record.isLatest && !!type && +type === MOVIE_TYPE_SINGLE,
         delete: true
       },
       columnProps: {
@@ -331,8 +333,8 @@ export default function MovieItemSeasonList({
           parentId: record.id
         }),
         serializeParams({
-          type: searchParams.type,
-          movieTitle: searchParams.movieTitle,
+          type,
+          movieTitle,
           season: record.title
         })
       )

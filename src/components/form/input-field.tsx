@@ -137,11 +137,11 @@ function InputFieldInner<T extends FieldValues>(
                 ref={ref}
                 className={cn(
                   className,
-                  'text-sm font-normal shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2',
+                  'text-sm font-normal shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2',
                   {
                     'pl-10': prefixIcon,
                     'pr-10': suffixIcon,
-                    'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/50 text-gray-500':
+                    'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/50 text-gray-500 dark:border-zinc-500/50':
                       disabled,
                     'border-red-500 focus-visible:ring-red-500':
                       !!fieldState.error,

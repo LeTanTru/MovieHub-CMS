@@ -270,48 +270,50 @@ export default function UploadImageField<T extends FieldValues>({
             {required && <span className='text-destructive'>*</span>}
           </FormLabel>
         )}
-        <div className='relative inline-flex flex-col justify-center'>
-          <Button
-            variant='outline'
-            type='button'
-            style={{
-              width: size * aspect,
-              height: size
-            }}
-            className={cn(
-              'border-input hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-main-color relative flex cursor-pointer items-center justify-center overflow-hidden border border-dashed p-0 transition-all duration-200 ease-linear outline-none focus-visible:border-transparent focus-visible:ring-2',
-              className,
-              {
-                'border border-solid border-red-500': !!error,
-                'border-none': !!value,
-                'flex items-center justify-center': keepOriginalSize
-              }
-            )}
-            onClick={openFileDialog}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            title='Tải ảnh lên'
-            data-dragging={isDragging || undefined}
-            aria-label={value ? 'Thay ảnh' : 'Tải lên'}
-          >
-            {!!value ? (
-              <ImageField
-                disablePreview
-                src={value}
-                className='size-full rounded-none border-none object-cover'
-                aspect={keepOriginalSize ? undefined : aspect}
-                width={keepOriginalSize ? undefined : size * aspect}
-                height={keepOriginalSize ? undefined : size}
-                originalSize={keepOriginalSize}
-                imageClassName={imageClassName}
-                previewClassName={previewClassName}
-                imagePreviewClassName={imagePreviewClassName}
-              />
-            ) : loading && !showCrop ? (
-              <CircleLoading className='stroke-main-color dark:stroke-white' />
-            ) : (
+        <div
+          className='relative inline-flex flex-col justify-center'
+          style={{
+            width: size * aspect,
+            height: size
+          }}
+        >
+          {!!value ? (
+            <ImageField
+              disablePreview
+              src={value}
+              className='size-full rounded-none border-none object-cover'
+              aspect={keepOriginalSize ? undefined : aspect}
+              width={keepOriginalSize ? undefined : size * aspect}
+              height={keepOriginalSize ? undefined : size}
+              originalSize={keepOriginalSize}
+              imageClassName={imageClassName}
+              previewClassName={previewClassName}
+              imagePreviewClassName={imagePreviewClassName}
+            />
+          ) : loading && !showCrop ? (
+            <CircleLoading className='stroke-main-color dark:stroke-white' />
+          ) : (
+            <Button
+              variant='outline'
+              type='button'
+              className={cn(
+                'border-input hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-main-color relative flex size-full cursor-pointer items-center justify-center overflow-hidden border border-dashed p-0 transition-all duration-200 ease-linear outline-none focus-visible:border-transparent focus-visible:ring-2',
+                className,
+                {
+                  'border border-solid border-red-500': !!error,
+                  'border-none': !!value,
+                  'flex items-center justify-center': keepOriginalSize
+                }
+              )}
+              onClick={openFileDialog}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              title='Tải ảnh lên'
+              data-dragging={isDragging || undefined}
+              aria-label={value ? 'Thay ảnh' : 'Tải lên'}
+            >
               <UploadIcon
                 strokeWidth={1}
                 style={{
@@ -322,8 +324,8 @@ export default function UploadImageField<T extends FieldValues>({
                   'text-red-500': !!error
                 })}
               />
-            )}
-          </Button>
+            </Button>
+          )}
 
           {value && (
             <Button
