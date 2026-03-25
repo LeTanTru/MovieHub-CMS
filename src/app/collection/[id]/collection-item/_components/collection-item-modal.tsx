@@ -48,7 +48,7 @@ export default function CollectionItemModal({
       mode: 'create'
     },
     override: (handlers) => {
-      handlers.handleSubmitSuccess = async () => {
+      handlers.handleSubmitSuccess = () => {
         onClose();
       };
       handlers.handleSubmitError = (code) => {
@@ -71,11 +71,16 @@ export default function CollectionItemModal({
     await handleSubmit(values, form, collectionItemErrorMaps);
   };
 
+  const handleClose = () => {
+    onClose();
+    onFormChange(false);
+  };
+
   return (
     <Modal
       title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} phim`}
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3'
       aria-labelledby='collection-item-modal-title'
       confirmOnClose={isFormChanged}

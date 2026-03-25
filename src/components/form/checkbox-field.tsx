@@ -22,7 +22,6 @@ type CheckboxFieldProps<T extends FieldValues> = {
   disabled?: boolean;
   required?: boolean;
   labelClassName?: string;
-  itemClassName?: string;
   checkboxClassName?: string;
 };
 
@@ -35,7 +34,6 @@ export default function CheckboxField<T extends FieldValues>({
   disabled,
   required,
   labelClassName,
-  itemClassName,
   checkboxClassName
 }: CheckboxFieldProps<T>) {
   return (
@@ -43,17 +41,15 @@ export default function CheckboxField<T extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <FormItem className={cn('relative flex flex-col gap-0', className)}>
-          <div
-            className={cn('mb-0 flex items-center space-x-2', itemClassName)}
-          >
-            <FormControl>
+        <FormItem className={cn(className)}>
+          <FormControl>
+            <div className='flex items-center gap-2'>
               <Checkbox
                 id={field.name}
                 className={cn(
                   'cursor-pointer transition-colors duration-300 ease-in-out focus-visible:ring-0',
                   'data-[state=checked]:bg-main-color data-[state=checked]:border-main-color',
-                  'data-[state=unchecked]:bg-muted',
+                  'data-[state=unchecked]:bg-muted focus-visible:ring-main-color focus-visible:border-transparent focus-visible:ring-2',
                   disabled && 'cursor-not-allowed',
                   checkboxClassName
                 )}
@@ -61,25 +57,25 @@ export default function CheckboxField<T extends FieldValues>({
                 onCheckedChange={field.onChange}
                 disabled={disabled}
               />
-            </FormControl>
-            <FormLabel
-              htmlFor={field.name}
-              className={cn(
-                disabled && 'text-muted-foreground',
-                'cursor-pointer',
-                labelClassName
+              <FormLabel
+                htmlFor={field.name}
+                className={cn(
+                  disabled && 'text-muted-foreground',
+                  'cursor-pointer',
+                  labelClassName
+                )}
+              >
+                {label}
+                {required && <span className='text-destructive'>*</span>}
+              </FormLabel>
+              {description && <FormDescription>{description}</FormDescription>}
+              {fieldState.error && (
+                <div className='animate-in fade-in -mb-6 ml-6 flex min-h-6 items-end'>
+                  <FormMessage className='leading-5.5' />
+                </div>
               )}
-            >
-              {label}
-              {required && <span className='text-destructive'>*</span>}
-            </FormLabel>
-          </div>
-          {description && <FormDescription>{description}</FormDescription>}
-          {fieldState.error && (
-            <div className='animate-in fade-in -mb-6 ml-6 flex min-h-6 items-end'>
-              <FormMessage className='leading-5.5' />
             </div>
-          )}
+          </FormControl>
         </FormItem>
       )}
     />

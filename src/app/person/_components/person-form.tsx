@@ -56,6 +56,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
     isEditing,
     queryString,
     responseCode,
+    onFormChange,
     handleSubmit,
     renderActions
   } = useSaveBase<PersonResType, PersonBodyType>({
@@ -159,6 +160,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={personSchema}
         initialValues={initialValues}
+        onFormChange={onFormChange}
       >
         {(form) => (
           <>

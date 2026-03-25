@@ -41,6 +41,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
     isEditing,
     queryString,
     responseCode,
+    onFormChange,
     handleSubmit,
     renderActions
   } = useSaveBase<MovieSidebarResType, MovieSidebarBodyType>({
@@ -135,6 +136,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={movieSidebarSchema}
         initialValues={initialValues}
+        onFormChange={onFormChange}
       >
         {(form) => {
           return (

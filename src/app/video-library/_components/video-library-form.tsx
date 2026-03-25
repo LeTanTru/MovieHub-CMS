@@ -62,6 +62,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
     isEditing,
     queryString,
     responseCode,
+    onFormChange,
     handleSubmit,
     renderActions
   } = useSaveBase<VideoLibraryResType, VideoLibraryBodyType>({
@@ -209,6 +210,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={videoLibrarySchema}
         initialValues={initialValues}
+        onFormChange={onFormChange}
       >
         {(form) => {
           const sourceType = form.watch('sourceType');

@@ -136,7 +136,7 @@ export default function UploadFileField<T extends FieldValues>({
 
       <div
         className={cn(
-          'bg-muted/30 hover:bg-accent/50 relative mb-0 flex min-h-17 cursor-pointer items-center gap-3 rounded-md border-2 border-dashed p-4 transition-all duration-200 ease-linear',
+          'bg-muted/30 hover:bg-accent/50 relative mb-0 flex min-h-18 cursor-pointer items-center gap-3 rounded-md border-2 border-dashed p-4 transition-all duration-200 ease-linear',
           isDragging && 'border-primary bg-primary/10',
           {
             'border border-solid border-red-500': !!error && !uploading
@@ -199,14 +199,14 @@ export default function UploadFileField<T extends FieldValues>({
         </div>
       )}
 
-      <div className='flex items-center gap-2'>
-        {uploading && (
+      {uploading && (
+        <div className='flex items-center gap-2'>
           <div className='flex items-center gap-2 text-sm'>
             <CircleLoading className='stroke-main-color' />
             {progress}% đang tải...
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {error?.message && (
         <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>

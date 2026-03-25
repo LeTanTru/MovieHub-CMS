@@ -1,13 +1,13 @@
 import { apiConfig, queryKeys } from '@/constants';
-import { ApiResponse, MovieSidebarBodyType } from '@/types';
+import { ApiResponse, MovieSidebarChangeActiveBodyType } from '@/types';
 import { http } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 
-export const useChangeStatusSidebarMutation = () => {
+export const useChangeActiveSidebarMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.SIDEBAR],
-    mutationFn: (body: MovieSidebarBodyType & { id: string }) =>
-      http.post<ApiResponse<any>>(apiConfig.sidebar.update, {
+    mutationFn: (body: MovieSidebarChangeActiveBodyType) =>
+      http.post<ApiResponse<any>>(apiConfig.sidebar.changeActive, {
         body
       })
   });

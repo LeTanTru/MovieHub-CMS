@@ -59,56 +59,62 @@ export default function CheckboxGroupField<T extends FieldValues>({
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
             )}
-            <div className='flex flex-wrap gap-4'>
-              {(options || field.value).map((option) => {
-                const isChecked = field.value?.includes(option.value);
-                return (
-                  <FormItem
-                    key={option.value}
-                    className={cn(
-                      'flex items-center space-y-0 space-x-1',
-                      itemClassName
-                    )}
-                  >
-                    <FormControl>
-                      <Checkbox
+            <FormControl>
+              <div>
+                <div className='flex flex-wrap gap-4'>
+                  {(options || field.value).map((option) => {
+                    const isChecked = field.value?.includes(option.value);
+                    return (
+                      <FormItem
+                        key={option.value}
                         className={cn(
-                          'cursor-pointer transition-colors duration-300 ease-in-out',
-                          'data-[state=checked]:bg-primary',
-                          'data-[state=unchecked]:bg-muted',
-                          disabled && 'cursor-not-allowed opacity-50'
+                          'flex items-center space-y-0 space-x-1',
+                          itemClassName
                         )}
-                        checked={isChecked}
-                        disabled={disabled}
-                        onCheckedChange={(checked) => {
-                          const newValue = checked
-                            ? [...(field.value || []), option.value]
-                            : field.value?.filter(
-                                (v: string) => v !== option.value
-                              );
-                          field.onChange(newValue);
-                        }}
-                      />
-                    </FormControl>
-                    <FormLabel
-                      htmlFor={`${name}-${option.value}`}
-                      className={cn(
-                        'cursor-pointer font-normal',
-                        disabled && 'text-muted-foreground'
-                      )}
-                    >
-                      {option.label}
-                    </FormLabel>
-                  </FormItem>
-                );
-              })}
-            </div>
-            {description && <FormDescription>{description}</FormDescription>}
-            {fieldState.error && (
-              <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
-                <FormMessage className='leading-5.5' />
+                      >
+                        <FormControl>
+                          <Checkbox
+                            className={cn(
+                              'cursor-pointer transition-colors duration-300 ease-in-out',
+                              'data-[state=checked]:bg-primary',
+                              'data-[state=unchecked]:bg-muted',
+                              disabled && 'cursor-not-allowed opacity-50'
+                            )}
+                            checked={isChecked}
+                            disabled={disabled}
+                            onCheckedChange={(checked) => {
+                              const newValue = checked
+                                ? [...(field.value || []), option.value]
+                                : field.value?.filter(
+                                    (v: string) => v !== option.value
+                                  );
+                              field.onChange(newValue);
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel
+                          htmlFor={`${name}-${option.value}`}
+                          className={cn(
+                            'cursor-pointer font-normal',
+                            disabled && 'text-muted-foreground'
+                          )}
+                        >
+                          {option.label}
+                        </FormLabel>
+                      </FormItem>
+                    );
+                  })}
+                </div>
+                {description && (
+                  <FormDescription>{description}</FormDescription>
+                )}
+                {fieldState.error && (
+                  <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                    <FormMessage className='leading-5.5' />
+                  </div>
+                )}
               </div>
-            )}
+            </FormControl>
           </FormItem>
         );
       }}

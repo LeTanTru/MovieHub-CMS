@@ -41,7 +41,7 @@ export default function MoviePersonList({
   );
   const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
 
-  const moviePersonModal = useDisclosure(false);
+  const { opened, open, close } = useDisclosure();
 
   const {
     mutateAsync: updateMoviePersonMutate,
@@ -69,7 +69,7 @@ export default function MoviePersonList({
           <HasPermission
             requiredPermissions={[apiConfig.moviePerson.create.permissionCode]}
           >
-            <Button onClick={() => moviePersonModal.open()} variant='primary'>
+            <Button onClick={open} variant='primary'>
               <PlusIcon />
               Thêm {kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}
             </Button>
@@ -168,6 +168,11 @@ export default function MoviePersonList({
     newCharacterName: string
   ) => {
     if (newCharacterName === record.characterName) {
+      setSelectedRow('');
+      return;
+    }
+
+    if (!newCharacterName.trim() && !record.characterName) {
       setSelectedRow('');
       return;
     }
@@ -394,8 +399,8 @@ export default function MoviePersonList({
       <MoviePersonModal
         moviePersonList={data}
         kind={kind}
-        open={moviePersonModal.opened}
-        close={moviePersonModal.close}
+        open={opened}
+        onClose={close}
         movieId={movieId}
         listQuery={listQuery}
       />

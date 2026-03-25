@@ -232,6 +232,7 @@ function InputFieldInner<T extends FieldValues>(
                   {suffixIcon}
                 </div>
               )}
+              {description && <FormDescription>{description}</FormDescription>}
               {fieldState.error && (
                 <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
                   <FormMessage className='leading-5.5' />
@@ -239,7 +240,6 @@ function InputFieldInner<T extends FieldValues>(
               )}
             </div>
           </FormControl>
-          {description && <FormDescription>{description}</FormDescription>}
         </FormItem>
       )}
     />

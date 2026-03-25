@@ -142,12 +142,12 @@ const TextAreaField = <T extends FieldValues>(
                 {charCount}/{maxLength}
               </div>
             )}
+            {fieldState.error && (
+              <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                <FormMessage className='leading-5.5' />
+              </div>
+            )}
           </div>
-          {fieldState.error && (
-            <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
-              <FormMessage className='leading-5.5' />
-            </div>
-          )}
         </FormItem>
       )}
     />

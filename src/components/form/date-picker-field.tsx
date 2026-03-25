@@ -81,7 +81,7 @@ export default function DatePickerField<T extends FieldValues>({
 
         const handleClear = (e: React.MouseEvent) => {
           e.stopPropagation();
-          field.onChange(null);
+          field.onChange('');
         };
 
         return (
@@ -100,126 +100,128 @@ export default function DatePickerField<T extends FieldValues>({
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
             )}
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <FormControl>
-                  <Button
-                    ref={triggerRef}
-                    variant='outline'
-                    role='combobox'
-                    className={cn(
-                      'w-full justify-between text-left font-normal text-black opacity-100',
-                      'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
-                      'data-[state=open]:border-main-color data-[state=open]:ring-main-color hover:border-input px-3! shadow-none hover:text-black data-[state=open]:ring-1',
-                      {
-                        'text-gray-300 hover:text-gray-300': !field.value,
-                        'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
-                          fieldState.error
-                      }
-                    )}
-                    disabled={disabled}
-                  >
-                    <span suppressHydrationWarning>
-                      {(() => {
-                        const parsed = parseDate(field.value);
-                        return parsed && !isNaN(parsed.getTime())
-                          ? format(parsed, dateFormat)
-                          : (placeholder ?? 'Chọn ngày');
-                      })()}
-                    </span>
-                    <span className='flex items-center gap-1'>
-                      {clearable && hasValue && !disabled && (
-                        <span
-                          role='button'
-                          aria-label='Clear date'
-                          onClick={handleClear}
-                          className='rounded-full p-0.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600'
-                        >
-                          <X className='h-3.5 w-3.5' />
-                        </span>
-                      )}
-                      <CalendarIcon className='h-4 w-4' />
-                    </span>
-                  </Button>
-                </FormControl>
-              </PopoverTrigger>
-              <PopoverContent
-                className='w-90 origin-top space-y-2 p-4'
-                align='center'
-                sideOffset={8}
-              >
-                <Calendar
-                  locale={calendarLocale}
-                  className='w-full'
-                  mode='single'
-                  selected={parsedValue}
-                  onSelect={(date) => {
-                    if (date) {
-                      field.onChange(format(date, dateFormat));
-                      setOpen(false);
-                    }
-                  }}
-                  classNames={{
-                    day_button:
-                      'data-[selected-single=true]:bg-main-color data-[selected-single=true]:text-white cursor-pointer ring-0! !focus-visible:ring-0 !focus-visible:ring-offset-0',
-                    button_next:
-                      'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -mr-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-main-color',
-                    button_previous:
-                      'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -ml-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-main-color'
-                  }}
-                  captionLayout='dropdown'
-                  defaultMonth={parsedValue ?? new Date()}
-                  startMonth={new Date(1700, 0)}
-                  endMonth={new Date(2050, 12)}
-                  components={{ Dropdown: CustomSelectDropdown }}
-                  formatters={{
-                    formatMonthDropdown: (date) =>
-                      date.toLocaleString('vi-VN', { month: 'long' })
-                  }}
-                  onMonthChange={(month: Date) => {
-                    const firstDay = new Date(
-                      month.getFullYear(),
-                      month.getMonth(),
-                      1
-                    );
-                    field.onChange(format(firstDay, dateFormat));
-                  }}
-                />
-                <div className='flex gap-2'>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    className='flex-1'
-                    onClick={() => {
-                      const today = new Date();
-                      field.onChange(format(today, dateFormat));
-                      setOpen(false);
-                    }}
-                  >
-                    Hôm nay
-                  </Button>
-                  {clearable && (
+            <FormControl>
+              <div>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
                     <Button
-                      type='button'
+                      ref={triggerRef}
+                      disabled={disabled}
                       variant='outline'
-                      className='flex-1'
-                      onClick={() => {
-                        field.onChange('');
-                        setOpen(false);
-                      }}
+                      role='combobox'
+                      className={cn(
+                        'hover:border-input focus-visible:border-input dark:hover:border-input dark:bg-input/30 dark:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 dark:text-white dark:hover:text-white',
+                        {
+                          'ring-main-color border-transparent! ring-2': open,
+                          '[&>div>span]:text-gray-300': fieldState.invalid,
+                          'border-red-500 ring-red-500': !!fieldState.error
+                        }
+                      )}
                     >
-                      Xóa
+                      <span suppressHydrationWarning>
+                        {(() => {
+                          const parsed = parseDate(field.value);
+                          return parsed && !isNaN(parsed.getTime())
+                            ? format(parsed, dateFormat)
+                            : (placeholder ?? 'Chọn ngày');
+                        })()}
+                      </span>
+                      <span className='flex items-center gap-1'>
+                        {clearable && hasValue && !disabled && (
+                          <span
+                            role='button'
+                            aria-label='Clear date'
+                            onClick={handleClear}
+                            className='rounded-full p-0.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600'
+                          >
+                            <X className='h-3.5 w-3.5' />
+                          </span>
+                        )}
+                        <CalendarIcon className='h-4 w-4' />
+                      </span>
                     </Button>
-                  )}
-                </div>
-              </PopoverContent>
-            </Popover>
-            {description && <FormDescription>{description}</FormDescription>}
-            {fieldState.error && (
-              <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
-                <FormMessage className='leading-5.5' />
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className='w-90 origin-top'
+                    align='center'
+                    sideOffset={8}
+                  >
+                    <Calendar
+                      locale={calendarLocale}
+                      className='w-full p-0'
+                      mode='single'
+                      selected={parsedValue}
+                      onSelect={(date) => {
+                        if (date) {
+                          field.onChange(format(date, dateFormat));
+                          setOpen(false);
+                        }
+                      }}
+                      classNames={{
+                        day_button:
+                          'data-[selected-single=true]:bg-main-color data-[selected-single=true]:text-white cursor-pointer ring-0! !focus-visible:ring-0 !focus-visible:ring-offset-0',
+                        button_next:
+                          'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -mr-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-main-color',
+                        button_previous:
+                          'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -ml-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-main-color'
+                      }}
+                      captionLayout='dropdown'
+                      defaultMonth={parsedValue ?? new Date()}
+                      startMonth={new Date(1700, 0)}
+                      endMonth={new Date(2050, 12)}
+                      components={{ Dropdown: CustomSelectDropdown }}
+                      formatters={{
+                        formatMonthDropdown: (date) =>
+                          date.toLocaleString('vi-VN', { month: 'long' })
+                      }}
+                      onMonthChange={(month: Date) => {
+                        const firstDay = new Date(
+                          month.getFullYear(),
+                          month.getMonth(),
+                          1
+                        );
+                        field.onChange(format(firstDay, dateFormat));
+                      }}
+                    />
+                    <div className='flex gap-2'>
+                      <Button
+                        type='button'
+                        variant='outline'
+                        className='flex-1'
+                        onClick={() => {
+                          const today = new Date();
+                          field.onChange(format(today, dateFormat));
+                          setOpen(false);
+                        }}
+                      >
+                        Hôm nay
+                      </Button>
+                      {clearable && (
+                        <Button
+                          type='button'
+                          variant='outline'
+                          className='flex-1'
+                          onClick={() => {
+                            field.onChange('');
+                            setOpen(false);
+                          }}
+                        >
+                          Xóa
+                        </Button>
+                      )}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {description && (
+                  <FormDescription>{description}</FormDescription>
+                )}
+                {fieldState.error && (
+                  <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                    <FormMessage className='leading-5.5' />
+                  </div>
+                )}
               </div>
-            )}
+            </FormControl>
           </FormItem>
         );
       }}

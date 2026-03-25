@@ -134,204 +134,209 @@ export default function DateTimePickerField<T extends FieldValues>({
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
             )}
-            <Popover open={isOpen} onOpenChange={setIsOpen}>
-              <PopoverTrigger asChild>
-                <FormControl>
-                  <Button
-                    disabled={disabled}
-                    variant='outline'
-                    className={cn(
-                      'w-full justify-between text-left font-normal text-black opacity-100',
-                      'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
-                      'data-[state=open]:border-main-color data-[state=open]:ring-main-color hover:border-input px-3! text-black shadow-none hover:text-black data-[state=open]:ring-1',
-                      {
-                        'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
-                          fieldState.error,
-                        'text-gray-300 hover:text-gray-300': !field.value
-                      }
-                    )}
-                  >
-                    <span suppressHydrationWarning>
-                      {(() => {
-                        const parsed = parseDate(field.value);
-                        return parsed && !isNaN(parsed.getTime())
-                          ? format(parsed, dateFormat)
-                          : (placeholder ?? 'Chọn ngày');
-                      })()}
-                    </span>
-                    <span className='flex items-center gap-1'>
-                      {clearable && hasValue && !disabled && (
-                        <span
-                          role='button'
-                          aria-label='Clear date'
-                          onClick={handleClear}
-                          className='rounded-full p-0.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600'
-                        >
-                          <X className='h-3.5 w-3.5' />
-                        </span>
-                      )}
-                      <CalendarIcon className='h-4 w-4' />
-                    </span>
-                  </Button>
-                </FormControl>
-              </PopoverTrigger>
-              <PopoverContent sideOffset={8} className='w-120 p-0'>
-                <div className='sm:flex'>
-                  <Calendar
-                    className='flex-1'
-                    classNames={{
-                      day_button:
-                        'data-[selected-single=true]:bg-main-color data-[selected-single=true]:text-white cursor-pointer ring-0! !focus-visible:ring-0 !focus-visible:ring-offset-0',
-                      button_next:
-                        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -mr-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-main-color',
-                      button_previous:
-                        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -ml-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-main-color'
-                    }}
-                    locale={calendarLocale}
-                    mode='single'
-                    selected={date}
-                    onSelect={handleDateSelect}
-                    initialFocus
-                    captionLayout='dropdown'
-                    defaultMonth={date ?? new Date()}
-                    startMonth={new Date(1900, 0)}
-                    endMonth={new Date(2050, 12)}
-                    components={{ Dropdown: CustomSelectDropdown }}
-                    formatters={{
-                      formatMonthDropdown: (date) =>
-                        date.toLocaleString('vi-VN', { month: 'long' })
-                    }}
-                    onMonthChange={(month: Date) => {
-                      const firstDay = new Date(
-                        month.getFullYear(),
-                        month.getMonth(),
-                        1
-                      );
-                      updateFieldValue(firstDay);
-                    }}
-                  />
-                  <div className='flex flex-col divide-y sm:h-85 sm:flex-row sm:divide-x sm:divide-y-0'>
-                    {/* Hour */}
-                    <ScrollArea className='w-64 sm:w-auto'>
-                      <div className='flex p-2 sm:flex-col'>
-                        {hours.map((h) => (
-                          <Button
-                            key={h}
-                            size='icon'
-                            variant={hour === h ? 'primary' : 'ghost'}
-                            className='aspect-square shrink-0 sm:w-full'
-                            onClick={() => handleTimeChange('hour', h)}
-                            ref={(el) => {
-                              if (hour === h && el) {
-                                el.scrollIntoView({
-                                  block: 'center',
-                                  behavior: 'smooth'
-                                });
-                              }
-                            }}
-                          >
-                            {String(h).padStart(2, '0')}
-                          </Button>
-                        ))}
-                      </div>
-                      <ScrollBar
-                        orientation='horizontal'
-                        className='sm:hidden'
-                      />
-                    </ScrollArea>
-                    {/* Minute */}
-                    <ScrollArea className='w-64 sm:w-auto'>
-                      <div className='flex p-2 sm:flex-col'>
-                        {minutes.map((m) => (
-                          <Button
-                            key={m}
-                            size='icon'
-                            variant={minute === m ? 'primary' : 'ghost'}
-                            className='aspect-square shrink-0 sm:w-full'
-                            onClick={() => handleTimeChange('minute', m)}
-                            ref={(el) => {
-                              if (minute === m && el) {
-                                el.scrollIntoView({
-                                  block: 'center',
-                                  behavior: 'smooth'
-                                });
-                              }
-                            }}
-                          >
-                            {String(m).padStart(2, '0')}
-                          </Button>
-                        ))}
-                      </div>
-                      <ScrollBar
-                        orientation='horizontal'
-                        className='sm:hidden'
-                      />
-                    </ScrollArea>
-                    {/* Second */}
-                    <ScrollArea className='w-64 sm:w-auto'>
-                      <div className='flex p-2 sm:flex-col'>
-                        {seconds.map((s) => (
-                          <Button
-                            key={s}
-                            size='icon'
-                            variant={second === s ? 'primary' : 'ghost'}
-                            className='aspect-square shrink-0 sm:w-full'
-                            onClick={() => handleTimeChange('second', s)}
-                            ref={(el) => {
-                              if (second === s && el) {
-                                el.scrollIntoView({
-                                  block: 'center',
-                                  behavior: 'smooth'
-                                });
-                              }
-                            }}
-                          >
-                            {String(s).padStart(2, '0')}
-                          </Button>
-                        ))}
-                      </div>
-                      <ScrollBar
-                        orientation='horizontal'
-                        className='sm:hidden'
-                      />
-                    </ScrollArea>
-                  </div>
-                </div>
-                <div className='flex justify-end gap-2 border-t p-2'>
-                  {clearable && (
+            <FormControl>
+              <div>
+                <Popover open={isOpen} onOpenChange={setIsOpen}>
+                  <PopoverTrigger asChild>
                     <Button
-                      size='lg'
+                      disabled={disabled}
                       variant='outline'
-                      className='mx-auto w-1/2'
-                      onClick={() => {
-                        field.onChange('');
-                        setIsOpen(false);
-                      }}
+                      role='combobox'
+                      className={cn(
+                        'w-full justify-between text-left font-normal text-black opacity-100',
+                        'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
+                        'data-[state=open]:border-main-color data-[state=open]:ring-main-color hover:border-input px-3! shadow-none hover:text-black data-[state=open]:ring-1',
+                        {
+                          'text-gray-300 hover:text-gray-300': !field.value,
+                          'border-red-500 hover:border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
+                            fieldState.error
+                        }
+                      )}
                     >
-                      Xóa
+                      <span suppressHydrationWarning>
+                        {(() => {
+                          const parsed = parseDate(field.value);
+                          return parsed && !isNaN(parsed.getTime())
+                            ? format(parsed, dateFormat)
+                            : (placeholder ?? 'Chọn ngày');
+                        })()}
+                      </span>
+                      <span className='flex items-center gap-1'>
+                        {clearable && hasValue && !disabled && (
+                          <span
+                            role='button'
+                            aria-label='Clear date'
+                            onClick={handleClear}
+                            className='rounded-full p-0.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600'
+                          >
+                            <X className='h-3.5 w-3.5' />
+                          </span>
+                        )}
+                        <CalendarIcon className='h-4 w-4' />
+                      </span>
                     </Button>
-                  )}
-                  <Button
-                    size='lg'
-                    variant='primary'
-                    className='mx-auto w-1/2'
-                    onClick={() => {
-                      const now = new Date();
-                      updateFieldValue(now);
-                      setIsOpen(false);
-                    }}
-                  >
-                    Hôm nay
-                  </Button>
-                </div>
-              </PopoverContent>
-            </Popover>
-            {description && <FormDescription>{description}</FormDescription>}
-            {fieldState.error && (
-              <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
-                <FormMessage className='leading-5.5' />
+                  </PopoverTrigger>
+                  <PopoverContent sideOffset={8} className='w-120 p-0'>
+                    <div className='sm:flex'>
+                      <Calendar
+                        className='w-full flex-1 p-0'
+                        classNames={{
+                          day_button:
+                            'data-[selected-single=true]:bg-main-color data-[selected-single=true]:text-white cursor-pointer ring-0! !focus-visible:ring-0 !focus-visible:ring-offset-0',
+                          button_next:
+                            'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -mr-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-main-color',
+                          button_previous:
+                            'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -ml-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-main-color'
+                        }}
+                        locale={calendarLocale}
+                        mode='single'
+                        selected={date}
+                        onSelect={handleDateSelect}
+                        initialFocus
+                        captionLayout='dropdown'
+                        defaultMonth={date ?? new Date()}
+                        startMonth={new Date(1900, 0)}
+                        endMonth={new Date(2050, 12)}
+                        components={{ Dropdown: CustomSelectDropdown }}
+                        formatters={{
+                          formatMonthDropdown: (date) =>
+                            date.toLocaleString('vi-VN', { month: 'long' })
+                        }}
+                        onMonthChange={(month: Date) => {
+                          const firstDay = new Date(
+                            month.getFullYear(),
+                            month.getMonth(),
+                            1
+                          );
+                          updateFieldValue(firstDay);
+                        }}
+                      />
+                      <div className='flex flex-col divide-y sm:h-85 sm:flex-row sm:divide-x sm:divide-y-0'>
+                        {/* Hour */}
+                        <ScrollArea className='w-64 sm:w-auto'>
+                          <div className='flex p-2 sm:flex-col'>
+                            {hours.map((h) => (
+                              <Button
+                                key={h}
+                                size='icon'
+                                variant={hour === h ? 'primary' : 'ghost'}
+                                className='aspect-square shrink-0 sm:w-full'
+                                onClick={() => handleTimeChange('hour', h)}
+                                ref={(el) => {
+                                  if (hour === h && el) {
+                                    el.scrollIntoView({
+                                      block: 'center',
+                                      behavior: 'smooth'
+                                    });
+                                  }
+                                }}
+                              >
+                                {String(h).padStart(2, '0')}
+                              </Button>
+                            ))}
+                          </div>
+                          <ScrollBar
+                            orientation='horizontal'
+                            className='sm:hidden'
+                          />
+                        </ScrollArea>
+                        {/* Minute */}
+                        <ScrollArea className='w-64 sm:w-auto'>
+                          <div className='flex p-2 sm:flex-col'>
+                            {minutes.map((m) => (
+                              <Button
+                                key={m}
+                                size='icon'
+                                variant={minute === m ? 'primary' : 'ghost'}
+                                className='aspect-square shrink-0 sm:w-full'
+                                onClick={() => handleTimeChange('minute', m)}
+                                ref={(el) => {
+                                  if (minute === m && el) {
+                                    el.scrollIntoView({
+                                      block: 'center',
+                                      behavior: 'smooth'
+                                    });
+                                  }
+                                }}
+                              >
+                                {String(m).padStart(2, '0')}
+                              </Button>
+                            ))}
+                          </div>
+                          <ScrollBar
+                            orientation='horizontal'
+                            className='sm:hidden'
+                          />
+                        </ScrollArea>
+                        {/* Second */}
+                        <ScrollArea className='w-64 sm:w-auto'>
+                          <div className='flex p-2 sm:flex-col'>
+                            {seconds.map((s) => (
+                              <Button
+                                key={s}
+                                size='icon'
+                                variant={second === s ? 'primary' : 'ghost'}
+                                className='aspect-square shrink-0 sm:w-full'
+                                onClick={() => handleTimeChange('second', s)}
+                                ref={(el) => {
+                                  if (second === s && el) {
+                                    el.scrollIntoView({
+                                      block: 'center',
+                                      behavior: 'smooth'
+                                    });
+                                  }
+                                }}
+                              >
+                                {String(s).padStart(2, '0')}
+                              </Button>
+                            ))}
+                          </div>
+                          <ScrollBar
+                            orientation='horizontal'
+                            className='sm:hidden'
+                          />
+                        </ScrollArea>
+                      </div>
+                    </div>
+                    <div className='flex justify-end gap-2 border-t p-2'>
+                      {clearable && (
+                        <Button
+                          size='lg'
+                          variant='outline'
+                          className='mx-auto w-1/2'
+                          onClick={() => {
+                            field.onChange('');
+                            setIsOpen(false);
+                          }}
+                        >
+                          Xóa
+                        </Button>
+                      )}
+                      <Button
+                        size='lg'
+                        variant='primary'
+                        className='mx-auto w-1/2'
+                        onClick={() => {
+                          const now = new Date();
+                          updateFieldValue(now);
+                          setIsOpen(false);
+                        }}
+                      >
+                        Hôm nay
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {description && (
+                  <FormDescription>{description}</FormDescription>
+                )}
+                {fieldState.error && (
+                  <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                    <FormMessage className='leading-5.5' />
+                  </div>
+                )}
               </div>
-            )}
+            </FormControl>
           </FormItem>
         );
       }}

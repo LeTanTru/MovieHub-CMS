@@ -68,6 +68,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
     isEditing,
     queryString,
     responseCode,
+    onFormChange,
     handleSubmit,
     renderActions
   } = useSaveBase<MovieResType, MovieBodyType>({
@@ -231,6 +232,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
         defaultValues={defaultValues}
         schema={movieSchema}
         initialValues={initialValues}
+        onFormChange={onFormChange}
       >
         {(form) => (
           <>

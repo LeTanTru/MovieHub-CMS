@@ -418,6 +418,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       permissionCode: 'MOV_I_U',
       isRequiredXClientType: true
+    },
+    markLatest: {
+      baseUrl: `${AppConstants.apiUrl}/v1/movie-item/mark-lastest/:id`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'MOV_I_U',
+      isRequiredXClientType: true
     }
   },
   moviePerson: {
@@ -640,6 +647,13 @@ const apiConfig = defineApiConfig({
     },
     updateOrdering: {
       baseUrl: `${AppConstants.apiUrl}/v1/sidebar/update-ordering`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'SBD_U',
+      isRequiredXClientType: true
+    },
+    changeActive: {
+      baseUrl: `${AppConstants.apiUrl}/v1/sidebar/change-active`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'SBD_U',

@@ -28,14 +28,14 @@ export default function MoviePersonModal({
   movieId,
   open,
   listQuery,
-  close
+  onClose
 }: {
   moviePersonList?: MoviePersonResType[];
   movieId: string;
   kind: number;
   open: boolean;
   listQuery: UseQueryResult<ApiResponseList<MoviePersonResType>, Error>;
-  close: () => void;
+  onClose: () => void;
 }) {
   const { mutateAsync: createMoviePersonMutate } =
     useCreateMoviePersonMutation();
@@ -73,12 +73,17 @@ export default function MoviePersonModal({
     });
   };
 
+  const handleClose = () => {
+    onClose();
+    setIsFormChanged(false);
+  };
+
   return (
     <Modal
       title={`Thêm ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`}
       open={open}
-      onClose={close}
-      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3'
+      onClose={handleClose}
+      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-50'
       aria-labelledby='video-modal-title'
       confirmOnClose={isFormChanged}
     >
@@ -117,13 +122,18 @@ export default function MoviePersonModal({
                   placeholder={`${kind === PERSON_KIND_ACTOR ? 'Diễn viên' : 'Đạo diễn'}`}
                   renderOption={(opt) => {
                     return (
-                      <div className='flex items-center gap-x-2'>
+                      <div className='flex items-center gap-2'>
                         <AvatarField
                           src={renderImageUrl(opt.extra?.avatarPath)}
                           disablePreview
                           alt={getLastWord(opt.extra?.name ?? '')}
                         />
-                        <span>{opt.extra?.otherName}</span>
+                        <div className='flex flex-col justify-between'>
+                          <span>{opt.extra?.otherName}</span>
+                          <span className='text-xs text-gray-500'>
+                            {opt.extra?.name}
+                          </span>
+                        </div>
                       </div>
                     );
                   }}

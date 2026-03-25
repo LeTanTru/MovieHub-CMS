@@ -32,12 +32,11 @@ export default function GroupPermissionList({
 }: {
   queryKey: string;
 }) {
-  const { opened, open, close } = useDisclosure(false);
+  const { opened, open, close } = useDisclosure();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<
     GroupPermissionResType | null | undefined
   >(null);
-  const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
 
   const {
     data: groupPermissionList,
@@ -85,6 +84,8 @@ export default function GroupPermissionList({
 
   const {
     data: groupPermission,
+    isFormChanged,
+    onFormChange,
     handleSubmit,
     renderActions
   } = useSaveBase<GroupPermissionResType, GroupPermissionBodyType>({
@@ -120,6 +121,7 @@ export default function GroupPermissionList({
   };
 
   const handleClose = () => {
+    onFormChange(false);
     close();
   };
 
@@ -215,7 +217,7 @@ export default function GroupPermissionList({
           initialValues={initialValues}
           onSubmit={onSubmit}
           schema={groupPermissionSchema}
-          onFormChange={setIsFormChanged}
+          onFormChange={onFormChange}
         >
           {(form) => (
             <>

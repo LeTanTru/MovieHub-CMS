@@ -2,6 +2,7 @@
 
 import './auto-complete-field.css';
 import {
+  FormControl,
   FormDescription,
   FormField,
   FormItem,
@@ -255,172 +256,174 @@ export default function AutoCompleteField<
               </FormLabel>
             )}
 
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  type='button'
-                  variant='outline'
-                  role='combobox'
-                  aria-label='Select'
-                  disabled={disabled}
-                  title={selectedOption?.label ?? ''}
-                  className={cn(
-                    'hover:border-input w-full flex-nowrap justify-between truncate border px-3! py-0 text-black opacity-80 opacity-100 hover:text-black focus:ring-0 focus-visible:shadow-none focus-visible:ring-0',
-                    {
-                      'disabled:cursor-not-allowed disabled:opacity-100 disabled:hover:bg-transparent disabled:[&>div>span]:opacity-80':
-                        disabled,
-                      'ring-main-color border-transparent! ring-2': open,
-                      '[&>div>span]:text-gray-300': fieldState.invalid,
-                      'border-red-500 ring-red-500': !!fieldState.error
-                    }
-                  )}
-                >
-                  {selectedOption ? (
-                    <div className='flex min-w-0 flex-1 items-center gap-2'>
-                      {selectedOption.prefix}
-                      <span className='truncate text-black'>
-                        {selectedOption.label}
-                      </span>
-                    </div>
-                  ) : (
-                    <span className='opacity-30'>{placeholder}</span>
-                  )}
-
-                  {field.value && allowClear ? (
-                    <span
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        clearValue();
-                      }}
-                      className='bg-accent ml-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-full px-0 hover:opacity-80'
-                    >
-                      <X className='size-3' />
-                    </span>
-                  ) : (
-                    <ChevronDown className='ml-0 h-4 w-4 shrink-0 opacity-50' />
-                  )}
-                </Button>
-              </PopoverTrigger>
-
-              {description && (
-                <FormDescription className='ml-1.5'>
-                  {description}
-                </FormDescription>
-              )}
-
-              <PopoverContent
-                sideOffset={8}
-                className='scroll-bar max-h-[60vh] w-(--radix-popover-trigger-width) overflow-auto p-0'
-              >
-                <Command
-                  shouldFilter={false}
-                  className='bg-background'
-                  ref={commandRef}
-                >
-                  <CommandInput
-                    placeholder={searchText}
-                    value={search}
-                    onValueChange={setSearch}
-                    ref={commandInputRef}
-                    onKeyDown={(e) => {
-                      if (combinedOptions.length === 0) return;
-                      switch (e.key) {
-                        case 'ArrowDown':
-                          e.preventDefault();
-                          setHighlightedIndex((prev) =>
-                            prev < combinedOptions.length - 1 ? prev + 1 : 0
-                          );
-                          break;
-                        case 'ArrowUp':
-                          e.preventDefault();
-                          setHighlightedIndex((prev) =>
-                            prev > 0 ? prev - 1 : combinedOptions.length - 1
-                          );
-                          break;
-                        case 'Enter':
-                          e.preventDefault();
-                          const selected = combinedOptions[highlightedIndex];
-                          if (selected) toggleValue(selected.value);
-                          break;
-                        case 'Escape':
-                          setOpen(false);
-                          break;
-                      }
-                    }}
-                  />
-                  {options.length === 0 && !loading ? (
-                    <CommandEmpty className='mx-auto h-50 pt-2 pb-4 text-center text-sm'>
-                      <Image
-                        src={emptyData.src}
-                        width={120}
-                        height={50}
-                        className='mx-auto'
-                        alt={notFoundContent as string}
-                      />
-                      {notFoundContent}
-                    </CommandEmpty>
-                  ) : (
-                    <CommandGroup
-                      onMouseLeave={() => {
-                        setHighlightedIndex(-1);
-                        if (commandRef.current) {
-                          const items =
-                            commandRef.current.querySelectorAll('[cmdk-item]');
-                          items.forEach((item) => {
-                            item.setAttribute('data-selected', 'false');
-                            item.setAttribute('aria-selected', 'false');
-                          });
+            <FormControl>
+              <div>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type='button'
+                      variant='outline'
+                      role='combobox'
+                      aria-label='Select'
+                      disabled={disabled}
+                      title={selectedOption?.label ?? ''}
+                      className={cn(
+                        'hover:border-input focus-visible:border-input dark:hover:border-input dark:bg-input/30 dark:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 dark:text-white dark:hover:text-white',
+                        {
+                          'ring-main-color border-transparent! ring-2': open,
+                          '[&>div>span]:text-gray-300': fieldState.invalid,
+                          'border-red-500 ring-red-500': !!fieldState.error
                         }
-                      }}
-                    >
-                      {loading ? (
-                        <CircleLoading className='stroke-main-color my-2 size-7' />
-                      ) : (
-                        combinedOptions.map((opt, idx) => {
-                          const value = opt.value;
-                          const isSelected = value === selectedValue;
-                          return (
-                            <CommandItem
-                              key={opt.value}
-                              onSelect={() => toggleValue(opt.value)}
-                              onMouseEnter={() => setHighlightedIndex(idx)}
-                              onMouseLeave={() => setHighlightedIndex(-1)}
-                              title={opt.label}
-                              className={cn(
-                                'block cursor-pointer truncate rounded transition-all duration-200 ease-linear',
-                                {
-                                  'bg-accent text-accent-foreground':
-                                    highlightedIndex === idx,
-                                  'bg-main-color/10': isSelected
-                                }
-                              )}
-                            >
-                              {renderOption ? (
-                                renderOption(opt)
-                              ) : (
-                                <>
-                                  {opt.prefix && (
-                                    <span className='mr-1 font-mono text-xs opacity-70'>
-                                      {opt.prefix}
-                                    </span>
-                                  )}
-                                  {opt.label}
-                                </>
-                              )}
-                            </CommandItem>
-                          );
-                        })
                       )}
-                    </CommandGroup>
-                  )}
-                </Command>
-              </PopoverContent>
-            </Popover>
-            {fieldState.error && (
-              <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
-                <FormMessage className='leading-5.5' />
+                    >
+                      {selectedOption ? (
+                        <div className='flex min-w-0 flex-1 items-center gap-2'>
+                          {selectedOption.prefix}
+                          <span className='truncate text-black'>
+                            {selectedOption.label}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className='opacity-30'>{placeholder}</span>
+                      )}
+
+                      {field.value && allowClear ? (
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            clearValue();
+                          }}
+                          className='bg-accent ml-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-full px-0 hover:opacity-80'
+                        >
+                          <X className='size-3' />
+                        </span>
+                      ) : (
+                        <ChevronDown className='ml-0 h-4 w-4 shrink-0 opacity-50' />
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+
+                  <PopoverContent
+                    sideOffset={8}
+                    className='scroll-bar max-h-[60vh] w-(--radix-popover-trigger-width) overflow-auto p-0'
+                  >
+                    <Command
+                      shouldFilter={false}
+                      className='bg-background'
+                      ref={commandRef}
+                    >
+                      <CommandInput
+                        placeholder={searchText}
+                        value={search}
+                        onValueChange={setSearch}
+                        ref={commandInputRef}
+                        onKeyDown={(e) => {
+                          if (combinedOptions.length === 0) return;
+                          switch (e.key) {
+                            case 'ArrowDown':
+                              e.preventDefault();
+                              setHighlightedIndex((prev) =>
+                                prev < combinedOptions.length - 1 ? prev + 1 : 0
+                              );
+                              break;
+                            case 'ArrowUp':
+                              e.preventDefault();
+                              setHighlightedIndex((prev) =>
+                                prev > 0 ? prev - 1 : combinedOptions.length - 1
+                              );
+                              break;
+                            case 'Enter':
+                              e.preventDefault();
+                              const selected =
+                                combinedOptions[highlightedIndex];
+                              if (selected) toggleValue(selected.value);
+                              break;
+                            case 'Escape':
+                              setOpen(false);
+                              break;
+                          }
+                        }}
+                      />
+                      {options.length === 0 && !loading ? (
+                        <CommandEmpty className='mx-auto h-50 pt-2 pb-4 text-center text-sm'>
+                          <Image
+                            src={emptyData.src}
+                            width={120}
+                            height={50}
+                            className='mx-auto'
+                            alt={notFoundContent as string}
+                          />
+                          {notFoundContent}
+                        </CommandEmpty>
+                      ) : (
+                        <CommandGroup
+                          onMouseLeave={() => {
+                            setHighlightedIndex(-1);
+                            if (commandRef.current) {
+                              const items =
+                                commandRef.current.querySelectorAll(
+                                  '[cmdk-item]'
+                                );
+                              items.forEach((item) => {
+                                item.setAttribute('data-selected', 'false');
+                                item.setAttribute('aria-selected', 'false');
+                              });
+                            }
+                          }}
+                        >
+                          {loading ? (
+                            <CircleLoading className='stroke-main-color my-2 size-7' />
+                          ) : (
+                            combinedOptions.map((opt, idx) => {
+                              const value = opt.value;
+                              const isSelected = value === selectedValue;
+                              return (
+                                <CommandItem
+                                  key={opt.value}
+                                  onSelect={() => toggleValue(opt.value)}
+                                  onMouseEnter={() => setHighlightedIndex(idx)}
+                                  onMouseLeave={() => setHighlightedIndex(-1)}
+                                  title={opt.label}
+                                  className={cn(
+                                    'block cursor-pointer truncate rounded transition-all duration-200 ease-linear',
+                                    {
+                                      'bg-accent text-accent-foreground':
+                                        highlightedIndex === idx,
+                                      'bg-main-color/10': isSelected
+                                    }
+                                  )}
+                                >
+                                  {renderOption ? (
+                                    renderOption(opt)
+                                  ) : (
+                                    <>
+                                      {opt.prefix && (
+                                        <span className='mr-1 font-mono text-xs opacity-70'>
+                                          {opt.prefix}
+                                        </span>
+                                      )}
+                                      {opt.label}
+                                    </>
+                                  )}
+                                </CommandItem>
+                              );
+                            })
+                          )}
+                        </CommandGroup>
+                      )}
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                {description && (
+                  <FormDescription>{description}</FormDescription>
+                )}
+                {fieldState.error && (
+                  <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                    <FormMessage className='leading-5.5' />
+                  </div>
+                )}
               </div>
-            )}
+            </FormControl>
           </FormItem>
         );
       }}

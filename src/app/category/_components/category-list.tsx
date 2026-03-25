@@ -22,7 +22,7 @@ import { AiOutlineEdit } from 'react-icons/ai';
 export default function CategoryList({ queryKey }: { queryKey: string }) {
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryResType | null>(null);
-  const categoryModal = useDisclosure(false);
+  const { opened, open, close } = useDisclosure();
 
   const { data, pagination, loading, handlers } = useListBase<
     CategoryResType,
@@ -82,12 +82,12 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
 
   const handleAddCategory = () => {
     setSelectedCategory(null);
-    categoryModal.open();
+    open();
   };
 
   const handleUpdateCategory = (record: CategoryResType) => {
     setSelectedCategory(record);
-    categoryModal.open();
+    open();
   };
 
   const columns: Column<CategoryResType>[] = [
@@ -128,8 +128,8 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
         />
       </ListPageWrapper>
       <CategoryModal
-        open={categoryModal.opened}
-        onClose={categoryModal.close}
+        open={opened}
+        onClose={close}
         category={selectedCategory}
       />
     </PageWrapper>

@@ -148,28 +148,12 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
     {
       title: 'Số điện thoại',
       dataIndex: 'phone',
-      width: 200,
+      width: 150,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
           {value ?? '------'}
         </span>
       ),
-      align: 'center'
-    },
-    {
-      title: 'Vai trò',
-      dataIndex: 'kind',
-      width: 120,
-      render: (_, record) => {
-        return (
-          <span
-            className='line-clamp-1 block truncate'
-            title={record.group.name}
-          >
-            {record.group.name ?? '------'}
-          </span>
-        );
-      },
       align: 'center'
     },
     handlers.renderStatusColumn({ statusOptions: employeeStatusOptions }),
