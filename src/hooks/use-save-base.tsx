@@ -126,6 +126,14 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
         onSuccess: async (res) => {
           if (res.result) {
             setIsFormChanged(false);
+            handlers.handleSubmitSuccess();
+            if (showNotify)
+              notify.success(
+                `${isCreate ? 'Thêm mới' : 'Cập nhật'} ${objectName} thành công`
+              );
+            if (listPageUrl) {
+              navigate.push(getBackPath());
+            }
             await Promise.all([
               queryClient.invalidateQueries({
                 queryKey: [queryKey]
@@ -134,14 +142,6 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
                 queryKey: [`${queryKey}-list`]
               })
             ]);
-            if (showNotify)
-              notify.success(
-                `${isCreate ? 'Thêm mới' : 'Cập nhật'} ${objectName} thành công`
-              );
-            if (listPageUrl) {
-              navigate.push(getBackPath());
-            }
-            handlers.handleSubmitSuccess();
           } else {
             const code = res.code;
             if (code && errorMaps?.[code] && form) {

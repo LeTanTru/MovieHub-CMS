@@ -265,10 +265,10 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
       onSuccess: async (res) => {
         if (res.result) {
           if (showNotify) notify.success(`Xoá ${objectName} thành công`);
+          options?.onSuccess?.();
           await queryClient.invalidateQueries({
             queryKey: [`${queryKey}-list`]
           });
-          options?.onSuccess?.();
         } else {
           if (res.code) {
             if (options?.onError) options?.onError(res.code);
