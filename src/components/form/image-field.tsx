@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { EyeIcon } from 'lucide-react';
+import { EyeIcon, ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { AnimatePresence, m } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -178,7 +178,7 @@ export default function ImageField({
           }
         }}
         className={cn(
-          'relative rounded border bg-gray-100 shadow-sm select-none dark:bg-black/15',
+          'relative size-full rounded border bg-gray-100 shadow-sm select-none dark:bg-black/15',
           {
             'cursor-pointer': !shouldDisablePreview,
             'flex items-center justify-center bg-black': originalSize
@@ -250,7 +250,7 @@ export default function ImageField({
           )
         ) : (
           <div className='flex h-full w-full items-center justify-center opacity-50'>
-            <AiOutlineFileImage className='h-12! w-12!' />
+            <ImageIcon className='max-h-1/2 max-w-1/2' />
           </div>
         )}
 

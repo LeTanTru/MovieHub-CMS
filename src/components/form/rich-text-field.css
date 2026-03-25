@@ -4,9 +4,7 @@
 
 .tox-tinymce {
   border: 1px solid #eee !important;
-  transition:
-    box-shadow 0.1s linear,
-    border-color 0.1s linear;
+  transition: all linear 0.2s;
   cursor: text !important;
 }
 
