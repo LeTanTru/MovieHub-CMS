@@ -118,7 +118,7 @@ export default function DatePickerField<T extends FieldValues>({
                         }
                       )}
                     >
-                      <span suppressHydrationWarning>
+                      <span suppressHydrationWarning className='text-gray-300'>
                         {(() => {
                           const parsed = parseDate(field.value);
                           return parsed && !isNaN(parsed.getTime())
