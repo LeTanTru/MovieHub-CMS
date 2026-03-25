@@ -149,8 +149,8 @@ export default function MovieItemModal({
     totalEpisode: 0
   };
 
-  const initialValues: MovieItemBodyType = useMemo(() => {
-    return {
+  const initialValues: MovieItemBodyType = useMemo(
+    () => ({
       description: data?.description ?? '',
       isLatest: data?.isLatest ?? false,
       kind: data?.kind ?? kindOptions?.[0]?.value,
@@ -163,21 +163,22 @@ export default function MovieItemModal({
       thumbnailUrl: data?.thumbnailUrl ?? '',
       videoId: data?.video?.id?.toString() ?? '',
       totalEpisode: data?.totalEpisode ?? 0
-    };
-  }, [
-    data?.description,
-    data?.isLatest,
-    data?.kind,
-    data?.label,
-    data?.releaseDate,
-    data?.thumbnailUrl,
-    data?.title,
-    data?.totalEpisode,
-    data?.video?.id,
-    kindOptions,
-    movieId,
-    parentId
-  ]);
+    }),
+    [
+      data?.description,
+      data?.isLatest,
+      data?.kind,
+      data?.label,
+      data?.releaseDate,
+      data?.thumbnailUrl,
+      data?.title,
+      data?.totalEpisode,
+      data?.video?.id,
+      kindOptions,
+      movieId,
+      parentId
+    ]
+  );
 
   const handleCancel = async () => {
     await imageManager.handleCancel();

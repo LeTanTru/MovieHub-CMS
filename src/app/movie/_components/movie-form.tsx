@@ -134,8 +134,8 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
     }
   };
 
-  const initialValues: MovieBodyType = useMemo(() => {
-    return {
+  const initialValues: MovieBodyType = useMemo(
+    () => ({
       ageRating: data?.ageRating ?? 0,
       categoryIds:
         data?.categories
@@ -155,24 +155,25 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
       title: data?.title ?? '',
       type: data?.type ?? 0,
       year: data?.year || new Date().getFullYear()
-    };
-  }, [
-    data?.ageRating,
-    data?.categories,
-    data?.country,
-    data?.description,
-    data?.imageTitleUrl,
-    data?.isFeatured,
-    data?.language,
-    data?.metadata,
-    data?.originalTitle,
-    data?.posterUrl,
-    data?.releaseDate,
-    data?.thumbnailUrl,
-    data?.title,
-    data?.type,
-    data?.year
-  ]);
+    }),
+    [
+      data?.ageRating,
+      data?.categories,
+      data?.country,
+      data?.description,
+      data?.imageTitleUrl,
+      data?.isFeatured,
+      data?.language,
+      data?.metadata,
+      data?.originalTitle,
+      data?.posterUrl,
+      data?.releaseDate,
+      data?.thumbnailUrl,
+      data?.title,
+      data?.type,
+      data?.year
+    ]
+  );
 
   const handleCancel = async () => {
     await Promise.all([

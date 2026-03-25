@@ -5,35 +5,29 @@ import {
   commentSearchSchema,
   commentVoteSchema
 } from '@/schemaValidations';
+import { ProfileResType } from '@/types/account.type';
+import { MovieItemResType } from '@/types/movie-item.type';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 
 export type CommentResType = {
-  id: string;
-  status: number;
-  modifiedDate: string;
-  createdDate: string;
-  movieId: string;
+  author: ProfileResType;
   content: string;
-  totalLike: number;
-  totalDislike: number;
-  totalChildren: number;
+  createdDate: string;
+  id: string;
   isPinned: boolean;
+  modifiedDate: string;
+  movieId: string;
+  movieItem: MovieItemResType;
+  replyTo: ProfileResType;
+  status: number;
+  totalChildren: number;
+  totalDislike: number;
+  totalLike: number;
   parent: {
     id: string;
-    authorInfo: string;
+    author: ProfileResType;
   };
-  authorInfo: string;
-  replyToInfo: string;
-};
-
-export type AuthorInfoType = {
-  id: string;
-  email: string;
-  fullName: string;
-  kind: number;
-  avatarPath: string;
-  gender: number;
 };
 
 export type CommentBodyType = z.infer<typeof commentSchema>;

@@ -90,8 +90,8 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
     newPassword: ''
   };
 
-  const initialValues: EmployeeBodyType = useMemo(() => {
-    return {
+  const initialValues: EmployeeBodyType = useMemo(
+    () => ({
       username: data?.username ?? '',
       email: data?.email ?? '',
       fullName: data?.fullName ?? '',
@@ -104,16 +104,17 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
       confirmNewPassword: '',
       newPassword: '',
       oldPassword: ''
-    };
-  }, [
-    data?.avatarPath,
-    data?.email,
-    data?.fullName,
-    data?.group?.id,
-    data?.phone,
-    data?.status,
-    data?.username
-  ]);
+    }),
+    [
+      data?.avatarPath,
+      data?.email,
+      data?.fullName,
+      data?.group?.id,
+      data?.phone,
+      data?.status,
+      data?.username
+    ]
+  );
 
   const handleCancel = async () => {
     await imageManager.handleCancel();

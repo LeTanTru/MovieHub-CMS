@@ -31,7 +31,7 @@ export default function CommentInput({
 
   const pickerContainerRef = useRef<HTMLDivElement>(null);
 
-  const { loading, handleSubmit } = useSaveBase<
+  const { isSubmitting, onFormChange, handleSubmit } = useSaveBase<
     CommentResType,
     CommentBodyType
   >({
@@ -117,7 +117,7 @@ export default function CommentInput({
       defaultValues={defaultValues}
       schema={commentSchema}
       onSubmit={onSubmit}
-      className='-mb-4'
+      onFormChange={onFormChange}
     >
       {(form) => {
         formMethodsRef.current = form;
@@ -129,11 +129,11 @@ export default function CommentInput({
                   control={form.control}
                   name='content'
                   placeholder='Viết bình luận'
-                  className='min-h-20'
+                  className='min-h-30'
                 />
               </Col>
             </Row>
-            <Row className='mt-2 mb-0'>
+            <Row className='mt-4 mb-0'>
               <Col span={24}>
                 <div className='relative ml-auto w-fit' ref={wrapperRef}>
                   <div ref={pickerContainerRef} />
@@ -141,9 +141,9 @@ export default function CommentInput({
                     <Button
                       type='button'
                       onClick={() => setShowPicker((prev) => !prev)}
-                      className='flex w-fit items-center justify-center hover:bg-transparent'
+                      className='flex h-8 w-fit items-center justify-center hover:bg-transparent'
                       variant='ghost'
-                      disabled={loading}
+                      disabled={isSubmitting}
                     >
                       <Image
                         src={emojiIcon.src}
@@ -153,10 +153,10 @@ export default function CommentInput({
                       />
                     </Button>
                     <Button
-                      loading={loading}
+                      loading={isSubmitting}
                       variant='primary'
-                      className='w-20!'
-                      disabled={!form.watch('content')}
+                      disabled={!form.watch('content') || isSubmitting}
+                      className='h-8'
                     >
                       <Send />
                     </Button>

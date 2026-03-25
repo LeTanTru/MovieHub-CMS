@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { useClickOutside, useSaveBase } from '@/hooks';
 import { commentSchema } from '@/schemaValidations';
 import { apiConfig } from '@/constants';
-import type { AuthorInfoType, CommentBodyType, CommentResType } from '@/types';
+import type { CommentBodyType, CommentResType } from '@/types';
 import { emojiIcon } from '@/assets';
 import { useCommentStore } from '@/store';
 import { useShallow } from 'zustand/react/shallow';
@@ -46,11 +46,9 @@ export default function CommentReplyForm({
       }))
     );
 
-  const authorInfo = replyingComment
-    ? (JSON.parse(replyingComment?.authorInfo) as AuthorInfoType)
-    : null;
+  const authorInfo = replyingComment?.author;
 
-  const { loading, handleSubmit } = useSaveBase<
+  const { isSubmitting, handleSubmit } = useSaveBase<
     CommentResType,
     CommentBodyType
   >({
@@ -164,7 +162,7 @@ export default function CommentReplyForm({
                 control={form.control}
                 name='content'
                 placeholder='Viết phản hồi...'
-                className='min-h-20'
+                className='min-h-30'
                 label={
                   <span className='rounded bg-blue-50 px-1.5 py-1 font-semibold text-blue-600'>
                     {defaultMention}
@@ -173,24 +171,16 @@ export default function CommentReplyForm({
                 labelClassName='m-0 mb-1 ml-0.5'
               />
               <div
-                className='relative mt-4 flex items-center justify-end gap-2'
+                className='relative mt-4 flex items-center justify-end gap-4'
                 ref={wrapperRef}
               >
                 <div ref={pickerContainerRef} />
                 <Button
                   type='button'
-                  variant='outline'
-                  onClick={onCancel}
-                  className='border-destructive text-destructive hover:text-destructive/50 hover:border-destructive/50 w-20!'
-                >
-                  Hủy
-                </Button>
-                <Button
-                  type='button'
                   onClick={() => setShowPicker((prev) => !prev)}
                   variant='ghost'
-                  className='flex items-center justify-center hover:bg-transparent'
-                  disabled={loading}
+                  className='flex h-8 items-center justify-center p-0 hover:bg-transparent'
+                  disabled={isSubmitting}
                 >
                   <Image
                     src={emojiIcon.src}
@@ -200,13 +190,24 @@ export default function CommentReplyForm({
                   />
                 </Button>
                 <Button
+                  type='button'
+                  variant='outline'
+                  onClick={onCancel}
+                  className='border-destructive text-destructive hover:text-destructive/50 hover:border-destructive/50'
+                  size='sm'
+                >
+                  Hủy
+                </Button>
+                <Button
                   type='submit'
                   variant='primary'
-                  className='w-20!'
-                  loading={loading}
+                  loading={isSubmitting}
                   disabled={
-                    !form.watch('content') || !form.formState.validatingFields
+                    !form.watch('content') ||
+                    !form.formState.validatingFields ||
+                    isSubmitting
                   }
+                  className='h-8'
                 >
                   <Send />
                 </Button>

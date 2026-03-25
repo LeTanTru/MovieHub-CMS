@@ -143,17 +143,15 @@ export default function DateTimePickerField<T extends FieldValues>({
                       variant='outline'
                       role='combobox'
                       className={cn(
-                        'w-full justify-between text-left font-normal text-black opacity-100',
-                        'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
-                        'data-[state=open]:border-main-color data-[state=open]:ring-main-color hover:border-input px-3! shadow-none hover:text-black data-[state=open]:ring-1',
+                        'hover:border-input focus-visible:border-input dark:hover:border-input dark:bg-input/30 dark:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 dark:text-white dark:hover:text-white',
                         {
-                          'text-gray-300 hover:text-gray-300': !field.value,
-                          'border-red-500 hover:border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
-                            fieldState.error
+                          'ring-main-color border-transparent! ring-2': open,
+                          '[&>div>span]:text-gray-300': fieldState.invalid,
+                          'border-red-500 ring-red-500': !!fieldState.error
                         }
                       )}
                     >
-                      <span suppressHydrationWarning>
+                      <span suppressHydrationWarning className='text-gray-300'>
                         {(() => {
                           const parsed = parseDate(field.value);
                           return parsed && !isNaN(parsed.getTime())

@@ -97,8 +97,8 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
     return kinds;
   }, [kind]);
 
-  const initialValues: PersonBodyType = useMemo(() => {
-    return {
+  const initialValues: PersonBodyType = useMemo(
+    () => ({
       avatarPath: data?.avatarPath ?? '',
       bio: data?.bio ?? '',
       country: data?.country ?? '',
@@ -107,18 +107,19 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
       kinds: data?.kinds ?? getKinds(),
       name: data?.name ?? '',
       otherName: data?.otherName ?? ''
-    };
-  }, [
-    data?.avatarPath,
-    data?.bio,
-    data?.country,
-    data?.dateOfBirth,
-    data?.gender,
-    data?.kinds,
-    data?.name,
-    data?.otherName,
-    getKinds
-  ]);
+    }),
+    [
+      data?.avatarPath,
+      data?.bio,
+      data?.country,
+      data?.dateOfBirth,
+      data?.gender,
+      data?.kinds,
+      data?.name,
+      data?.otherName,
+      getKinds
+    ]
+  );
 
   const handleCancel = async () => {
     await imageManager.handleCancel();

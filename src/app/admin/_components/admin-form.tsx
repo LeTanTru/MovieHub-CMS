@@ -30,6 +30,7 @@ import { accountSchema } from '@/schemaValidations';
 import type { AccountBodyType, AccountResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
+import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
 export default function AdminForm({ queryKey }: { queryKey: string }) {
@@ -84,17 +85,28 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
     phone: ''
   };
 
-  const initialValues: AccountBodyType = {
-    username: data?.username ?? '',
-    email: data?.email ?? '',
-    fullName: data?.fullName ?? '',
-    groupId: data?.group?.id?.toString() ?? '',
-    password: '',
-    avatarPath: data?.avatarPath ?? '',
-    status: data?.status ?? STATUS_ACTIVE,
-    confirmPassword: '',
-    phone: data?.phone ?? ''
-  };
+  const initialValues: AccountBodyType = useMemo(
+    () => ({
+      username: data?.username ?? '',
+      email: data?.email ?? '',
+      fullName: data?.fullName ?? '',
+      groupId: data?.group?.id?.toString() ?? '',
+      password: '',
+      avatarPath: data?.avatarPath ?? '',
+      status: data?.status ?? STATUS_ACTIVE,
+      confirmPassword: '',
+      phone: data?.phone ?? ''
+    }),
+    [
+      data?.avatarPath,
+      data?.email,
+      data?.fullName,
+      data?.group?.id,
+      data?.phone,
+      data?.status,
+      data?.username
+    ]
+  );
 
   const imageManager = useFileUploadManager({
     initialUrl: data?.avatarPath,

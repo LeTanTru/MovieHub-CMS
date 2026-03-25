@@ -420,7 +420,7 @@ const apiConfig = defineApiConfig({
       isRequiredXClientType: true
     },
     markLatest: {
-      baseUrl: `${AppConstants.apiUrl}/v1/movie-item/mark-lastest/:id`,
+      baseUrl: `${AppConstants.apiUrl}/v1/movie-item/mark-latest/:id`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'MOV_I_U',

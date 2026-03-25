@@ -154,7 +154,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
         ) : data.length === 0 ? (
           <NoData content='Chưa có bình luận nào' />
         ) : (
-          <div className='mt-4 px-4 pb-4'>
+          <div className='px-4 pb-4'>
             <h4 className='-mb-2 ml-2 font-semibold text-black'>
               Bình luận ({totalElements})
             </h4>

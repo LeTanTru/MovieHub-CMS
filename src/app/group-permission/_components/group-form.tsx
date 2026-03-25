@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Button,
   Col,
   InputField,
   Row,
@@ -10,62 +9,73 @@ import {
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
+import { CircleLoading } from '@/components/loading';
 import { NoData } from '@/components/no-data';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   DEFAULT_TABLE_PAGE_START,
   ErrorCode,
+  apiConfig,
   groupErrorMaps,
   groupKinds,
-  MAX_PAGE_SIZE
+  MAX_PAGE_SIZE,
+  queryKeys
 } from '@/constants';
-import { useNavigate } from '@/hooks';
+import { useSaveBase } from '@/hooks';
 import { cn } from '@/lib';
-import { logger } from '@/logger';
-import {
-  useCreateGroupMutation,
-  useGroupPermissionListQuery,
-  useGroupQuery,
-  usePermissionListQuery,
-  useUpdateGroupMutation
-} from '@/queries';
+import { useGroupPermissionListQuery, usePermissionListQuery } from '@/queries';
 import { route } from '@/routes';
 import { groupSchema } from '@/schemaValidations';
-import type { GroupBodyType, PermissionResType } from '@/types';
-import { applyFormErrors, notify } from '@/utils';
-import { useQueryClient } from '@tanstack/react-query';
-import { ArrowLeftFromLine, Save } from 'lucide-react';
+import type { GroupBodyType, GroupResType, PermissionResType } from '@/types';
+import { renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
 export default function GroupForm() {
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const isCreate = id === 'create';
-  const queryClient = useQueryClient();
 
-  const { data: groupData } = useGroupQuery(id);
+  const {
+    data,
+    loading,
+    isEditing,
+    queryString,
+    responseCode,
+    onFormChange,
+    handleSubmit,
+    renderActions
+  } = useSaveBase<GroupResType, GroupBodyType>({
+    apiConfig: {
+      create: apiConfig.group.create,
+      update: apiConfig.group.update,
+      getById: apiConfig.group.getById
+    },
+    options: {
+      queryKey: queryKeys.GROUP,
+      objectName: 'vai trò',
+      listPageUrl: route.group.getList.path,
+      pathParams: {
+        id
+      },
+      mode: id === 'create' ? 'create' : 'edit'
+    }
+  });
+
   const { data: permissionListData } = usePermissionListQuery({
     page: DEFAULT_TABLE_PAGE_START,
     size: MAX_PAGE_SIZE
   });
+
   const { data: groupPermissionListData } = useGroupPermissionListQuery({
     page: DEFAULT_TABLE_PAGE_START,
     size: MAX_PAGE_SIZE
   });
 
-  const group = groupData?.data;
   const groupPermissions = useMemo(() => {
     return groupPermissionListData?.data?.content || [];
   }, [groupPermissionListData?.data?.content]);
   const permissions = permissionListData?.data.content;
-
-  const { mutateAsync: createGroupMutate, isPending: createGroupLoading } =
-    useCreateGroupMutation();
-  const { mutateAsync: updateGroupMutate, isPending: updateGroupLoading } =
-    useUpdateGroupMutation();
 
   const groupedPermissions = (permissions || []).reduce((acc, permission) => {
     const group = permission.groupPermission.name || 'Unknown';
@@ -96,86 +106,32 @@ export default function GroupForm() {
 
   const initialValues: GroupBodyType = useMemo(
     () => ({
-      description: group?.description ?? '',
-      name: group?.name ?? '',
-      permissions: group?.permissions.map((g) => g.id.toString()) ?? []
+      description: data?.description ?? '',
+      name: data?.name ?? '',
+      permissions: data?.permissions.map((g) => g.id.toString()) ?? []
     }),
-    [group?.description, group?.name, group?.permissions]
+    [data?.description, data?.name, data?.permissions]
   );
-
-  // const onSubmit = async (
-  //   values: GroupBodyType,
-  //   form: UseFormReturn<GroupBodyType>
-  // ) => {
-  //   const mutation = isCreate ? createGroupMutation : updateGroupMutation;
-  //   await mutation.mutateAsync(
-  //     isCreate ? values : { ...omit(values, ['kind']), id },
-  //     {
-  //       onSuccess: (res) => {
-  //         if (res.result) {
-  //           notify.success(
-  //             `${isCreate ? 'Thêm mới' : 'Cập nhật'} vai trò thành công`
-  //           );
-  //           queryClient.invalidateQueries({ queryKey: ['group', id] });
-  //           navigate(route.group.getList.path);
-  //         } else {
-  //           const errCode = res.code;
-  //           if (errCode) {
-  //             applyFormErrors(form, errCode, groupErrorMaps);
-  //           } else {
-  //             logger.error('Error while creating/updating group:', res);
-  //             notify.error('Có lỗi xảy ra');
-  //           }
-  //         }
-  //       },
-  //       onError: (error) => {
-  //         logger.error('Error while creating/updating group:', error);
-  //         notify.error('Có lỗi xảy ra');
-  //       }
-  //     }
-  //   );
-  // };
 
   const onSubmit = async (
     values: GroupBodyType,
     form: UseFormReturn<GroupBodyType>
   ) => {
-    const mutation = isCreate ? createGroupMutate : updateGroupMutate;
-
     const { kind: _, ...rest } = values;
 
-    await mutation(isCreate ? values : { ...rest, id }, {
-      onSuccess: async (res) => {
-        if (res.result) {
-          notify.success(
-            `${isCreate ? 'Thêm mới' : 'Cập nhật'} vai trò thành công`
-          );
-          await queryClient.invalidateQueries({ queryKey: ['group', id] });
-          navigate.push(route.group.getList.path);
-        } else {
-          const errCode = res.code;
-          if (errCode) {
-            applyFormErrors(form, errCode, groupErrorMaps);
-          } else {
-            logger.error('Error while creating/updating group:', res);
-            notify.error('Có lỗi xảy ra');
-          }
-        }
-      },
-      onError: (error) => {
-        logger.error('Error while creating/updating group:', error);
-        notify.error('Có lỗi xảy ra');
-      }
-    });
+    await handleSubmit(rest, form, groupErrorMaps);
   };
 
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Vai trò', href: route.group.getList.path },
-        { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} vai trò` }
+        {
+          label: 'Vai trò',
+          href: renderListPageUrl(route.group.getList.path, queryString)
+        },
+        { label: `${!data ? 'Thêm mới' : 'Cập nhật'} vai trò` }
       ]}
-      notFound={groupData?.code === ErrorCode.GROUP_ERROR_NOT_FOUND}
+      notFound={responseCode === ErrorCode.GROUP_ERROR_NOT_FOUND}
       notFoundContent='Không tìm thấy vai trò này'
     >
       <BaseForm
@@ -183,6 +139,7 @@ export default function GroupForm() {
         initialValues={initialValues}
         onSubmit={onSubmit}
         schema={groupSchema}
+        onFormChange={onFormChange}
       >
         {(form) => (
           <>
@@ -196,7 +153,7 @@ export default function GroupForm() {
                   required
                 />
               </Col>
-              {isCreate && (
+              {!isEditing && (
                 <Col>
                   <SelectField
                     getLabel={(option) => option.label}
@@ -349,15 +306,6 @@ export default function GroupForm() {
                               content='Không có dữ liệu'
                               className='min-h-[30vh] [&_img]:w-40'
                             />
-                            // <div className='flex w-full flex-col items-center justify-center gap-y-2'>
-                            //   <Image
-                            //     src={emptyData.src}
-                            //     alt='Empty'
-                            //     width={150}
-                            //     height={80}
-                            //   />
-                            //   <p>Không có dữ liệu</p>
-                            // </div>
                           )}
                         </div>
                       </CardContent>
@@ -366,34 +314,12 @@ export default function GroupForm() {
                 })}
               </Col>
             </Row>
-            <Row className='mb-0 justify-end'>
-              <Col className='w-40!'>
-                <Button
-                  onClick={() => navigate.push(route.group.getList.path)}
-                  type='button'
-                  variant='ghost'
-                  className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
-                >
-                  <ArrowLeftFromLine />
-                  Hủy
-                </Button>
-              </Col>
-              <Col className='w-40!'>
-                <Button
-                  disabled={
-                    !form.formState.isDirty ||
-                    createGroupLoading ||
-                    updateGroupLoading
-                  }
-                  type='submit'
-                  variant='primary'
-                  loading={createGroupLoading || updateGroupLoading}
-                >
-                  <Save />
-                  {isCreate ? 'Thêm' : 'Cập nhật'}
-                </Button>
-              </Col>
-            </Row>
+            <>{renderActions(form)}</>
+            {loading && (
+              <div className='absolute inset-0 bg-white/80'>
+                <CircleLoading className='stroke-main-color mt-20 size-8' />
+              </div>
+            )}
           </>
         )}
       </BaseForm>

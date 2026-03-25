@@ -112,7 +112,7 @@ export default function TimePickerField<T extends FieldValues>({
 
         const handleClear = (e: React.MouseEvent) => {
           e.stopPropagation();
-          field.onChange(isNumberValue ? null : '');
+          field.onChange(isNumberValue ? 0 : '');
           onChange?.('');
         };
 
@@ -156,14 +156,7 @@ export default function TimePickerField<T extends FieldValues>({
                         }
                       )}
                     >
-                      <span
-                        suppressHydrationWarning
-                        className={cn({
-                          'text-gray-300':
-                            field.value === null || field.value === undefined,
-                          'text-destructive': !!fieldState.error
-                        })}
-                      >
+                      <span suppressHydrationWarning className='text-gray-300'>
                         {formatDisplay(hour, minute, second)}
                       </span>
                       {clearable && hasValue && !disabled && (

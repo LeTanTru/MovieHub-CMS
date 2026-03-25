@@ -106,8 +106,8 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
     vttUrl: ''
   };
 
-  const initialValues: VideoLibraryBodyType = useMemo(() => {
-    return {
+  const initialValues: VideoLibraryBodyType = useMemo(
+    () => ({
       content: data?.content ?? '',
       description: data?.description ?? '',
       introEnd: data?.introEnd ?? 0,
@@ -120,20 +120,21 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
       sourceType: data?.sourceType ?? VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
       vttUrl: data?.vttUrl ?? '',
       spriteUrl: data?.spriteUrl ?? ''
-    };
-  }, [
-    data?.content,
-    data?.description,
-    data?.duration,
-    data?.introEnd,
-    data?.introStart,
-    data?.name,
-    data?.outroStart,
-    data?.sourceType,
-    data?.spriteUrl,
-    data?.thumbnailUrl,
-    data?.vttUrl
-  ]);
+    }),
+    [
+      data?.content,
+      data?.description,
+      data?.duration,
+      data?.introEnd,
+      data?.introStart,
+      data?.name,
+      data?.outroStart,
+      data?.sourceType,
+      data?.spriteUrl,
+      data?.thumbnailUrl,
+      data?.vttUrl
+    ]
+  );
 
   const handleCancel = async () => {
     await Promise.all([

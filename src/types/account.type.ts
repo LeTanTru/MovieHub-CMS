@@ -10,33 +10,16 @@ export type ProfileResType = {
   id: string;
   kind: number;
   username: string;
+  phone: string;
   email: string;
   fullName: string;
+  avatarPath: string;
   group: {
     id: string;
-    status: number;
-    modifiedDate: string;
-    createdDate: string;
     name: string;
-    description: string;
     kind: number;
-    subKind: number;
-    permissions: {
-      id: string;
-      name: string;
-      action: string;
-      showMenu: boolean;
-      groupPermission: {
-        id: string;
-        name: string;
-        ordering: number;
-      };
-      permissionCode: string;
-    }[];
-    isSystemRole: boolean;
   };
-  isSuperAdmin: boolean;
-  avatarPath: string;
+  gender: number;
 };
 
 export type ProfileBodyType = z.infer<typeof profileSchema>;

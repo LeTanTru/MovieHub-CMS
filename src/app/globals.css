@@ -167,7 +167,7 @@
   }
 
   .highlight-animated {
-    background: linear-gradient(
+    /* background: linear-gradient(
       135deg,
       #ff6b6b 0%,
       #feca57 33%,
@@ -180,7 +180,7 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent; */
   }
 
   .vds-video-layout.dark .vds-kb-action {
