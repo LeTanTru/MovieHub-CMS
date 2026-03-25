@@ -1,30 +1,19 @@
 'use client';
 
-import { Button, Col, InputField, Row, ToolTip } from '@/components/form';
-import { BaseForm } from '@/components/form/base-form';
+import GroupPermissionModal from './group-permission-modal';
+import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper } from '@/components/layout';
-import { Modal } from '@/components/modal';
 import { DragDropTable } from '@/components/table';
-import {
-  apiConfig,
-  groupPermissionErrorMaps,
-  MAX_PAGE_SIZE
-} from '@/constants';
-import { useDisclosure, useDragDrop, useListBase, useSaveBase } from '@/hooks';
-import { logger } from '@/logger';
-import { groupPermissionSchema } from '@/schemaValidations';
+import { apiConfig, MAX_PAGE_SIZE } from '@/constants';
+import { useDisclosure, useDragDrop, useListBase } from '@/hooks';
 import type {
-  ApiResponse,
   Column,
-  GroupPermissionBodyType,
   GroupPermissionResType,
   GroupPermissionSearchType
 } from '@/types';
-import { applyFormErrors } from '@/utils';
 import { PlusIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
-import type { UseFormReturn } from 'react-hook-form';
+import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 
 export default function GroupPermissionList({
@@ -33,16 +22,14 @@ export default function GroupPermissionList({
   queryKey: string;
 }) {
   const { opened, open, close } = useDisclosure();
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [selectedRow, setSelectedRow] = useState<
-    GroupPermissionResType | null | undefined
-  >(null);
+  const [selectedRow, setSelectedRow] = useState<GroupPermissionResType | null>(
+    null
+  );
 
   const {
     data: groupPermissionList,
     loading: groupPermissionListLoading,
-    handlers,
-    listQuery
+    handlers
   } = useListBase<GroupPermissionResType, GroupPermissionSearchType>({
     apiConfig: apiConfig.groupPermission,
     options: {
@@ -83,24 +70,6 @@ export default function GroupPermissionList({
   });
 
   const {
-    data: groupPermission,
-    isFormChanged,
-    onFormChange,
-    handleSubmit,
-    renderActions
-  } = useSaveBase<GroupPermissionResType, GroupPermissionBodyType>({
-    apiConfig: apiConfig.groupPermission,
-    options: {
-      queryKey,
-      objectName: 'nhóm quyền',
-      pathParams: {
-        id: selectedRow?.id
-      },
-      mode: selectedRow === null ? 'create' : 'edit'
-    }
-  });
-
-  const {
     sortColumn,
     loading: loadingUpdateOrdering,
     sortedData,
@@ -115,25 +84,14 @@ export default function GroupPermissionList({
   });
 
   const handleAdd = () => {
-    setIsEditing(false);
     open();
     setSelectedRow(null);
   };
 
-  const handleClose = () => {
-    onFormChange(false);
-    close();
-  };
-
   const handleEditClick = (record: GroupPermissionResType) => {
-    setIsEditing(true);
     open();
     setSelectedRow(record);
   };
-
-  useEffect(() => {
-    if (groupPermission) setSelectedRow(groupPermission);
-  }, [groupPermission]);
 
   const columns: Column<GroupPermissionResType>[] = [
     ...(sortedData.length > 1 ? [sortColumn] : []),
@@ -148,38 +106,6 @@ export default function GroupPermissionList({
       }
     })
   ];
-
-  const defaultValues: GroupPermissionBodyType = {
-    name: '',
-    ordering: groupPermissionList.length
-  };
-  const initialValues: GroupPermissionBodyType = useMemo(
-    () => ({
-      name: selectedRow?.name || '',
-      ordering: groupPermissionList.length
-    }),
-    [groupPermissionList.length, selectedRow?.name]
-  );
-
-  const onSubmit = async (
-    values: GroupPermissionBodyType,
-    form: UseFormReturn<GroupPermissionBodyType>
-  ) => {
-    try {
-      const res: ApiResponse<any> = await handleSubmit(
-        !isEditing ? values : { ...values, id: selectedRow?.id }
-      );
-      if (res.result) {
-        listQuery.refetch();
-        handleClose();
-      } else {
-        const errCode = res.code;
-        if (errCode) applyFormErrors(form, errCode, groupPermissionErrorMaps);
-      }
-    } catch (error) {
-      logger.error('Error while creating/updating:', error);
-    }
-  };
 
   return (
     <>
@@ -205,42 +131,12 @@ export default function GroupPermissionList({
           onDragEnd={onDragEnd}
         />
       </ListPageWrapper>
-      <Modal
-        title={`${!isEditing ? 'Thêm' : 'Cập nhật'} nhóm quyền`}
+      <GroupPermissionModal
         open={opened}
-        onClose={handleClose}
-        bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3'
-        confirmOnClose={isFormChanged}
-      >
-        <BaseForm
-          defaultValues={defaultValues}
-          initialValues={initialValues}
-          onSubmit={onSubmit}
-          schema={groupPermissionSchema}
-          onFormChange={onFormChange}
-        >
-          {(form) => (
-            <>
-              <Row>
-                <Col span={24}>
-                  <InputField
-                    control={form.control}
-                    name='name'
-                    label='Tên nhóm quyền'
-                    placeholder='Nhập tên nhóm quyền...'
-                    required
-                  />
-                </Col>
-              </Row>
-              <>
-                {renderActions(form, {
-                  onCancel: handleClose
-                })}
-              </>
-            </>
-          )}
-        </BaseForm>
-      </Modal>
+        queryKey={queryKey}
+        selectedRow={selectedRow}
+        onClose={close}
+      />
     </>
   );
 }

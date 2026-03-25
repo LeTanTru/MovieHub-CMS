@@ -1,19 +1,8 @@
 'use client';
 
-import {
-  BooleanField,
-  Button,
-  Col,
-  InputField,
-  Row,
-  SelectField,
-  TextAreaField,
-  ToolTip
-} from '@/components/form';
-import { BaseForm } from '@/components/form/base-form';
+import { Button, ToolTip } from '@/components/form';
 import { ListPageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { Modal } from '@/components/modal';
 import { NoData } from '@/components/no-data';
 import {
   AlertDialog,
@@ -27,38 +16,28 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import { Separator } from '@/components/ui/separator';
-import {
-  DEFAULT_TABLE_PAGE_START,
-  MAX_PAGE_SIZE,
-  permissionErrorMaps
-} from '@/constants';
+import { DEFAULT_TABLE_PAGE_START, MAX_PAGE_SIZE } from '@/constants';
 import { useDisclosure } from '@/hooks';
 import { cn } from '@/lib';
-import { logger } from '@/logger';
 import {
-  useCreatePermissionMutation,
   useDeletePermissionMutation,
   useGroupPermissionListQuery,
-  usePermissionListQuery,
-  useUpdatePermissionMutation
+  usePermissionListQuery
 } from '@/queries';
-import { permissionSchema } from '@/schemaValidations';
-import type { PermissionBodyType, PermissionResType } from '@/types';
-import { applyFormErrors, notify } from '@/utils';
-import { ArrowLeftFromLine, Info, Plus, Save } from 'lucide-react';
+import type { PermissionResType } from '@/types';
+import { Info, Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import type { UseFormReturn } from 'react-hook-form';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import MediaQuery from 'react-responsive';
+import PermissionModal from './permission-modal';
 
 export default function PermissionList() {
   const { opened, open, close } = useDisclosure();
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [isFormChanged, setIsFormChange] = useState<boolean>(false);
+  const [selectedRow, setSelectedRow] = useState<PermissionResType | null>(
+    null
+  );
   const [selectedGroupPermissionId, setSelectedGroupPermissionId] =
     useState<string>('');
-  const [selectedPermission, setSelectedPermission] =
-    useState<PermissionResType | null>(null);
 
   const { data: groupPermissionListData, isLoading: groupPermissionLoading } =
     useGroupPermissionListQuery({
@@ -66,39 +45,32 @@ export default function PermissionList() {
       size: MAX_PAGE_SIZE
     });
 
-  const {
-    data: permissionListData,
-    refetch: getPermissionList,
-    isLoading: permissionListLoading
-  } = usePermissionListQuery({
-    page: DEFAULT_TABLE_PAGE_START,
-    size: MAX_PAGE_SIZE
-  });
-  const {
-    mutateAsync: createPermissionMutate,
-    isPending: createPermissionLoading
-  } = useCreatePermissionMutation();
-  const {
-    mutateAsync: updatePermissionMutate,
-    isPending: updatePermissionLoading
-  } = useUpdatePermissionMutation();
+  const { data: permissionListData, isLoading: permissionListLoading } =
+    usePermissionListQuery({
+      page: DEFAULT_TABLE_PAGE_START,
+      size: MAX_PAGE_SIZE
+    });
+
   const { mutateAsync: deletePermissionMutate } = useDeletePermissionMutation();
 
   const groupPermissions = useMemo(() => {
     return groupPermissionListData?.data?.content || [];
   }, [groupPermissionListData?.data?.content]);
-  const permissions = permissionListData?.data.content || [];
+  const permissions = permissionListData?.data?.content || [];
 
   const loading = permissionListLoading || groupPermissionLoading;
 
-  const groupedPermissions = (permissions || []).reduce((acc, permission) => {
-    const group = permission.groupPermission.name || 'Unknown';
-    if (!acc[group]) {
-      acc[group] = [];
-    }
-    acc[group].push({ ...permission });
-    return acc;
-  }, {} as any);
+  const groupedPermissions = (permissions || []).reduce(
+    (acc, permission) => {
+      const group = permission.groupPermission.name || 'Unknown';
+      if (!acc[group]) {
+        acc[group] = [];
+      }
+      acc[group].push({ ...permission });
+      return acc;
+    },
+    {} as Record<string, PermissionResType[]>
+  );
 
   (groupPermissions || [])
     .map((group) => group.name)
@@ -112,90 +84,17 @@ export default function PermissionList() {
     return [...groupPermissions].sort((a, b) => a.ordering - b.ordering);
   }, [groupPermissions]);
 
-  const defaultValues: PermissionBodyType = {
-    name: '',
-    description: '',
-    groupPermissionId: '',
-    permissionCode: '',
-    action: '',
-    showMenu: false
-  };
-
-  const initialValues: PermissionBodyType = useMemo(
-    () => ({
-      description: selectedPermission?.description ?? '',
-      name: selectedPermission?.name ?? '',
-      pCode: selectedPermission?.permissionCode ?? '',
-      groupPermissionId: selectedGroupPermissionId.toString(),
-      permissionCode: selectedPermission?.permissionCode ?? '',
-      action: selectedPermission?.action ?? '',
-      showMenu: selectedPermission?.showMenu ?? false
-    }),
-    [
-      selectedGroupPermissionId,
-      selectedPermission?.action,
-      selectedPermission?.description,
-      selectedPermission?.name,
-      selectedPermission?.permissionCode,
-      selectedPermission?.showMenu
-    ]
-  );
-
-  const onSubmit = async (
-    values: PermissionBodyType,
-    form: UseFormReturn<PermissionBodyType>
-  ) => {
-    const mutation = !isEditing
-      ? createPermissionMutate
-      : updatePermissionMutate;
-
-    const { groupPermissionId: _, ...rest } = values;
-
-    await mutation(
-      !isEditing
-        ? values
-        : {
-            ...rest,
-            id: selectedPermission?.id
-          },
-      {
-        onSuccess: (res) => {
-          if (res.result) {
-            notify.success(
-              `${!isEditing ? 'Thêm mới' : 'Cập nhật'} quyền thành công`
-            );
-            handleClose();
-            getPermissionList();
-          } else {
-            const errCode = res.code;
-            if (errCode) {
-              applyFormErrors(form, errCode, permissionErrorMaps);
-            } else {
-              logger.error('Error while creating/updating permission:', res);
-              notify.error('Có lỗi xảy ra');
-            }
-          }
-        },
-        onError: (error) => {
-          logger.error('Error while creating/updating permission:', error);
-          notify.error('Có lỗi xảy ra');
-        }
-      }
-    );
-  };
-
   const handleAdd = (group: string) => {
-    setIsEditing(false);
     const groupPermission = groupPermissions.find((gp) => gp.name === group);
+    setSelectedRow(null);
     setSelectedGroupPermissionId(groupPermission?.id ?? '');
     open();
   };
 
   const handleEdit = (record: PermissionResType) => {
-    setIsEditing(true);
-    open();
-    setSelectedPermission(record);
+    setSelectedRow(record);
     setSelectedGroupPermissionId(record.groupPermission.id);
+    open();
   };
 
   const handleDelete = async (record: PermissionResType) => {
@@ -204,7 +103,7 @@ export default function PermissionList() {
 
   const handleClose = () => {
     close();
-    setSelectedPermission(null);
+    setSelectedRow(null);
   };
 
   return (
@@ -216,7 +115,7 @@ export default function PermissionList() {
           <div className='flex flex-col gap-y-4 px-4 py-4 max-[1560px]:max-w-300'>
             {sortedGroupPermissions.map((groupPermission) => {
               const group = groupPermission.name;
-              const permissions = groupedPermissions[group];
+              const groupPermissionsList = groupedPermissions[group];
               return (
                 <div
                   className='rounded-lg border border-solid border-gray-200 text-sm'
@@ -234,11 +133,11 @@ export default function PermissionList() {
                   <div
                     className={cn('grid gap-4 p-4', {
                       'grid-cols-4 max-[1560px]:grid-cols-3':
-                        permissions?.length > 0
+                        groupPermissionsList?.length > 0
                     })}
                   >
-                    {permissions?.length > 0 ? (
-                      permissions.map(
+                    {groupPermissionsList?.length > 0 ? (
+                      groupPermissionsList.map(
                         (permission: PermissionResType, index: number) => {
                           return (
                             <div key={permission.id}>
@@ -331,134 +230,13 @@ export default function PermissionList() {
           </div>
         )}
       </ListPageWrapper>
-      <Modal
-        title={`${!isEditing ? 'Thêm' : 'Cập nhật'} quyền`}
+      <PermissionModal
         open={opened}
+        queryKey='permission'
+        selectedRow={selectedRow}
+        selectedGroupPermissionId={selectedGroupPermissionId}
         onClose={handleClose}
-        bodyWrapperClassName='w-200'
-        confirmOnClose={isFormChanged}
-      >
-        <BaseForm
-          defaultValues={defaultValues}
-          initialValues={initialValues}
-          onSubmit={onSubmit}
-          schema={permissionSchema}
-          onFormChange={setIsFormChange}
-        >
-          {(form) => (
-            <>
-              <Row>
-                <Col>
-                  <SelectField
-                    name='groupPermissionId'
-                    control={form.control}
-                    options={
-                      groupPermissions.map((gp) => ({
-                        label: gp.name,
-                        value: gp.id.toString()
-                      })) || []
-                    }
-                    getLabel={(opt) => opt.label}
-                    getValue={(opt) => opt.value.toString()}
-                    label='Nhóm quyền'
-                    required
-                    disabled
-                    placeholder='Chọn nhóm quyền'
-                  />
-                </Col>
-                <Col>
-                  <InputField
-                    control={form.control}
-                    name='name'
-                    label='Tên quyền'
-                    placeholder='Nhập tên quyền'
-                    required
-                    allowCustomInput
-                    options={[
-                      'List',
-                      'Get',
-                      'Create',
-                      'Update',
-                      'Delete',
-                      'Update ordering'
-                    ]}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <InputField
-                    control={form.control}
-                    name='permissionCode'
-                    label='Mã quyền'
-                    placeholder='Mã quyền'
-                    required
-                  />
-                </Col>
-                <Col>
-                  <InputField
-                    control={form.control}
-                    name='action'
-                    label='Hành động'
-                    placeholder='Hành động'
-                    required
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <BooleanField
-                    control={form.control}
-                    name='showMenu'
-                    label='Hiển thị trên menu'
-                    required
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col span={24}>
-                  <TextAreaField
-                    control={form.control}
-                    name='description'
-                    label='Mô tả'
-                    placeholder='Nhập mô tả'
-                    required
-                  />
-                </Col>
-              </Row>
-              <Row className='mb-0 justify-end'>
-                <Col className='w-40!'>
-                  <Button
-                    onClick={handleClose}
-                    type='button'
-                    variant='ghost'
-                    className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
-                  >
-                    <ArrowLeftFromLine />
-                    Hủy
-                  </Button>
-                </Col>
-                <Col className='w-40!'>
-                  <Button
-                    disabled={
-                      !form.formState.isDirty ||
-                      createPermissionLoading ||
-                      updatePermissionLoading
-                    }
-                    type='submit'
-                    variant='primary'
-                    className='w-full'
-                    loading={createPermissionLoading || updatePermissionLoading}
-                  >
-                    <Save />
-                    {!isEditing ? 'Thêm' : 'Cập nhật'}
-                  </Button>
-                </Col>
-              </Row>
-            </>
-          )}
-        </BaseForm>
-      </Modal>
+      />
     </>
   );
 }

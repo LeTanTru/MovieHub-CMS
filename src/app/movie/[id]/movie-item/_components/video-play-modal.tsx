@@ -70,6 +70,7 @@ export default function VideoPlayModal({
       className='video-play-modal overflow-hidden'
       aria-labelledby='video-play-modal-title'
       bodyRef={bodyRef}
+      confirmOnClose={true}
     >
       <div
         style={
