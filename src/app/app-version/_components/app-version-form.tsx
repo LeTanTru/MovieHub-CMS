@@ -67,23 +67,24 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
     isLatest: false
   };
 
-  const initialValues: AppVersionBodyType = useMemo(() => {
-    return {
+  const initialValues: AppVersionBodyType = useMemo(
+    () => ({
       name: data?.name ?? '',
       changeLog: data?.changeLog ?? '',
       code: data?.code ?? 0,
       filePath: data?.filePath ?? '',
       forceUpdate: data?.forceUpdate ?? false,
       isLatest: data?.isLatest ?? false
-    };
-  }, [
-    data?.changeLog,
-    data?.code,
-    data?.filePath,
-    data?.forceUpdate,
-    data?.isLatest,
-    data?.name
-  ]);
+    }),
+    [
+      data?.changeLog,
+      data?.code,
+      data?.filePath,
+      data?.forceUpdate,
+      data?.isLatest,
+      data?.name
+    ]
+  );
 
   const handleCancel = async () => {
     await imageManager.handleCancel();

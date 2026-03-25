@@ -10,7 +10,7 @@ export type LoginResType = {
   expires_in: number;
   scope: string;
   user_kind: number;
-  user_id: number;
+  user_id: string;
   grant_type: string;
   additional_info: string;
   jti: string;
@@ -35,7 +35,7 @@ export type RefreshTokenResType = {
   expires_in: number;
   scope: string;
   user_kind: number;
-  user_id: number;
+  user_id: string;
   grant_type: string;
   additional_info: string;
   jti: string;

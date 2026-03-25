@@ -55,12 +55,13 @@ export default function CategoryModal({
     status: STATUS_ACTIVE
   };
 
-  const initialValues: CategoryBodyType = useMemo(() => {
-    return {
+  const initialValues: CategoryBodyType = useMemo(
+    () => ({
       name: data?.name ?? '',
       status: STATUS_ACTIVE
-    };
-  }, [data?.name]);
+    }),
+    [data?.name]
+  );
 
   const onSubmit = async (
     values: CategoryBodyType,

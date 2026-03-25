@@ -341,11 +341,13 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
               </ToolTip>
             </span>
           </AlertDialogTrigger>
-          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-fit min-w-50 gap-0 p-4'>
+          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] w-fit max-w-lg gap-0 p-4'>
             <AlertDialogHeader>
-              <AlertDialogTitle className='content flex flex-nowrap items-center gap-2 text-sm font-normal'>
-                <Info className='size-8 fill-orange-500 stroke-white' />
-                Bạn có chắc chắn muốn xóa {objectName} này không ?
+              <AlertDialogTitle className='flex flex-nowrap items-center text-sm font-normal'>
+                <Info className='size-6 fill-orange-500 stroke-white' />
+                <span className='ml-1'>
+                  Bạn có chắc chắn muốn xóa {objectName} này không ?
+                </span>
               </AlertDialogTitle>
               <AlertDialogDescription></AlertDialogDescription>
             </AlertDialogHeader>
@@ -354,7 +356,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
                 <Button
                   onClick={(e) => e.stopPropagation()}
                   variant='outline'
-                  className='h-8 border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
+                  className='h-8 border-red-500 font-normal text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
                 >
                   Không
                 </Button>
@@ -364,7 +366,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
                   e.stopPropagation();
                   handleDeleteClick(record.id);
                 }}
-                className='bg-main-color hover:bg-main-color/80 h-8 cursor-pointer transition-all duration-200 ease-linear'
+                className='bg-main-color hover:bg-main-color/80 h-8 cursor-pointer font-normal transition-all duration-200 ease-linear'
               >
                 Có
               </AlertDialogAction>

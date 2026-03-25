@@ -80,23 +80,24 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
     webThumbnailUrl: ''
   };
 
-  const initialValues: MovieSidebarBodyType = useMemo(() => {
-    return {
+  const initialValues: MovieSidebarBodyType = useMemo(
+    () => ({
       description: data?.description ?? '',
       active: data?.active ?? false,
       mainColor: data?.mainColor ?? '#000000',
       mobileThumbnailUrl: data?.mobileThumbnailUrl || '',
       movieId: data?.movie?.id?.toString() ?? '',
       webThumbnailUrl: data?.webThumbnailUrl || ''
-    };
-  }, [
-    data?.active,
-    data?.description,
-    data?.mainColor,
-    data?.mobileThumbnailUrl,
-    data?.movie?.id,
-    data?.webThumbnailUrl
-  ]);
+    }),
+    [
+      data?.active,
+      data?.description,
+      data?.mainColor,
+      data?.mobileThumbnailUrl,
+      data?.movie?.id,
+      data?.webThumbnailUrl
+    ]
+  );
 
   const handleCancel = async () => {
     await Promise.all([

@@ -10,11 +10,7 @@ import {
   renderImageUrl,
   timeAgo
 } from '@/utils';
-import type {
-  AuthorInfoType,
-  CommentResType,
-  CommentSearchType
-} from '@/types';
+import type { CommentResType, CommentSearchType } from '@/types';
 import {
   apiConfig,
   COMMENT_STATUS_HIDE,
@@ -135,10 +131,8 @@ function CommentItem({
     }
   });
 
-  const authorInfo = JSON.parse(comment.authorInfo) as AuthorInfoType;
-  const replyToInfo = comment.replyToInfo
-    ? (JSON.parse(comment.replyToInfo) as AuthorInfoType)
-    : null;
+  const authorInfo = comment.author;
+  const replyToInfo = comment.replyTo;
   const { profile } = useAuth();
   const isAuthor = authorInfo?.id === profile?.id;
 
@@ -482,11 +476,14 @@ function CommentItem({
                               </Button>
                             </span>
                           </AlertDialogTrigger>
-                          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-md p-4'>
+                          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] w-fit max-w-lg gap-0 p-4'>
                             <AlertDialogHeader>
-                              <AlertDialogTitle className='content flex flex-nowrap items-center gap-2 text-sm font-normal'>
-                                <Info className='size-8 fill-orange-500 stroke-white' />
-                                Bạn có chắc chắn muốn xóa bình luận này không ?
+                              <AlertDialogTitle className='flex flex-nowrap items-center text-sm font-normal'>
+                                <Info className='size-6 fill-orange-500 stroke-white' />
+                                <span className='ml-1'>
+                                  Bạn có chắc chắn muốn xóa bình luận này không
+                                  ?
+                                </span>
                               </AlertDialogTitle>
                               <AlertDialogDescription></AlertDialogDescription>
                             </AlertDialogHeader>
@@ -495,14 +492,14 @@ function CommentItem({
                                 <Button
                                   onClick={(e) => e.stopPropagation()}
                                   variant='outline'
-                                  className='w-20 border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
+                                  className='h-8 border-red-500 font-normal text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
                                 >
                                   Không
                                 </Button>
                               </AlertDialogCancel>
                               <AlertDialogAction
                                 onClick={onDelete}
-                                className='bg-main-color hover:bg-main-color/80 w-20 cursor-pointer transition-all duration-200 ease-linear'
+                                className='bg-main-color hover:bg-main-color/80 h-8 cursor-pointer font-normal transition-all duration-200 ease-linear'
                               >
                                 Có
                               </AlertDialogAction>

@@ -74,23 +74,24 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
     type: 1
   };
 
-  const initialValues: StyleBodyType = useMemo(() => {
-    return {
+  const initialValues: StyleBodyType = useMemo(
+    () => ({
       description: data?.description ?? '',
       imageMobileUrl: data?.imageMobileUrl ?? '',
       imageWebUrl: data?.imageWebUrl ?? '',
       isDefault: data?.isDefault ?? false,
       name: data?.name ?? '',
       type: data?.type ?? 1
-    };
-  }, [
-    data?.description,
-    data?.imageMobileUrl,
-    data?.imageWebUrl,
-    data?.isDefault,
-    data?.name,
-    data?.type
-  ]);
+    }),
+    [
+      data?.description,
+      data?.imageMobileUrl,
+      data?.imageWebUrl,
+      data?.isDefault,
+      data?.name,
+      data?.type
+    ]
+  );
 
   const handleCancel = async () => {
     await imageMobileManager.handleCancel();

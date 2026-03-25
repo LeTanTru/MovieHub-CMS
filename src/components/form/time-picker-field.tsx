@@ -112,7 +112,7 @@ export default function TimePickerField<T extends FieldValues>({
 
         const handleClear = (e: React.MouseEvent) => {
           e.stopPropagation();
-          field.onChange(isNumberValue ? null : '');
+          field.onChange(isNumberValue ? 0 : '');
           onChange?.('');
         };
 

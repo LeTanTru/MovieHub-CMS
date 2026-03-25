@@ -5,7 +5,7 @@ import { AnimatePresence, m, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib';
 import { createPortal } from 'react-dom';
 import { useIsMounted } from '@/hooks';
-import { X, ChevronDown } from 'lucide-react';
+import { X, ChevronDown, Info } from 'lucide-react';
 import { Button } from '@/components/form';
 import { Activity } from '@/components/activity';
 import { isMobileDevice } from '@/utils';
@@ -100,6 +100,19 @@ export default function Modal({
   useEffect(() => {
     if (!open) setShowConfirm(false);
   }, [open]);
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleCloseRequest();
+    }
+  };
+
+  useEffect(() => {
+    if (!open) return;
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, confirmOnClose]);
 
   const handleScrollDown = () => {
     scrollRef.current?.scrollBy({ top: 200, behavior: 'smooth' });
@@ -228,7 +241,7 @@ export default function Modal({
                   >
                     <m.div
                       className={cn(
-                        'flex flex-col items-center gap-4 rounded-lg bg-white px-6 py-5 shadow-lg dark:bg-gray-800',
+                        'flex flex-col items-center gap-2 rounded-lg bg-white p-4 shadow-lg dark:bg-gray-800',
                         confirmClassName
                       )}
                       initial={{ scale: 0.85, opacity: 0 }}
@@ -236,19 +249,24 @@ export default function Modal({
                       exit={{ scale: 0.85, opacity: 0 }}
                       transition={{ duration: 0.05, ease: 'linear' }}
                     >
-                      <p className='text-center text-sm font-medium text-gray-700 dark:text-gray-200'>
-                        {confirmOnCloseMessage}
-                      </p>
-                      <div className='flex gap-3'>
+                      <div className='flex items-center'>
+                        <Info className='size-6 fill-orange-500 stroke-white' />
+                        <p className='ml-1 text-center font-medium text-gray-700 dark:text-gray-200'>
+                          {confirmOnCloseMessage}
+                        </p>
+                      </div>
+                      <div className='flex w-full justify-end gap-2'>
                         <Button
                           variant='outline'
-                          className='w-20 border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80 dark:border-red-500 dark:hover:border-red-500/80 dark:hover:text-red-500/80'
+                          size='sm'
+                          className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80 dark:border-red-500 dark:hover:border-red-500/80 dark:hover:text-red-500/80'
                           onClick={handleConfirmNo}
                         >
                           Không
                         </Button>
                         <Button
-                          className='bg-main-color hover:bg-main-color/80 dark:bg-primary-button dark:hover:bg-primary-button/80 w-20 text-white dark:text-black'
+                          size='sm'
+                          className='bg-main-color hover:bg-main-color/80 dark:bg-primary-button dark:hover:bg-primary-button/80 text-white dark:text-black'
                           onClick={handleConfirmYes}
                         >
                           Có
