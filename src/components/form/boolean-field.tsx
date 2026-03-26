@@ -44,7 +44,7 @@ export default function BooleanField<T extends FieldValues>({
       render={({ field, fieldState }) => (
         <FormItem className={cn(className)}>
           <FormControl>
-            <div className='mb-1.5 flex gap-2'>
+            <div className='flex gap-2'>
               <div className='relative inline-grid h-6 w-12.5 grid-cols-[1fr_1fr] items-center text-sm font-medium'>
                 <Switch
                   id={id}

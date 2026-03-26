@@ -178,7 +178,7 @@ export default function UploadImageField<T extends FieldValues>({
       getInputProps,
       clearFiles
     }
-  ] = useFileUpload({ accept: '*' });
+  ] = useFileUpload({ accept: 'image/*' });
 
   const previewUrl = files[0]?.preview;
 
