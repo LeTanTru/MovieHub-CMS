@@ -100,7 +100,7 @@ export default function CategoryModal({
         {(form) => (
           <>
             <Row>
-              <Col span={24}>
+              <Col className='grid-c-12'>
                 <InputField
                   control={form.control}
                   name='name'

@@ -16,8 +16,6 @@ export const STATUS_ACTIVE = 1;
 export const STATUS_LOCK = -1;
 export const STATUS_DELETED = -2;
 
-export const DEFAULT_COL_SPAN = 6;
-
 export const GENDER_MALE = 1;
 export const GENDER_FEMALE = 2;
 export const GENDER_OTHER = 3;

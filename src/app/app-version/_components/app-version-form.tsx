@@ -130,7 +130,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
         {(form) => (
           <>
             <Row>
-              <Col span={24}>
+              <Col className='grid-c-12'>
                 <UploadFileField
                   control={form.control}
                   name='filePath'
@@ -158,7 +158,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='name'
@@ -167,7 +167,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <NumberField
                   control={form.control}
                   name='code'
@@ -178,7 +178,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='changeLog'
@@ -187,7 +187,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col className='mb-2 flex-row items-end gap-8'>
+              <Col className='grid-c-6 mb-2 flex-row items-end gap-8'>
                 <BooleanField
                   control={form.control}
                   name='forceUpdate'

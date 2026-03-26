@@ -160,7 +160,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
         {(form) => (
           <>
             <Row>
-              <Col span={24}>
+              <Col className='grid-c-12 grid-col-no-gutters'>
                 <UploadImageField
                   value={renderImageUrl(imageManager.currentUrl)}
                   loading={uploadImageLoading}
@@ -179,7 +179,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='username'
@@ -189,7 +189,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                   disabled={isEditing}
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='fullName'
@@ -200,7 +200,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='email'
@@ -209,7 +209,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='phone'
@@ -220,7 +220,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <PasswordField
                   control={form.control}
                   name='password'
@@ -229,7 +229,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                   required={!isEditing}
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <PasswordField
                   control={form.control}
                   name='confirmPassword'
@@ -240,7 +240,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <SelectField
                   getLabel={(opt) => opt.label}
                   getValue={(opt) => opt.value}
@@ -252,7 +252,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <SelectField
                   getLabel={(opt) => opt.label}
                   getValue={(opt) => opt.value}

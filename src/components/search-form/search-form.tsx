@@ -12,8 +12,7 @@ import {
   SelectField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { DEFAULT_COL_SPAN, FieldTypes } from '@/constants';
-import { cn } from '@/lib';
+import { FieldTypes } from '@/constants';
 import type { ApiConfig, AutoCompleteOption, SearchFormProps } from '@/types';
 import { BrushCleaning, Search } from 'lucide-react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
@@ -77,23 +76,14 @@ export default function SearchForm<S extends FieldValues>({
     form: UseFormReturn<Record<string, unknown>>
   ) => {
     return (
-      <Row className='mb-0 flex-nowrap'>
-        <Col
-          span={24}
-          className={cn({
-            grow: searchFields.length >= 4
-          })}
-        >
-          <Row gutter={4} className='mb-0 grid grid-cols-4 gap-2'>
+      <Row className='grid-row-no-gutters mb-0 w-full flex-nowrap justify-between gap-2'>
+        <Col className='grid-col-no-gutters flex-1 flex-row'>
+          <Row className='grid-row-no-gutters mb-0 grid w-full grid-cols-4 gap-2'>
             {searchFields.map((sf) => {
               switch (sf.type) {
                 case FieldTypes.SELECT: {
                   return (
-                    <Col
-                      key={sf.key as string}
-                      span={sf.colSpan || DEFAULT_COL_SPAN}
-                      style={{ width: '100%' }}
-                    >
+                    <Col key={sf.key as string} className='grid-col-no-gutters'>
                       <SelectField
                         control={form.control}
                         name={sf.key as string}
@@ -113,11 +103,7 @@ export default function SearchForm<S extends FieldValues>({
                 }
                 case FieldTypes.MULTI_SELECT: {
                   return (
-                    <Col
-                      key={sf.key as string}
-                      span={sf.colSpan || DEFAULT_COL_SPAN}
-                      style={{ width: '100%' }}
-                    >
+                    <Col key={sf.key as string} className='grid-col-no-gutters'>
                       <MultiSelectField
                         control={form.control}
                         name={sf.key as string}
@@ -137,11 +123,7 @@ export default function SearchForm<S extends FieldValues>({
                 }
                 case FieldTypes.AUTO_COMPLETE: {
                   return (
-                    <Col
-                      key={sf.key as string}
-                      span={sf.colSpan || DEFAULT_COL_SPAN}
-                      style={{ width: '100%' }}
-                    >
+                    <Col key={sf.key as string} className='grid-col-no-gutters'>
                       <AutoCompleteField
                         apiConfig={sf.apiConfig as ApiConfig}
                         control={form.control}
@@ -160,11 +142,7 @@ export default function SearchForm<S extends FieldValues>({
                 }
                 case FieldTypes.DATE: {
                   return (
-                    <Col
-                      key={sf.key as string}
-                      span={sf.colSpan || DEFAULT_COL_SPAN}
-                      style={{ width: '100%' }}
-                    >
+                    <Col key={sf.key as string} className='grid-col-no-gutters'>
                       <DateTimePickerField
                         control={form.control}
                         name={sf.key as string}
@@ -177,10 +155,7 @@ export default function SearchForm<S extends FieldValues>({
                   return (
                     <Col
                       key={sf.key as string}
-                      span={sf.colSpan || DEFAULT_COL_SPAN}
-                      className={cn('w-full! justify-center', {
-                        'items-center': searchFields.length > 1
-                      })}
+                      className='grid-col-no-gutters items-center justify-center'
                     >
                       <BooleanField
                         control={form.control}
@@ -192,11 +167,7 @@ export default function SearchForm<S extends FieldValues>({
                 }
                 default: {
                   return (
-                    <Col
-                      key={sf.key as string}
-                      span={sf.colSpan || DEFAULT_COL_SPAN}
-                      style={{ width: '100%' }}
-                    >
+                    <Col key={sf.key as string} className='grid-col-no-gutters'>
                       <InputField
                         control={form.control}
                         name={sf.key as string}
@@ -208,37 +179,33 @@ export default function SearchForm<S extends FieldValues>({
               }
             })}
             {!!searchFields.length && searchFields.length < 4 && (
-              <Col style={{ width: 'auto' }} className='my-0 inline-block px-0'>
-                <div className='flex items-center gap-2'>
-                  <Button type='submit' variant='primary'>
-                    <Search />
-                  </Button>
-                  <Button
-                    type='button'
-                    onClick={() => handleReset(form)}
-                    className='hover:[&>svg]:stroke-main-color hover:border-main-color border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
-                  >
-                    <BrushCleaning className='transition-all duration-200 ease-linear' />
-                  </Button>
-                </div>
+              <Col className='grid-col-no-gutters w-auto shrink-0 flex-row space-x-2'>
+                <Button type='submit' variant='primary'>
+                  <Search />
+                </Button>
+                <Button
+                  type='button'
+                  onClick={() => handleReset(form)}
+                  className='hover:[&>svg]:stroke-main-color hover:border-main-color border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
+                >
+                  <BrushCleaning className='transition-all duration-200 ease-linear' />
+                </Button>
               </Col>
             )}
           </Row>
         </Col>
         {searchFields.length >= 4 && (
-          <Col style={{ width: 'auto' }} className='my-0 inline-block px-0'>
-            <div className='flex items-center gap-2'>
-              <Button type='submit' variant='primary'>
-                <Search />
-              </Button>
-              <Button
-                type='button'
-                onClick={() => handleReset(form)}
-                className='hover:[&>svg]:stroke-main-color hover:border-main-color border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
-              >
-                <BrushCleaning className='transition-all duration-200 ease-linear' />
-              </Button>
-            </div>
+          <Col className='grid-col-no-gutters w-auto shrink-0 flex-row space-x-2'>
+            <Button type='submit' variant='primary'>
+              <Search />
+            </Button>
+            <Button
+              type='button'
+              onClick={() => handleReset(form)}
+              className='hover:[&>svg]:stroke-main-color hover:border-main-color border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
+            >
+              <BrushCleaning className='transition-all duration-200 ease-linear' />
+            </Button>
           </Col>
         )}
       </Row>

@@ -144,7 +144,7 @@ export default function GroupForm() {
         {(form) => (
           <>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='name'
@@ -154,7 +154,7 @@ export default function GroupForm() {
                 />
               </Col>
               {!isEditing && (
-                <Col>
+                <Col className='grid-c-6'>
                   <SelectField
                     getLabel={(option) => option.label}
                     getValue={(option) => option.value}
@@ -169,7 +169,7 @@ export default function GroupForm() {
               )}
             </Row>
             <Row>
-              <Col span={24}>
+              <Col className='grid-c-12'>
                 <TextAreaField
                   control={form.control}
                   name='description'
@@ -180,7 +180,7 @@ export default function GroupForm() {
               </Col>
             </Row>
             <Row>
-              <Col className='gap-y-4' span={24}>
+              <Col className='grid-c-12 gap-y-4'>
                 {sortedGroupPermissions.map((groupPermission) => {
                   const group = groupPermission.name;
                   const permissions = groupedPermissions[group];

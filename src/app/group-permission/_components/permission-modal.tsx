@@ -127,7 +127,7 @@ export default function PermissionModal({
         {(form) => (
           <>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <SelectField
                   name='groupPermissionId'
                   control={form.control}
@@ -145,7 +145,7 @@ export default function PermissionModal({
                   placeholder='Chọn nhóm quyền'
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='name'
@@ -165,7 +165,7 @@ export default function PermissionModal({
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='permissionCode'
@@ -174,7 +174,7 @@ export default function PermissionModal({
                   required
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='action'
@@ -185,7 +185,7 @@ export default function PermissionModal({
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <BooleanField
                   control={form.control}
                   name='showMenu'
@@ -195,7 +195,7 @@ export default function PermissionModal({
               </Col>
             </Row>
             <Row>
-              <Col span={24}>
+              <Col className='grid-c-12'>
                 <TextAreaField
                   control={form.control}
                   name='description'

@@ -237,7 +237,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
           return (
             <>
               <Row>
-                <Col span={24}>
+                <Col className='grid-c-12'>
                   <UploadImageField
                     value={renderImageUrl(imageManager.currentUrl)}
                     loading={uploadLogoLoading}
@@ -260,7 +260,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
               <Row>
-                <Col>
+                <Col className='grid-c-6'>
                   <InputField
                     control={form.control}
                     name='name'
@@ -269,7 +269,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                     required
                   />
                 </Col>
-                <Col>
+                <Col className='grid-c-6'>
                   <SelectField
                     control={form.control}
                     name='sourceType'
@@ -283,7 +283,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
 
               {/* Always show intro/outro fields for both source types */}
               <Row>
-                <Col>
+                <Col className='grid-c-6'>
                   <TimePickerField
                     control={form.control}
                     name='introStart'
@@ -302,7 +302,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                     }}
                   />
                 </Col>
-                <Col>
+                <Col className='grid-c-6'>
                   <TimePickerField
                     control={form.control}
                     name='introEnd'
@@ -323,7 +323,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
               <Row>
-                <Col>
+                <Col className='grid-c-6'>
                   <TimePickerField
                     control={form.control}
                     name='outroStart'
@@ -343,7 +343,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                   />
                 </Col>
                 {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL && (
-                  <Col>
+                  <Col className='grid-c-6'>
                     <TimePickerField
                       control={form.control}
                       name='duration'
@@ -359,7 +359,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
               {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL && (
                 <>
                   <Row>
-                    <Col>
+                    <Col className='grid-c-6'>
                       <InputField
                         control={form.control}
                         name='content'
@@ -368,7 +368,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                         required
                       />
                     </Col>
-                    <Col>
+                    <Col className='grid-c-6'>
                       <InputField
                         control={form.control}
                         name='vttUrl'
@@ -379,7 +379,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                   </Row>
 
                   <Row>
-                    <Col>
+                    <Col className='grid-c-6'>
                       <InputField
                         control={form.control}
                         name='spriteUrl'
@@ -392,7 +392,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
                   {/* Video preview for external source */}
                   {validatedContent ? (
                     <Row>
-                      <Col span={24} className='px-0!'>
+                      <Col className='grid-c-12'>
                         <VideoPlayer
                           auth={false}
                           duration={timeToSeconds(
@@ -427,7 +427,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
               {/* Show video player/upload for INTERNAL source type */}
               {sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL && (
                 <Row>
-                  <Col span={24}>
+                  <Col className='grid-c-12'>
                     {/* Play preview video */}
                     {isEditing && data ? (
                       <VideoPlayer
@@ -489,7 +489,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
               )}
 
               <Row>
-                <Col span={24}>
+                <Col className='grid-c-12'>
                   <RichTextField
                     control={form.control}
                     name='description'

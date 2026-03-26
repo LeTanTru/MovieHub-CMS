@@ -166,7 +166,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
         {(form) => (
           <>
             <Row>
-              <Col span={24}>
+              <Col className='grid-c-12'>
                 <UploadImageField
                   value={renderImageUrl(imageManager.currentUrl)}
                   loading={uploadImageLoading}
@@ -185,7 +185,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='name'
@@ -194,7 +194,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='otherName'
@@ -205,7 +205,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <DatePickerField
                   control={form.control}
                   name='dateOfBirth'
@@ -213,7 +213,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
                   placeholder='Ngày sinh'
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <SelectField
                   options={genderOptions}
                   control={form.control}
@@ -225,7 +225,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <MultiSelectField
                   control={form.control}
                   name='kinds'
@@ -235,7 +235,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
                   options={personKinds}
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <SelectField
                   options={countryOptions}
                   control={form.control}
@@ -246,7 +246,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={24}>
+              <Col className='grid-c-12'>
                 <RichTextField
                   name='bio'
                   control={form.control}

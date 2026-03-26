@@ -95,7 +95,7 @@ export default function CollectionItemModal({
           return (
             <>
               <Row>
-                <Col span={24}>
+                <Col className='grid-c-12'>
                   <AutoCompleteField
                     control={form.control}
                     name='movieId'

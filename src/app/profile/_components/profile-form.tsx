@@ -107,7 +107,7 @@ export default function ProfileForm() {
       {(form) => (
         <>
           <Row>
-            <Col span={24}>
+            <Col className='grid-c-12'>
               <UploadImageField
                 value={renderImageUrl(avatarImageManager.currentUrl)}
                 loading={uploadAvatarLoading}
@@ -128,7 +128,7 @@ export default function ProfileForm() {
             </Col>
           </Row>
           <Row>
-            <Col span={24}>
+            <Col className='grid-c-12'>
               <InputField
                 control={form.control}
                 name='fullName'
@@ -139,7 +139,7 @@ export default function ProfileForm() {
             </Col>
           </Row>
           <Row>
-            <Col span={24}>
+            <Col className='grid-c-12'>
               <PasswordField
                 control={form.control}
                 name='oldPassword'
@@ -150,7 +150,7 @@ export default function ProfileForm() {
             </Col>
           </Row>
           <Row>
-            <Col span={24}>
+            <Col className='grid-c-12'>
               <PasswordField
                 control={form.control}
                 name='password'
@@ -160,7 +160,7 @@ export default function ProfileForm() {
             </Col>
           </Row>
           <Row>
-            <Col span={24}>
+            <Col className='grid-c-12'>
               <PasswordField
                 control={form.control}
                 name='confirmPassword'

@@ -245,7 +245,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
           return (
             <>
               <Row>
-                <Col span={12}>
+                <Col className='grid-c-6'>
                   <InputField
                     control={form.control}
                     name='name'
@@ -254,7 +254,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                     required
                   />
                 </Col>
-                <Col span={12}>
+                <Col className='grid-c-6'>
                   <SelectField
                     control={form.control}
                     name='type'
@@ -267,7 +267,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
               <Row>
-                <Col span={12}>
+                <Col className='grid-c-6'>
                   <div className='space-y-2'>
                     <label className='ml-2 text-sm font-medium'>
                       Màu (chọn ít nhất 2)
@@ -318,7 +318,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                   </div>
                 </Col>
                 {type === COLLECTION_TYPE_SECTION && (
-                  <Col span={12}>
+                  <Col className='grid-c-6'>
                     <AutoCompleteField
                       control={form.control}
                       name='styleId'
@@ -338,7 +338,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
               </Row>
               {!isEditing && (
                 <Row>
-                  <Col span={12}>
+                  <Col className='grid-c-6'>
                     <BooleanField
                       control={form.control}
                       name='fillData'
@@ -350,7 +350,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
               )}
               <FieldSet title='Bộ lọc'>
                 <Row>
-                  <Col span={12}>
+                  <Col className='grid-c-6'>
                     <SelectField
                       name='filter.type'
                       control={form.control}
@@ -359,7 +359,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                       placeholder='Thể loại phim'
                     />
                   </Col>
-                  <Col span={12}>
+                  <Col className='grid-c-6'>
                     <SelectField
                       name='filter.ageRating'
                       control={form.control}
@@ -371,7 +371,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                   </Col>
                 </Row>
                 <Row>
-                  <Col span={12}>
+                  <Col className='grid-c-6'>
                     <SelectField
                       name='filter.country'
                       control={form.control}
@@ -380,7 +380,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                       placeholder='Quốc gia'
                     />
                   </Col>
-                  <Col span={12}>
+                  <Col className='grid-c-6'>
                     <SelectField
                       name='filter.language'
                       control={form.control}
@@ -391,7 +391,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                   </Col>
                 </Row>
                 <Row>
-                  <Col span={12}>
+                  <Col className='grid-c-6'>
                     <MultiSelectField
                       control={form.control}
                       name='filter.categoryIds'
@@ -400,9 +400,9 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                       options={categoryList}
                     />
                   </Col>
-                  <Col span={12}>
-                    <Row className='mb-0 h-full items-center justify-between'>
-                      <Col span={18} className='my-0'>
+                  <Col className='grid-c-6'>
+                    <Row className='mb-0 h-full items-end justify-center'>
+                      <Col className='grid-c-9'>
                         <NumberField
                           control={form.control}
                           name='filter.limit'
@@ -412,26 +412,24 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                           disabled={!!form.watch('filter.noLimit')}
                         />
                       </Col>
-                      <Col span={6} className='my-0 mt-4'>
+                      <Col className='grid-c-3'>
                         <CheckboxField
                           control={form.control}
                           name='filter.noLimit'
                           label='Không giới hạn'
-                          checkboxClassName='data-[state=checked]:bg-main-color data-[state=checked]:border-main-color cursor-pointer transition-all duration-100 ease-linear data-[state=unchecked]:text-white'
+                          className='mb-3'
                         />
                       </Col>
                     </Row>
                   </Col>
                 </Row>
                 <Row className='mb-0'>
-                  <Col className='justify-end'>
+                  <Col className='grid-c-6 flex-row gap-8'>
                     <BooleanField
                       name='filter.isFeatured'
                       control={form.control}
                       label='Hot'
                     />
-                  </Col>
-                  <Col className='justify-end'>
                     <BooleanField
                       name='filter.comingSoon'
                       control={form.control}
@@ -440,7 +438,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                   </Col>
                 </Row>
                 <Row className='mb-0 justify-end'>
-                  <Col span={4}>
+                  <Col className='grid-c-2'>
                     <Button
                       type='button'
                       variant='primary'

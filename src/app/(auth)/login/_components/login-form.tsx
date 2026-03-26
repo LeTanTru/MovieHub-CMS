@@ -72,7 +72,7 @@ export default function LoginForm() {
       {(form) => (
         <>
           <Row>
-            <Col span={24} className='items-center justify-center'>
+            <Col className='grid-c-12 items-center justify-center'>
               <div className='bg-sidebar/80 mx-auto flex w-full items-center justify-center rounded py-2'>
                 <Image
                   src={logoWithText.src}
@@ -84,14 +84,14 @@ export default function LoginForm() {
             </Col>
           </Row>
           <Row>
-            <Col span={24} className='items-center justify-center'>
+            <Col className='grid-c-12 items-center justify-center'>
               <h1 className='text-xl font-bold text-zinc-800 uppercase'>
                 Đăng nhập
               </h1>
             </Col>
           </Row>
           <Row>
-            <Col span={24}>
+            <Col className='grid-c-12'>
               <InputField
                 name='username'
                 control={form.control}
@@ -102,7 +102,7 @@ export default function LoginForm() {
             </Col>
           </Row>
           <Row>
-            <Col span={24}>
+            <Col className='grid-c-12'>
               <PasswordField
                 name='password'
                 control={form.control}
@@ -113,7 +113,7 @@ export default function LoginForm() {
             </Col>
           </Row>
           <Row className='mb-0'>
-            <Col className='my-0 px-0' span={24}>
+            <Col className='grid-c-12'>
               <Button
                 disabled={!form.formState.isDirty || loginLoading}
                 variant='primary'

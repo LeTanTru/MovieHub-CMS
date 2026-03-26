@@ -124,7 +124,7 @@ export default function CommentInput({
         return (
           <>
             <Row className='mb-0'>
-              <Col span={24}>
+              <Col className='grid-c-12'>
                 <TextAreaField
                   control={form.control}
                   name='content'
@@ -134,7 +134,7 @@ export default function CommentInput({
               </Col>
             </Row>
             <Row className='mt-4 mb-0'>
-              <Col span={24}>
+              <Col className='grid-c-12'>
                 <div className='relative ml-auto w-fit' ref={wrapperRef}>
                   <div ref={pickerContainerRef} />
                   <div className='flex'>
