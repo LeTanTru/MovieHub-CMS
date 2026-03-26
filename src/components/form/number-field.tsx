@@ -31,11 +31,44 @@ type NumberFieldProps<T extends FieldValues> = {
   labelClassName?: string;
   prefixIcon?: ReactNode;
   suffixIcon?: ReactNode;
+  isFloat?: boolean;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'name' | 'defaultValue'>;
 
 const toNumberIfPossible = (value: string): string | number => {
   const num = Number(value);
   return !isNaN(num) && value.trim() !== '' ? num : value;
+};
+
+const formatNumberWithSeparator = (
+  value: string | number,
+  isFloat: boolean
+): string => {
+  if (value === '' || value === undefined || value === null) return '';
+
+  const stringValue = String(value);
+
+  // Handle decimal separator (replace comma with dot for internal processing)
+  const normalized = stringValue.replace(',', '.');
+
+  // Split into integer and decimal parts
+  const parts = normalized.split('.');
+  const integerPart = parts[0];
+  const decimalPart = parts[1];
+
+  // Format integer part with thousand separators (dot)
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  // Return with decimal part if exists and isFloat is true
+  if (decimalPart !== undefined && isFloat) {
+    return `${formattedInteger},${decimalPart}`;
+  }
+
+  return formattedInteger;
+};
+
+const parseFormattedNumber = (value: string): string => {
+  // Remove thousand separators (dots) and replace decimal comma with dot
+  return value.replace(/\./g, '').replace(',', '.');
 };
 
 function NumberFieldInner<T extends FieldValues>(
@@ -54,6 +87,7 @@ function NumberFieldInner<T extends FieldValues>(
     prefixIcon,
     suffixIcon,
     min,
+    isFloat = false,
     ...inputProps
   }: NumberFieldProps<T>,
   ref: ForwardedRef<HTMLInputElement>
@@ -85,18 +119,13 @@ function NumberFieldInner<T extends FieldValues>(
             <div className='relative' ref={containerRef}>
               <Input
                 placeholder={placeholder}
-                type='number'
-                inputMode='numeric'
+                type='text'
+                inputMode={isFloat ? 'decimal' : 'numeric'}
                 disabled={disabled}
                 readOnly={readOnly}
-                {...field}
                 {...inputProps}
                 min={min}
-                value={
-                  field.value !== undefined && field.value !== ''
-                    ? String(field.value).replace(/^0+(?=\d)/, '')
-                    : ''
-                }
+                value={formatNumberWithSeparator(field.value, isFloat)}
                 ref={ref}
                 className={cn(
                   className,
@@ -113,6 +142,7 @@ function NumberFieldInner<T extends FieldValues>(
                 )}
                 onChange={(e) => {
                   const raw = e.target.value;
+
                   if (raw === '') {
                     field.onChange(
                       min !== undefined && !isNaN(Number(min))
@@ -121,8 +151,24 @@ function NumberFieldInner<T extends FieldValues>(
                     );
                     return;
                   }
-                  const stripped = raw.replace(/^0+(?=\d)/, '');
-                  field.onChange(toNumberIfPossible(stripped));
+
+                  // Allow only numbers, dots (thousand separator), and comma (decimal separator if isFloat)
+                  const allowedChars = isFloat ? /[0-9.,]/g : /[0-9.]/g;
+                  const filtered = raw.match(allowedChars)?.join('') || '';
+
+                  // Prevent multiple commas
+                  if (isFloat && (filtered.match(/,/g) || []).length > 1) {
+                    return;
+                  }
+
+                  // Parse the formatted number back to a clean number string
+                  const parsed = parseFormattedNumber(filtered);
+
+                  // Validate it's a valid number
+                  if (parsed && !isNaN(Number(parsed))) {
+                    const stripped = parsed.replace(/^0+(?=\d)/, '');
+                    field.onChange(toNumberIfPossible(stripped));
+                  }
                 }}
               />
               {description && <FormDescription>{description}</FormDescription>}

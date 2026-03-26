@@ -172,20 +172,38 @@ export default function DatePickerField<T extends FieldValues>({
                       }}
                       captionLayout='dropdown'
                       defaultMonth={parsedValue ?? new Date()}
-                      startMonth={new Date(1700, 0)}
-                      endMonth={new Date(2050, 12)}
+                      startMonth={new Date(1900, 0)}
+                      endMonth={new Date(new Date().getFullYear(), 12)}
                       components={{ Dropdown: CustomSelectDropdown }}
                       formatters={{
                         formatMonthDropdown: (date) =>
                           date.toLocaleString('vi-VN', { month: 'long' })
                       }}
                       onMonthChange={(month: Date) => {
-                        const firstDay = new Date(
+                        // Preserve the current day when changing month/year
+                        const currentDate = parsedValue || new Date();
+                        const currentDay = currentDate.getDate();
+
+                        // Get the last day of the new month
+                        const lastDayOfNewMonth = new Date(
+                          month.getFullYear(),
+                          month.getMonth() + 1,
+                          0
+                        ).getDate();
+
+                        // Use the current day, but clamp it if it exceeds the new month's days
+                        const validDay = Math.min(
+                          currentDay,
+                          lastDayOfNewMonth
+                        );
+
+                        const newDate = new Date(
                           month.getFullYear(),
                           month.getMonth(),
-                          1
+                          validDay
                         );
-                        field.onChange(format(firstDay, dateFormat));
+
+                        field.onChange(format(newDate, dateFormat));
                       }}
                     />
                     <div className='flex gap-2'>
