@@ -71,8 +71,8 @@ export default function LoginForm() {
     >
       {(form) => (
         <>
-          <Row>
-            <Col className='grid-c-12 items-center justify-center'>
+          <Row className='w-full'>
+            <Col className='grid-c-12 grid-col-no-gutters items-center justify-center'>
               <div className='bg-sidebar/80 mx-auto flex w-full items-center justify-center rounded py-2'>
                 <Image
                   src={logoWithText.src}
@@ -83,15 +83,15 @@ export default function LoginForm() {
               </div>
             </Col>
           </Row>
-          <Row>
-            <Col className='grid-c-12 items-center justify-center'>
+          <Row className='w-full'>
+            <Col className='grid-c-12 grid-col-no-gutters items-center justify-center'>
               <h1 className='text-xl font-bold text-zinc-800 uppercase'>
                 Đăng nhập
               </h1>
             </Col>
           </Row>
-          <Row>
-            <Col className='grid-c-12'>
+          <Row className='w-full'>
+            <Col className='grid-c-12 grid-col-no-gutters'>
               <InputField
                 name='username'
                 control={form.control}
@@ -101,8 +101,8 @@ export default function LoginForm() {
               />
             </Col>
           </Row>
-          <Row>
-            <Col className='grid-c-12'>
+          <Row className='w-full'>
+            <Col className='grid-c-12 grid-col-no-gutters'>
               <PasswordField
                 name='password'
                 control={form.control}
@@ -112,8 +112,8 @@ export default function LoginForm() {
               />
             </Col>
           </Row>
-          <Row className='mb-0'>
-            <Col className='grid-c-12'>
+          <Row className='mb-0 w-full'>
+            <Col className='grid-c-12 grid-col-no-gutters'>
               <Button
                 disabled={!form.formState.isDirty || loginLoading}
                 variant='primary'
