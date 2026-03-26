@@ -4,6 +4,7 @@ import {
   BooleanField,
   Col,
   InputField,
+  NumberField,
   Row,
   UploadFileField
 } from '@/components/form';
@@ -167,13 +168,12 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
                 />
               </Col>
               <Col>
-                <InputField
+                <NumberField
                   control={form.control}
                   name='code'
                   label='Mã phiên bản'
                   placeholder='Mã phiên bản'
                   required
-                  type='number'
                 />
               </Col>
             </Row>

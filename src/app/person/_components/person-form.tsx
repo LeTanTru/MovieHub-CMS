@@ -173,13 +173,14 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
                   control={form.control}
                   name='avatarPath'
                   onChange={imageManager.trackUpload}
-                  size={150}
+                  size={120}
                   uploadImageFn={async (file: Blob) => {
                     const res = await uploadImageMutate({ file });
                     return res.data?.filePath ?? '';
                   }}
                   deleteImageFn={imageManager.handleDeleteOnClick}
                   label='Ảnh đại diện'
+                  avatar
                 />
               </Col>
             </Row>

@@ -174,6 +174,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                   }}
                   label='Ảnh đại diện'
                   deleteImageFn={imageManager.handleDeleteOnClick}
+                  avatar
                 />
               </Col>
             </Row>

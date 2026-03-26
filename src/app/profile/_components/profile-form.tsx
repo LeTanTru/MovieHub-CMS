@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Button,
   Col,
   InputField,
   PasswordField,
@@ -9,26 +8,14 @@ import {
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { profileErrorMaps, storageKeys } from '@/constants';
-import { useFileUploadManager, useNavigate } from '@/hooks';
-import { logger } from '@/logger';
-import {
-  useDeleteFileMutation,
-  useUpdateProfileMutation,
-  useUploadAvatarMutation
-} from '@/queries';
+import { apiConfig, profileErrorMaps, storageKeys } from '@/constants';
+import { useFileUploadManager, useNavigate, useSaveBase } from '@/hooks';
+import { useDeleteFileMutation, useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
 import { profileSchema } from '@/schemaValidations';
 import { useAuthStore } from '@/store';
-import type { ProfileBodyType } from '@/types';
-import {
-  applyFormErrors,
-  getData,
-  notify,
-  removeData,
-  renderImageUrl
-} from '@/utils';
-import { ArrowLeftFromLine, Save } from 'lucide-react';
+import type { ProfileBodyType, ProfileResType } from '@/types';
+import { getData, removeData, renderImageUrl } from '@/utils';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
@@ -40,8 +27,21 @@ export default function ProfileForm() {
     useUploadAvatarMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
-  const { mutateAsync: updateProfileMutate, isPending: updateProfileLoading } =
-    useUpdateProfileMutation();
+  const { onFormChange, handleSubmit, renderActions } = useSaveBase<
+    ProfileResType,
+    ProfileBodyType
+  >({
+    apiConfig: {
+      update: apiConfig.account.updateProfile
+    },
+    options: {
+      queryKey: 'profile',
+      objectName: 'hồ sơ',
+      pathParams: {},
+      mode: 'edit',
+      showNotify: true
+    }
+  });
 
   const avatarImageManager = useFileUploadManager({
     initialUrl: profile?.avatarPath,
@@ -64,8 +64,8 @@ export default function ProfileForm() {
       fullName: profile?.fullName ?? '',
       avatarPath: profile?.avatarPath ?? '',
       oldPassword: '',
-      confirmPassword: '',
-      newPassword: ''
+      password: '',
+      confirmPassword: ''
     }),
     [profile?.avatarPath, profile?.email, profile?.fullName]
   );
@@ -76,33 +76,19 @@ export default function ProfileForm() {
   ) => {
     await Promise.all([
       avatarImageManager.handleSubmit(),
-      updateProfileMutate(
+      handleSubmit(
         {
           ...values,
           avatarPath: avatarImageManager.currentUrl
         },
-        {
-          onSuccess: (res) => {
-            if (res.result) {
-              notify.success('Cập nhật hồ sơ thành công');
-            } else {
-              const code = res.code;
-              if (code && profileErrorMaps[code])
-                applyFormErrors(form, code, profileErrorMaps);
-              else notify.error('Cập nhật hồ sơ thất bại');
-            }
-          },
-          onError: (error) => {
-            logger.error('Error while updating profile: ', error);
-            notify.error('Cập nhật hồ sơ thất bại');
-          }
-        }
+        form,
+        profileErrorMaps
       )
     ]);
   };
 
   const handleCancel = async () => {
-    await Promise.all([avatarImageManager.handleCancel()]);
+    await avatarImageManager.handleCancel();
 
     const prevPath = getData(storageKeys.PREVIOUS_PATH);
     removeData(storageKeys.PREVIOUS_PATH);
@@ -116,6 +102,7 @@ export default function ProfileForm() {
       onSubmit={onSubmit}
       schema={profileSchema}
       className='mx-auto w-1/2'
+      onFormChange={onFormChange}
     >
       {(form) => (
         <>
@@ -136,6 +123,7 @@ export default function ProfileForm() {
                 }}
                 deleteImageFn={avatarImageManager.handleDeleteOnClick}
                 label='Ảnh đại diện'
+                avatar
               />
             </Col>
           </Row>
@@ -181,29 +169,11 @@ export default function ProfileForm() {
               />
             </Col>
           </Row>
-          <Row className='my-0 justify-end'>
-            <Col className='w-40!'>
-              <Button
-                onClick={handleCancel}
-                type='button'
-                variant='ghost'
-                className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
-              >
-                <ArrowLeftFromLine />
-                Hủy
-              </Button>
-            </Col>
-            <Col className='w-40!'>
-              <Button
-                disabled={!form.formState.isDirty || updateProfileLoading}
-                variant='primary'
-                loading={updateProfileLoading}
-              >
-                <Save />
-                Cập nhật
-              </Button>
-            </Col>
-          </Row>
+          <>
+            {renderActions(form, {
+              onCancel: handleCancel
+            })}
+          </>
         </>
       )}
     </BaseForm>

@@ -3,7 +3,7 @@ import { queryKeys } from '@/constants';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Đạo diễn & diễn viên'
+  title: 'Diễn viên & Đạo diễn'
 };
 
 export default function PersonSavePage() {
