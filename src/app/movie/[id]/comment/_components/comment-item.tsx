@@ -55,6 +55,7 @@ import { useChangeCommenStatusMutation } from '@/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
+import { Badge } from '@/components/ui/badge';
 
 type CommentItemProps = {
   comment: CommentResType & { children?: CommentResType[] };
@@ -313,12 +314,6 @@ function CommentItem({
                 {timeAgo(comment.createdDate)}
               </span>
 
-              {comment.isPinned && (
-                <span className='text-xs font-medium text-slate-600 italic'>
-                  Đã ghim
-                </span>
-              )}
-
               {comment.status === COMMENT_STATUS_HIDE && (
                 <span title='Bình luận đã bị ẩn' className='text-gray-500'>
                   <AiOutlineEyeInvisible className='size-4' />
@@ -332,6 +327,22 @@ function CommentItem({
                 >
                   <AiOutlineEye className='size-4' />
                 </span>
+              )}
+
+              {comment.isPinned && (
+                <span className='text-xs font-medium text-slate-600 italic'>
+                  Đã ghim
+                </span>
+              )}
+
+              {comment.movieItem && (
+                <Badge
+                  variant='outline'
+                  className='border-slate-200 text-xs font-medium'
+                >
+                  Phần {comment.movieItem.parent.label} - Tập{' '}
+                  {comment.movieItem.label}
+                </Badge>
               )}
             </div>
             {level === 0 && canPin && (

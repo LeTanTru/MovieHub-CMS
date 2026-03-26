@@ -187,7 +187,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col className='flex-row items-end gap-8'>
+              <Col className='mb-2 flex-row items-end gap-8'>
                 <BooleanField
                   control={form.control}
                   name='forceUpdate'
