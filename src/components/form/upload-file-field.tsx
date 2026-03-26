@@ -136,7 +136,7 @@ export default function UploadFileField<T extends FieldValues>({
 
       <div
         className={cn(
-          'bg-muted/30 hover:bg-accent/50 relative mb-0 flex min-h-18 cursor-pointer items-center gap-3 rounded-md border-2 border-dashed p-4 transition-all duration-200 ease-linear hover:bg-gray-100',
+          'relative mb-0 flex min-h-18 cursor-pointer items-center gap-3 rounded-md border-2 border-dashed p-4 transition-all duration-200 ease-linear hover:bg-gray-100',
           {
             'border-gray-300 bg-gray-100': isDragging,
             'border border-solid border-red-500': !!error && !uploading
