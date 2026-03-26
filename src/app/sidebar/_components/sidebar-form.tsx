@@ -142,8 +142,8 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
         {(form) => {
           return (
             <>
-              <Row gutter={0}>
-                <Col>
+              <Row>
+                <Col className='grid-c-6'>
                   <UploadImageField
                     value={renderImageUrl(webImageManager.currentUrl)}
                     loading={uploadImageLoading}
@@ -166,7 +166,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                     required
                   />
                 </Col>
-                <Col>
+                <Col className='grid-c-6'>
                   <UploadImageField
                     value={renderImageUrl(mobileImageManager.currentUrl)}
                     loading={uploadImageLoading}
@@ -191,7 +191,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
               <Row>
-                <Col>
+                <Col className='grid-c-6'>
                   <AutoCompleteField
                     control={form.control}
                     name='movieId'
@@ -207,7 +207,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                     required
                   />
                 </Col>
-                <Col>
+                <Col className='grid-c-6'>
                   <ColorPickerField
                     control={form.control}
                     name='mainColor'
@@ -217,7 +217,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
               <Row>
-                <Col>
+                <Col className='grid-c-6'>
                   <BooleanField
                     control={form.control}
                     name='active'
@@ -227,7 +227,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                 </Col>
               </Row>
               <Row>
-                <Col span={24}>
+                <Col className='grid-c-12'>
                   <RichTextField
                     control={form.control}
                     name='description'

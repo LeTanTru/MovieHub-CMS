@@ -243,7 +243,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
     return (
       <>
         <Row className='mb-0 justify-end'>
-          <Col className='w-40!'>
+          <Col className='w-40'>
             {!form.formState.isDirty ? (
               <Button
                 type='button'
@@ -294,7 +294,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
               </AlertDialog>
             )}
           </Col>
-          <Col className='w-40!'>
+          <Col className='w-40'>
             <Button
               disabled={!form.formState.isDirty || mutation.isPending}
               type='submit'

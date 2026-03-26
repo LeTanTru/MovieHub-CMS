@@ -252,7 +252,7 @@ export default function MovieItemModal({
           return (
             <>
               <Row>
-                <Col span={24}>
+                <Col className='grid-c-12'>
                   <UploadImageField
                     value={renderImageUrl(imageManager.currentUrl)}
                     loading={updateImageLoading}
@@ -274,7 +274,7 @@ export default function MovieItemModal({
                 </Col>
               </Row>
               <Row>
-                <Col>
+                <Col className='grid-c-6'>
                   <SelectField
                     options={movieItemId ? kindOptions : [kindOptions[0]]}
                     control={form.control}
@@ -287,7 +287,7 @@ export default function MovieItemModal({
                     }
                   />
                 </Col>
-                <Col>
+                <Col className='grid-c-6'>
                   <InputField
                     control={form.control}
                     name='title'
@@ -298,7 +298,7 @@ export default function MovieItemModal({
                 </Col>
               </Row>
               <Row>
-                <Col>
+                <Col className='grid-c-6'>
                   <InputField
                     control={form.control}
                     name='label'
@@ -307,7 +307,7 @@ export default function MovieItemModal({
                     required
                   />
                 </Col>
-                <Col>
+                <Col className='grid-c-6'>
                   <DatePickerField
                     control={form.control}
                     name='releaseDate'
@@ -321,7 +321,7 @@ export default function MovieItemModal({
                 {!!type &&
                   +type === MOVIE_TYPE_SERIES &&
                   kind === MOVIE_ITEM_KIND_SEASON && (
-                    <Col>
+                    <Col className='grid-c-6'>
                       <NumberField
                         control={form.control}
                         name='totalEpisode'
@@ -334,7 +334,7 @@ export default function MovieItemModal({
                   )}
                 {(kind !== MOVIE_ITEM_KIND_SEASON ||
                   (!!type && +type === MOVIE_TYPE_SINGLE)) && (
-                  <Col>
+                  <Col className='grid-c-6'>
                     <AutoCompleteField
                       apiConfig={apiConfig.videoLibrary.autoComplete}
                       mappingData={(item: VideoLibraryResType) => ({
@@ -350,7 +350,7 @@ export default function MovieItemModal({
                   </Col>
                 )}
                 {kind !== MOVIE_TYPE_TRAILER && !isEditing && (
-                  <Col className='mb-3 justify-end'>
+                  <Col className='grid-c-6 mb-3 justify-end'>
                     <CheckboxField
                       control={form.control}
                       name='isLatest'
@@ -361,7 +361,7 @@ export default function MovieItemModal({
                 )}
               </Row>
               <Row>
-                <Col span={24}>
+                <Col className='grid-c-12'>
                   <RichTextField
                     control={form.control}
                     name='description'

@@ -157,7 +157,7 @@ export default function CommentReplyForm({
         formMethodsRef.current = form;
         return (
           <Row className='mb-0'>
-            <Col span={24}>
+            <Col className='grid-c-12'>
               <TextAreaField
                 control={form.control}
                 name='content'

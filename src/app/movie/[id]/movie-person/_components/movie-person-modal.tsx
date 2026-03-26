@@ -96,7 +96,7 @@ export default function MoviePersonModal({
         {(form) => (
           <>
             <Row>
-              <Col span={24}>
+              <Col className='grid-c-12'>
                 <AutoCompleteField
                   apiConfig={apiConfig.person.autoComplete}
                   control={form.control}

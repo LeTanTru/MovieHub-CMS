@@ -282,7 +282,8 @@ export default function UploadImageField<T extends FieldValues>({
                 'border-input border-2 border-dashed transition-all transition-colors duration-200 ease-linear hover:bg-gray-100':
                   !value,
                 'rounded-full': avatar,
-                'border-red-500': !!error || isDragging
+                'border-gray-300 bg-gray-100': isDragging,
+                'border-red-500': !!error
               }
             )}
             style={{

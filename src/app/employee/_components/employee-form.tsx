@@ -159,7 +159,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
         {(form) => (
           <>
             <Row>
-              <Col span={24}>
+              <Col className='grid-c-24'>
                 <UploadImageField
                   value={renderImageUrl(imageManager.currentUrl)}
                   loading={uploadImageLoading}
@@ -178,7 +178,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='username'
@@ -188,7 +188,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                   disabled={isEditing}
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='fullName'
@@ -199,7 +199,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='email'
@@ -208,7 +208,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='phone'
@@ -222,7 +222,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
             {!isEditing && (
               <>
                 <Row>
-                  <Col>
+                  <Col className='grid-c-6'>
                     <PasswordField
                       control={form.control}
                       name='password'
@@ -231,7 +231,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                       required={!isEditing}
                     />
                   </Col>
-                  <Col>
+                  <Col className='grid-c-6'>
                     <PasswordField
                       control={form.control}
                       name='confirmPassword'
@@ -242,7 +242,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                   </Col>
                 </Row>
                 <Row>
-                  <Col>
+                  <Col className='grid-c-6'>
                     <SelectField
                       options={groupOptions || []}
                       control={form.control}
@@ -252,7 +252,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                       required
                     />
                   </Col>
-                  <Col>
+                  <Col className='grid-c-6'>
                     <SelectField
                       options={employeeStatusOptions || []}
                       control={form.control}
@@ -269,7 +269,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
             {isEditing && (
               <>
                 <Row>
-                  <Col>
+                  <Col className='grid-c-6'>
                     <PasswordField
                       control={form.control}
                       name='newPassword'
@@ -278,7 +278,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                       required={!isEditing}
                     />
                   </Col>
-                  <Col>
+                  <Col className='grid-c-6'>
                     <PasswordField
                       control={form.control}
                       name='confirmNewPassword'
@@ -289,7 +289,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                   </Col>
                 </Row>
                 <Row>
-                  <Col>
+                  <Col className='grid-c-6'>
                     <SelectField
                       options={groupOptions || []}
                       control={form.control}
@@ -299,7 +299,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
                       required
                     />
                   </Col>
-                  <Col>
+                  <Col className='grid-c-6'>
                     <SelectField
                       options={employeeStatusOptions || []}
                       control={form.control}

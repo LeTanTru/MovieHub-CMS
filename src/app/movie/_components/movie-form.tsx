@@ -237,8 +237,8 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
       >
         {(form) => (
           <>
-            <Row gutter={0}>
-              <Col span={8}>
+            <Row>
+              <Col className='grid-c-4'>
                 <UploadImageField
                   value={renderImageUrl(posterImageManager.currentUrl)}
                   loading={posterLoading}
@@ -262,7 +262,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   defaultCrop={false}
                 />
               </Col>
-              <Col span={8}>
+              <Col className='grid-c-4'>
                 <UploadImageField
                   value={renderImageUrl(thumbnailImageManager.currentUrl)}
                   loading={thumbnailLoading}
@@ -286,7 +286,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   defaultCrop={false}
                 />
               </Col>
-              <Col span={8}>
+              <Col className='grid-c-4'>
                 <UploadImageField
                   value={renderImageUrl(imageTitleManager.currentUrl)}
                   loading={imageTitleLoading}
@@ -312,7 +312,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='title'
@@ -321,7 +321,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='originalTitle'
@@ -332,7 +332,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <SelectField
                   options={countryOptions}
                   control={form.control}
@@ -342,7 +342,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <SelectField
                   options={languageOptions}
                   control={form.control}
@@ -354,7 +354,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <SelectField
                   options={ageRatingOptions}
                   control={form.control}
@@ -365,7 +365,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   getLabel={(opt) => `${opt.label} - ${opt.mean}`}
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <SelectField
                   options={movieTypeOptions}
                   control={form.control}
@@ -378,7 +378,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <DatePickerField
                   control={form.control}
                   name='releaseDate'
@@ -387,7 +387,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <MultiSelectField
                   control={form.control}
                   name='categoryIds'
@@ -399,7 +399,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <SelectField
                   options={years}
                   control={form.control}
@@ -409,7 +409,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 {form.watch('type') === MOVIE_TYPE_SERIES && (
                   <TimePickerField
                     control={form.control}
@@ -422,7 +422,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <BooleanField
                   control={form.control}
                   name='isFeatured'
@@ -432,7 +432,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={24}>
+              <Col className='grid-c-12'>
                 <RichTextField
                   control={form.control}
                   name='description'

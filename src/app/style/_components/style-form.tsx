@@ -139,8 +139,8 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
       >
         {(form) => (
           <>
-            <Row gutter={0}>
-              <Col>
+            <Row>
+              <Col className='grid-c-6'>
                 <UploadImageField
                   value={renderImageUrl(imageMobileManager.currentUrl)}
                   loading={uploadImageLoading}
@@ -161,7 +161,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
                   aspect={2 / 3}
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <UploadImageField
                   value={renderImageUrl(imageWebManager.currentUrl)}
                   loading={uploadImageLoading}
@@ -184,7 +184,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <InputField
                   control={form.control}
                   name='name'
@@ -193,7 +193,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
                   required
                 />
               </Col>
-              <Col>
+              <Col className='grid-c-6'>
                 <NumberField
                   control={form.control}
                   name='type'
@@ -205,7 +205,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col className='grid-c-6'>
                 <BooleanField
                   control={form.control}
                   name='isDefault'
@@ -215,7 +215,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={24}>
+              <Col className='grid-c-12'>
                 <RichTextField
                   control={form.control}
                   name='description'

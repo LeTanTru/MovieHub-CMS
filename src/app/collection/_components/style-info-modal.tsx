@@ -23,7 +23,7 @@ export default function StyleInfoModal({
       bodyClassName='p-4'
     >
       <Row className='mb-0'>
-        <Col span={24}>
+        <Col className='grid-c-12'>
           <div className='flex items-center gap-2'>
             <span className='block text-sm font-bold text-gray-700'>
               Tên thiết kế:
@@ -33,7 +33,7 @@ export default function StyleInfoModal({
         </Col>
       </Row>
       <Row className='mb-0'>
-        <Col span={24}>
+        <Col className='grid-c-12'>
           <div className='flex items-center gap-2'>
             <label className='block text-sm font-bold text-gray-700'>
               Loại:
@@ -43,7 +43,7 @@ export default function StyleInfoModal({
         </Col>
       </Row>
       <Row className='mb-0'>
-        <Col>
+        <Col className='grid-c-6'>
           <label className='mb-1 block text-sm font-bold text-gray-700'>
             Ảnh Mobile:
           </label>
@@ -59,7 +59,7 @@ export default function StyleInfoModal({
             <span className='text-gray-500'>Không có ảnh</span>
           )}
         </Col>
-        <Col>
+        <Col className='grid-c-6'>
           <label className='mb-1 block text-sm font-bold text-gray-700'>
             Ảnh Web:
           </label>
