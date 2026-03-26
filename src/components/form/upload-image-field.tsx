@@ -8,7 +8,13 @@ import {
   useRef,
   useState
 } from 'react';
-import { UploadIcon, XIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
+import {
+  CircleUserRoundIcon,
+  UploadIcon,
+  XIcon,
+  ZoomInIcon,
+  ZoomOutIcon
+} from 'lucide-react';
 
 import {
   Cropper,
@@ -23,7 +29,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { Button, ImageField } from '@/components/form';
+import { AvatarField, Button, ImageField } from '@/components/form';
 import { FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib';
 import { useFileUpload } from '@/hooks';
@@ -61,7 +67,7 @@ type Area = { x: number; y: number; width: number; height: number };
 
 const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
-    const image = new Image();
+    const image = new window.Image();
     image.addEventListener('load', () => resolve(image));
     image.addEventListener('error', (error) => reject(error));
     image.setAttribute('crossOrigin', 'anonymous');
@@ -113,8 +119,6 @@ type UploadImageFieldProps<T extends FieldValues> = {
   labelClassName?: string;
   className?: string;
   imageClassName?: string;
-  previewClassName?: string;
-  imagePreviewClassName?: string;
   size?: number;
   loading?: boolean;
   aspect?: number;
@@ -122,6 +126,7 @@ type UploadImageFieldProps<T extends FieldValues> = {
   showCrop?: boolean;
   originalSize?: boolean;
   allowCustomAspect?: boolean;
+  avatar?: boolean;
   onChange?: (url: string) => void;
   uploadImageFn: (file: Blob) => Promise<string>;
   deleteImageFn?: (url: string) => Promise<ApiResponse<any> | undefined>;
@@ -136,8 +141,6 @@ export default function UploadImageField<T extends FieldValues>({
   labelClassName,
   className,
   imageClassName,
-  previewClassName,
-  imagePreviewClassName,
   size = 70,
   loading,
   aspect = 1,
@@ -145,6 +148,7 @@ export default function UploadImageField<T extends FieldValues>({
   showCrop = true,
   originalSize = false,
   allowCustomAspect = false,
+  avatar = false,
   onChange,
   uploadImageFn,
   deleteImageFn
@@ -255,106 +259,117 @@ export default function UploadImageField<T extends FieldValues>({
   }, [fileId]);
 
   return (
-    <div className='space-y-1'>
-      <div className='relative flex flex-col items-center justify-center gap-2'>
-        {label && (
-          <FormLabel
-            className={cn(
-              {
-                'text-destructive': error?.message
-              },
-              labelClassName
-            )}
-          >
-            {label}
-            {required && <span className='text-destructive'>*</span>}
-          </FormLabel>
-        )}
-        <div
-          className='relative inline-flex flex-col justify-center'
-          style={{
-            width: size * aspect,
-            height: size
-          }}
-        >
-          {!!value ? (
-            <ImageField
-              disablePreview
-              src={value}
-              className='size-full rounded-none border-none object-cover'
-              aspect={keepOriginalSize ? undefined : aspect}
-              width={keepOriginalSize ? undefined : size * aspect}
-              height={keepOriginalSize ? undefined : size}
-              originalSize={keepOriginalSize}
-              imageClassName={imageClassName}
-              previewClassName={previewClassName}
-              imagePreviewClassName={imagePreviewClassName}
-            />
-          ) : loading && !showCrop ? (
-            <CircleLoading className='stroke-main-color dark:stroke-white' />
-          ) : (
-            <Button
-              variant='outline'
-              type='button'
+    <>
+      <div className={cn('relative', className)}>
+        <div className='flex flex-col items-center justify-center gap-2'>
+          {label && (
+            <FormLabel
               className={cn(
-                'border-input hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-main-color relative flex size-full cursor-pointer items-center justify-center overflow-hidden border border-dashed p-0 transition-all duration-200 ease-linear outline-none focus-visible:border-transparent focus-visible:ring-2',
-                className,
                 {
-                  'border border-solid border-red-500': !!error,
-                  'border-none': !!value,
-                  'flex items-center justify-center': keepOriginalSize
-                }
+                  'text-destructive': error?.message
+                },
+                labelClassName
               )}
-              onClick={openFileDialog}
-              onDragEnter={handleDragEnter}
-              onDragLeave={handleDragLeave}
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-              title='Tải ảnh lên'
-              data-dragging={isDragging || undefined}
-              aria-label={value ? 'Thay ảnh' : 'Tải lên'}
             >
+              {label}
+              {required && <span className='text-destructive'>*</span>}
+            </FormLabel>
+          )}
+          <div
+            className={cn(
+              'relative inline-flex cursor-pointer items-center justify-center rounded',
+              {
+                'border-input border-2 border-dashed transition-all transition-colors duration-200 ease-linear hover:bg-gray-100':
+                  !value,
+                'rounded-full': avatar,
+                'border-red-500': !!error || isDragging
+              }
+            )}
+            style={{
+              width: size * aspect,
+              height: size
+            }}
+            onClick={openFileDialog}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            title='Tải ảnh lên'
+            data-dragging={isDragging || undefined}
+            aria-label={value ? 'Thay ảnh' : 'Tải lên'}
+          >
+            {!!value ? (
+              <div className='relative size-full'>
+                {avatar ? (
+                  <AvatarField
+                    src={value}
+                    size={size}
+                    disablePreview
+                    className='size-full'
+                  />
+                ) : (
+                  <ImageField
+                    disablePreview
+                    src={value}
+                    className={cn('size-full rounded object-cover')}
+                    aspect={keepOriginalSize ? undefined : aspect}
+                    width={keepOriginalSize ? undefined : size * aspect}
+                    height={keepOriginalSize ? undefined : size}
+                    originalSize={keepOriginalSize}
+                    imageClassName={imageClassName}
+                  />
+                )}
+                {value && (
+                  <Button
+                    onClick={handleRemove}
+                    size='icon'
+                    type='button'
+                    title='Xóa ảnh'
+                    className={cn(
+                      'border-background absolute size-6 rounded-full border-none'
+                    )}
+                    style={{
+                      top: avatar ? (6 * size) / 100 : -8,
+                      right: avatar ? (6 * size) / 100 : -8
+                    }}
+                    aria-label='Remove image'
+                  >
+                    <XIcon className='size-5' />
+                  </Button>
+                )}
+              </div>
+            ) : loading && !showCrop ? (
+              <CircleLoading className='stroke-main-color dark:stroke-white' />
+            ) : avatar ? (
+              <CircleUserRoundIcon
+                strokeWidth={1}
+                className='size-full max-h-1/3 max-w-1/3'
+              />
+            ) : (
               <UploadIcon
                 strokeWidth={1}
-                style={{
-                  width: (size * Math.min(aspect, 1)) / 3,
-                  height: (size * Math.min(aspect, 1)) / 3
-                }}
-                className={cn('opacity-60', {
-                  'text-red-500': !!error
-                })}
+                className='size-full max-h-1/3 max-w-1/3'
               />
-            </Button>
-          )}
+            )}
 
-          {value && (
-            <Button
-              onClick={handleRemove}
-              size='icon'
-              type='button'
-              className='border-background absolute -top-2 -right-2 size-5 rounded-full border'
-              aria-label='Remove image'
-            >
-              <XIcon className='size-3.5' />
-            </Button>
-          )}
-          <label htmlFor='input' className='cursor-pointer'>
-            <span className='sr-only'>Upload file</span>
-            <input
-              id='input'
-              {...getInputProps()}
-              className='sr-only'
-              tabIndex={-1}
-            />
-          </label>
-          {error?.message && (
-            <div className='animate-in fade-in -mb-6 flex min-h-6 items-end justify-center'>
-              <p className='text-destructive text-sm leading-5.5'>
-                {error.message}
-              </p>
-            </div>
-          )}
+            <label htmlFor='input' className='cursor-pointer'>
+              <span className='sr-only'>Upload file</span>
+              <input
+                id='input'
+                {...getInputProps()}
+                className='sr-only'
+                tabIndex={-1}
+              />
+            </label>
+          </div>
         </div>
+        {error?.message && (
+          <div className='animate-in fade-in -mb-6 flex min-h-6 items-end justify-center'>
+            <p className='text-destructive text-sm leading-5.5'>
+              {error.message}
+            </p>
+          </div>
+        )}
       </div>
 
       {showCrop && (
@@ -515,6 +530,6 @@ export default function UploadImageField<T extends FieldValues>({
           </DialogContent>
         </Dialog>
       )}
-    </div>
+    </>
   );
 }

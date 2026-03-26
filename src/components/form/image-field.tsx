@@ -5,7 +5,6 @@ import { EyeIcon, ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { AnimatePresence, m } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { AiOutlineFileImage } from 'react-icons/ai';
 import {
   type ComponentType,
   type HTMLAttributes,
@@ -178,10 +177,11 @@ export default function ImageField({
           }
         }}
         className={cn(
-          'relative size-full rounded border bg-gray-100 shadow-sm select-none dark:bg-black/15',
+          'relative flex items-center justify-center rounded bg-gray-100 select-none dark:bg-black/15',
           {
             'cursor-pointer': !shouldDisablePreview,
-            'flex items-center justify-center bg-black': originalSize
+            'flex items-center justify-center bg-black': originalSize,
+            'size-full border': !src
           },
           className
         )}
@@ -255,7 +255,7 @@ export default function ImageField({
         )}
 
         {!shouldDisablePreview && (
-          <div className='absolute inset-0 flex items-center justify-center rounded bg-black/30 opacity-0 transition-opacity hover:opacity-100'>
+          <div className='absolute inset-0 flex items-center justify-center rounded bg-black/30 opacity-0 transition-opacity duration-200 ease-linear hover:opacity-100'>
             <HoverIcon
               className={cn(
                 'max-h-1/2 max-w-1/2 text-white',

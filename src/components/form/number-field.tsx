@@ -9,16 +9,15 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import {
-  type Control,
-  type FieldPath,
-  type FieldValues,
-  useController
-} from 'react-hook-form';
+import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
-import { type ReactNode, useState, useEffect } from 'react';
-import Button from '@/components/form/button';
-import ToolTip from '@/components/form/tooltip';
+import {
+  type ComponentPropsWithoutRef,
+  type ForwardedRef,
+  type ReactNode,
+  forwardRef,
+  useRef
+} from 'react';
 
 type NumberFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -30,92 +29,45 @@ type NumberFieldProps<T extends FieldValues> = {
   formItemClassName?: string;
   required?: boolean;
   labelClassName?: string;
-  disabled?: boolean;
-  readOnly?: boolean;
   prefixIcon?: ReactNode;
   suffixIcon?: ReactNode;
-  step?: number;
-  min?: number;
-  max?: number;
-  allowNegative?: boolean;
-  delimiter?: string;
-  isFloat?: boolean;
+} & Omit<ComponentPropsWithoutRef<'input'>, 'name' | 'defaultValue'>;
+
+const toNumberIfPossible = (value: string): string | number => {
+  const num = Number(value);
+  return !isNaN(num) && value.trim() !== '' ? num : value;
 };
 
-export default function NumberField<T extends FieldValues>({
-  control,
-  name,
-  label,
-  placeholder,
-  description,
-  className,
-  formItemClassName,
-  required,
-  labelClassName,
-  disabled,
-  readOnly = false,
-  prefixIcon,
-  suffixIcon,
-  step = 1,
-  min,
-  max,
-  allowNegative = false,
-  delimiter = '.',
-  isFloat = false
-}: NumberFieldProps<T>) {
-  const { field, fieldState } = useController({ control, name });
-
-  const [raw, setRaw] = useState<string>(
-    field.value !== undefined ? formatNumber(Number(field.value)) : '0'
-  );
-
-  useEffect(() => {
-    if (field.value !== undefined) {
-      setRaw(formatNumber(Number(field.value)));
-    } else {
-      setRaw('0');
-    }
-  }, [field.value, isFloat]);
-
-  function formatNumber(value: number) {
-    if (isFloat) {
-      return value.toString().replace('.', delimiter);
-    }
-    const intVal = Math.trunc(value);
-    return intVal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, delimiter);
-  }
-
-  function parseNumber(value: string) {
-    const normalized = value.replace(new RegExp(`\\${delimiter}`, 'g'), '.');
-    const parsed = isFloat
-      ? parseFloat(normalized)
-      : parseInt(normalized.replace(/\./g, ''), 10);
-    return isNaN(parsed) ? undefined : parsed;
-  }
-
-  function commit(val: number) {
-    let next = val;
-    if (!allowNegative && next < 0)
-      next = min !== undefined ? Math.max(min, 0) : 0;
-    if (min !== undefined && next < min) next = min;
-    if (max !== undefined && next > max) next = max;
-
-    field.onChange(next);
-    setRaw(formatNumber(next));
-  }
-
-  const increment = () => commit((field.value ?? 0) + step);
-  const decrement = () => commit((field.value ?? 0) - step);
+function NumberFieldInner<T extends FieldValues>(
+  {
+    control,
+    name,
+    label,
+    placeholder,
+    description,
+    className,
+    formItemClassName,
+    required,
+    labelClassName,
+    disabled,
+    readOnly = false,
+    prefixIcon,
+    suffixIcon,
+    min,
+    ...inputProps
+  }: NumberFieldProps<T>,
+  ref: ForwardedRef<HTMLInputElement>
+) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   return (
     <FormField
       control={control}
       name={name}
-      render={() => (
+      render={({ field, fieldState }) => (
         <FormItem
           className={cn(
-            'relative',
-            { 'cursor-not-allowed': disabled },
+            { 'cursor-not-allowed select-none': disabled },
             formItemClassName
           )}
         >
@@ -125,109 +77,54 @@ export default function NumberField<T extends FieldValues>({
                 'opacity-50 select-none': disabled
               })}
             >
-              {label} {required && <span className='text-destructive'>*</span>}
+              {label}
+              {required && <span className='text-destructive'>*</span>}
             </FormLabel>
           )}
-
           <FormControl>
-            <div>
-              <div className='relative flex items-center'>
-                <div className='relative flex-1'>
-                  {prefixIcon && (
-                    <div className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2'>
-                      {prefixIcon}
-                    </div>
-                  )}
-                  <Input
-                    placeholder={placeholder}
-                    type='text'
-                    disabled={disabled}
-                    readOnly={readOnly}
-                    value={raw}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setRaw(val);
-
-                      const parsed = parseNumber(val);
-                      if (parsed !== undefined) {
-                        field.onChange(parsed);
-                      } else if (val === '' || val === '.' || val === '-') {
-                        field.onChange(undefined);
-                      }
-                    }}
-                    onBlur={() => {
-                      if (field.value !== undefined) {
-                        setRaw(formatNumber(field.value));
-                      } else {
-                        setRaw('0');
-                      }
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'ArrowUp') {
-                        e.preventDefault();
-                        increment();
-                      }
-                      if (e.key === 'ArrowDown') {
-                        e.preventDefault();
-                        decrement();
-                      }
-                    }}
-                    className={cn(
-                      className,
-                      'pt-0! font-normal shadow-none focus-visible:border-transparent focus-visible:ring-2',
-                      {
-                        'pl-10': prefixIcon,
-                        'pr-10': suffixIcon,
-                        'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/80 text-gray-500':
-                          disabled,
-                        'border-red-500 focus-visible:ring-red-500':
-                          fieldState.error,
-                        'focus-visible:ring-main-color': !fieldState.error,
-                        'pb-[0.25px]': !field.value,
-                        'pb-[0.5px]': !!field.value
-                      }
-                    )}
-                  />
-                  {suffixIcon && (
-                    <div className='text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2'>
-                      {suffixIcon}
-                    </div>
-                  )}
-                </div>
-
-                <div className='ml-1 flex flex-col gap-1'>
-                  <ToolTip title='Tăng' sideOffset={8}>
-                    <Button
-                      type='button'
-                      variant='outline'
-                      size='icon'
-                      onClick={increment}
-                      disabled={
-                        disabled ||
-                        (max !== undefined && (field.value ?? 0) >= max)
-                      }
-                      className='h-4 w-4 rounded'
-                    >
-                      +
-                    </Button>
-                  </ToolTip>
-                  <ToolTip title='Giảm' sideOffset={8}>
-                    <Button
-                      type='button'
-                      variant='outline'
-                      size='icon'
-                      onClick={decrement}
-                      disabled={
-                        disabled ||
-                        (min !== undefined && (field.value ?? 0) <= min)
-                      }
-                      className='h-4 w-4 rounded'
-                    >
-                      –
-                    </Button>
-                  </ToolTip>
-                </div>
-              </div>
+            <div className='relative' ref={containerRef}>
+              <Input
+                placeholder={placeholder}
+                type='number'
+                inputMode='numeric'
+                disabled={disabled}
+                readOnly={readOnly}
+                {...field}
+                {...inputProps}
+                min={min}
+                value={
+                  field.value !== undefined && field.value !== ''
+                    ? String(field.value).replace(/^0+(?=\d)/, '')
+                    : ''
+                }
+                ref={ref}
+                className={cn(
+                  className,
+                  'text-sm font-normal shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2',
+                  {
+                    'pl-10': prefixIcon,
+                    'pr-10': suffixIcon,
+                    'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/50 text-gray-500 dark:border-zinc-500/50':
+                      disabled,
+                    'border-red-500 focus-visible:ring-red-500':
+                      !!fieldState.error,
+                    'focus-visible:ring-main-color': !fieldState.error
+                  }
+                )}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw === '') {
+                    field.onChange(
+                      min !== undefined && !isNaN(Number(min))
+                        ? Number(min)
+                        : ''
+                    );
+                    return;
+                  }
+                  const stripped = raw.replace(/^0+(?=\d)/, '');
+                  field.onChange(toNumberIfPossible(stripped));
+                }}
+              />
               {description && <FormDescription>{description}</FormDescription>}
               {fieldState.error && (
                 <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
@@ -241,3 +138,9 @@ export default function NumberField<T extends FieldValues>({
     />
   );
 }
+
+const NumberField = forwardRef(NumberFieldInner) as <T extends FieldValues>(
+  props: NumberFieldProps<T> & { ref?: ForwardedRef<HTMLInputElement> }
+) => ReturnType<typeof NumberFieldInner>;
+
+export default NumberField;

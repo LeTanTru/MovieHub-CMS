@@ -60,7 +60,7 @@ const menuConfig: MenuItem[] = [
       },
       {
         key: 'person-list',
-        label: 'Diễn viên & đạo diễn',
+        label: 'Diễn viên & Đạo diễn',
         path: route.person.getList.path,
         permissionCode: [apiConfig.person.getList.permissionCode]
       },

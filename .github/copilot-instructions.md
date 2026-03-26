@@ -36,11 +36,25 @@
 - Use `apiConfig` as the source of truth for endpoint wiring and permission codes; route permissions in `src/routes/route.ts` reference these same codes.
 - For required fixed filters in list pages that should not appear in URL params, use:
   `defaultFilters` + `notShowFromSearchParams` in `useListBase` options.
+- When passing required ID filters to `useListBase` that should not appear in URL search params, use `defaultFilters` + `notShowFromSearchParams` rather than `handlers.additionalParams` override.
 - Prefer dedicated `autoComplete` endpoints when available (`apiConfig.*.autoComplete`) for autocomplete fields instead of list endpoints.
 - Many hooks are explicitly client-only (`'use client'`) and should stay client components when they depend on navigation, storage, or browser APIs.
+- Hook modules under `src/hooks` typically start with the `'use client'` directive.
 - Auth state is profile-based in UI (`useAuthStore.profile`) while permission extraction comes from decoded JWT authorities in `useAuth`.
-- Storage keys are centralized in `src/constants/storage-key.ts`; `storageKeys.X_CLIENT_TYPE` is intentionally used as an HTTP header name in request assembly.
+- Storage keys are centralized in `src/constants/storage-key.ts`:
+  - `storageKeys` values like `'X-Client-Type'` are intentionally used both as localStorage keys AND as HTTP header names in `sendRequest`. This is a deliberate dual-use pattern.
+  - `removeData(key)` supports string or string[] to batch-remove localStorage keys.
 - Query keys are centralized in `src/constants/master-data.ts` (`queryKeys`) and should be reused for React Query hooks.
 - Framer Motion convention: import and use `m` components (not `motion`) in component code.
 - Modal styling convention: use `bodyWrapperClassName` for modal wrapper customization and `confirmOnClose` / `confirmOnCloseMessage` for close confirmation behavior.
 - Path aliases are enabled via `@/*` -> `src/*` (`tsconfig.json`); prefer alias imports over deep relative paths.
+- HTTP wrapper methods (`http.get`/`post`/`put`/...) all delegate to `sendRequest`, which uses `apiConfig.method` to choose the HTTP verb.
+- `useSaveBase` invalidates React Query caches for `[queryKey]` and `[`${queryKey}-list`]` after successful create/update.
+- `ProfileForm` cancel reads `localStorage` key `storageKeys.PREVIOUS_PATH` (then removes it) to navigate back; otherwise it falls back to `route.home.path`.
+- Repository uses Zod v4 and prefers `.check(z.email(...))` for email validation in schemas.
+- `Col` form layout component defaults `span` to 12 (50% width) when not provided.
+- `FormControl` uses Radix Slot; its id/aria props apply only to its direct child (don't wrap controls in an extra div inside FormControl).
+- `ImageField` supports `freeAspect` and `freePreviewAspect` props for rendering images without fixed aspect ratios.
+- `UploadImageField` supports `originalSize` prop that adds 'Gốc' checkbox for uploading images at original dimensions without cropping.
+- `BaseForm` supports `onFormChange(isDirty)` callback to track form dirty state.
+- Tailwind `font-sans` is configured as `fontFamily.sans: ['var(--font-sans)']`; globals should define `--font-sans` accordingly.

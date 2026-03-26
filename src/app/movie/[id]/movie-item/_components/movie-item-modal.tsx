@@ -6,6 +6,7 @@ import {
   Col,
   DatePickerField,
   InputField,
+  NumberField,
   RichTextField,
   Row,
   SelectField,
@@ -321,13 +322,12 @@ export default function MovieItemModal({
                   +type === MOVIE_TYPE_SERIES &&
                   kind === MOVIE_ITEM_KIND_SEASON && (
                     <Col>
-                      <InputField
+                      <NumberField
                         control={form.control}
                         name='totalEpisode'
                         label='Tổng số tập'
                         placeholder='Tổng số tập'
                         required
-                        type='number'
                         min={0}
                       />
                     </Col>

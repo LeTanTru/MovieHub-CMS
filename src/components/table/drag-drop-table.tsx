@@ -96,7 +96,7 @@ function SortableRow<T extends Record<any, any>>({
     <TableRow
       ref={setNodeRef}
       className={cn(
-        'not-last:border-b-[0.2px] hover:bg-zinc-50',
+        'transition-colors duration-200 ease-linear not-last:border-b-[0.2px] hover:bg-zinc-50',
         rowClassName?.(row, rowIndex)
       )}
       onClick={onSelect}
