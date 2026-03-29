@@ -116,22 +116,29 @@ export default function CommentReplyForm({
       picker.i18n = vi;
       picker.style.position = 'absolute';
       picker.style.zIndex = '1000';
-      picker.style.display = 'none';
-      picker.style.right = '0px';
+      picker.style.opacity = '0';
+      picker.style.visibility = 'hidden';
+      picker.style.right = '170px';
       picker.style.top = '0px';
-      picker.classList.add('rounded-lg!', 'overflow-hidden');
+      picker.style.transition = 'all 0.2s linear';
+      picker.style.setProperty('--border-radius', '8px');
+      picker.style.setProperty('--border-size', '0');
 
       picker.addEventListener('emoji-click', (event: any) => {
         const emoji = event.detail.unicode;
         if (formMethodsRef.current) {
           const currentValue =
             formMethodsRef.current.getValues('content') || '';
-          formMethodsRef.current.setValue('content', currentValue + emoji);
+          formMethodsRef.current.setValue('content', currentValue + emoji, {
+            shouldDirty: true,
+            shouldTouch: true
+          });
         }
       });
 
-      if (pickerContainerRef.current)
+      if (pickerContainerRef.current) {
         pickerContainerRef.current.appendChild(picker);
+      }
     })();
 
     return () => {
@@ -142,7 +149,16 @@ export default function CommentReplyForm({
 
   useEffect(() => {
     const pickerEl = pickerContainerRef.current?.querySelector('emoji-picker');
-    if (pickerEl) pickerEl.style.display = showPicker ? 'block' : 'none';
+
+    if (pickerEl) {
+      if (!showPicker) {
+        pickerEl.style.opacity = '0';
+        pickerEl.style.visibility = 'hidden';
+      } else {
+        pickerEl.style.opacity = '1';
+        pickerEl.style.visibility = 'visible';
+      }
+    }
   }, [showPicker]);
 
   return (

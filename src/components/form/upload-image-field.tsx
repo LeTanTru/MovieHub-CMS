@@ -52,6 +52,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import Image from 'next/image';
 
 const ASPECT_RATIOS = [
   { label: '1:1', value: 1 },
@@ -275,8 +276,8 @@ export default function UploadImageField<T extends FieldValues>({
               {required && <span className='text-destructive'>*</span>}
             </FormLabel>
           )}
-          <button
-            type='button'
+          <div
+            role='button'
             className={cn(
               'relative inline-flex cursor-pointer items-center justify-center rounded',
               {
@@ -298,6 +299,13 @@ export default function UploadImageField<T extends FieldValues>({
             onDrop={handleDrop}
             title='Tải ảnh lên'
             data-dragging={isDragging || undefined}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openFileDialog();
+              }
+            }}
           >
             {!!value ? (
               <div className='relative size-full'>
@@ -362,7 +370,7 @@ export default function UploadImageField<T extends FieldValues>({
                 tabIndex={-1}
               />
             </label>
-          </button>
+          </div>
         </div>
         {error?.message && (
           <div className='animate-in fade-in -mb-6 flex min-h-6 items-end justify-center'>
@@ -404,7 +412,8 @@ export default function UploadImageField<T extends FieldValues>({
                 </Cropper>
               ) : (
                 previewUrl && (
-                  <img
+                  <Image
+                    fill
                     src={previewUrl}
                     alt='Preview'
                     className={cn('h-full w-full', {
