@@ -169,7 +169,14 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
   useSocketEvent(
     socketReceiveCMDs.CMD_CLIENT_RECEIVED_PUSH_NOTIFICATION,
     socketReceiveCMDs.CMD_DONE_CONVERT_VIDEO,
-    () => listQuery.refetch()
+    (data: VideoLibraryResType) => {
+      if (data.state === VIDEO_LIBRARY_STATE_COMPLETE) {
+        notify.success(`Convert video ${data.name} thành công`);
+      } else {
+        notify.error(`Convert video ${data.name} thất bại`);
+      }
+      listQuery.refetch();
+    }
   );
 
   return (
