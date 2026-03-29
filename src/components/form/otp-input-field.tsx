@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/input-otp';
 import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
 
 type OtpInputFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -64,6 +65,7 @@ export default function OtpInputField<T extends FieldValues>({
             <div>
               <InputOTP
                 maxLength={length}
+                pattern={REGEXP_ONLY_DIGITS}
                 {...field}
                 className={cn('flex justify-center', className)}
                 containerClassName={cn('w-full', containerClassName)}
@@ -77,7 +79,7 @@ export default function OtpInputField<T extends FieldValues>({
                   {Array.from({ length: length }).map((_, i) => (
                     <InputOTPSlot
                       className={cn(
-                        'data-[active=true]:ring-green-primary h-12 w-12 rounded-md border-l text-base data-[active=true]:border-none data-[active=true]:ring-2',
+                        'data-[active=true]:ring-green-primary h-12 w-12 rounded-md border-l text-base duration-200 ease-linear data-[active=true]:border-none data-[active=true]:ring-2',
                         {
                           'border-red-500 data-[active=true]:ring-red-500':
                             !!fieldState.error
@@ -95,7 +97,7 @@ export default function OtpInputField<T extends FieldValues>({
                 </FormDescription>
               )}
               {fieldState.error && (
-                <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+                <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end justify-center'>
                   <FormMessage className='leading-5.5' />
                 </div>
               )}

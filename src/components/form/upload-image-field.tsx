@@ -275,14 +275,15 @@ export default function UploadImageField<T extends FieldValues>({
               {required && <span className='text-destructive'>*</span>}
             </FormLabel>
           )}
-          <div
+          <button
+            type='button'
             className={cn(
               'relative inline-flex cursor-pointer items-center justify-center rounded',
               {
-                'border-input border-2 border-dashed transition-all transition-colors duration-200 ease-linear hover:bg-gray-100':
+                'border-input border-2 border-dashed transition-all transition-colors duration-200 ease-linear hover:bg-gray-100 dark:hover:bg-gray-800':
                   !value,
                 'rounded-full': avatar,
-                'border-gray-300 bg-gray-100': isDragging,
+                'border-gray-300 bg-gray-100 dark:bg-gray-800': isDragging,
                 'border-red-500': !!error
               }
             )}
@@ -297,7 +298,6 @@ export default function UploadImageField<T extends FieldValues>({
             onDrop={handleDrop}
             title='Tải ảnh lên'
             data-dragging={isDragging || undefined}
-            aria-label={value ? 'Thay ảnh' : 'Tải lên'}
           >
             {!!value ? (
               <div className='relative size-full'>
@@ -362,7 +362,7 @@ export default function UploadImageField<T extends FieldValues>({
                 tabIndex={-1}
               />
             </label>
-          </div>
+          </button>
         </div>
         {error?.message && (
           <div className='animate-in fade-in -mb-6 flex min-h-6 items-end justify-center'>

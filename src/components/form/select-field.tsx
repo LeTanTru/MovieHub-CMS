@@ -31,7 +31,8 @@ import {
   useState,
   useRef,
   type ReactNode,
-  type MouseEvent
+  type MouseEvent,
+  KeyboardEvent
 } from 'react';
 
 type SelectFieldProps<
@@ -127,7 +128,7 @@ export default function SelectField<
           setOpen(false);
         };
 
-        const handleClear = (e: MouseEvent) => {
+        const handleClear = (e: MouseEvent | KeyboardEvent) => {
           e.stopPropagation();
           field.onChange(null);
           onValueChange?.(null);
@@ -183,8 +184,12 @@ export default function SelectField<
 
                       {selectedOption && allowClear ? (
                         <span
+                          role='button'
                           onClick={handleClear}
+                          onKeyDown={(e) => e.key === 'Enter' && handleClear(e)}
                           className='bg-accent ml-2 flex h-4 w-4 items-center justify-center rounded-full hover:opacity-80'
+                          tabIndex={0}
+                          aria-label='Clear selection'
                         >
                           <X className='size-3' />
                         </span>

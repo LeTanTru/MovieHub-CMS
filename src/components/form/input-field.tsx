@@ -200,6 +200,7 @@ function InputFieldInner<T extends FieldValues>(
                       {filteredOptions.map((option, index) => (
                         <div
                           key={index}
+                          role='option'
                           className={cn(
                             'relative flex cursor-pointer items-center rounded p-2 text-sm transition-all duration-200 ease-linear hover:bg-gray-100',
                             field.value === option && 'bg-gray-50'
@@ -209,6 +210,7 @@ function InputFieldInner<T extends FieldValues>(
                             onOptionSelect?.(option);
                             setShowOptions(false);
                           }}
+                          aria-selected={field.value === option}
                         >
                           <span className='flex-1'>{option}</span>
                           {field.value === option && (

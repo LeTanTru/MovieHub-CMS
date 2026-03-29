@@ -181,7 +181,7 @@ export default function ImageField({
           {
             'cursor-pointer': !shouldDisablePreview,
             'flex items-center justify-center bg-black': originalSize,
-            'size-full border': !src
+            'size-full border': !src || imageError
           },
           className
         )}
