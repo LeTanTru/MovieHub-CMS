@@ -29,7 +29,6 @@ export default function AppProvider({ children }: { children: ReactNode }) {
     setLoading(profileLoading);
   }, [profileLoading, setLoading]);
 
-  /*
   useEffect(() => {
     if (!accessToken) return;
 
@@ -80,7 +79,6 @@ export default function AppProvider({ children }: { children: ReactNode }) {
       socket.close();
     };
   }, [accessToken, setSocket]);
-  */
 
   return (
     <LazyMotion features={domAnimation} strict>
