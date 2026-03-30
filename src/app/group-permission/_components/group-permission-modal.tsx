@@ -4,14 +4,9 @@ import { Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
-import {
-  apiConfig,
-  groupPermissionErrorMaps,
-  MAX_PAGE_SIZE
-} from '@/constants';
+import { apiConfig, groupPermissionErrorMaps } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
-import { useGroupPermissionListQuery } from '@/queries';
 import { groupPermissionSchema } from '@/schemaValidations';
 import {
   ApiResponse,
@@ -33,12 +28,6 @@ export default function GroupPermissionModal({
   selectedRow: GroupPermissionResType | null;
   onClose: () => void;
 }) {
-  const { data: groupPermissionListData } = useGroupPermissionListQuery({
-    size: MAX_PAGE_SIZE
-  });
-
-  const totalElements = groupPermissionListData?.data?.totalElements || 0;
-
   const {
     loading,
     isEditing,
@@ -59,16 +48,14 @@ export default function GroupPermissionModal({
   });
 
   const defaultValues: GroupPermissionBodyType = {
-    name: '',
-    ordering: totalElements
+    name: ''
   };
 
   const initialValues: GroupPermissionBodyType = useMemo(
     () => ({
-      name: selectedRow?.name || '',
-      ordering: totalElements
+      name: selectedRow?.name || ''
     }),
-    [selectedRow?.name, totalElements]
+    [selectedRow?.name]
   );
 
   const onSubmit = async (
