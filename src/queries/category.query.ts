@@ -7,10 +7,13 @@ export const useCategoryListQuery = () => {
   return useQuery({
     queryKey: [`${queryKeys.CATEGORY}-list`],
     queryFn: () =>
-      http.get<ApiResponseList<CategoryResType>>(apiConfig.category.getList, {
-        params: {
-          size: MAX_PAGE_SIZE
+      http.get<ApiResponseList<CategoryResType>>(
+        apiConfig.category.autoComplete,
+        {
+          params: {
+            size: MAX_PAGE_SIZE
+          }
         }
-      })
+      )
   });
 };

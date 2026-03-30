@@ -354,9 +354,9 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
                     <SelectField
                       name='filter.type'
                       control={form.control}
-                      label='Thể loại phim'
+                      label='Phân loại'
                       options={movieTypeOptions}
-                      placeholder='Thể loại phim'
+                      placeholder='Phân loại'
                     />
                   </Col>
                   <Col className='grid-c-6'>

@@ -15,6 +15,12 @@ export type GroupResType = {
   status: number;
 };
 
+export type GroupAutoCompleteResType = {
+  id: string;
+  name: string;
+  kind: number;
+};
+
 export type GroupBodyType = z.infer<typeof groupSchema>;
 
 export type GroupSearchType = z.infer<typeof groupSearchSchema> &

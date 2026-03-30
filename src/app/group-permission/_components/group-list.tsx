@@ -3,7 +3,7 @@
 import { ListPageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
-import { apiConfig, FieldTypes, groupKinds } from '@/constants';
+import { apiConfig, ErrorCode, FieldTypes, groupKinds } from '@/constants';
 import { useListBase } from '@/hooks';
 import { groupSearchSchema } from '@/schemaValidations';
 import type {
@@ -12,6 +12,7 @@ import type {
   GroupSearchType,
   SearchFormProps
 } from '@/types';
+import { notify } from '@/utils';
 
 export default function GroupList({ queryKey }: { queryKey: string }) {
   const { data, loading, handlers, pagination } = useListBase<
@@ -22,6 +23,13 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
     options: {
       queryKey,
       objectName: 'vai trò'
+    },
+    override: (handlers) => {
+      handlers.handleDeleteError = (code) => {
+        if (code === ErrorCode.GROUP_ERROR_IN_USED) {
+          notify.error('Vai trò này đang được sử dụng');
+        }
+      };
     }
   });
 

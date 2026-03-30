@@ -20,7 +20,8 @@ import {
   groupErrorMaps,
   groupKinds,
   MAX_PAGE_SIZE,
-  queryKeys
+  queryKeys,
+  GROUP_KIND_ADMIN
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { cn } from '@/lib';
@@ -108,18 +109,17 @@ export default function GroupForm() {
     () => ({
       description: data?.description ?? '',
       name: data?.name ?? '',
-      permissions: data?.permissions.map((g) => g.id.toString()) ?? []
+      permissions: data?.permissions.map((g) => g.id.toString()) ?? [],
+      kind: data?.kind ?? GROUP_KIND_ADMIN
     }),
-    [data?.description, data?.name, data?.permissions]
+    [data?.description, data?.kind, data?.name, data?.permissions]
   );
 
   const onSubmit = async (
     values: GroupBodyType,
     form: UseFormReturn<GroupBodyType>
   ) => {
-    const { kind: _, ...rest } = values;
-
-    await handleSubmit(rest, form, groupErrorMaps);
+    await handleSubmit(values, form, groupErrorMaps);
   };
 
   return (

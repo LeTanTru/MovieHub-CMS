@@ -79,6 +79,12 @@ const apiConfig = defineApiConfig({
     }
   },
   category: {
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/category/auto-complete`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    },
     getById: {
       baseUrl: `${AppConstants.apiUrl}/v1/category/admin/get/:id`,
       method: 'GET',
@@ -229,11 +235,24 @@ const apiConfig = defineApiConfig({
     }
   },
   group: {
+    autoComplete: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/group/auto-complete`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    },
     create: {
       baseUrl: `${AppConstants.authApiUrl}/v1/group/create`,
       method: 'POST',
       headers: baseHeader,
       permissionCode: 'GR_C',
+      isRequiredXClientType: true
+    },
+    delete: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/group/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'GR_D',
       isRequiredXClientType: true
     },
     getById: {
@@ -333,6 +352,12 @@ const apiConfig = defineApiConfig({
     }
   },
   movie: {
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/movie/auto-complete`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    },
     getById: {
       baseUrl: `${AppConstants.apiUrl}/v1/movie/admin/get/:id`,
       method: 'GET',
