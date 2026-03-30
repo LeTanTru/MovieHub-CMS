@@ -123,6 +123,11 @@ export default function MovieItemModal({
       handlers.handleSubmitSuccess = () => {
         onClose();
       };
+      handlers.handleSubmitError = (code) => {
+        if (code === ErrorCode.MOVIE_ITEM_EXCEED_TOTAL_EXPISODE) {
+          notify.error('Số tập đã vượt quá tổng số tập của phần');
+        }
+      };
     }
   });
 
