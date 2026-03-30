@@ -190,6 +190,10 @@ export default function UploadFileField<T extends FieldValues>({
         )}
       </div>
 
+      {/* {previewUrl && (
+        <video src={previewUrl} controls className='w-full rounded-md border' />
+      )} */}
+
       {uploading && (
         <div className='mt-2 h-2 w-full overflow-hidden rounded-full'>
           <div
@@ -201,10 +205,8 @@ export default function UploadFileField<T extends FieldValues>({
 
       {uploading && (
         <div className='flex items-center gap-2'>
-          <div className='flex items-center gap-2 text-sm'>
-            <CircleLoading className='stroke-main-color' />
-            {progress}% đang tải...
-          </div>
+          <CircleLoading className='stroke-main-color my-2 size-4' />
+          {progress}% đang tải...
         </div>
       )}
 

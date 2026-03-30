@@ -279,7 +279,7 @@ export default function UploadImageField<T extends FieldValues>({
           <div
             role='button'
             className={cn(
-              'relative inline-flex cursor-pointer items-center justify-center rounded',
+              'group relative inline-flex cursor-pointer items-center justify-center rounded',
               {
                 'border-input border-2 border-dashed transition-all transition-colors duration-200 ease-linear hover:bg-gray-100 dark:hover:bg-gray-800':
                   !value,
@@ -352,12 +352,12 @@ export default function UploadImageField<T extends FieldValues>({
             ) : avatar ? (
               <CircleUserRoundIcon
                 strokeWidth={1}
-                className='size-full max-h-1/3 max-w-1/3'
+                className='size-full max-h-1/3 max-w-1/3 stroke-gray-300 transition-all duration-200 ease-linear group-hover:stroke-black'
               />
             ) : (
               <UploadIcon
                 strokeWidth={1}
-                className='size-full max-h-1/3 max-w-1/3'
+                className='size-full max-h-1/3 max-w-1/3 stroke-gray-300 transition-all duration-200 ease-linear group-hover:stroke-black'
               />
             )}
 

@@ -244,8 +244,8 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                 })}
               </>
               {loading && (
-                <div className='absolute inset-0 bg-white/80'>
-                  <CircleLoading className='stroke-main-color mt-20 size-8' />
+                <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
+                  <CircleLoading className='stroke-main-color mt-20' />
                 </div>
               )}
             </>

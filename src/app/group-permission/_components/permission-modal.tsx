@@ -9,6 +9,7 @@ import {
   TextAreaField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
+import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
 import {
   apiConfig,
@@ -43,6 +44,7 @@ export default function PermissionModal({
   onClose
 }: PermissionModalProps) {
   const {
+    loading,
     isEditing,
     isFormChanged,
     onFormChange,
@@ -114,7 +116,7 @@ export default function PermissionModal({
       title={`${!isEditing ? 'Thêm' : 'Cập nhật'} quyền`}
       open={open}
       onClose={handleClose}
-      bodyWrapperClassName='w-200'
+      bodyWrapperClassName='w-200 overflow-hidden'
       confirmOnClose={isFormChanged}
     >
       <BaseForm
@@ -123,6 +125,7 @@ export default function PermissionModal({
         onSubmit={onSubmit}
         schema={permissionSchema}
         onFormChange={onFormChange}
+        className='rounded-none'
       >
         {(form) => (
           <>
@@ -206,6 +209,11 @@ export default function PermissionModal({
               </Col>
             </Row>
             <>{renderActions(form, { onCancel: handleClose })}</>
+            {loading && (
+              <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
+                <CircleLoading className='stroke-main-color mt-10' />
+              </div>
+            )}
           </>
         )}
       </BaseForm>

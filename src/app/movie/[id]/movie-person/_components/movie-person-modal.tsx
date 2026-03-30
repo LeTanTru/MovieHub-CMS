@@ -21,6 +21,7 @@ import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { UseQueryResult } from '@tanstack/react-query';
 import type { UseFormReturn } from 'react-hook-form';
 import { useState } from 'react';
+import { CircleLoading } from '@/components/loading';
 
 export default function MoviePersonModal({
   moviePersonList,
@@ -37,8 +38,10 @@ export default function MoviePersonModal({
   listQuery: UseQueryResult<ApiResponseList<MoviePersonResType>, Error>;
   onClose: () => void;
 }) {
-  const { mutateAsync: createMoviePersonMutate } =
-    useCreateMoviePersonMutation();
+  const {
+    mutateAsync: createMoviePersonMutate,
+    isPending: createMoviePersonLoading
+  } = useCreateMoviePersonMutation();
   const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
 
   const defaultValues: MoviePersonBodyType = {
@@ -83,7 +86,7 @@ export default function MoviePersonModal({
       title={`Thêm ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`}
       open={open}
       onClose={handleClose}
-      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-50'
+      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-50 overflow-hidden'
       aria-labelledby='video-modal-title'
       confirmOnClose={isFormChanged}
     >
@@ -92,6 +95,7 @@ export default function MoviePersonModal({
         schema={moviePersonSchema}
         onSubmit={handleSubmit}
         onFormChange={(changed) => setIsFormChanged(changed)}
+        className='rounded-none'
       >
         {(form) => (
           <>
@@ -149,6 +153,11 @@ export default function MoviePersonModal({
                 />
               </Col>
             </Row>
+            {createMoviePersonLoading && (
+              <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
+                <CircleLoading className='stroke-main-color mt-10' />
+              </div>
+            )}
           </>
         )}
       </BaseForm>

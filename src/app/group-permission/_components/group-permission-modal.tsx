@@ -2,10 +2,16 @@
 
 import { Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
+import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
-import { apiConfig, groupPermissionErrorMaps } from '@/constants';
+import {
+  apiConfig,
+  groupPermissionErrorMaps,
+  MAX_PAGE_SIZE
+} from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
+import { useGroupPermissionListQuery } from '@/queries';
 import { groupPermissionSchema } from '@/schemaValidations';
 import {
   ApiResponse,
@@ -27,7 +33,14 @@ export default function GroupPermissionModal({
   selectedRow: GroupPermissionResType | null;
   onClose: () => void;
 }) {
+  const { data: groupPermissionListData } = useGroupPermissionListQuery({
+    size: MAX_PAGE_SIZE
+  });
+
+  const totalElements = groupPermissionListData?.data?.totalElements || 0;
+
   const {
+    loading,
     isEditing,
     isFormChanged,
     onFormChange,
@@ -46,14 +59,16 @@ export default function GroupPermissionModal({
   });
 
   const defaultValues: GroupPermissionBodyType = {
-    name: ''
+    name: '',
+    ordering: totalElements
   };
 
   const initialValues: GroupPermissionBodyType = useMemo(
     () => ({
-      name: selectedRow?.name || ''
+      name: selectedRow?.name || '',
+      ordering: totalElements
     }),
-    [selectedRow?.name]
+    [selectedRow?.name, totalElements]
   );
 
   const onSubmit = async (
@@ -85,7 +100,7 @@ export default function GroupPermissionModal({
       title={`${!isEditing ? 'Thêm' : 'Cập nhật'} nhóm quyền`}
       open={open}
       onClose={handleClose}
-      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3'
+      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3 overflow-hidden'
       confirmOnClose={isFormChanged}
     >
       <BaseForm
@@ -94,6 +109,7 @@ export default function GroupPermissionModal({
         onSubmit={onSubmit}
         schema={groupPermissionSchema}
         onFormChange={onFormChange}
+        className='rounded-none'
       >
         {(form) => (
           <>
@@ -113,6 +129,11 @@ export default function GroupPermissionModal({
                 onCancel: handleClose
               })}
             </>
+            {loading && (
+              <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
+                <CircleLoading className='stroke-main-color mt-10' />
+              </div>
+            )}
           </>
         )}
       </BaseForm>

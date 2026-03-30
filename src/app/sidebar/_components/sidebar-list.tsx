@@ -233,6 +233,4 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
       </ListPageWrapper>
     </PageWrapper>
   );
-
-  return <div></div>;
 }

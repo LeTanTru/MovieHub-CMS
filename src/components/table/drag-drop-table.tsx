@@ -282,9 +282,9 @@ export default function DragDropTable<T extends Record<any, any>>({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: 'linear' }}
-              className='absolute inset-0 top-[55px] z-50 flex items-start justify-center bg-white/70 pt-5'
+              className='absolute inset-0 top-[55px] z-50 flex items-start justify-center bg-white/80 pt-5'
             >
-              <CircleLoading className='stroke-main-color size-8' />
+              <CircleLoading className='stroke-main-color' />
             </m.div>
           )}
         </AnimatePresence>

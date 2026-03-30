@@ -119,7 +119,7 @@ export default function DropdownAvatar() {
                 onClick={handleLogout}
               >
                 {logoutLoading ? (
-                  <CircleLoading className='size-5 stroke-gray-300' />
+                  <CircleLoading className='stroke-main-color mx-auto size-5' />
                 ) : (
                   <>
                     <LogOut className='size-5' /> Đăng xuất
