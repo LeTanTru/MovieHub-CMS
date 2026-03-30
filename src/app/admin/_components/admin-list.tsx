@@ -51,7 +51,14 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
     {
       title: 'Tên',
       dataIndex: 'fullName',
-      render: (value) => value ?? '---'
+      render: (value, record) => {
+        return (
+          <div className='flex flex-col'>
+            {value ?? '---'}
+            <span className='text-xs text-gray-500'>{record.group.name}</span>
+          </div>
+        );
+      }
     },
     {
       title: 'Email',
