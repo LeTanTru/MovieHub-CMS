@@ -20,6 +20,7 @@ export const ErrorCode = {
   // === Group error code ===
   GROUP_ERROR_NAME_EXIST: 'ERROR-GROUP-000',
   GROUP_ERROR_NOT_FOUND: 'ERROR-GROUP-001',
+  GROUP_ERROR_IN_USED: 'ERROR-GROUP-002',
 
   // === GroupPermission error code ===
   GROUP_PERMISSION_ERROR_NOT_FOUND: 'ERROR-GROUP-PERMISSION-000',

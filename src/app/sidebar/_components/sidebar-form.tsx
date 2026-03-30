@@ -195,7 +195,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
                   <AutoCompleteField
                     control={form.control}
                     name='movieId'
-                    apiConfig={apiConfig.movie.getList}
+                    apiConfig={apiConfig.movie.autoComplete}
                     mappingData={(item: MovieResType) => ({
                       label: item.title,
                       value: item.id.toString()

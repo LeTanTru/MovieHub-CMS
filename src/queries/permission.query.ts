@@ -3,7 +3,6 @@ import { logger } from '@/logger';
 import type {
   ApiResponse,
   ApiResponseList,
-  PermissionBodyType,
   PermissionResType,
   PermissionSearchType
 } from '@/types';
@@ -20,36 +19,6 @@ export const usePermissionListQuery = (params?: PermissionSearchType) => {
           params
         }
       )
-  });
-};
-
-// export const usePermissionQuery = (id: string) => {
-//   return useQuery({
-//     queryKey: ['permission', id],
-//     queryFn: () =>
-//       http.get<ApiResponse<PermissionResType>>(apiConfig.permission.getById, {
-//         pathParams: { id }
-//       })
-//   });
-// };
-
-export const useCreatePermissionMutation = () => {
-  return useMutation({
-    mutationKey: [`${queryKeys.PERMISSION}-create`],
-    mutationFn: (body: Omit<PermissionBodyType, 'id'>) =>
-      http.post<ApiResponse<any>>(apiConfig.permission.create, {
-        body
-      })
-  });
-};
-
-export const useUpdatePermissionMutation = () => {
-  return useMutation({
-    mutationKey: [`${queryKeys.PERMISSION}-update`],
-    mutationFn: (body: PermissionBodyType) =>
-      http.put<ApiResponse<any>>(apiConfig.permission.update, {
-        body
-      })
   });
 };
 

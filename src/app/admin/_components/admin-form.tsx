@@ -247,8 +247,8 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                   options={groupOptions || []}
                   control={form.control}
                   name='groupId'
-                  label='Nhóm quyền'
-                  placeholder='Nhóm quyền'
+                  label='Vai trò'
+                  placeholder='Vai trò'
                   required
                 />
               </Col>

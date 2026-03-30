@@ -51,7 +51,7 @@ export default function BaseForm<T extends Record<string, any>>({
     shouldFocusError: false
   });
 
-  // const formState = useFormState({ control: form.control });
+  const formState = useFormState({ control: form.control });
 
   useEffect(() => {
     if (initialValues) {
@@ -59,15 +59,15 @@ export default function BaseForm<T extends Record<string, any>>({
     }
   }, [initialValues, form]);
 
-  // if (Object.keys(formState.errors).length) {
-  //   logger.info('BaseForm ~ form:', formState.errors);
-  //   logger.info('BaseForm ~ form:', form.getValues());
-  // }
+  if (Object.keys(formState.errors).length) {
+    logger.info('BaseForm ~ form:', formState.errors);
+    logger.info('BaseForm ~ form:', form.getValues());
+  }
 
-  // const enhancedForm = {
-  // ...form,
-  // formState
-  // };
+  const enhancedForm = {
+    ...form,
+    formState
+  };
 
   useEffect(() => {
     onFormChange?.(form.formState.isDirty);
@@ -79,12 +79,10 @@ export default function BaseForm<T extends Record<string, any>>({
         ref={ref}
         id={id}
         className={cn('relative rounded-lg bg-white p-4', className)}
-        // onSubmit={form.handleSubmit((values) => onSubmit(values, enhancedForm))}
-        onSubmit={form.handleSubmit((values) => onSubmit(values, form))}
+        onSubmit={form.handleSubmit((values) => onSubmit(values, enhancedForm))}
         {...rest}
       >
-        {/* {children?.(enhancedForm as UseFormReturn<T>)} */}
-        {children?.(form as UseFormReturn<T>)}
+        {children?.(enhancedForm as UseFormReturn<T>)}
       </form>
     </Form>
   );

@@ -11,6 +11,11 @@ export type CategoryResType = {
   slug: string;
 };
 
+export type CategoryAutoCompleteResType = {
+  id: string;
+  name: string;
+};
+
 export type CategoryBodyType = z.infer<typeof categorySchema>;
 
 export type CategorySearchType = z.infer<typeof categorySearchSchema> &
