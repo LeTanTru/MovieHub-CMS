@@ -171,9 +171,17 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
     socketReceiveCMDs.CMD_DONE_CONVERT_VIDEO,
     (data: VideoLibraryResType) => {
       if (data.state === VIDEO_LIBRARY_STATE_COMPLETE) {
-        notify.success(`Convert video ${data.name} thành công`);
+        notify.success(
+          <span>
+            Convert video <b>{data.name}</b> thành công
+          </span>
+        );
       } else {
-        notify.error(`Convert video ${data.name} thất bại`);
+        notify.error(
+          <>
+            Convert video <b>{data.name}</b> thất bại
+          </>
+        );
       }
       listQuery.refetch();
     }

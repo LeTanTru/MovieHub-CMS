@@ -39,7 +39,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
-import CommentReplyForm from './comment-reply-form';
+import CommentForm from './comment-form';
 import { m, AnimatePresence } from 'framer-motion';
 import { useCommentStore } from '@/store';
 import { useAuth, useInfiniteListBase, useValidatePermission } from '@/hooks';
@@ -536,7 +536,7 @@ function CommentItem({
                 transition={{ duration: 0.1, ease: 'linear' }}
                 className='mt-2'
               >
-                <CommentReplyForm
+                <CommentForm
                   parentId={rootId.toString()}
                   movieId={comment.movieId.toString()}
                   defaultMention={`@${authorInfo.fullName}`}

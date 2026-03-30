@@ -372,7 +372,7 @@ export default function AutoCompleteField<
                           }}
                         >
                           {loading ? (
-                            <CircleLoading className='stroke-main-color my-2 size-7' />
+                            <CircleLoading className='stroke-main-color mx-auto my-2' />
                           ) : (
                             combinedOptions.map((opt, idx) => {
                               const value = opt.value;

@@ -109,11 +109,13 @@ export default function PermissionList() {
   return (
     <>
       <ListPageWrapper>
-        {loading ? (
-          <CircleLoading className='stroke-main-color mt-4 size-8!' />
-        ) : (
-          <div className='flex flex-col gap-y-4 px-4 py-4 max-[1560px]:max-w-300'>
-            {sortedGroupPermissions.map((groupPermission) => {
+        <div className='relative flex flex-col gap-y-4 px-4 py-4 max-[1560px]:max-w-300'>
+          {loading ? (
+            <div className='absolute inset-0 flex justify-center bg-white/80'>
+              <CircleLoading className='stroke-main-color mt-20' />
+            </div>
+          ) : (
+            sortedGroupPermissions.map((groupPermission) => {
               const group = groupPermission.name;
               const groupPermissionsList = groupedPermissions[group];
               return (
@@ -226,9 +228,9 @@ export default function PermissionList() {
                   </div>
                 </div>
               );
-            })}
-          </div>
-        )}
+            })
+          )}
+        </div>
       </ListPageWrapper>
       <PermissionModal
         open={opened}

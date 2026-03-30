@@ -81,7 +81,7 @@ export default function CollectionItemModal({
       title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} phim`}
       open={open}
       onClose={handleClose}
-      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3'
+      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3 overflow-hidden'
       aria-labelledby='collection-item-modal-title'
       confirmOnClose={isFormChanged}
     >
@@ -90,6 +90,7 @@ export default function CollectionItemModal({
         defaultValues={defaultValues}
         schema={collectionItemSchema}
         onFormChange={onFormChange}
+        className='rounded-none'
       >
         {(form) => {
           return (
@@ -125,8 +126,8 @@ export default function CollectionItemModal({
                 })}
               </>
               {loading && (
-                <div className='absolute inset-0 bg-white/80'>
-                  <CircleLoading className='stroke-main-color mt-20 size-8' />
+                <div className='absolute inset-0 flex justify-center bg-white/80'>
+                  <CircleLoading className='stroke-main-color mt-10' />
                 </div>
               )}
             </>

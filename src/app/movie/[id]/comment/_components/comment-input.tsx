@@ -31,7 +31,7 @@ export default function CommentInput({
 
   const pickerContainerRef = useRef<HTMLDivElement>(null);
 
-  const { isSubmitting, onFormChange, handleSubmit } = useSaveBase<
+  const { loading, onFormChange, handleSubmit } = useSaveBase<
     CommentResType,
     CommentBodyType
   >({
@@ -151,7 +151,7 @@ export default function CommentInput({
                       onClick={() => setShowPicker((prev) => !prev)}
                       className='flex h-8 w-fit items-center justify-center hover:bg-transparent'
                       variant='ghost'
-                      disabled={isSubmitting}
+                      disabled={loading}
                     >
                       <Image
                         src={emojiIcon.src}
@@ -161,9 +161,9 @@ export default function CommentInput({
                       />
                     </Button>
                     <Button
-                      loading={isSubmitting}
+                      loading={loading}
                       variant='primary'
-                      disabled={!form.watch('content') || isSubmitting}
+                      disabled={!form.watch('content') || loading}
                       className='h-8'
                     >
                       <Send />

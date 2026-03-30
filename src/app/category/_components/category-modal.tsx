@@ -86,7 +86,7 @@ export default function CategoryModal({
       open={open}
       onClose={handleClose}
       title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} thể loại`}
-      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3'
+      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3 overflow-hidden'
       aria-labelledby='category-modal-title'
       confirmOnClose={isFormChanged}
     >
@@ -96,6 +96,7 @@ export default function CategoryModal({
         schema={categorySchema}
         initialValues={initialValues}
         onFormChange={onFormChange}
+        className='rounded-none'
       >
         {(form) => (
           <>
@@ -117,8 +118,8 @@ export default function CategoryModal({
               })}
             </>
             {loading && (
-              <div className='absolute inset-0 bg-white/80'>
-                <CircleLoading className='stroke-main-color mt-20 size-8' />
+              <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
+                <CircleLoading className='stroke-main-color mt-10' />
               </div>
             )}
           </>

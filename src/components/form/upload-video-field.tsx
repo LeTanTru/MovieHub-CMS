@@ -201,10 +201,8 @@ export default function UploadVideoField<T extends FieldValues>({
 
       {uploading && (
         <div className='flex items-center gap-2'>
-          <div className='flex items-center gap-2 text-sm'>
-            <CircleLoading className='stroke-main-color' />
-            {progress}% đang tải...
-          </div>
+          <CircleLoading className='stroke-main-color my-2 size-4' />
+          {progress}% đang tải...
         </div>
       )}
 

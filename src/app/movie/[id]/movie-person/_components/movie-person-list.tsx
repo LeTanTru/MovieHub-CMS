@@ -115,7 +115,7 @@ export default function MoviePersonList({
                   {...buttonProps}
                 >
                   {updateMoviePersonLoading && isEditing ? (
-                    <CircleLoading className='size-4' />
+                    <CircleLoading className='stroke-main-color size-4' />
                   ) : isEditing ? (
                     <AiOutlineSave className='text-main-color size-4' />
                   ) : (

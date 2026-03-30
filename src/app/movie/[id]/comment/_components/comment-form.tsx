@@ -14,7 +14,7 @@ import { emojiIcon } from '@/assets';
 import { useCommentStore } from '@/store';
 import { useShallow } from 'zustand/react/shallow';
 
-type CommentReplyFormProps = {
+type CommentFormProps = {
   parentId: string;
   movieId: string;
   queryKey: string;
@@ -23,14 +23,14 @@ type CommentReplyFormProps = {
   onCancel?: () => void;
 };
 
-export default function CommentReplyForm({
+export default function CommentForm({
   parentId,
   movieId,
   queryKey,
   defaultMention,
   onSubmitted,
   onCancel
-}: CommentReplyFormProps) {
+}: CommentFormProps) {
   const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
   const wrapperRef = useClickOutside<HTMLDivElement>(() =>
     setShowPicker(false)
@@ -48,7 +48,7 @@ export default function CommentReplyForm({
 
   const authorInfo = replyingComment?.author;
 
-  const { isSubmitting, handleSubmit } = useSaveBase<
+  const { loading, handleSubmit } = useSaveBase<
     CommentResType,
     CommentBodyType
   >({
@@ -196,7 +196,7 @@ export default function CommentReplyForm({
                   onClick={() => setShowPicker((prev) => !prev)}
                   variant='ghost'
                   className='flex h-8 items-center justify-center p-0 hover:bg-transparent'
-                  disabled={isSubmitting}
+                  disabled={loading}
                 >
                   <Image
                     src={emojiIcon.src}
@@ -217,11 +217,11 @@ export default function CommentReplyForm({
                 <Button
                   type='submit'
                   variant='primary'
-                  loading={isSubmitting}
+                  loading={loading}
                   disabled={
                     !form.watch('content') ||
                     !form.formState.validatingFields ||
-                    isSubmitting
+                    loading
                   }
                   className='h-8'
                 >

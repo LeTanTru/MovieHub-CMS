@@ -61,7 +61,7 @@ export default function Button({
       {...props}
     >
       {loading ? (
-        <CircleLoading className='size-5 stroke-3' aria-hidden='true' />
+        <CircleLoading className='size-5 stroke-2' aria-hidden='true' />
       ) : (
         children
       )}
