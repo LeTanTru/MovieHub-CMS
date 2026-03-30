@@ -119,11 +119,14 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
     {
       title: 'Tên',
       dataIndex: 'fullName',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
-        </span>
-      )
+      render: (value, record) => {
+        return (
+          <div className='flex flex-col'>
+            {value ?? '---'}
+            <span className='text-xs text-gray-500'>{record.group.name}</span>
+          </div>
+        );
+      }
     },
     {
       title: 'Tên đăng nhập',
