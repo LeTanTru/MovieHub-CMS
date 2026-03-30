@@ -205,7 +205,7 @@ export default function UploadFileField<T extends FieldValues>({
 
       {uploading && (
         <div className='flex items-center gap-2'>
-          <CircleLoading className='stroke-main-color my-2 size-4' />
+          <CircleLoading className='stroke-main-color size-4' />
           {progress}% đang tải...
         </div>
       )}
