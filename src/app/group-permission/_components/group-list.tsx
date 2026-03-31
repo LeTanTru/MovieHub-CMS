@@ -1,5 +1,6 @@
 'use client';
 
+import { ToolTip } from '@/components/form';
 import { ListPageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
@@ -64,16 +65,12 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
       dataIndex: 'color',
       render: (value) => {
         return value ? (
-          <Badge
-            className='text-sm font-normal'
-            style={{
-              borderColor: `${value}80`,
-              color: `${value}`,
-              backgroundColor: `${value}10`
-            }}
-          >
-            {value}
-          </Badge>
+          <ToolTip title={value}>
+            <div
+              className='mx-auto h-6 w-20 rounded'
+              style={{ background: value }}
+            ></div>
+          </ToolTip>
         ) : (
           '----'
         );

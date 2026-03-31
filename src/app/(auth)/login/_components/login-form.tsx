@@ -7,10 +7,14 @@ import { loginSchema } from '@/schemaValidations';
 import { logoWithText } from '@/assets';
 import { notify, setData } from '@/utils';
 import { route } from '@/routes';
-import { storageKeys } from '@/constants';
+import { GROUP_KIND_ADMIN, storageKeys } from '@/constants';
 import { useAppLoadingStore, useAuthStore } from '@/store';
 import { useFirstActiveRoute, useNavigate } from '@/hooks';
-import { useLoginMutation, useProfileQuery } from '@/queries';
+import {
+  useEmployeeProfileQuery,
+  useLoginMutation,
+  useProfileQuery
+} from '@/queries';
 import envConfig from '@/config';
 import Image from 'next/image';
 import type { LoginBodyType, LoginResType } from '@/types';
@@ -24,6 +28,8 @@ export default function LoginForm() {
     useLoginMutation();
 
   const { refetch: getProfile, isLoading: profileLoading } = useProfileQuery();
+  const { refetch: getEmployeeProfile, isLoading: employeeProfileLoading } =
+    useEmployeeProfileQuery();
 
   const setLoading = useAppLoadingStore((s) => s.setLoading);
   const setProfile = useAuthStore((s) => s.setProfile);
@@ -45,12 +51,15 @@ export default function LoginForm() {
         setData(storageKeys.REFRESH_TOKEN, refreshToken);
         setData(storageKeys.USER_KIND, String(userKind));
 
-        const profileData = await getProfile();
+        const profileQuery =
+          userKind === GROUP_KIND_ADMIN ? getProfile : getEmployeeProfile;
+        const profileData = await profileQuery();
         const profile = profileData?.data?.data;
+
+        setLoading(profileLoading || employeeProfileLoading);
 
         if (profile) {
           setProfile(profile);
-          setLoading(profileLoading);
           navigate.push(firstActiveRoute ?? route.home.path);
         }
         notify.success('Đăng nhập thành công');
