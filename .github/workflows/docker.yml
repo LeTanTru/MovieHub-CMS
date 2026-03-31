@@ -93,6 +93,13 @@ jobs:
               ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
           EOF
 
+      - name: Cleanup sensitive files
+        if: always()
+        run: |
+          rm -f vpn.ovpn auth.txt
+          rm -f ~/.ssh/id_rsa
+          sudo pkill openvpn || true
+
   notify:
     runs-on: ubuntu-latest
     needs: [build-and-push, deploy]
