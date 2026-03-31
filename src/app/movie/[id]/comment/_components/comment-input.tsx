@@ -4,19 +4,14 @@ import { emojiIcon } from '@/assets';
 import { Button, Col, Row, TextAreaField } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { apiConfig } from '@/constants';
-import { useSaveBase } from '@/hooks';
+import { useClickOutside, useSaveBase } from '@/hooks';
 import { commentSchema } from '@/schemaValidations';
 import type { CommentBodyType, CommentResType } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { Send } from 'lucide-react';
 import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
-import { EmojiPicker } from '@/components/emoji-picker';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from '@/components/ui/popover';
 
 export default function CommentInput({
   queryKey,
@@ -25,7 +20,16 @@ export default function CommentInput({
   queryKey: string;
   movieId: string;
 }) {
+  const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
+
+  const [showPicker, setShowPicker] = useState(false);
   const queryClient = useQueryClient();
+
+  const wrapperRef = useClickOutside<HTMLDivElement>(() =>
+    setShowPicker(false)
+  );
+
+  const pickerContainerRef = useRef<HTMLDivElement>(null);
 
   const { loading, onFormChange, handleSubmit } = useSaveBase<
     CommentResType,
@@ -57,6 +61,65 @@ export default function CommentInput({
     form.reset();
   };
 
+  useEffect(() => {
+    let picker: any;
+    let mounted = true;
+
+    (async () => {
+      const { Picker } = await import('emoji-picker-element');
+      const vi = (await import('emoji-picker-element/i18n/vi')).default;
+
+      if (!mounted) return;
+
+      picker = new Picker();
+      picker.i18n = vi;
+      picker.style.position = 'absolute';
+      picker.style.zIndex = '1000';
+      picker.style.opacity = '0';
+      picker.style.visibility = 'hidden';
+      picker.style.right = '100px';
+      picker.style.top = '0px';
+      picker.style.transition = 'all 0.2s linear';
+      picker.style.setProperty('--border-radius', '8px');
+      picker.style.setProperty('--border-size', '0');
+
+      picker.addEventListener('emoji-click', (event: any) => {
+        const emoji = event.detail.unicode;
+        if (formMethodsRef.current) {
+          const currentValue =
+            formMethodsRef.current.getValues('content') || '';
+          formMethodsRef.current.setValue('content', currentValue + emoji, {
+            shouldDirty: true,
+            shouldTouch: true
+          });
+        }
+      });
+
+      if (pickerContainerRef.current) {
+        pickerContainerRef.current.appendChild(picker);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+      if (picker && picker.parentNode) picker.parentNode.removeChild(picker);
+    };
+  }, []);
+
+  useEffect(() => {
+    const pickerEl = pickerContainerRef.current?.querySelector('emoji-picker');
+
+    if (pickerEl) {
+      if (!showPicker) {
+        pickerEl.style.opacity = '0';
+        pickerEl.style.visibility = 'hidden';
+      } else {
+        pickerEl.style.opacity = '1';
+        pickerEl.style.visibility = 'visible';
+      }
+    }
+  }, [showPicker]);
+
   return (
     <BaseForm
       defaultValues={defaultValues}
@@ -65,6 +128,7 @@ export default function CommentInput({
       onFormChange={onFormChange}
     >
       {(form) => {
+        formMethodsRef.current = form;
         return (
           <>
             <Row className='mb-0'>
@@ -79,47 +143,32 @@ export default function CommentInput({
             </Row>
             <Row className='mt-4 mb-0'>
               <Col className='grid-c-12'>
-                <div className='flex justify-end gap-4'>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        type='button'
-                        className='flex h-8 w-fit items-center justify-center p-0 hover:bg-transparent'
-                        variant='ghost'
-                        disabled={loading}
-                      >
-                        <Image
-                          src={emojiIcon.src}
-                          alt='Emoji icon'
-                          width={25}
-                          height={25}
-                        />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      align='end'
-                      className='w-fit border-none p-0'
+                <div className='relative ml-auto w-fit' ref={wrapperRef}>
+                  <div ref={pickerContainerRef} />
+                  <div className='flex'>
+                    <Button
+                      type='button'
+                      onClick={() => setShowPicker((prev) => !prev)}
+                      className='flex h-8 w-fit items-center justify-center hover:bg-transparent'
+                      variant='ghost'
+                      disabled={loading}
                     >
-                      <EmojiPicker
-                        onEmojiSelect={(emoji) => {
-                          form.setValue(
-                            'content',
-                            `${form.getValues('content')}${emoji.native}`,
-                            { shouldDirty: true }
-                          );
-                        }}
+                      <Image
+                        src={emojiIcon.src}
+                        alt='Emoji icon'
+                        width={25}
+                        height={25}
                       />
-                    </PopoverContent>
-                  </Popover>
-                  <Button
-                    loading={loading}
-                    variant='primary'
-                    disabled={!form.watch('content') || loading}
-                    className='h-8'
-                    iconClassName='size-4'
-                  >
-                    <Send />
-                  </Button>
+                    </Button>
+                    <Button
+                      loading={loading}
+                      variant='primary'
+                      disabled={!form.watch('content') || loading}
+                      className='h-8'
+                    >
+                      <Send />
+                    </Button>
+                  </div>
                 </div>
               </Col>
             </Row>
