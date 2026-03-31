@@ -1,7 +1,7 @@
 import { apiConfig, queryKeys } from '@/constants';
-import type { ApiResponse } from '@/types';
+import type { ApiResponse, ProfileResType } from '@/types';
 import { http } from '@/utils';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useChangeEmployeeStatusMutation = () => {
   return useMutation({
@@ -10,5 +10,14 @@ export const useChangeEmployeeStatusMutation = () => {
       http.put<ApiResponse<any>>(apiConfig.employee.changeStatus, {
         body
       })
+  });
+};
+
+export const useEmployeeProfileQuery = (enabled: boolean = false) => {
+  return useQuery({
+    queryKey: [`${queryKeys.EMPLOYEE}-profile`],
+    queryFn: () =>
+      http.get<ApiResponse<ProfileResType>>(apiConfig.employee.getProfile),
+    enabled
   });
 };

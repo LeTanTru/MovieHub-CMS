@@ -1,9 +1,15 @@
 'use client';
 
 import envConfig from '@/config';
-import { socketSendCMDs, storageKeys, WEB_PLATFORM } from '@/constants';
+import {
+  GROUP_KIND_ADMIN,
+  GROUP_KIND_EMPLOYEE,
+  socketSendCMDs,
+  storageKeys,
+  WEB_PLATFORM
+} from '@/constants';
 import { logger } from '@/logger';
-import { useProfileQuery } from '@/queries';
+import { useEmployeeProfileQuery, useProfileQuery } from '@/queries';
 import { useAppLoadingStore, useAuthStore, useSocketStore } from '@/store';
 import { getData } from '@/utils';
 import { domAnimation, LazyMotion } from 'framer-motion';
@@ -14,10 +20,18 @@ export default function AppProvider({ children }: { children: ReactNode }) {
   const setLoading = useAppLoadingStore((s) => s.setLoading);
   const setProfile = useAuthStore((s) => s.setProfile);
   const setSocket = useSocketStore((s) => s.setSocket);
+  const userKind = getData(storageKeys.USER_KIND);
 
-  const { data: profileData, isLoading: profileLoading } =
-    useProfileQuery(!!accessToken);
-  const profile = profileData?.data;
+  const { data: profileData, isLoading: profileLoading } = useProfileQuery(
+    !!accessToken && !!userKind && parseInt(userKind) === GROUP_KIND_ADMIN
+  );
+
+  const { data: employeeProfileData, isLoading: employeeProfileLoading } =
+    useEmployeeProfileQuery(
+      !!accessToken && !!userKind && parseInt(userKind) === GROUP_KIND_EMPLOYEE
+    );
+
+  const profile = profileData?.data || employeeProfileData?.data;
 
   useEffect(() => {
     if (profile) {
@@ -26,8 +40,8 @@ export default function AppProvider({ children }: { children: ReactNode }) {
   }, [profile, setProfile]);
 
   useEffect(() => {
-    setLoading(profileLoading);
-  }, [profileLoading, setLoading]);
+    setLoading(profileLoading || employeeProfileLoading);
+  }, [profileLoading, employeeProfileLoading, setLoading]);
 
   useEffect(() => {
     if (!accessToken) return;

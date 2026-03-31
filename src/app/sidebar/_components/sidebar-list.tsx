@@ -171,7 +171,7 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
       render: (value) => (
         <ToolTip title={value}>
           <div
-            className='mx-auto h-4 w-20 rounded'
+            className='mx-auto h-6 w-20 rounded'
             style={{ background: value }}
           ></div>
         </ToolTip>

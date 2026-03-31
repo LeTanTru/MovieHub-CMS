@@ -1,5 +1,4 @@
 'use client';
-
 import CollectionItemModal from './collection-item-modal';
 import { Button, ImageField } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
