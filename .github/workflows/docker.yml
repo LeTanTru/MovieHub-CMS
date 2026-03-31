@@ -33,8 +33,6 @@ jobs:
             NEXT_PUBLIC_AUTH_API_URL=${{ secrets.NEXT_PUBLIC_AUTH_API_URL }}
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_API_MEDIA_URL=${{ secrets.NEXT_PUBLIC_API_MEDIA_URL }}
-            NEXT_PUBLIC_APP_USERNAME=${{ secrets.NEXT_PUBLIC_APP_USERNAME }}
-            NEXT_PUBLIC_APP_PASSWORD=${{ secrets.NEXT_PUBLIC_APP_PASSWORD }}
             NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }}
             NEXT_PUBLIC_TINYMCE_URL=${{ secrets.NEXT_PUBLIC_TINYMCE_URL }}
             NEXT_PUBLIC_API_SOCKET_URL=${{ secrets.NEXT_PUBLIC_API_SOCKET_URL }}
@@ -76,22 +74,33 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.VPS_HOST_KEY }}" >> ~/.ssh/known_hosts
 
       - name: Deploy to VPS
         run: |
           ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
             docker pull ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
 
-            docker stop cms-moviehub || true
+            docker stop -t 30 cms-moviehub || true
             docker rm cms-moviehub || true
 
             docker run -d \
               -p 3001:3001 \
               --restart unless-stopped \
               --name cms-moviehub \
+              -e NEXT_PUBLIC_APP_USERNAME="${NEXT_PUBLIC_APP_USERNAME}" \
+              -e NEXT_PUBLIC_APP_PASSWORD="${NEXT_PUBLIC_APP_PASSWORD}" \
               ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
           EOF
+        env:
+          NEXT_PUBLIC_APP_USERNAME: ${{ secrets.NEXT_PUBLIC_APP_USERNAME }}
+          NEXT_PUBLIC_APP_PASSWORD: ${{ secrets.NEXT_PUBLIC_APP_PASSWORD }}
+
+      - name: Cleanup credentials
+        if: always()
+        run: |
+          rm -f vpn.ovpn auth.txt
+          rm -f ~/.ssh/id_rsa
 
   notify:
     runs-on: ubuntu-latest
