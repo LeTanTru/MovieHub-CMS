@@ -21,34 +21,29 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Build Image
+      - name: Build and Push Image
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: false
-          load: true
+          push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/cms-moviehub:cache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/cms-moviehub:cache,mode=max
           build-args: |
             NEXT_PUBLIC_NODE_ENV=${{ secrets.NEXT_PUBLIC_NODE_ENV }}
             NEXT_PUBLIC_AUTH_API_URL=${{ secrets.NEXT_PUBLIC_AUTH_API_URL }}
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_API_MEDIA_URL=${{ secrets.NEXT_PUBLIC_API_MEDIA_URL }}
-            NEXT_PUBLIC_APP_USERNAME=${{ secrets.NEXT_PUBLIC_APP_USERNAME }}
-            NEXT_PUBLIC_APP_PASSWORD=${{ secrets.NEXT_PUBLIC_APP_PASSWORD }}
             NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }}
             NEXT_PUBLIC_TINYMCE_URL=${{ secrets.NEXT_PUBLIC_TINYMCE_URL }}
             NEXT_PUBLIC_API_SOCKET_URL=${{ secrets.NEXT_PUBLIC_API_SOCKET_URL }}
             NEXT_PUBLIC_GRANT_TYPE=${{ secrets.NEXT_PUBLIC_GRANT_TYPE }}
             NEXT_PUBLIC_APP_NAME=${{ secrets.NEXT_PUBLIC_APP_NAME }}
-            NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN=${{ secrets.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN }}
             NEXT_PUBLIC_MEDIA_HOST=${{ secrets.NEXT_PUBLIC_MEDIA_HOST }}
             NEXT_PUBLIC_CLIENT_TYPE=${{ secrets.NEXT_PUBLIC_CLIENT_TYPE }}
 
       - name: Show Image Size
         run: docker images ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
-
-      - name: Push Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -56,20 +51,17 @@ jobs:
 
     steps:
       - name: Install OpenVPN
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y openvpn
-
-      - name: Setup VPN
-        run: |
-          echo "${{ secrets.VPN_KEY }}" > vpn.ovpn
-          echo "${{ secrets.VPN_USERNAME }}" > auth.txt
-          echo "${{ secrets.VPN_PASSWORD }}" >> auth.txt
+        run: sudo apt-get update && sudo apt-get install -y openvpn
 
       - name: Connect VPN
         run: |
-          sudo openvpn --config vpn.ovpn --auth-user-pass auth.txt --daemon
+          echo "${{ secrets.VPN_KEY }}" > vpn.ovpn
+          sudo openvpn \
+            --config vpn.ovpn \
+            --auth-user-pass <(printf '%s\n%s' '${{ secrets.VPN_USERNAME }}' '${{ secrets.VPN_PASSWORD }}') \
+            --daemon
           sleep 20
+          rm -f vpn.ovpn
 
       - name: Setup SSH
         run: |
@@ -79,18 +71,31 @@ jobs:
           ssh-keyscan ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to VPS
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          APP_USERNAME: ${{ secrets.NEXT_PUBLIC_APP_USERNAME }}
+          APP_PASSWORD: ${{ secrets.NEXT_PUBLIC_APP_PASSWORD }}
+          GRANT_TYPE_REFRESH: ${{ secrets.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN }}
         run: |
-          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
-            docker pull ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
+          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} \
+            DOCKER_USERNAME="$DOCKER_USERNAME" \
+            APP_USERNAME="$APP_USERNAME" \
+            APP_PASSWORD="$APP_PASSWORD" \
+            GRANT_TYPE_REFRESH="$GRANT_TYPE_REFRESH" \
+            bash << 'EOF'
+              docker pull "$DOCKER_USERNAME/cms-moviehub:latest"
 
-            docker stop cms-moviehub || true
-            docker rm cms-moviehub || true
+              docker stop cms-moviehub || true
+              docker rm cms-moviehub || true
 
-            docker run -d \
-              -p 3001:3001 \
-              --restart unless-stopped \
-              --name cms-moviehub \
-              ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
+              docker run -d \
+                -p 3001:3001 \
+                --restart unless-stopped \
+                --name cms-moviehub \
+                -e NEXT_PUBLIC_APP_USERNAME="$APP_USERNAME" \
+                -e NEXT_PUBLIC_APP_PASSWORD="$APP_PASSWORD" \
+                -e NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN="$GRANT_TYPE_REFRESH" \
+                "$DOCKER_USERNAME/cms-moviehub:latest"
           EOF
 
   notify:
