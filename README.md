@@ -1,9 +1,9 @@
-![MovieHub](./src/assets/images/logo-with-text.png)
+![MovieHub](./src/assets/images/logo-with-text.webp)
 
 <h1 align="center">MovieHub CMS Tenant</h1>
 
 <p align="center">
-  <strong>A comprehensive content management system for multi-tenant movie streaming platforms</strong>
+  <strong>A comprehensive content management system for movie streaming platforms</strong>
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
 
 ## 📋 Overview
 
-**MovieHub CMS Tenant** is an enterprise-grade administration console designed for managing multi-tenant movie streaming platforms. Built with modern web technologies, it provides operations teams with powerful tools to manage content, users, permissions, and platform configuration across multiple tenants.
+**MovieHub CMS** is an enterprise-grade administration console designed for managing movie streaming platforms. Built with modern web technologies, it provides operations teams with powerful tools to manage content, users, permissions, and platform configuration.
 
 ### What is MovieHub CMS?
 
@@ -53,10 +53,9 @@ Built with **Next.js 16 (App Router)** and **TypeScript**, the system emphasizes
 
 ### Platform Configuration
 
-- **Dynamic Sidebar**: Configurable navigation menus per tenant
+- **Dynamic Sidebar**: Configurable navigation menus
 - **Style Management**: Customizable themes and UI styling
 - **App Version Control**: Feature flag management and version tracking
-- **Multi-Tenant Support**: Isolated tenant environments with shared infrastructure
 
 ### Developer Experience
 
@@ -425,7 +424,7 @@ git push origin feature/your-feature-name
 | `NEXT_PUBLIC_APP_NAME`                 | Application name            | `MovieHub CMS`               |
 | `NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN` | Refresh token grant type    | `refresh_token`              |
 | `NEXT_PUBLIC_MEDIA_HOST`               | Media files host            | `https://cdn.example.com`    |
-| `NEXT_PUBLIC_CLIENT_TYPE`              | Client type identifier      | `CMS_TENANT`                 |
+| `NEXT_PUBLIC_CLIENT_TYPE`              | Client type identifier      | `WEB`                        |
 
 ## 📄 License
 

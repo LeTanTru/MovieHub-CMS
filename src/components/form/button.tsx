@@ -45,11 +45,13 @@ export default function Button({
   asChild = false,
   loading = false,
   children,
+  iconClassName,
   ...props
 }: ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     loading?: boolean;
+    iconClassName?: string;
   }) {
   const Comp = asChild ? Slot : 'button';
 
@@ -61,7 +63,10 @@ export default function Button({
       {...props}
     >
       {loading ? (
-        <CircleLoading className='size-5 stroke-2' aria-hidden='true' />
+        <CircleLoading
+          className={cn('size-5 stroke-2', iconClassName)}
+          aria-hidden='true'
+        />
       ) : (
         children
       )}

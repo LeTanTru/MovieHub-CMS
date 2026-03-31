@@ -26,7 +26,7 @@ export const useVoteCommentMutation = () => {
   return useMutation({
     mutationKey: [`vote-${queryKeys.COMMENT}`],
     mutationFn: (body: CommentVoteBodyType) =>
-      http.put(apiConfig.comment.vote, {
+      http.put<ApiResponse<any>>(apiConfig.comment.vote, {
         body
       })
   });
@@ -36,7 +36,7 @@ export const usePinCommentMutation = () => {
   return useMutation({
     mutationKey: [`pin-${queryKeys.COMMENT}`],
     mutationFn: (body: CommentPinBodyType) =>
-      http.put(apiConfig.comment.pin, {
+      http.put<ApiResponse<any>>(apiConfig.comment.pin, {
         body
       })
   });
@@ -46,7 +46,7 @@ export const useChangeCommenStatusMutation = () => {
   return useMutation({
     mutationKey: [`change-status-${queryKeys.COMMENT}`],
     mutationFn: (body: ChangeCommentStatusBodyType) =>
-      http.put(apiConfig.comment.changeStatus, {
+      http.put<ApiResponse<any>>(apiConfig.comment.changeStatus, {
         body
       })
   });

@@ -57,8 +57,8 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
       queryKey,
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId'],
-      showNotify: false,
-      excludeFromQueryFilter: ['movieTitle']
+      excludeFromQueryFilter: ['movieTitle'],
+      showNotify: false
     }
   });
 
@@ -91,7 +91,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
         onSuccess: async () => {
           if (commentToDelete.parent) {
             await queryClient.invalidateQueries({
-              queryKey: [queryKey, commentToDelete.parent.id]
+              queryKey: [`${queryKey}-${commentToDelete.parent.id}-infinite`]
             });
           }
         }
