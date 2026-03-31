@@ -59,6 +59,28 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
       width: 120,
       align: 'center'
     },
+    {
+      title: 'Màu',
+      dataIndex: 'color',
+      render: (value) => {
+        return value ? (
+          <Badge
+            className='text-sm font-normal'
+            style={{
+              borderColor: `${value}80`,
+              color: `${value}`,
+              backgroundColor: `${value}10`
+            }}
+          >
+            {value}
+          </Badge>
+        ) : (
+          '----'
+        );
+      },
+      width: 120,
+      align: 'center'
+    },
     handlers.renderActionColumn({
       actions: {
         edit: true,

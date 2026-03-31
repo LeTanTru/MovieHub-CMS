@@ -20,8 +20,12 @@ export const employeeSchema = (isEditing: boolean) =>
       groupId: z.string().nonempty('Bắt buộc'),
       phone: z
         .string()
-        .regex(/^0\d{9}$/, 'Số điện thoại không hợp lệ')
-        .optional(),
+        .nonempty('Bắt buộc')
+        .regex(/^\d{10}$/, 'Số điện thoại phải gồm 10 chữ số')
+        .regex(
+          /^0[35789][0-9]{8}$/,
+          'Số điện thoại phải bắt đầu bằng 03, 05, 07, 08 hoặc 09'
+        ),
       status: z.number(),
 
       username: z.string().nonempty('Bắt buộc'),

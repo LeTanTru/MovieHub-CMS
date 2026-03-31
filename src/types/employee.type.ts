@@ -1,4 +1,5 @@
 import { employeeSchema, employeeSearchSchema } from '@/schemaValidations';
+import { GroupResType } from '@/types/group.type';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 
@@ -7,23 +8,7 @@ export type EmployeeResType = {
   createdDate: string;
   email: string;
   fullName: string;
-  group: {
-    createdDate: string;
-    description: string;
-    id: string;
-    isSystemRole: boolean;
-    kind: number;
-    modifiedDate: string;
-    name: string;
-    permissions: {
-      createdDate: string;
-      id: string;
-      modifiedDate: string;
-      permissionCode: string;
-      status: number;
-    }[];
-    status: number;
-  };
+  group: GroupResType;
   id: string;
   kind: number;
   modifiedDate: string;

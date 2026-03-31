@@ -3,6 +3,7 @@ import {
   accountSearchSchema,
   profileSchema
 } from '@/schemaValidations';
+import { GroupResType } from '@/types/group.type';
 import { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 
@@ -14,11 +15,7 @@ export type ProfileResType = {
   email: string;
   fullName: string;
   avatarPath: string;
-  group: {
-    id: string;
-    name: string;
-    kind: number;
-  };
+  group: GroupResType;
   gender: number;
 };
 
@@ -35,12 +32,7 @@ export type AccountAutoResType = {
   phone: string;
   email: string;
   fullName: string;
-  group: {
-    id: string;
-    name: string;
-    kind: number;
-    subKind: number;
-  };
+  group: GroupResType;
   lastLogin: string;
   avatarPath: string;
   isSuperAdmin: boolean;

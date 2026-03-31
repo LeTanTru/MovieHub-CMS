@@ -3,6 +3,7 @@
 import { AvatarField } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
+import { Badge } from '@/components/ui/badge';
 import {
   apiConfig,
   FieldTypes,
@@ -54,8 +55,17 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
       render: (value, record) => {
         return (
           <div className='flex flex-col'>
-            {value ?? '---'}
-            <span className='text-xs text-gray-500'>{record.group.name}</span>
+            <span>{value}</span>
+            <Badge
+              className='w-fit text-xs font-normal'
+              style={{
+                borderColor: `${record.group.color}80`,
+                color: `${record.group.color}`,
+                backgroundColor: `${record.group.color}10`
+              }}
+            >
+              {record.group.name ?? '---'}
+            </Badge>
           </div>
         );
       }

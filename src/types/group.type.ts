@@ -13,6 +13,7 @@ export type GroupResType = {
   createdDate: Date;
   modifiedDate: Date;
   status: number;
+  color: string;
 };
 
 export type GroupAutoCompleteResType = {

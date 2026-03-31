@@ -1,18 +1,24 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { Button, Col, Row, TextAreaField } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { Send } from 'lucide-react';
 import Image from 'next/image';
-import { useClickOutside, useSaveBase } from '@/hooks';
+import { useSaveBase } from '@/hooks';
 import { commentSchema } from '@/schemaValidations';
 import { apiConfig } from '@/constants';
 import type { CommentBodyType, CommentResType } from '@/types';
 import { emojiIcon } from '@/assets';
 import { useCommentStore } from '@/store';
 import { useShallow } from 'zustand/react/shallow';
+import { EmojiPicker } from '@/components/emoji-picker';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
 
 type CommentFormProps = {
   parentId: string;
@@ -31,12 +37,6 @@ export default function CommentForm({
   onSubmitted,
   onCancel
 }: CommentFormProps) {
-  const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
-  const wrapperRef = useClickOutside<HTMLDivElement>(() =>
-    setShowPicker(false)
-  );
-  const pickerContainerRef = useRef<HTMLDivElement>(null);
-  const [showPicker, setShowPicker] = useState(false);
   const { editingComment, replyingComment, setEditingComment } =
     useCommentStore(
       useShallow((s) => ({
@@ -91,75 +91,16 @@ export default function CommentForm({
     ]
   );
 
-  const onSubmit = async (values: CommentBodyType) => {
-    await handleSubmit({
-      ...values
-    });
+  const onSubmit = async (
+    values: CommentBodyType,
+    form: UseFormReturn<CommentBodyType>
+  ) => {
+    await handleSubmit(values);
 
     if (onSubmitted) onSubmitted();
-    formMethodsRef.current?.reset();
-    setShowPicker(false);
+    form.reset();
     setEditingComment(null);
   };
-
-  useEffect(() => {
-    let picker: any;
-    let mounted = true;
-
-    (async () => {
-      const { Picker } = await import('emoji-picker-element');
-      const vi = (await import('emoji-picker-element/i18n/vi')).default;
-
-      if (!mounted) return;
-
-      picker = new Picker();
-      picker.i18n = vi;
-      picker.style.position = 'absolute';
-      picker.style.zIndex = '1000';
-      picker.style.opacity = '0';
-      picker.style.visibility = 'hidden';
-      picker.style.right = '170px';
-      picker.style.top = '0px';
-      picker.style.transition = 'all 0.2s linear';
-      picker.style.setProperty('--border-radius', '8px');
-      picker.style.setProperty('--border-size', '0');
-
-      picker.addEventListener('emoji-click', (event: any) => {
-        const emoji = event.detail.unicode;
-        if (formMethodsRef.current) {
-          const currentValue =
-            formMethodsRef.current.getValues('content') || '';
-          formMethodsRef.current.setValue('content', currentValue + emoji, {
-            shouldDirty: true,
-            shouldTouch: true
-          });
-        }
-      });
-
-      if (pickerContainerRef.current) {
-        pickerContainerRef.current.appendChild(picker);
-      }
-    })();
-
-    return () => {
-      mounted = false;
-      if (picker && picker.parentNode) picker.parentNode.removeChild(picker);
-    };
-  }, []);
-
-  useEffect(() => {
-    const pickerEl = pickerContainerRef.current?.querySelector('emoji-picker');
-
-    if (pickerEl) {
-      if (!showPicker) {
-        pickerEl.style.opacity = '0';
-        pickerEl.style.visibility = 'hidden';
-      } else {
-        pickerEl.style.opacity = '1';
-        pickerEl.style.visibility = 'visible';
-      }
-    }
-  }, [showPicker]);
 
   return (
     <BaseForm
@@ -170,7 +111,6 @@ export default function CommentForm({
       className='shadow-[0px_0px_2px_2px] shadow-gray-200'
     >
       {(form) => {
-        formMethodsRef.current = form;
         return (
           <Row className='mb-0'>
             <Col className='grid-c-12'>
@@ -186,25 +126,36 @@ export default function CommentForm({
                 }
                 labelClassName='m-0 mb-1 ml-0.5'
               />
-              <div
-                className='relative mt-4 flex items-center justify-end gap-4'
-                ref={wrapperRef}
-              >
-                <div ref={pickerContainerRef} />
-                <Button
-                  type='button'
-                  onClick={() => setShowPicker((prev) => !prev)}
-                  variant='ghost'
-                  className='flex h-8 items-center justify-center p-0 hover:bg-transparent'
-                  disabled={loading}
-                >
-                  <Image
-                    src={emojiIcon.src}
-                    alt='Emoji icon'
-                    width={25}
-                    height={25}
-                  />
-                </Button>
+              <div className='relative mt-4 flex items-center justify-end gap-4'>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      className='flex w-fit items-center justify-center p-0 hover:bg-transparent'
+                      disabled={loading}
+                      size='sm'
+                    >
+                      <Image
+                        src={emojiIcon.src}
+                        alt='Emoji icon'
+                        width={25}
+                        height={25}
+                      />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent align='end' className='w-fit border-none p-0'>
+                    <EmojiPicker
+                      onEmojiSelect={(emoji) => {
+                        form.setValue(
+                          'content',
+                          `${form.getValues('content')}${emoji.native}`,
+                          { shouldDirty: true }
+                        );
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
                 <Button
                   type='button'
                   variant='outline'
@@ -218,12 +169,9 @@ export default function CommentForm({
                   type='submit'
                   variant='primary'
                   loading={loading}
-                  disabled={
-                    !form.watch('content') ||
-                    !form.formState.validatingFields ||
-                    loading
-                  }
+                  disabled={!form.watch('content') || loading}
                   className='h-8'
+                  iconClassName='size-4'
                 >
                   <Send />
                 </Button>

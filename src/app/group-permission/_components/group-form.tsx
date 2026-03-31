@@ -2,6 +2,7 @@
 
 import {
   Col,
+  ColorPickerField,
   InputField,
   Row,
   SelectField,
@@ -102,7 +103,8 @@ export default function GroupForm() {
   const defaultValues: GroupBodyType = {
     name: '',
     permissions: [],
-    description: ''
+    description: '',
+    color: ''
   };
 
   const initialValues: GroupBodyType = useMemo(
@@ -110,9 +112,10 @@ export default function GroupForm() {
       description: data?.description ?? '',
       name: data?.name ?? '',
       permissions: data?.permissions.map((g) => g.id.toString()) ?? [],
-      kind: data?.kind ?? GROUP_KIND_ADMIN
+      kind: data?.kind ?? GROUP_KIND_ADMIN,
+      color: data?.color ?? '#000000'
     }),
-    [data?.description, data?.kind, data?.name, data?.permissions]
+    [data?.description, data?.kind, data?.name, data?.permissions, data?.color]
   );
 
   const onSubmit = async (
@@ -167,6 +170,16 @@ export default function GroupForm() {
                   />
                 </Col>
               )}
+            </Row>
+            <Row>
+              <Col className='grid-c-12'>
+                <ColorPickerField
+                  control={form.control}
+                  name='color'
+                  label='Màu'
+                  required
+                />
+              </Col>
             </Row>
             <Row>
               <Col className='grid-c-12'>

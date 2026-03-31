@@ -128,7 +128,8 @@ function CommentItem({
       defaultFilters: {
         parentId: comment.id
       },
-      notShowFromSearchParams: ['parentId']
+      notShowFromSearchParams: ['parentId'],
+      excludeFromQueryFilter: ['movieTitle']
     }
   });
 
@@ -181,6 +182,8 @@ function CommentItem({
     await queryClient.invalidateQueries({
       queryKey: [`${queryKeys.COMMENT}-${parentIdToInvalidate}-infinite`]
     });
+
+    setOpenParentIds((prev) => [...prev, comment.id]);
   };
 
   const handleReplyComment = () => {
@@ -335,15 +338,23 @@ function CommentItem({
                 </span>
               )}
 
-              {comment.movieItem && (
-                <Badge
-                  variant='outline'
-                  className='border-slate-200 text-xs font-medium'
-                >
-                  Phần {comment.movieItem.parent.label} - Tập{' '}
-                  {comment.movieItem.label}
-                </Badge>
-              )}
+              {comment.movieItem &&
+                (comment.movieItem.parent ? (
+                  <Badge
+                    variant='outline'
+                    className='border-slate-200 text-xs font-medium'
+                  >
+                    Phần {comment.movieItem.parent.label} - Tập&nbsp;
+                    {comment.movieItem.label}
+                  </Badge>
+                ) : (
+                  <Badge
+                    variant='outline'
+                    className='border-slate-200 text-xs font-medium'
+                  >
+                    Phần&nbsp;{comment.movieItem.label}
+                  </Badge>
+                ))}
             </div>
             {level === 0 && canPin && (
               <Button

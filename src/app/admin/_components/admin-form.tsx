@@ -193,8 +193,8 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
                 <InputField
                   control={form.control}
                   name='fullName'
-                  label='Họ tên nhân viên'
-                  placeholder='Họ tên nhân viên'
+                  label='Họ tên'
+                  placeholder='Họ tên'
                   required
                 />
               </Col>

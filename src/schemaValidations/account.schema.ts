@@ -122,6 +122,10 @@ export const accountSchema = (isEditing: boolean) =>
         .string()
         .nonempty('Bắt buộc')
         .regex(/^\d{10}$/, 'Số điện thoại phải gồm 10 chữ số')
+        .regex(
+          /^0[35789][0-9]{8}$/,
+          'Số điện thoại phải bắt đầu bằng 03, 05, 07, 08 hoặc 09'
+        )
     })
     .refine(
       (data) => {
