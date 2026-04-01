@@ -62,14 +62,19 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
           record: CollectionResType,
           buttonProps: Record<string, any>
         ) => {
-          if (
-            !handlers.hasPermission({
-              requiredPermissions: [
-                apiConfig.collectionItem.getList.permissionCode
-              ]
-            })
-          )
-            return null;
+          const handleNavigate = () => {
+            navigate.push(
+              renderListPageUrl(
+                generatePath(route.collectionItem.getList.path, {
+                  id: record.id
+                }),
+                serializeParams({
+                  type: searchParams.type,
+                  collectionTitle: record.name
+                })
+              )
+            );
+          };
 
           return (
             <ToolTip title='Phim' sideOffset={0}>
@@ -77,17 +82,7 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate.push(
-                      renderListPageUrl(
-                        generatePath(route.collectionItem.getList.path, {
-                          id: record.id
-                        }),
-                        serializeParams({
-                          type: searchParams.type,
-                          collectionTitle: record.name
-                        })
-                      )
-                    );
+                    handleNavigate();
                   }}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
@@ -222,7 +217,18 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
       align: 'center'
     },
     handlers.renderActionColumn({
-      actions: { styleInfo: true, detail: true, edit: true, delete: true },
+      actions: {
+        styleInfo: true,
+        detail: handlers.hasPermission({
+          requiredPermissions: [apiConfig.collectionItem.getList.permissionCode]
+        }),
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.collection.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.collection.delete.permissionCode]
+        })
+      },
       columnProps: {
         width: 150
       }

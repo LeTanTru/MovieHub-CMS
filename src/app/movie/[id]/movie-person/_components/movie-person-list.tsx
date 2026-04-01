@@ -81,13 +81,6 @@ export default function MoviePersonList({
           record: MoviePersonResType,
           buttonProps?: Record<string, any>
         ) => {
-          if (
-            !handlers.hasPermission({
-              requiredPermissions: [apiConfig.moviePerson.update.permissionCode]
-            })
-          )
-            return null;
-
           const isEditing = selectedRow === record.id;
 
           return (
@@ -366,8 +359,12 @@ export default function MoviePersonList({
       : []),
     handlers.renderActionColumn({
       actions: {
-        edit: true,
-        delete: true
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.moviePerson.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.moviePerson.delete.permissionCode]
+        })
       }
     })
   ];

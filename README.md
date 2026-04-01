@@ -1,6 +1,6 @@
 ![MovieHub](./src/assets/images/logo-with-text.webp)
 
-<h1 align="center">MovieHub CMS Tenant</h1>
+<h1 align="center">MovieHub CMS</h1>
 
 <p align="center">
   <strong>A comprehensive content management system for movie streaming platforms</strong>
@@ -28,7 +28,7 @@ This system serves as the central hub for:
 - **Content Management**: Comprehensive movie catalog with metadata, categories, people, and collections
 - **User Administration**: Role-based access control for admins, employees, and end users
 - **Media Management**: Video library with upload, processing, and playback capabilities
-- **Tenant Configuration**: Customizable UI elements, sidebar navigation, and styling
+- **Platform Configuration**: Customizable UI elements, sidebar navigation, and styling
 - **Permission System**: Granular permission management with group-based access control
 
 Built with **Next.js 16 (App Router)** and **TypeScript**, the system emphasizes type safety, performance, and developer experience.
@@ -45,7 +45,7 @@ Built with **Next.js 16 (App Router)** and **TypeScript**, the system emphasizes
 
 ### User & Access Management
 
-- **Multi-Role System**: Admin, employee, and user role hierarchies
+- **Role System**: Admin, employee, and user role hierarchies
 - **Permission Groups**: Flexible group-based permission assignment
 - **Profile Management**: User profiles with avatar uploads and personal information
 - **Authentication**: JWT-based auth with refresh token rotation
@@ -154,7 +154,7 @@ Built with **Next.js 16 (App Router)** and **TypeScript**, the system emphasizes
    NEXT_PUBLIC_APP_NAME=MovieHub CMS
    NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN=refresh_token
    NEXT_PUBLIC_MEDIA_HOST=https://your-media-host.com
-   NEXT_PUBLIC_CLIENT_TYPE=CMS_TENANT
+    NEXT_PUBLIC_CLIENT_TYPE=CMS
    ```
 
 4. **Start the development server**

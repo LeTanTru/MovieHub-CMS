@@ -80,7 +80,9 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderActionColumn({
       actions: {
-        edit: true,
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.group.update.permissionCode]
+        }),
         delete: (record) => !record.isSystemRole
       }
     })

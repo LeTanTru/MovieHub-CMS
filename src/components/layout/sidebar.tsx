@@ -1,6 +1,6 @@
 'use client';
 
-import Navbar from '@/components/navbar';
+import { Navbar } from '@/components/navbar';
 import { AppSidebar } from '@/components/sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { useSidebarStore } from '@/store';

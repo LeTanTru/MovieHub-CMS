@@ -1,7 +1,7 @@
 import { apiConfig, queryKeys } from '@/constants';
 import type { ApiResponse, ProfileResType } from '@/types';
 import { http } from '@/utils';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useProfileQuery = (enabled: boolean = false) => {
   return useQuery({
@@ -9,5 +9,13 @@ export const useProfileQuery = (enabled: boolean = false) => {
     queryFn: () =>
       http.get<ApiResponse<ProfileResType>>(apiConfig.account.getProfile),
     enabled: enabled
+  });
+};
+
+export const useChangeAccountStatusMutation = () => {
+  return useMutation({
+    mutationKey: [`change-${queryKeys.ADMIN}-status`],
+    mutationFn: (body: { id: string; status: number }) =>
+      http.put<ApiResponse<any>>(apiConfig.account.changeStatus, { body })
   });
 };

@@ -51,33 +51,36 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
           notify.error('Video này có mục phim đang liên kết');
         }
       };
+
       handlers.additionalColumns = () => ({
         watchVideo: (
           record: VideoLibraryResType,
           buttonProps?: Record<string, any>
-        ) => (
-          <ToolTip title='Xem video' sideOffset={0}>
-            <span>
-              <Button
-                disabled={record.state !== VIDEO_LIBRARY_STATE_COMPLETE}
-                onClick={() => handleOpenPlayModal(record)}
-                className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
-                variant='ghost'
-                {...buttonProps}
-              >
-                <PlayCircle className='text-main-color size-4' />
-              </Button>
-            </span>
-          </ToolTip>
-        )
+        ) => {
+          const handleOpenPlayModal = (video: VideoLibraryResType) => {
+            setSelectedVideo(video);
+            openPlayModal();
+          };
+
+          return (
+            <ToolTip title='Xem video' sideOffset={0}>
+              <span>
+                <Button
+                  disabled={record.state !== VIDEO_LIBRARY_STATE_COMPLETE}
+                  onClick={() => handleOpenPlayModal(record)}
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  variant='ghost'
+                  {...buttonProps}
+                >
+                  <PlayCircle className='text-main-color size-4' />
+                </Button>
+              </span>
+            </ToolTip>
+          );
+        }
       });
     }
   });
-
-  const handleOpenPlayModal = (video: VideoLibraryResType) => {
-    setSelectedVideo(video);
-    openPlayModal();
-  };
 
   const columns: Column<VideoLibraryResType>[] = [
     {
@@ -143,8 +146,12 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
     handlers.renderActionColumn({
       actions: {
         watchVideo: true,
-        edit: true,
-        delete: true
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.videoLibrary.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.videoLibrary.delete.permissionCode]
+        })
       }
     })
   ];

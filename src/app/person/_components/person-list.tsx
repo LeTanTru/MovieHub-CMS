@@ -145,7 +145,14 @@ export default function PersonList({
     //   align: 'center'
     // },
     handlers.renderActionColumn({
-      actions: { edit: true, delete: true }
+      actions: {
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.person.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.person.delete.permissionCode]
+        })
+      }
     })
   ];
 

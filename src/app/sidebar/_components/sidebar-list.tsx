@@ -38,13 +38,6 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
           record: MovieSidebarResType,
           buttonProps?: Record<string, any>
         ) => {
-          if (
-            !handlers.hasPermission({
-              requiredPermissions: [apiConfig.sidebar.update.permissionCode]
-            })
-          )
-            return null;
-
           const statusLabel = record.active ? 'Ẩn' : 'Hiện';
 
           const handleChangeStatus = async () => {
@@ -198,9 +191,15 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderActionColumn({
       actions: {
-        edit: true,
-        changeStatus: true,
-        delete: true
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.sidebar.update.permissionCode]
+        }),
+        changeStatus: handlers.hasPermission({
+          requiredPermissions: [apiConfig.sidebar.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.sidebar.delete.permissionCode]
+        })
       }
     })
   ];

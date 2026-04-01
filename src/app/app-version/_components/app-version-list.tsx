@@ -102,7 +102,15 @@ export default function AppVersionList({ queryKey }: { queryKey: string }) {
       align: 'center'
     },
     handlers.renderActionColumn({
-      actions: { download: true, edit: true, delete: true }
+      actions: {
+        download: true,
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.appVersion.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.appVersion.delete.permissionCode]
+        })
+      }
     })
   ];
 

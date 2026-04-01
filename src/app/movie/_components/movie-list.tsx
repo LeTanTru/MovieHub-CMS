@@ -66,20 +66,22 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
       };
       handlers.additionalColumns = () => ({
         person: (record: MovieResType, buttonProps?: Record<string, any>) => {
+          const handleNavigate = () => {
+            navigate.push(
+              renderListPageUrl(
+                generatePath(route.moviePerson.getList.path, {
+                  id: record.id
+                }),
+                serializeParams({ movieTitle: record.title })
+              )
+            );
+          };
+
           return (
             <ToolTip title='Diễn viên & đạo diễn' sideOffset={0}>
               <span>
                 <Button
-                  onClick={() =>
-                    navigate.push(
-                      renderListPageUrl(
-                        generatePath(route.moviePerson.getList.path, {
-                          id: record.id
-                        }),
-                        serializeParams({ movieTitle: record.title })
-                      )
-                    )
-                  }
+                  onClick={handleNavigate}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
@@ -90,20 +92,22 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
           );
         },
         comment: (record: MovieResType, buttonProps?: Record<string, any>) => {
+          const handleNavigate = () => {
+            navigate.push(
+              renderListPageUrl(
+                generatePath(route.comment.getList.path, {
+                  id: record.id
+                }),
+                serializeParams({ movieTitle: record.title })
+              )
+            );
+          };
+
           return (
             <ToolTip title='Bình luận' sideOffset={0}>
               <span>
                 <Button
-                  onClick={() =>
-                    navigate.push(
-                      renderListPageUrl(
-                        generatePath(route.comment.getList.path, {
-                          id: record.id
-                        }),
-                        serializeParams({ movieTitle: record.title })
-                      )
-                    )
-                  }
+                  onClick={handleNavigate}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
@@ -114,20 +118,22 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
           );
         },
         review: (record: MovieResType, buttonProps?: Record<string, any>) => {
+          const handleNavigate = () => {
+            navigate.push(
+              renderListPageUrl(
+                generatePath(route.review.getList.path, {
+                  id: record.id
+                }),
+                serializeParams({ movieTitle: record.title })
+              )
+            );
+          };
+
           return (
             <ToolTip title='Đánh giá' sideOffset={0}>
               <span>
                 <Button
-                  onClick={() =>
-                    navigate.push(
-                      renderListPageUrl(
-                        generatePath(route.review.getList.path, {
-                          id: record.id
-                        }),
-                        serializeParams({ movieTitle: record.title })
-                      )
-                    )
-                  }
+                  onClick={handleNavigate}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
@@ -293,8 +299,12 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
             apiConfig.review.getList.permissionCode as string
           ]
         }),
-        edit: true,
-        delete: true
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.movie.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.movie.delete.permissionCode]
+        })
       },
       columnProps: { width: 180 }
     })

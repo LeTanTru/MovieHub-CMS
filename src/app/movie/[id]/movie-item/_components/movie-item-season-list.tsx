@@ -147,13 +147,6 @@ export default function MovieItemSeasonList({
             record: MovieItemResType,
             buttonProps?: Record<string, any>
           ) => {
-            if (
-              !handlers.hasPermission({
-                requiredPermissions: [apiConfig.movieItem.update.permissionCode]
-              })
-            )
-              return null;
-
             const handleEditMovieItem = (record: MovieItemResType) => {
               setMovieItem(record);
               openMovieItemModal();
@@ -180,13 +173,6 @@ export default function MovieItemSeasonList({
             record: MovieItemResType,
             buttonProps?: Record<string, any>
           ) => {
-            if (
-              !handlers.hasPermission({
-                requiredPermissions: [apiConfig.movieItem.update.permissionCode]
-              })
-            )
-              return null;
-
             const handleMarkLatest = (record: MovieItemResType) => {
               markLatestMutate(record.id, {
                 onSuccess: (res) => {
@@ -310,10 +296,19 @@ export default function MovieItemSeasonList({
       actions: {
         watchVideo: (record) =>
           !!record.video && !!type && +type === MOVIE_TYPE_SINGLE,
-        edit: true,
         markLatest: (record) =>
-          !record.isLatest && !!type && +type === MOVIE_TYPE_SINGLE,
-        delete: true
+          !record.isLatest &&
+          !!type &&
+          +type === MOVIE_TYPE_SINGLE &&
+          handlers.hasPermission({
+            requiredPermissions: [apiConfig.movieItem.markLatest.permissionCode]
+          }),
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.movieItem.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.movieItem.delete.permissionCode]
+        })
       },
       columnProps: {
         width: 150

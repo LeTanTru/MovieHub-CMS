@@ -40,6 +40,10 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
         }
       };
       handlers.renderAddButton = () => {
+        const handleAddCategory = () => {
+          setSelectedCategory(null);
+          open();
+        };
         return (
           <HasPermission
             requiredPermissions={[apiConfig.category.create.permissionCode]}
@@ -53,12 +57,11 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
       };
       handlers.additionalColumns = () => ({
         edit: (record: CategoryResType, buttonProps?: Record<string, any>) => {
-          if (
-            !handlers.hasPermission({
-              requiredPermissions: [apiConfig.category.update.permissionCode]
-            })
-          )
-            return null;
+          const handleUpdateCategory = (record: CategoryResType) => {
+            setSelectedCategory(record);
+            open();
+          };
+
           return (
             <ToolTip title='Cập nhật thể loại' sideOffset={0}>
               <span>
@@ -80,16 +83,6 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
     }
   });
 
-  const handleAddCategory = () => {
-    setSelectedCategory(null);
-    open();
-  };
-
-  const handleUpdateCategory = (record: CategoryResType) => {
-    setSelectedCategory(record);
-    open();
-  };
-
   const columns: Column<CategoryResType>[] = [
     {
       title: 'Tên',
@@ -101,7 +94,14 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
       )
     },
     handlers.renderActionColumn({
-      actions: { edit: true, delete: true }
+      actions: {
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.category.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.category.delete.permissionCode]
+        })
+      }
     })
   ];
 

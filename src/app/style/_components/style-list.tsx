@@ -85,7 +85,17 @@ export default function StyleList({ queryKey }: { queryKey: string }) {
       align: 'center'
     },
     handlers.renderActionColumn({
-      actions: { edit: true, changeStatus: true, delete: true }
+      actions: {
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.style.update.permissionCode]
+        }),
+        changeStatus: handlers.hasPermission({
+          requiredPermissions: [apiConfig.style.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.style.delete.permissionCode]
+        })
+      }
     })
   ];
 
