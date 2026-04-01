@@ -280,10 +280,10 @@ const useInfiniteListBase = <
       onSuccess: async (res) => {
         if (res.result) {
           if (showNotify) notify.success(`Xoá ${objectName} thành công`);
+          options?.onSuccess?.();
           await queryClient.invalidateQueries({
             queryKey: [`${queryKey}-infinite`]
           });
-          options?.onSuccess?.();
         } else {
           if (res.code) {
             if (options?.onError) options?.onError(res.code);
@@ -306,14 +306,14 @@ const useInfiniteListBase = <
 
   const actionColumn = () => ({
     edit: (record: T, buttonProps?: Record<string, any>) => {
-      if (
-        !apiConfig.update ||
-        !apiConfig.update.permissionCode ||
-        !hasPermission({
-          requiredPermissions: [apiConfig.update.permissionCode]
-        })
-      )
-        return null;
+      // if (
+      //   !apiConfig.update ||
+      //   !apiConfig.update.permissionCode ||
+      //   !hasPermission({
+      //     requiredPermissions: [apiConfig.update.permissionCode]
+      //   })
+      // )
+      //   return null;
 
       return (
         <ToolTip title={`Cập nhật ${objectName}`} sideOffset={0}>
@@ -333,14 +333,14 @@ const useInfiniteListBase = <
       );
     },
     delete: (record: T, buttonProps?: Record<string, any>) => {
-      if (
-        !apiConfig.delete ||
-        !apiConfig.delete.permissionCode ||
-        !hasPermission({
-          requiredPermissions: [apiConfig.delete.permissionCode]
-        })
-      )
-        return null;
+      // if (
+      //   !apiConfig.delete ||
+      //   !apiConfig.delete.permissionCode ||
+      //   !hasPermission({
+      //     requiredPermissions: [apiConfig.delete.permissionCode]
+      //   })
+      // )
+      //   return null;
 
       return (
         <AlertDialog>
@@ -422,17 +422,19 @@ const useInfiniteListBase = <
 
         return (
           <div className='flex items-center justify-center gap-2'>
-            {actions.map((action, idx) => (
-              <div key={idx} className='flex items-center'>
-                {action}
-                {idx < actions.length - 1 && (
-                  <Separator
-                    orientation='vertical'
-                    className='-mr-2 h-4! w-px bg-gray-200'
-                  />
-                )}
-              </div>
-            ))}
+            {actions.length
+              ? actions.map((action, idx) => (
+                  <div key={idx} className='flex items-center'>
+                    {action}
+                    {idx < actions.length - 1 && (
+                      <Separator
+                        orientation='vertical'
+                        className='-mr-2 h-4! w-px bg-gray-200'
+                      />
+                    )}
+                  </div>
+                ))
+              : '---'}
           </div>
         );
       }
@@ -455,8 +457,13 @@ const useInfiniteListBase = <
         );
         return (
           <Badge
-            className='text-sm font-normal'
-            style={{ backgroundColor: status?.color }}
+            className='border border-solid text-sm font-medium'
+            variant='outline'
+            style={{
+              borderColor: `${status?.color}80`,
+              color: `${status?.color}`,
+              backgroundColor: `${status?.color}10`
+            }}
           >
             {status?.label}
           </Badge>
@@ -665,7 +672,7 @@ const useInfiniteListBase = <
   return {
     data,
     pagination,
-    loading: infiniteQuery.isLoading,
+    loading: infiniteQuery.isLoading || deleteMutation.isPending,
     handlers,
     queryFilter,
     listQuery: infiniteQuery,

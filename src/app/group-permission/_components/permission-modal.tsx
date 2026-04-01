@@ -155,14 +155,14 @@ export default function PermissionModal({
                   label='Tên quyền'
                   placeholder='Nhập tên quyền'
                   required
-                  allowCustomInput
                   options={[
-                    'List',
-                    'Get',
+                    'Change status',
                     'Create',
-                    'Update',
                     'Delete',
-                    'Update ordering'
+                    'Get',
+                    'List',
+                    'Update ordering',
+                    'Update'
                   ]}
                 />
               </Col>

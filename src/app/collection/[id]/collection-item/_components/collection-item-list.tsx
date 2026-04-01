@@ -1,4 +1,5 @@
 'use client';
+
 import CollectionItemModal from './collection-item-modal';
 import { Button, ImageField } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
@@ -223,7 +224,11 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
       width: 120
     },
     handlers.renderActionColumn({
-      actions: { detail: true, edit: true, delete: true }
+      actions: {
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.collectionItem.delete.permissionCode]
+        })
+      }
     })
   ];
 

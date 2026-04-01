@@ -37,7 +37,6 @@ type InputFieldProps<T extends FieldValues> = {
   prefixIcon?: ReactNode;
   suffixIcon?: ReactNode;
   options?: string[];
-  allowCustomInput?: boolean;
   onOptionSelect?: (value: string) => void;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'name' | 'defaultValue'>;
 
@@ -63,7 +62,6 @@ function InputFieldInner<T extends FieldValues>(
     prefixIcon,
     suffixIcon,
     options = EMPTY_ARRAY,
-    allowCustomInput = true,
     onOptionSelect,
     ...inputProps
   }: InputFieldProps<T>,
@@ -218,14 +216,6 @@ function InputFieldInner<T extends FieldValues>(
                           )}
                         </div>
                       ))}
-                      {allowCustomInput &&
-                        field.value &&
-                        !filteredOptions.includes(field.value) && (
-                          <div className='border-t border-gray-200 px-3 py-2 text-sm text-gray-500'>
-                            Press Enter to use:{' '}
-                            <span className='font-medium'>{field.value}</span>
-                          </div>
-                        )}
                     </m.div>
                   )}
               </AnimatePresence>

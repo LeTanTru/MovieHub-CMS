@@ -1,16 +1,20 @@
 'use client';
 
-import { AvatarField } from '@/components/form';
+import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
+
+import { AvatarField, Button, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
-import { Badge } from '@/components/ui/badge';
 import {
   apiConfig,
   FieldTypes,
   GROUP_KIND_ADMIN,
+  STATUS_ACTIVE,
+  STATUS_LOCK,
   statusOptions
 } from '@/constants';
 import { useListBase } from '@/hooks';
+import { useChangeAccountStatusMutation } from '@/queries';
 import { accountSearchSchema } from '@/schemaValidations';
 import type {
   AccountAutoResType,
@@ -18,10 +22,14 @@ import type {
   Column,
   SearchFormProps
 } from '@/types';
-import { getLastWord, renderImageUrl } from '@/utils';
+import { getLastWord, notify, renderImageUrl } from '@/utils';
+import { Badge } from '@/components/ui/badge';
 
 export default function AdminList({ queryKey }: { queryKey: string }) {
-  const { data, pagination, loading, handlers } = useListBase<
+  const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
+    useChangeAccountStatusMutation();
+
+  const { data, pagination, loading, handlers, listQuery } = useListBase<
     AccountAutoResType,
     AccountSearchType
   >({
@@ -31,6 +39,61 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
       objectName: 'tài khoản',
       defaultFilters: { kind: GROUP_KIND_ADMIN },
       notShowFromSearchParams: ['kind']
+    },
+    override: (handlers) => {
+      handlers.additionalColumns = () => ({
+        changeStatus: (
+          record: AccountAutoResType,
+          buttonProps?: Record<string, any>
+        ) => {
+          const handleChangeStatus = async (record: AccountAutoResType) => {
+            const message =
+              record.status === STATUS_ACTIVE
+                ? 'Khóa tài khoản thành công'
+                : 'Mở khóa tài khoản thành công';
+            await changeStatusMutate(
+              {
+                id: record.id,
+                status:
+                  record.status === STATUS_ACTIVE ? STATUS_LOCK : STATUS_ACTIVE
+              },
+              {
+                onSuccess: (res) => {
+                  if (res.result) {
+                    listQuery.refetch();
+                    notify.success(message);
+                  }
+                }
+              }
+            );
+          };
+
+          return (
+            <ToolTip
+              title={
+                record.status === STATUS_ACTIVE
+                  ? 'Khóa tài khoản'
+                  : 'Mở khóa tài khoản'
+              }
+              sideOffset={0}
+            >
+              <span>
+                <Button
+                  onClick={() => handleChangeStatus(record)}
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  {...buttonProps}
+                >
+                  {record.status === STATUS_ACTIVE ? (
+                    <AiOutlineLock className='text-destructive size-4' />
+                  ) : (
+                    <AiOutlineCheck className='text-main-color size-4' />
+                  )}
+                </Button>
+              </span>
+            </ToolTip>
+          );
+        }
+      });
     }
   });
 
@@ -93,7 +156,19 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({
-      actions: { edit: true, delete: (record) => !record.isSuperAdmin }
+      actions: {
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.account.update.permissionCode]
+        }),
+        changeStatus: (record) =>
+          handlers.hasPermission({
+            requiredPermissions: [apiConfig.account.changeStatus.permissionCode]
+          }) && !record.isSuperAdmin,
+        delete: (record) =>
+          handlers.hasPermission({
+            requiredPermissions: [apiConfig.account.delete.permissionCode]
+          }) && !record.isSuperAdmin
+      }
     })
   ];
 
@@ -125,7 +200,7 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
           columns={columns}
           dataSource={data || []}
           pagination={pagination}
-          loading={loading}
+          loading={loading || changeStatusLoading}
           changePagination={handlers.changePagination}
         />
       </ListPageWrapper>

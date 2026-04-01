@@ -25,6 +25,9 @@ import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
 export default function UserList({ queryKey }: { queryKey: string }) {
+  const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
+    useChangeUserStatusMutation();
+
   const { data, pagination, loading, handlers, listQuery } = useListBase<
     UserResType,
     UserSearchType
@@ -40,14 +43,28 @@ export default function UserList({ queryKey }: { queryKey: string }) {
           record: UserResType,
           buttonProps?: Record<string, any>
         ) => {
-          if (
-            !handlers.hasPermission({
-              requiredPermissions: [
-                apiConfig.employee.changeStatus.permissionCode
-              ]
-            })
-          )
-            return null;
+          const handleChangeStatus = async (record: UserResType) => {
+            const message =
+              record.status === STATUS_ACTIVE
+                ? 'Khóa tài khoản thành công'
+                : 'Mở khóa tài khoản thành công';
+            await changeStatusMutate(
+              {
+                id: record.id,
+                status:
+                  record.status === STATUS_ACTIVE ? STATUS_LOCK : STATUS_ACTIVE
+              },
+              {
+                onSuccess: (res: ApiResponse<any>) => {
+                  if (res.result) {
+                    listQuery.refetch();
+                    notify.success(message);
+                  }
+                }
+              }
+            );
+          };
+
           return (
             <ToolTip
               title={
@@ -76,30 +93,6 @@ export default function UserList({ queryKey }: { queryKey: string }) {
       });
     }
   });
-
-  const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
-    useChangeUserStatusMutation();
-
-  const handleChangeStatus = async (record: UserResType) => {
-    const message =
-      record.status === STATUS_ACTIVE
-        ? 'Khóa tài khoản thành công'
-        : 'Mở khóa tài khoản thành công';
-    await changeStatusMutate(
-      {
-        id: record.id,
-        status: record.status === STATUS_ACTIVE ? STATUS_LOCK : STATUS_ACTIVE
-      },
-      {
-        onSuccess: (res: ApiResponse<any>) => {
-          if (res.result) {
-            listQuery.refetch();
-            notify.success(message);
-          }
-        }
-      }
-    );
-  };
 
   const columns: Column<UserResType>[] = [
     {
@@ -147,7 +140,11 @@ export default function UserList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({
-      actions: { changeStatus: true, delete: false }
+      actions: {
+        changeStatus: handlers.hasPermission({
+          requiredPermissions: [apiConfig.employee.changeStatus.permissionCode]
+        })
+      }
     })
   ];
 

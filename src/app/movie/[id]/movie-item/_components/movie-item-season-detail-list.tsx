@@ -110,6 +110,7 @@ export default function MovieItemSeasonDetailList({
           setSelectedVideo(movieItem.video);
           openPlayModal();
         };
+
         return {
           watchVideo: (
             record: MovieItemResType,
@@ -136,13 +137,6 @@ export default function MovieItemSeasonDetailList({
             record: MovieItemResType,
             buttonProps?: Record<string, any>
           ) => {
-            if (
-              !handlers.hasPermission({
-                requiredPermissions: [apiConfig.movieItem.update.permissionCode]
-              })
-            )
-              return null;
-
             const handleEditMovieItem = (record: MovieItemResType) => {
               setMovieItem(record);
               openMovieItemModal();
@@ -172,13 +166,6 @@ export default function MovieItemSeasonDetailList({
             record: MovieItemResType,
             buttonProps?: Record<string, any>
           ) => {
-            if (
-              !handlers.hasPermission({
-                requiredPermissions: [apiConfig.movieItem.update.permissionCode]
-              })
-            )
-              return null;
-
             const handleMarkLatest = (record: MovieItemResType) => {
               markLatestMutate(record.id, {
                 onSuccess: (res) => {
@@ -334,9 +321,17 @@ export default function MovieItemSeasonDetailList({
           (!!type && +type !== MOVIE_TYPE_SERIES) ||
           record.kind !== MOVIE_ITEM_KIND_SEASON,
         markLatest: (record) =>
-          record.kind === MOVIE_ITEM_KIND_EPISODE && !record.isLatest,
-        edit: true,
-        delete: true
+          record.kind === MOVIE_ITEM_KIND_EPISODE &&
+          !record.isLatest &&
+          handlers.hasPermission({
+            requiredPermissions: [apiConfig.movieItem.markLatest.permissionCode]
+          }),
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.movieItem.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.movieItem.delete.permissionCode]
+        })
       },
       columnProps: {
         width: 150

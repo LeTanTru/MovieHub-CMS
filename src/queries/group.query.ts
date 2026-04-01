@@ -5,7 +5,7 @@ import type {
   GroupSearchType
 } from '@/types';
 import { http } from '@/utils';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 export const useGroupListQuery = (params?: GroupSearchType) => {
   return useQuery({
@@ -16,7 +16,6 @@ export const useGroupListQuery = (params?: GroupSearchType) => {
         {
           params
         }
-      ),
-    placeholderData: keepPreviousData
+      )
   });
 };

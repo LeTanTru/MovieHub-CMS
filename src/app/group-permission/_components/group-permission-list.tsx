@@ -37,29 +37,48 @@ export default function GroupPermissionList({
       objectName: 'nhóm quyền'
     },
     override: (handlers) => {
+      handlers.renderAddButton = () => {
+        const handleAdd = () => {
+          open();
+          setSelectedRow(null);
+        };
+
+        return (
+          <HasPermission
+            requiredPermissions={[
+              apiConfig.groupPermission.create.permissionCode
+            ]}
+          >
+            <Button onClick={handleAdd} variant='primary'>
+              <PlusIcon />
+              Thêm mới
+            </Button>
+          </HasPermission>
+        );
+      };
+
       handlers.additionalColumns = () => ({
         edit: (
           record: GroupPermissionResType,
           buttonProps?: Record<string, any>
         ) => {
+          const handleEditClick = (record: GroupPermissionResType) => {
+            open();
+            setSelectedRow(record);
+          };
+
           return (
-            <HasPermission
-              requiredPermissions={[
-                apiConfig.groupPermission.update.permissionCode as string
-              ]}
-            >
-              <ToolTip title='Cập nhật nhóm quyền'>
-                <span>
-                  <Button
-                    onClick={() => handleEditClick(record)}
-                    className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
-                    {...buttonProps}
-                  >
-                    <AiOutlineEdit className='text-main-color size-4' />
-                  </Button>
-                </span>
-              </ToolTip>
-            </HasPermission>
+            <ToolTip title='Cập nhật nhóm quyền'>
+              <span>
+                <Button
+                  onClick={() => handleEditClick(record)}
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  {...buttonProps}
+                >
+                  <AiOutlineEdit className='text-main-color size-4' />
+                </Button>
+              </span>
+            </ToolTip>
           );
         }
       });
@@ -83,16 +102,6 @@ export default function GroupPermissionList({
     updateOnDragEnd: true
   });
 
-  const handleAdd = () => {
-    open();
-    setSelectedRow(null);
-  };
-
-  const handleEditClick = (record: GroupPermissionResType) => {
-    open();
-    setSelectedRow(record);
-  };
-
   const columns: Column<GroupPermissionResType>[] = [
     ...(sortedData.length > 1 ? [sortColumn] : []),
     {
@@ -101,8 +110,12 @@ export default function GroupPermissionList({
     },
     handlers.renderActionColumn({
       actions: {
-        edit: true,
-        delete: true
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.groupPermission.update.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.groupPermission.delete.permissionCode]
+        })
       }
     })
   ];
@@ -110,18 +123,7 @@ export default function GroupPermissionList({
   return (
     <>
       <ListPageWrapper
-        addButton={
-          <HasPermission
-            requiredPermissions={[
-              apiConfig.groupPermission.create.permissionCode
-            ]}
-          >
-            <Button onClick={handleAdd} variant='primary'>
-              <PlusIcon />
-              Thêm mới
-            </Button>
-          </HasPermission>
-        }
+        addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}
       >
         <DragDropTable

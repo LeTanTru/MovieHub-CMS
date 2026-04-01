@@ -27,6 +27,9 @@ import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 export default function EmployeeList({ queryKey }: { queryKey: string }) {
   const { data: groupListData } = useGroupListQuery({ size: MAX_PAGE_SIZE });
 
+  const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
+    useChangeEmployeeStatusMutation();
+
   const { data, pagination, loading, handlers, listQuery } = useListBase<
     EmployeeResType,
     EmployeeSearchType
@@ -42,14 +45,28 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
           record: EmployeeResType,
           buttonProps?: Record<string, any>
         ) => {
-          if (
-            !handlers.hasPermission({
-              requiredPermissions: [
-                apiConfig.employee.changeStatus.permissionCode
-              ]
-            })
-          )
-            return null;
+          const handleChangeStatus = async (record: EmployeeResType) => {
+            const message =
+              record.status === STATUS_ACTIVE
+                ? 'Khóa tài khoản thành công'
+                : 'Mở khóa tài khoản thành công';
+            await changeStatusMutate(
+              {
+                id: record.id,
+                status:
+                  record.status === STATUS_ACTIVE ? STATUS_LOCK : STATUS_ACTIVE
+              },
+              {
+                onSuccess: (res) => {
+                  if (res.result) {
+                    listQuery.refetch();
+                    notify.success(message);
+                  }
+                }
+              }
+            );
+          };
+
           return (
             <ToolTip
               title={
@@ -78,30 +95,6 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
       });
     }
   });
-
-  const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
-    useChangeEmployeeStatusMutation();
-
-  const handleChangeStatus = async (record: EmployeeResType) => {
-    const message =
-      record.status === STATUS_ACTIVE
-        ? 'Khóa tài khoản thành công'
-        : 'Mở khóa tài khoản thành công';
-    await changeStatusMutate(
-      {
-        id: record.id,
-        status: record.status === STATUS_ACTIVE ? STATUS_LOCK : STATUS_ACTIVE
-      },
-      {
-        onSuccess: (res) => {
-          if (res.result) {
-            listQuery.refetch();
-            notify.success(message);
-          }
-        }
-      }
-    );
-  };
 
   const columns: Column<EmployeeResType>[] = [
     {
@@ -171,7 +164,17 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderStatusColumn({ statusOptions: employeeStatusOptions }),
     handlers.renderActionColumn({
-      actions: { edit: true, changeStatus: true, delete: true }
+      actions: {
+        edit: handlers.hasPermission({
+          requiredPermissions: [apiConfig.employee.update.permissionCode]
+        }),
+        changeStatus: handlers.hasPermission({
+          requiredPermissions: [apiConfig.employee.changeStatus.permissionCode]
+        }),
+        delete: handlers.hasPermission({
+          requiredPermissions: [apiConfig.employee.delete.permissionCode]
+        })
+      }
     })
   ];
 

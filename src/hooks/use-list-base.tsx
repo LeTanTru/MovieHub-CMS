@@ -291,14 +291,14 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
 
   const actionColumn = () => ({
     edit: (record: T, buttonProps?: Record<string, any>) => {
-      if (
-        !apiConfig.update ||
-        !apiConfig.update.permissionCode ||
-        !hasPermission({
-          requiredPermissions: [apiConfig.update.permissionCode]
-        })
-      )
-        return null;
+      // if (
+      //   !apiConfig.update ||
+      //   !apiConfig.update.permissionCode ||
+      //   !hasPermission({
+      //     requiredPermissions: [apiConfig.update.permissionCode]
+      //   })
+      // )
+      //   return null;
 
       return (
         <ToolTip title={`Cập nhật ${objectName}`} sideOffset={0}>
@@ -318,14 +318,14 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
       );
     },
     delete: (record: T, buttonProps?: Record<string, any>) => {
-      if (
-        !apiConfig.delete ||
-        !apiConfig.delete.permissionCode ||
-        !hasPermission({
-          requiredPermissions: [apiConfig.delete.permissionCode]
-        })
-      )
-        return null;
+      // if (
+      //   !apiConfig.delete ||
+      //   !apiConfig.delete.permissionCode ||
+      //   !hasPermission({
+      //     requiredPermissions: [apiConfig.delete.permissionCode]
+      //   })
+      // )
+      //   return null;
 
       return (
         <AlertDialog>
@@ -407,17 +407,19 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
 
         return (
           <div className='flex items-center justify-center gap-2'>
-            {actions.map((action, idx) => (
-              <div key={idx} className='flex items-center'>
-                {action}
-                {idx < actions.length - 1 && (
-                  <Separator
-                    orientation='vertical'
-                    className='-mr-2 h-4! w-px bg-gray-200'
-                  />
-                )}
-              </div>
-            ))}
+            {actions.length
+              ? actions.map((action, idx) => (
+                  <div key={idx} className='flex items-center'>
+                    {action}
+                    {idx < actions.length - 1 && (
+                      <Separator
+                        orientation='vertical'
+                        className='-mr-2 h-4! w-px bg-gray-200'
+                      />
+                    )}
+                  </div>
+                ))
+              : '---'}
           </div>
         );
       }

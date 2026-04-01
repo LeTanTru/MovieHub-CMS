@@ -63,6 +63,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       isRequiredXClientType: true
     },
+    changeStatus: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/account/change-status`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'ACC_C_S',
+      isRequiredXClientType: true
+    },
     update: {
       baseUrl: `${AppConstants.authApiUrl}/v1/account/update-admin`,
       method: 'PUT',
@@ -147,7 +154,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}/v1/comment/change-status`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'CMT_U',
+      permissionCode: 'CMT_C_S',
       isRequiredXClientType: true
     },
     pin: {
@@ -179,18 +186,18 @@ const apiConfig = defineApiConfig({
     }
   },
   employee: {
-    changeStatus: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/employee/change-status`,
-      method: 'PUT',
-      headers: baseHeader,
-      permissionCode: 'EM_U',
-      isRequiredXClientType: true
-    },
     create: {
       baseUrl: `${AppConstants.authApiUrl}/v1/employee/create`,
       method: 'POST',
       headers: baseHeader,
       permissionCode: 'EM_C',
+      isRequiredXClientType: true
+    },
+    changeStatus: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/employee/change-status`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'EM_C_S',
       isRequiredXClientType: true
     },
     delete: {
@@ -310,7 +317,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.authApiUrl}/v1/group-permission/update-ordering`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'GR_PER_U',
+      permissionCode: 'GR_PER_U_ORD',
       isRequiredXClientType: true
     }
   },
@@ -340,7 +347,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.authApiUrl}/v1/permission/list-by-ids`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'PER_L',
+      permissionCode: 'PER_L_BY_IDS',
       isRequiredXClientType: true
     },
     update: {
@@ -441,14 +448,14 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}/v1/movie-item/update-ordering`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'MOV_I_U',
+      permissionCode: 'MOV_I_U_ORD',
       isRequiredXClientType: true
     },
     markLatest: {
       baseUrl: `${AppConstants.apiUrl}/v1/movie-item/mark-latest/:id`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'MOV_I_U',
+      permissionCode: 'MOV_I_MARK_LATEST',
       isRequiredXClientType: true
     }
   },
@@ -485,7 +492,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}/v1/movie-person/update-ordering`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'MOV_P_U',
+      permissionCode: 'MOV_P_U_ORD',
       isRequiredXClientType: true
     }
   },
@@ -573,7 +580,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.authApiUrl}/v1/user/change-status`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'USR_U',
+      permissionCode: 'USR_C_S',
       isRequiredXClientType: true
     },
     delete: {
@@ -674,14 +681,14 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}/v1/sidebar/update-ordering`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'SBD_U',
+      permissionCode: 'SBD_U_ORD',
       isRequiredXClientType: true
     },
     changeActive: {
       baseUrl: `${AppConstants.apiUrl}/v1/sidebar/change-active`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'SBD_U',
+      permissionCode: 'SBD_C_A',
       isRequiredXClientType: true
     }
   },
@@ -848,7 +855,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}/v1/collection/update-ordering`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'COL_U',
+      permissionCode: 'COL_U_ORD',
       isRequiredXClientType: true
     }
   },
@@ -878,7 +885,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}/v1/collection-item/update-ordering`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'COL_I_U',
+      permissionCode: 'COL_I_U_ORD',
       isRequiredXClientType: true
     }
   }
