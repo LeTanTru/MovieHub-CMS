@@ -29,7 +29,10 @@ const nextConfig: NextConfig = {
   // Optimize CSS chunking and reduce network requests
   experimental: {
     optimizePackageImports: ['@vidstack/react'],
-    optimizeCss: true
+    optimizeCss: true,
+    serverActions: {
+      bodySizeLimit: '3GB'
+    }
   },
   // Optimize bundle size
   compiler: {
