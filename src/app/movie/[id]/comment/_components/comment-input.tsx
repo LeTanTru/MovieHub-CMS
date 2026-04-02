@@ -31,7 +31,7 @@ export default function CommentInput({ movieId }: { movieId: string }) {
   >({
     apiConfig: apiConfig.comment,
     options: {
-      queryKey,
+      queryKey: queryKeys.COMMENT,
       objectName: 'bình luận',
       pathParams: {},
       mode: 'create',
@@ -51,7 +51,9 @@ export default function CommentInput({ movieId }: { movieId: string }) {
     form: UseFormReturn<CommentBodyType>
   ) => {
     await handleSubmit(values);
-    await queryClient.invalidateQueries({ queryKey: [`${queryKey}-infinite`] });
+    await queryClient.invalidateQueries({
+      queryKey: [`${queryKeys.COMMENT}-infinite`]
+    });
     form.reset();
   };
 
