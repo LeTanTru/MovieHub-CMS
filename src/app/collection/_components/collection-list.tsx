@@ -9,7 +9,8 @@ import {
   COLLECTION_TYPE_TOPIC,
   collectionTypeOptions,
   FieldTypes,
-  MAX_PAGE_SIZE
+  MAX_PAGE_SIZE,
+  queryKeys
 } from '@/constants';
 import {
   useDisclosure,
@@ -33,7 +34,7 @@ import { TbListDetails, TbPalette } from 'react-icons/tb';
 import { useState } from 'react';
 import StyleInfoModal from './style-info-modal';
 
-export default function CollectionList({ queryKey }: { queryKey: string }) {
+export default function CollectionList() {
   const navigate = useNavigate(false);
   const { opened, open, close } = useDisclosure();
   const [selectedCollection, setSelectedCollection] =
@@ -50,7 +51,7 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
   >({
     apiConfig: apiConfig.collection,
     options: {
-      queryKey,
+      queryKey: queryKeys.COLLECTION,
       objectName: 'bộ sưu tập',
       defaultFilters: {
         type: COLLECTION_TYPE_TOPIC
@@ -136,7 +137,7 @@ export default function CollectionList({ queryKey }: { queryKey: string }) {
     sortedData,
     onDragEnd
   } = useDragDrop<CollectionResType>({
-    key: `${queryKey}-list`,
+    key: `${queryKeys.COLLECTION}-list`,
     objectName: 'bộ sưu tập',
     data,
     apiConfig: apiConfig.collection.updateOrdering,

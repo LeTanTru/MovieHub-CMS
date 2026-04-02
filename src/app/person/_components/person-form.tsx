@@ -24,6 +24,7 @@ import {
   PERSON_KIND_ACTOR,
   PERSON_KIND_DIRECTOR,
   personKinds,
+  queryKeys,
   storageKeys,
   TAB_PERSON_KIND_ACTOR,
   TAB_PERSON_KIND_DIRECTOR
@@ -42,7 +43,7 @@ import {
 import { useParams } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 
-export default function PersonForm({ queryKey }: { queryKey: string }) {
+export default function PersonForm() {
   const { id } = useParams<{ id: string }>();
   const kind = getData(storageKeys.ACTIVE_TAB_PERSON_KIND);
 
@@ -62,7 +63,7 @@ export default function PersonForm({ queryKey }: { queryKey: string }) {
   } = useSaveBase<PersonResType, PersonBodyType>({
     apiConfig: apiConfig.person,
     options: {
-      queryKey,
+      queryKey: queryKeys.PERSON,
       objectName: kind === TAB_PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
       listPageUrl: route.person.getList.path,
       pathParams: {

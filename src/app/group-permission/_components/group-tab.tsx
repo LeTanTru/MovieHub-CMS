@@ -10,7 +10,6 @@ import {
 import { useState } from 'react';
 import { getData, setData } from '@/utils';
 import {
-  queryKeys,
   storageKeys,
   TAB_GROUP,
   TAB_GROUP_PERMISSION,
@@ -29,12 +28,12 @@ export default function GroupTab() {
     {
       value: TAB_GROUP,
       label: 'Vai trò',
-      component: <GroupList queryKey={queryKeys.GROUP} />
+      component: <GroupList />
     },
     {
       value: TAB_GROUP_PERMISSION,
       label: 'Nhóm quyền',
-      component: <GroupPermissionList queryKey={queryKeys.GROUP_PERMISSION} />
+      component: <GroupPermissionList />
     },
     { value: TAB_PERMISSION, label: 'Quyền', component: <PermissionList /> }
   ];

@@ -4,7 +4,13 @@ import { ToolTip } from '@/components/form';
 import { ListPageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
-import { apiConfig, ErrorCode, FieldTypes, groupKinds } from '@/constants';
+import {
+  apiConfig,
+  ErrorCode,
+  FieldTypes,
+  groupKinds,
+  queryKeys
+} from '@/constants';
 import { useListBase } from '@/hooks';
 import { groupSearchSchema } from '@/schemaValidations';
 import type {
@@ -15,14 +21,14 @@ import type {
 } from '@/types';
 import { notify } from '@/utils';
 
-export default function GroupList({ queryKey }: { queryKey: string }) {
+export default function GroupList() {
   const { data, loading, handlers, pagination } = useListBase<
     GroupResType,
     GroupSearchType
   >({
     apiConfig: apiConfig.group,
     options: {
-      queryKey,
+      queryKey: queryKeys.GROUP,
       objectName: 'vai trò'
     },
     override: (handlers) => {

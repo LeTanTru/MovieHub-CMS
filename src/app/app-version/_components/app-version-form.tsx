@@ -11,7 +11,12 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { apiConfig, appVersionErrorMaps, ErrorCode } from '@/constants';
+import {
+  apiConfig,
+  appVersionErrorMaps,
+  ErrorCode,
+  queryKeys
+} from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import { useDeleteFileMutation, useUploadFileMutation } from '@/queries';
@@ -24,7 +29,7 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export default function AppVersionForm({ queryKey }: { queryKey: string }) {
+export default function AppVersionForm() {
   const { id } = useParams<{ id: string }>();
 
   const { mutateAsync: uploadFileMutate } = useUploadFileMutation();
@@ -42,7 +47,7 @@ export default function AppVersionForm({ queryKey }: { queryKey: string }) {
   } = useSaveBase<AppVersionResType, AppVersionBodyType>({
     apiConfig: apiConfig.appVersion,
     options: {
-      queryKey,
+      queryKey: queryKeys.APP_VERSION,
       objectName: 'phiên bản ứng dụng',
       listPageUrl: route.appVersion.getList.path,
       pathParams: {

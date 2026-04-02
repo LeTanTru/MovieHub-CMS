@@ -5,7 +5,7 @@ import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
-import { apiConfig, MAX_PAGE_SIZE } from '@/constants';
+import { apiConfig, MAX_PAGE_SIZE, queryKeys } from '@/constants';
 import { useDisclosure, useDragDrop, useListBase } from '@/hooks';
 import type {
   Column,
@@ -16,11 +16,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 
-export default function GroupPermissionList({
-  queryKey
-}: {
-  queryKey: string;
-}) {
+export default function GroupPermissionList() {
   const { opened, open, close } = useDisclosure();
   const [selectedRow, setSelectedRow] = useState<GroupPermissionResType | null>(
     null
@@ -33,7 +29,7 @@ export default function GroupPermissionList({
   } = useListBase<GroupPermissionResType, GroupPermissionSearchType>({
     apiConfig: apiConfig.groupPermission,
     options: {
-      queryKey,
+      queryKey: queryKeys.GROUP_PERMISSION,
       objectName: 'nhóm quyền'
     },
     override: (handlers) => {
@@ -94,7 +90,7 @@ export default function GroupPermissionList({
     sortedData,
     onDragEnd
   } = useDragDrop<GroupPermissionResType>({
-    key: `${queryKey}-list`,
+    key: `${queryKeys.GROUP_PERMISSION}-list`,
     objectName: 'nhóm quyền',
     data: groupPermissionList,
     apiConfig: apiConfig.groupPermission.updateOrdering,
@@ -135,7 +131,6 @@ export default function GroupPermissionList({
       </ListPageWrapper>
       <GroupPermissionModal
         open={opened}
-        queryKey={queryKey}
         selectedRow={selectedRow}
         onClose={close}
       />

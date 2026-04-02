@@ -85,6 +85,43 @@ const apiConfig = defineApiConfig({
       isRequiredXClientType: true
     }
   },
+  appVersion: {
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}/v1/app-version/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'APP_V_V',
+      isRequiredXClientType: true
+    },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}/v1/app-version/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'APP_V_L',
+      isRequiredXClientType: true
+    },
+    create: {
+      baseUrl: `${AppConstants.apiUrl}/v1/app-version/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'APP_V_C',
+      isRequiredXClientType: true
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/app-version/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'APP_V_D',
+      isRequiredXClientType: true
+    },
+    update: {
+      baseUrl: `${AppConstants.apiUrl}/v1/app-version/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'APP_V_U',
+      isRequiredXClientType: true
+    }
+  },
   category: {
     autoComplete: {
       baseUrl: `${AppConstants.apiUrl}/v1/category/auto-complete`,
@@ -125,6 +162,80 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'CA_U',
+      isRequiredXClientType: true
+    }
+  },
+  collection: {
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}/v1/collection/admin/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'COL_V',
+      isRequiredXClientType: true
+    },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}/v1/collection/admin/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'COL_L',
+      isRequiredXClientType: true
+    },
+    create: {
+      baseUrl: `${AppConstants.apiUrl}/v1/collection/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'COL_C',
+      isRequiredXClientType: true
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/collection/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'COL_D',
+      isRequiredXClientType: true
+    },
+    update: {
+      baseUrl: `${AppConstants.apiUrl}/v1/collection/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'COL_U',
+      isRequiredXClientType: true
+    },
+    updateOrdering: {
+      baseUrl: `${AppConstants.apiUrl}/v1/collection/update-ordering`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'COL_U_ORD',
+      isRequiredXClientType: true
+    }
+  },
+  collectionItem: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}/v1/collection-item/admin/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'COL_I_L',
+      isRequiredXClientType: true
+    },
+    create: {
+      baseUrl: `${AppConstants.apiUrl}/v1/collection-item/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'COL_I_C',
+      isRequiredXClientType: true
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/collection-item/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'COL_I_D',
+      isRequiredXClientType: true
+    },
+    updateOrdering: {
+      baseUrl: `${AppConstants.apiUrl}/v1/collection-item/update-ordering`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'COL_I_U_ORD',
       isRequiredXClientType: true
     }
   },
@@ -241,6 +352,28 @@ const apiConfig = defineApiConfig({
       isRequiredXClientType: true
     }
   },
+  file: {
+    upload: {
+      baseUrl: `${AppConstants.mediaUrl}/v1/file/upload`,
+      method: 'POST',
+      headers: multipartHeader,
+      permissionCode: 'FILE_U',
+      isUpload: true
+    },
+    uploadVideo: {
+      baseUrl: `${AppConstants.mediaUrl}/v1/file/upload-video`,
+      method: 'POST',
+      headers: multipartHeader,
+      permissionCode: 'FILE_U_V',
+      isUpload: true
+    },
+    delete: {
+      baseUrl: `${AppConstants.mediaUrl}/v1/file/delete-file`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'FILE_U_D'
+    }
+  },
   group: {
     autoComplete: {
       baseUrl: `${AppConstants.authApiUrl}/v1/group/auto-complete`,
@@ -318,43 +451,6 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'GR_PER_U_ORD',
-      isRequiredXClientType: true
-    }
-  },
-  permission: {
-    create: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/permission/create`,
-      method: 'POST',
-      headers: baseHeader,
-      permissionCode: 'PER_C',
-      isRequiredXClientType: true
-    },
-    delete: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/permission/delete/:id`,
-      method: 'DELETE',
-      headers: baseHeader,
-      permissionCode: 'PER_D',
-      isRequiredXClientType: true
-    },
-    getList: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/permission/list`,
-      method: 'GET',
-      headers: baseHeader,
-      permissionCode: 'PER_L',
-      isRequiredXClientType: true
-    },
-    getListByIds: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/permission/list-by-ids`,
-      method: 'GET',
-      headers: baseHeader,
-      permissionCode: 'PER_L_BY_IDS',
-      isRequiredXClientType: true
-    },
-    update: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/permission/update`,
-      method: 'PUT',
-      headers: baseHeader,
-      permissionCode: 'PER_U',
       isRequiredXClientType: true
     }
   },
@@ -496,6 +592,43 @@ const apiConfig = defineApiConfig({
       isRequiredXClientType: true
     }
   },
+  permission: {
+    create: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/permission/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'PER_C',
+      isRequiredXClientType: true
+    },
+    delete: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/permission/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'PER_D',
+      isRequiredXClientType: true
+    },
+    getList: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/permission/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'PER_L',
+      isRequiredXClientType: true
+    },
+    getListByIds: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/permission/list-by-ids`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'PER_L_BY_IDS',
+      isRequiredXClientType: true
+    },
+    update: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/permission/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'PER_U',
+      isRequiredXClientType: true
+    }
+  },
   person: {
     autoComplete: {
       baseUrl: `${AppConstants.apiUrl}/v1/person/admin/auto-complete`,
@@ -575,70 +708,41 @@ const apiConfig = defineApiConfig({
       isRequiredXClientType: true
     }
   },
-  user: {
-    changeStatus: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/user/change-status`,
-      method: 'PUT',
+  serverConfig: {
+    create: {
+      baseUrl: `${AppConstants.apiUrl}/v1/server-config/create`,
+      method: 'POST',
       headers: baseHeader,
-      permissionCode: 'USR_C_S',
+      permissionCode: 'SC_C',
       isRequiredXClientType: true
     },
     delete: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/user/delete/:id`,
+      baseUrl: `${AppConstants.apiUrl}/v1/server-config/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
-      permissionCode: 'USR_D',
+      permissionCode: 'SC_D',
       isRequiredXClientType: true
     },
     getById: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/user/get/:id`,
+      baseUrl: `${AppConstants.apiUrl}/v1/server-config/get/:id`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'USR_V',
+      permissionCode: 'SC_V',
       isRequiredXClientType: true
     },
     getList: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/user/list`,
+      baseUrl: `${AppConstants.apiUrl}/v1/server-config/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'USR_L',
+      permissionCode: 'SC_L',
       isRequiredXClientType: true
     },
     update: {
-      baseUrl: `${AppConstants.authApiUrl}/v1/user/update`,
+      baseUrl: `${AppConstants.apiUrl}/v1/server-config/update`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'USR_U',
+      permissionCode: 'SC_U',
       isRequiredXClientType: true
-    }
-  },
-  file: {
-    upload: {
-      baseUrl: `${AppConstants.mediaUrl}/v1/file/upload`,
-      method: 'POST',
-      headers: multipartHeader,
-      permissionCode: 'FILE_U',
-      isUpload: true
-    },
-    uploadVideo: {
-      baseUrl: `${AppConstants.mediaUrl}/v1/file/upload-video`,
-      method: 'POST',
-      headers: multipartHeader,
-      permissionCode: 'FILE_U_V',
-      isUpload: true
-    },
-    delete: {
-      baseUrl: `${AppConstants.mediaUrl}/v1/file/delete-file`,
-      method: 'POST',
-      headers: baseHeader,
-      permissionCode: 'FILE_U_D'
-    }
-  },
-  sns: {
-    sendSignal: {
-      baseUrl: `${AppConstants.apiUrl}/v1/sns/send-signal`,
-      method: 'POST',
-      headers: baseHeader
     }
   },
   sidebar: {
@@ -681,95 +785,22 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}/v1/sidebar/update-ordering`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'SBD_U_ORD',
+      permissionCode: 'SDB_U_ORD',
       isRequiredXClientType: true
     },
     changeActive: {
       baseUrl: `${AppConstants.apiUrl}/v1/sidebar/change-active`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'SBD_C_A',
+      permissionCode: 'SDB_C_A',
       isRequiredXClientType: true
     }
   },
-  videoLibrary: {
-    getById: {
-      baseUrl: `${AppConstants.apiUrl}/v1/video-library/get/:id`,
-      method: 'GET',
-      headers: baseHeader,
-      permissionCode: 'VID_L_V',
-      isRequiredXClientType: true
-    },
-    getList: {
-      baseUrl: `${AppConstants.apiUrl}/v1/video-library/list`,
-      method: 'GET',
-      headers: baseHeader,
-      permissionCode: 'VID_L_L',
-      isRequiredXClientType: true
-    },
-    create: {
-      baseUrl: `${AppConstants.apiUrl}/v1/video-library/create`,
+  sns: {
+    sendSignal: {
+      baseUrl: `${AppConstants.apiUrl}/v1/sns/send-signal`,
       method: 'POST',
-      headers: baseHeader,
-      permissionCode: 'VID_L_C',
-      isRequiredXClientType: true
-    },
-    delete: {
-      baseUrl: `${AppConstants.apiUrl}/v1/video-library/delete/:id`,
-      method: 'DELETE',
-      headers: baseHeader,
-      permissionCode: 'VID_L_D',
-      isRequiredXClientType: true
-    },
-    update: {
-      baseUrl: `${AppConstants.apiUrl}/v1/video-library/update`,
-      method: 'PUT',
-      headers: baseHeader,
-      permissionCode: 'VID_L_U',
-      isRequiredXClientType: true
-    },
-    autoComplete: {
-      baseUrl: `${AppConstants.apiUrl}/v1/video-library/auto-complete`,
-      method: 'GET',
-      headers: baseHeader,
-      isRequiredXClientType: true
-    }
-  },
-  appVersion: {
-    getById: {
-      baseUrl: `${AppConstants.apiUrl}/v1/app-version/get/:id`,
-      method: 'GET',
-      headers: baseHeader,
-      permissionCode: 'APP_V_V',
-      isRequiredXClientType: true
-    },
-    getList: {
-      baseUrl: `${AppConstants.apiUrl}/v1/app-version/list`,
-      method: 'GET',
-      headers: baseHeader,
-      permissionCode: 'APP_V_L',
-      isRequiredXClientType: true
-    },
-    create: {
-      baseUrl: `${AppConstants.apiUrl}/v1/app-version/create`,
-      method: 'POST',
-      headers: baseHeader,
-      permissionCode: 'APP_V_C',
-      isRequiredXClientType: true
-    },
-    delete: {
-      baseUrl: `${AppConstants.apiUrl}/v1/app-version/delete/:id`,
-      method: 'DELETE',
-      headers: baseHeader,
-      permissionCode: 'APP_V_D',
-      isRequiredXClientType: true
-    },
-    update: {
-      baseUrl: `${AppConstants.apiUrl}/v1/app-version/update`,
-      method: 'PUT',
-      headers: baseHeader,
-      permissionCode: 'APP_V_U',
-      isRequiredXClientType: true
+      headers: baseHeader
     }
   },
   style: {
@@ -815,77 +846,83 @@ const apiConfig = defineApiConfig({
       isRequiredXClientType: true
     }
   },
-  collection: {
-    getById: {
-      baseUrl: `${AppConstants.apiUrl}/v1/collection/admin/get/:id`,
-      method: 'GET',
+  user: {
+    changeStatus: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/user/change-status`,
+      method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'COL_V',
-      isRequiredXClientType: true
-    },
-    getList: {
-      baseUrl: `${AppConstants.apiUrl}/v1/collection/admin/list`,
-      method: 'GET',
-      headers: baseHeader,
-      permissionCode: 'COL_L',
-      isRequiredXClientType: true
-    },
-    create: {
-      baseUrl: `${AppConstants.apiUrl}/v1/collection/create`,
-      method: 'POST',
-      headers: baseHeader,
-      permissionCode: 'COL_C',
+      permissionCode: 'USR_C_S',
       isRequiredXClientType: true
     },
     delete: {
-      baseUrl: `${AppConstants.apiUrl}/v1/collection/delete/:id`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/user/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
-      permissionCode: 'COL_D',
+      permissionCode: 'USR_D',
+      isRequiredXClientType: true
+    },
+    getById: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/user/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'USR_V',
+      isRequiredXClientType: true
+    },
+    getList: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/user/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'USR_L',
       isRequiredXClientType: true
     },
     update: {
-      baseUrl: `${AppConstants.apiUrl}/v1/collection/update`,
+      baseUrl: `${AppConstants.authApiUrl}/v1/user/update`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'COL_U',
-      isRequiredXClientType: true
-    },
-    updateOrdering: {
-      baseUrl: `${AppConstants.apiUrl}/v1/collection/update-ordering`,
-      method: 'PUT',
-      headers: baseHeader,
-      permissionCode: 'COL_U_ORD',
+      permissionCode: 'USR_U',
       isRequiredXClientType: true
     }
   },
-  collectionItem: {
-    getList: {
-      baseUrl: `${AppConstants.apiUrl}/v1/collection-item/admin/list`,
+  videoLibrary: {
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library/get/:id`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'COL_I_L',
+      permissionCode: 'VID_L_V',
+      isRequiredXClientType: true
+    },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'VID_L_L',
       isRequiredXClientType: true
     },
     create: {
-      baseUrl: `${AppConstants.apiUrl}/v1/collection-item/create`,
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library/create`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'COL_I_C',
+      permissionCode: 'VID_L_C',
       isRequiredXClientType: true
     },
     delete: {
-      baseUrl: `${AppConstants.apiUrl}/v1/collection-item/delete/:id`,
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library/delete/:id`,
       method: 'DELETE',
       headers: baseHeader,
-      permissionCode: 'COL_I_D',
+      permissionCode: 'VID_L_D',
       isRequiredXClientType: true
     },
-    updateOrdering: {
-      baseUrl: `${AppConstants.apiUrl}/v1/collection-item/update-ordering`,
+    update: {
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library/update`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'COL_I_U_ORD',
+      permissionCode: 'VID_L_U',
+      isRequiredXClientType: true
+    },
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library/auto-complete`,
+      method: 'GET',
+      headers: baseHeader,
       isRequiredXClientType: true
     }
   }

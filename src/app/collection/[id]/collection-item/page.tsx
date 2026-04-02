@@ -1,5 +1,4 @@
 import { CollectionItemList } from '@/app/collection/[id]/collection-item/_components';
-import { queryKeys } from '@/constants';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function CollectionItemListPage() {
-  return <CollectionItemList queryKey={queryKeys.COLLECTION_ITEM} />;
+  return <CollectionItemList />;
 }

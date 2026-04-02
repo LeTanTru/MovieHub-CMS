@@ -26,7 +26,8 @@ import {
   countryOptions,
   ErrorCode,
   languageOptions,
-  movieTypeOptions
+  movieTypeOptions,
+  queryKeys
 } from '@/constants';
 import { useQueryParams, useSaveBase } from '@/hooks';
 import { useCategoryListQuery } from '@/queries';
@@ -45,7 +46,7 @@ import type { UseFormReturn } from 'react-hook-form';
 import { PlusIcon, X } from 'lucide-react';
 import { logger } from '@/logger';
 
-export default function CollectionForm({ queryKey }: { queryKey: string }) {
+export default function CollectionForm() {
   const { id } = useParams<{ id: string }>();
   const { searchParams } = useQueryParams<CollectionSearchType>();
   const type = searchParams.type;
@@ -72,7 +73,7 @@ export default function CollectionForm({ queryKey }: { queryKey: string }) {
   } = useSaveBase<CollectionResType, CollectionBodyType>({
     apiConfig: apiConfig.collection,
     options: {
-      queryKey,
+      queryKey: queryKeys.COLLECTION,
       objectName: 'bộ sưu tập',
       listPageUrl: route.collection.getList.path,
       pathParams: {

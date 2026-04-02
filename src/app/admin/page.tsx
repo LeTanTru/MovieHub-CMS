@@ -1,5 +1,4 @@
 import { AdminList } from '@/app/admin/_components';
-import { queryKeys } from '@/constants';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function AdminPage() {
-  return <AdminList queryKey={queryKeys.ADMIN} />;
+  return <AdminList />;
 }

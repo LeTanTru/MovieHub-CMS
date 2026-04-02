@@ -17,6 +17,7 @@ import {
   employeeStatusOptions,
   ErrorCode,
   MAX_PAGE_SIZE,
+  queryKeys,
   STATUS_ACTIVE
 } from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
@@ -33,7 +34,7 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export default function EmployeeForm({ queryKey }: { queryKey: string }) {
+export default function EmployeeForm() {
   const { id } = useParams<{ id: string }>();
 
   const { data: groupListData } = useGroupListQuery({ size: MAX_PAGE_SIZE });
@@ -59,7 +60,7 @@ export default function EmployeeForm({ queryKey }: { queryKey: string }) {
   } = useSaveBase<EmployeeResType, EmployeeBodyType>({
     apiConfig: apiConfig.employee,
     options: {
-      queryKey,
+      queryKey: queryKeys.EMPLOYEE,
       objectName: 'nhân viên',
       listPageUrl: route.employee.getList.path,
       pathParams: {

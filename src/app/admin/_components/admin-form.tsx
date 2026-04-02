@@ -16,6 +16,7 @@ import {
   apiConfig,
   ErrorCode,
   GROUP_KIND_ADMIN,
+  queryKeys,
   STATUS_ACTIVE,
   statusOptions
 } from '@/constants';
@@ -33,7 +34,7 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export default function AdminForm({ queryKey }: { queryKey: string }) {
+export default function AdminForm() {
   const { id } = useParams<{ id: string }>();
 
   const { data: groupData } = useGroupListQuery({ kind: GROUP_KIND_ADMIN });
@@ -63,7 +64,7 @@ export default function AdminForm({ queryKey }: { queryKey: string }) {
       getById: apiConfig.account.getById
     },
     options: {
-      queryKey,
+      queryKey: queryKeys.ADMIN,
       objectName: 'quản trị viên',
       listPageUrl: route.admin.getList.path,
       pathParams: {

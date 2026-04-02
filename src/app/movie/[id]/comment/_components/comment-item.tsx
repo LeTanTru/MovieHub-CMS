@@ -551,7 +551,6 @@ function CommentItem({
                   parentId={rootId.toString()}
                   movieId={comment.movieId.toString()}
                   defaultMention={`@${authorInfo.fullName}`}
-                  queryKey={queryKeys.COMMENT}
                   onSubmitted={handleReplySubmit}
                   onCancel={handleCancelReply}
                 />

@@ -15,6 +15,7 @@ export const STATUS_PENDING = 0;
 export const STATUS_ACTIVE = 1;
 export const STATUS_LOCK = -1;
 export const STATUS_DELETED = -2;
+export const STATUS_INACTIVE = 0;
 
 export const GENDER_MALE = 1;
 export const GENDER_FEMALE = 2;

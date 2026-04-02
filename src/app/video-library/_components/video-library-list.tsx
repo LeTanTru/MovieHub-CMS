@@ -12,7 +12,8 @@ import {
   VIDEO_LIBRARY_STATE_COMPLETE,
   VIDEO_LIBRARY_STATE_PROCESSING,
   videoLibrarySourceTypeOptions,
-  videoLibraryStateOptions
+  videoLibraryStateOptions,
+  queryKeys
 } from '@/constants';
 import { useDisclosure, useListBase, useSocketEvent } from '@/hooks';
 import { videoLibrarySearchSchema } from '@/schemaValidations';
@@ -28,7 +29,7 @@ import { useState } from 'react';
 import { AiFillWarning } from 'react-icons/ai';
 import { RiCheckboxCircleFill, RiLoader2Fill } from 'react-icons/ri';
 
-export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
+export default function VideoLibraryList() {
   const {
     opened: openedPlayModal,
     open: openPlayModal,
@@ -42,7 +43,7 @@ export default function VideoLibraryList({ queryKey }: { queryKey: string }) {
   >({
     apiConfig: apiConfig.videoLibrary,
     options: {
-      queryKey,
+      queryKey: queryKeys.VIDEO_LIBRARY,
       objectName: 'video'
     },
     override: (handlers) => {

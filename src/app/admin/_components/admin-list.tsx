@@ -9,6 +9,7 @@ import {
   apiConfig,
   FieldTypes,
   GROUP_KIND_ADMIN,
+  queryKeys,
   STATUS_ACTIVE,
   STATUS_LOCK,
   statusOptions
@@ -25,7 +26,7 @@ import type {
 import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { Badge } from '@/components/ui/badge';
 
-export default function AdminList({ queryKey }: { queryKey: string }) {
+export default function AdminList() {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
     useChangeAccountStatusMutation();
 
@@ -35,7 +36,7 @@ export default function AdminList({ queryKey }: { queryKey: string }) {
   >({
     apiConfig: apiConfig.account,
     options: {
-      queryKey,
+      queryKey: queryKeys.ADMIN,
       objectName: 'tài khoản',
       defaultFilters: { kind: GROUP_KIND_ADMIN },
       notShowFromSearchParams: ['kind']

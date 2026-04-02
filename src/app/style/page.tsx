@@ -1,5 +1,4 @@
 import { StyleList } from '@/app/style/_components';
-import { queryKeys } from '@/constants';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function StyleListPage() {
-  return <StyleList queryKey={queryKeys.STYLE} />;
+  return <StyleList />;
 }

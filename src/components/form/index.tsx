@@ -22,6 +22,7 @@ export { default as RadioGroupField } from './radio-group-field';
 export { default as RichTextField } from './rich-text-field';
 export { default as Row } from './row';
 export { default as SelectField } from './select-field';
+export { default as SliderField } from './slider-field';
 export { default as TextAreaField } from './text-area-field';
 export { default as TimePickerField } from './time-picker-field';
 export { default as ToolTip } from './tooltip';

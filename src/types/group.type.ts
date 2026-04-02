@@ -10,8 +10,8 @@ export type GroupResType = {
   kind: number;
   isSystemRole: boolean;
   permissions: PermissionAutoResType[];
-  createdDate: Date;
-  modifiedDate: Date;
+  createdDate: string;
+  modifiedDate: string;
   status: number;
   color: string;
 };

@@ -11,7 +11,8 @@ import {
   countryOptions,
   DEFAULT_DATE_FORMAT,
   languageOptions,
-  movieTypeOptions
+  movieTypeOptions,
+  queryKeys
 } from '@/constants';
 import {
   useDisclosure,
@@ -32,7 +33,7 @@ import { formatDate, renderImageUrl, renderListPageUrl } from '@/utils';
 import { PlusIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
-export default function CollectionItemList({ queryKey }: { queryKey: string }) {
+export default function CollectionItemList() {
   const { id: collectionId } = useParams<{ id: string }>();
   const { searchParams, serializeParams } = useQueryParams<{
     type: number;
@@ -46,7 +47,7 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
   >({
     apiConfig: apiConfig.collectionItem,
     options: {
-      queryKey,
+      queryKey: queryKeys.COLLECTION_ITEM,
       objectName: 'phim',
       excludeFromQueryFilter: ['type', 'collectionTitle'],
       defaultFilters: { collectionId },
@@ -76,7 +77,7 @@ export default function CollectionItemList({ queryKey }: { queryKey: string }) {
     sortedData,
     onDragEnd
   } = useDragDrop<CollectionItemResType>({
-    key: `${queryKey}-list`,
+    key: `${queryKeys.COLLECTION_ITEM}-list`,
     objectName: 'phim',
     data,
     apiConfig: apiConfig.collectionItem.updateOrdering,

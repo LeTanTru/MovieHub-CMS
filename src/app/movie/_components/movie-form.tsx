@@ -25,6 +25,7 @@ import {
   languageOptions,
   MOVIE_TYPE_SERIES,
   movieTypeOptions,
+  queryKeys,
   STATUS_ACTIVE
 } from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
@@ -41,7 +42,7 @@ import { formatDate, renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
-export default function MovieForm({ queryKey }: { queryKey: string }) {
+export default function MovieForm() {
   const { id } = useParams<{ id: string }>();
 
   const { data: categoryListData, isLoading: categoryLoading } =
@@ -74,7 +75,7 @@ export default function MovieForm({ queryKey }: { queryKey: string }) {
   } = useSaveBase<MovieResType, MovieBodyType>({
     apiConfig: apiConfig.movie,
     options: {
-      queryKey,
+      queryKey: queryKeys.MOVIE,
       objectName: 'phim',
       listPageUrl: route.movie.getList.path,
       pathParams: {

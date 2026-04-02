@@ -5,8 +5,8 @@ import { z } from 'zod';
 export type GroupPermissionResType = {
   id: string;
   name: string;
-  createdDate: Date;
-  modifiedDate: Date;
+  createdDate: string;
+  modifiedDate: string;
   status: number;
   ordering: number;
 };

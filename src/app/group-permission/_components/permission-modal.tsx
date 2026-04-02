@@ -15,7 +15,8 @@ import {
   apiConfig,
   DEFAULT_TABLE_PAGE_START,
   MAX_PAGE_SIZE,
-  permissionErrorMaps
+  permissionErrorMaps,
+  queryKeys
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { useGroupPermissionListQuery } from '@/queries';
@@ -30,7 +31,6 @@ import { UseFormReturn } from 'react-hook-form';
 
 type PermissionModalProps = {
   open: boolean;
-  queryKey: string;
   selectedRow: PermissionResType | null;
   selectedGroupPermissionId: string;
   onClose: () => void;
@@ -38,7 +38,6 @@ type PermissionModalProps = {
 
 export default function PermissionModal({
   open,
-  queryKey,
   selectedRow,
   selectedGroupPermissionId,
   onClose
@@ -53,7 +52,7 @@ export default function PermissionModal({
   } = useSaveBase<PermissionResType, PermissionBodyType>({
     apiConfig: apiConfig.permission,
     options: {
-      queryKey,
+      queryKey: queryKeys.PERMISSION,
       objectName: 'quyền',
       pathParams: {
         id: selectedRow?.id
