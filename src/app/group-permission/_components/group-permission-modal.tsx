@@ -4,7 +4,7 @@ import { Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
-import { apiConfig, groupPermissionErrorMaps } from '@/constants';
+import { apiConfig, groupPermissionErrorMaps, queryKeys } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import { groupPermissionSchema } from '@/schemaValidations';
@@ -19,12 +19,10 @@ import { UseFormReturn } from 'react-hook-form';
 
 export default function GroupPermissionModal({
   open,
-  queryKey,
   selectedRow,
   onClose
 }: {
   open: boolean;
-  queryKey: string;
   selectedRow: GroupPermissionResType | null;
   onClose: () => void;
 }) {
@@ -38,7 +36,7 @@ export default function GroupPermissionModal({
   } = useSaveBase<GroupPermissionResType, GroupPermissionBodyType>({
     apiConfig: apiConfig.groupPermission,
     options: {
-      queryKey,
+      queryKey: queryKeys.GROUP_PERMISSION,
       objectName: 'nhóm quyền',
       pathParams: {
         id: selectedRow?.id
