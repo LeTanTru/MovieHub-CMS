@@ -64,6 +64,8 @@ export default function AppVersionForm() {
     onOpen: true
   });
 
+  const isUploading = imageManager.isUploading;
+
   const defaultValues: AppVersionBodyType = {
     name: '',
     changeLog: '',
@@ -155,6 +157,7 @@ export default function AppVersionForm() {
                     return res.data?.filePath ?? '';
                   }}
                   onChange={imageManager.trackUpload}
+                  onUploadStart={imageManager.trackUploadStart}
                   deleteImageFn={imageManager.handleDeleteOnClick}
                   label='Chọn tệp (.apk)'
                   accept='.apk'
@@ -209,7 +212,8 @@ export default function AppVersionForm() {
             </Row>
             <>
               {renderActions(form, {
-                onCancel: handleCancel
+                onCancel: handleCancel,
+                disabled: isUploading
               })}
             </>
             {loading && (

@@ -230,7 +230,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
 
   const renderActions = (
     form: UseFormReturn<T>,
-    options?: { onCancel?: () => void }
+    options?: { onCancel?: () => void; disabled?: boolean }
   ) => {
     const handleCancel = () => {
       if (listPageUrl) {
@@ -296,7 +296,11 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
           </Col>
           <Col className='w-40'>
             <Button
-              disabled={!form.formState.isDirty || mutation.isPending}
+              disabled={
+                !form.formState.isDirty ||
+                mutation.isPending ||
+                options?.disabled
+              }
               type='submit'
               variant='primary'
               loading={mutation.isPending}

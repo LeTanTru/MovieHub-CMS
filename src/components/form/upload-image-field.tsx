@@ -163,6 +163,7 @@ export default function UploadImageField<T extends FieldValues>({
   const [customAspect, setCustomAspect] = useState<number>(aspect);
   const [keepOriginalSize, setKeepOriginalSize] =
     useState<boolean>(originalSize);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const {
     field: { value: fieldValue, onChange: fieldOnChange },
     fieldState: { error }
@@ -221,12 +222,15 @@ export default function UploadImageField<T extends FieldValues>({
     if (!blob) return;
 
     try {
+      setIsUploading(true);
       const uploadedUrl = await uploadImageFn(blob);
       onChange?.(uploadedUrl);
       fieldOnChange(uploadedUrl);
       setDialogOpen(false);
     } catch (error) {
       logger.error('Error while uploading image:', error);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -382,10 +386,16 @@ export default function UploadImageField<T extends FieldValues>({
       </div>
 
       {showCrop && (
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog
+          open={dialogOpen}
+          onOpenChange={(open) => {
+            if (isUploading) return;
+            setDialogOpen(open);
+          }}
+        >
           <DialogContent
             className='gap-0 overflow-hidden rounded-tl-sm rounded-tr-sm border-none p-0 sm:max-w-85 md:max-w-90 lg:max-w-95 xl:max-w-100 2xl:max-w-115'
-            showCloseButton={false}
+            showCloseButton={!isUploading}
           >
             <DialogHeader className='text-left'>
               <DialogTitle className='border-none p-0 outline-none'></DialogTitle>
@@ -521,6 +531,7 @@ export default function UploadImageField<T extends FieldValues>({
                     size='icon'
                     className='hover:border-destructive/80 text-destructive border-destructive dark:border-destructive dark:text-destructive dark:hover:border-destructive/80 hover:text-destructive/80 dark:hover:text-destructive/80 -my-1 w-25'
                     onClick={() => setDialogOpen(false)}
+                    disabled={isUploading}
                   >
                     Đóng
                   </Button>
@@ -529,8 +540,8 @@ export default function UploadImageField<T extends FieldValues>({
                     variant='primary'
                     className='-my-1 w-25'
                     onClick={handleApply}
-                    disabled={!previewUrl || loading}
-                    loading={loading}
+                    disabled={!previewUrl || loading || isUploading}
+                    loading={loading || isUploading}
                   >
                     Áp dụng
                   </Button>

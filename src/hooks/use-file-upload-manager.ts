@@ -28,6 +28,7 @@ const useFileUploadManager = ({
   const [currentUrl, setCurrentUrl] = useState<string>('');
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [originalUrl, setOriginalUrl] = useState<string>('');
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (onOpen) {
@@ -57,7 +58,13 @@ const useFileUploadManager = ({
     if (url) {
       setCurrentUrl(url);
       setUploadedFiles((prev) => [...prev, url]);
+      setIsUploading(false);
     }
+  }, []);
+
+  // Track upload start
+  const trackUploadStart = useCallback(() => {
+    setIsUploading(true);
   }, []);
 
   // Handle delete on click X button
@@ -193,6 +200,8 @@ const useFileUploadManager = ({
     uploadedFiles,
     originalUrl,
     trackUpload,
+    trackUploadStart,
+    isUploading,
     handleDeleteOnClick,
     handleCancel,
     handleSubmit,
