@@ -93,6 +93,9 @@ export default function VideoLibraryForm() {
     onOpen: true
   });
 
+  const isUploading =
+    imageManager.isUploading || videoManager.isUploading || uploadLogoLoading;
+
   const defaultValues: VideoLibraryBodyType = {
     content: '',
     description: '',
@@ -467,6 +470,7 @@ export default function VideoLibraryForm() {
                         label='Video'
                         required
                         onChange={videoManager.trackUpload}
+                        onUploadStart={videoManager.trackUploadStart}
                         uploadVideoFn={async (file: Blob, onProgress) => {
                           const res = await uploadVideoMutate({
                             file,
@@ -503,7 +507,8 @@ export default function VideoLibraryForm() {
 
               <>
                 {renderActions(form, {
-                  onCancel: handleCancel
+                  onCancel: handleCancel,
+                  disabled: isUploading
                 })}
               </>
               {loading && (

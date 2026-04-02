@@ -28,6 +28,7 @@ type UploadVideoFieldProps<T extends FieldValues> = {
   name: FieldPath<T>;
   label?: ReactNode;
   onChange?: (url: string) => void;
+  onUploadStart?: () => void;
   required?: boolean;
   className?: string;
 
@@ -43,6 +44,7 @@ export default function UploadVideoField<T extends FieldValues>({
   name,
   label,
   onChange,
+  onUploadStart,
   required,
   className,
   uploadVideoFn,
@@ -86,6 +88,7 @@ export default function UploadVideoField<T extends FieldValues>({
     try {
       setUploading(true);
       setProgress(0);
+      onUploadStart?.();
 
       const url = await uploadVideoFn(file, setProgress);
 

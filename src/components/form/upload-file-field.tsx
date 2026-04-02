@@ -32,6 +32,7 @@ type UploadFileFieldProps<T extends FieldValues> = {
   className?: string;
   accept: string;
   onChange?: (url: string) => void;
+  onUploadStart?: () => void;
 
   uploadFileFn: (
     file: File,
@@ -49,6 +50,7 @@ export default function UploadFileField<T extends FieldValues>({
   className,
   accept,
   onChange,
+  onUploadStart,
   uploadFileFn,
   deleteImageFn
 }: UploadFileFieldProps<T>) {
@@ -90,6 +92,7 @@ export default function UploadFileField<T extends FieldValues>({
     try {
       setUploading(true);
       setProgress(0);
+      onUploadStart?.();
 
       const url = await uploadFileFn(file, setProgress);
 
@@ -210,7 +213,7 @@ export default function UploadFileField<T extends FieldValues>({
         </div>
       )}
 
-      {error?.message && (
+      {error?.message && !uploading && (
         <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
           <p className='text-destructive text-sm leading-5.5'>
             {error.message}
