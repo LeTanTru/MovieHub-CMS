@@ -209,7 +209,7 @@ export default function UploadVideoField<T extends FieldValues>({
         </div>
       )}
 
-      {error?.message && (
+      {error?.message && !uploading && (
         <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
           <p className='text-destructive text-sm leading-5.5'>
             {error.message}
