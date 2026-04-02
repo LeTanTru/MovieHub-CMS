@@ -43,6 +43,14 @@ jobs:
             NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN=${{ secrets.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN }}
             NEXT_PUBLIC_MEDIA_HOST=${{ secrets.NEXT_PUBLIC_MEDIA_HOST }}
             NEXT_PUBLIC_CLIENT_TYPE=${{ secrets.NEXT_PUBLIC_CLIENT_TYPE }}
+            MINIO_ENDPOINT=${{ secrets.MINIO_ENDPOINT }}
+            MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }}
+            MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}
+            MINIO_BUCKET=${{ secrets.MINIO_BUCKET }}
+            MINIO_ENDPOINT=${{ secrets.MINIO_ENDPOINT }}
+            MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }}
+            MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}
+            MINIO_BUCKET=${{ secrets.MINIO_BUCKET }}
 
       - name: Show Image Size
         run: docker images ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
