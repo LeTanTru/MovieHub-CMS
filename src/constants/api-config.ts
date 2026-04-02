@@ -367,6 +367,12 @@ const apiConfig = defineApiConfig({
       permissionCode: 'FILE_U_V',
       isUpload: true
     },
+    uploadVideoMinio: {
+      baseUrl: `/api/file/upload-video`,
+      method: 'POST',
+      headers: multipartHeader,
+      isUpload: true
+    },
     delete: {
       baseUrl: `${AppConstants.mediaUrl}/v1/file/delete-file`,
       method: 'POST',

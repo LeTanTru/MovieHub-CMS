@@ -27,7 +27,7 @@ import { useFileUploadManager, useSaveBase } from '@/hooks';
 import {
   useDeleteFileMutation,
   useUploadLogoMutation,
-  useUploadVideoMutation
+  useUploadVideoMinioMutation
 } from '@/queries';
 import { route } from '@/routes';
 import { videoLibrarySchema } from '@/schemaValidations';
@@ -55,7 +55,7 @@ export default function VideoLibraryForm() {
 
   const { mutateAsync: uploadLogoMutation, isPending: uploadLogoLoading } =
     useUploadLogoMutation();
-  const { mutateAsync: uploadVideoMutate } = useUploadVideoMutation();
+  const { mutateAsync: uploadVideoMutate } = useUploadVideoMinioMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
   const {
     data,
