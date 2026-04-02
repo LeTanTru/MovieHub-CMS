@@ -5,7 +5,7 @@ import ReviewItemSkeleton from './review-item-skeleton';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DotLoading } from '@/components/loading';
 import { NoData } from '@/components/no-data';
-import { apiConfig } from '@/constants';
+import { apiConfig, queryKeys } from '@/constants';
 import { useInfiniteListBase, useQueryParams } from '@/hooks';
 import { route } from '@/routes';
 import type { ReviewResType, ReviewSearchType } from '@/types';
@@ -13,7 +13,7 @@ import { useParams } from 'next/navigation';
 import ReviewItem from './review-item';
 import { useCallback } from 'react';
 
-export default function ReviewList({ queryKey }: { queryKey: string }) {
+export default function ReviewList() {
   const { id: movieId } = useParams<{ id: string }>();
   const { searchParams } = useQueryParams<{ movieTitle: string }>();
 
@@ -29,7 +29,7 @@ export default function ReviewList({ queryKey }: { queryKey: string }) {
     apiConfig: apiConfig.review,
     options: {
       objectName: 'đánh giá',
-      queryKey,
+      queryKey: queryKeys.REVIEW,
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId'],
       excludeFromQueryFilter: ['movieTitle'],

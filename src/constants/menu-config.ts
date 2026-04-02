@@ -16,19 +16,19 @@ const menuConfig: MenuItem[] = [
     ],
     children: [
       {
-        key: 'admin-list',
+        key: 'admin',
         label: 'Quản trị viên',
         path: route.admin.getList.path,
         permissionCode: [apiConfig.account.getList.permissionCode]
       },
       {
-        key: 'employee-list',
+        key: 'employee',
         label: 'Nhân viên',
         path: route.employee.getList.path,
         permissionCode: [apiConfig.employee.getList.permissionCode]
       },
       {
-        key: 'user-list',
+        key: 'user',
         label: 'Người dùng',
         path: route.user.getList.path,
         permissionCode: [apiConfig.user.getList.permissionCode]
@@ -47,25 +47,25 @@ const menuConfig: MenuItem[] = [
     ],
     children: [
       {
-        key: 'category-list',
+        key: 'category',
         label: 'Thể loại',
         path: route.category.getList.path,
         permissionCode: [apiConfig.category.getList.permissionCode]
       },
       {
-        key: 'video-library-list',
+        key: 'video-library',
         label: 'Video',
         path: route.videoLibrary.getList.path,
         permissionCode: [apiConfig.videoLibrary.getList.permissionCode]
       },
       {
-        key: 'person-list',
+        key: 'person',
         label: 'Diễn viên & Đạo diễn',
         path: route.person.getList.path,
         permissionCode: [apiConfig.person.getList.permissionCode]
       },
       {
-        key: 'movie-list',
+        key: 'movie',
         label: 'Phim',
         path: route.movie.getList.path,
         permissionCode: [apiConfig.movie.getList.permissionCode]
@@ -83,19 +83,19 @@ const menuConfig: MenuItem[] = [
     ],
     children: [
       {
-        key: 'sidebar-movie-list',
+        key: 'sidebar-movie',
         label: 'Phim hot',
         path: route.sidebar.getList.path,
         permissionCode: [apiConfig.sidebar.getList.permissionCode]
       },
       {
-        key: 'style-list',
+        key: 'style',
         label: 'Thiết kế',
         path: route.style.getList.path,
         permissionCode: [apiConfig.style.getList.permissionCode]
       },
       {
-        key: 'collection-list',
+        key: 'collection',
         label: 'Bộ sưu tập',
         path: route.collection.getList.path,
         permissionCode: [apiConfig.collection.getList.permissionCode],
@@ -113,10 +113,16 @@ const menuConfig: MenuItem[] = [
     ],
     children: [
       {
-        key: 'app-version-list',
+        key: 'app-version',
         label: 'Phiên bản ứng dụng',
         path: route.appVersion.getList.path,
         permissionCode: [apiConfig.appVersion.getList.permissionCode]
+      },
+      {
+        key: 'server-config',
+        label: 'Cấu hình máy chủ',
+        path: route.serverConfig.getList.path,
+        permissionCode: [apiConfig.serverConfig.getList.permissionCode]
       },
       {
         key: 'role',

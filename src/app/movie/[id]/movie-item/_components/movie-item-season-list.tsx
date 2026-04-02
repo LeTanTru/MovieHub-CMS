@@ -12,7 +12,8 @@ import {
   MAX_PAGE_SIZE,
   MOVIE_ITEM_KIND_SEASON,
   MOVIE_TYPE_SINGLE,
-  movieItemKindOptions
+  movieItemKindOptions,
+  queryKeys
 } from '@/constants';
 import {
   useDisclosure,
@@ -47,11 +48,7 @@ import { IoCheckmarkDone } from 'react-icons/io5';
 import { useMarkLatestMovieItemMutation } from '@/queries';
 import { logger } from '@/logger';
 
-export default function MovieItemSeasonList({
-  queryKey
-}: {
-  queryKey: string;
-}) {
+export default function MovieItemSeasonList() {
   const navigate = useNavigate();
   const { id: movieId } = useParams<{ id: string }>();
   const { searchParams, serializeParams } = useQueryParams<{
@@ -85,7 +82,7 @@ export default function MovieItemSeasonList({
   >({
     apiConfig: apiConfig.movieItem,
     options: {
-      queryKey,
+      queryKey: queryKeys.MOVIE_ITEM,
       objectName: 'phần',
       excludeFromQueryFilter: ['type', 'movieTitle'],
       defaultFilters: {
@@ -223,7 +220,7 @@ export default function MovieItemSeasonList({
     sortedData,
     onDragEnd
   } = useDragDrop<MovieItemResType>({
-    key: `${queryKey}-list`,
+    key: `${queryKeys.MOVIE_ITEM}-list`,
     objectName: 'phần',
     data,
     apiConfig: apiConfig.movieItem.updateOrdering,

@@ -8,7 +8,7 @@ import { Send } from 'lucide-react';
 import Image from 'next/image';
 import { useClickOutside, useSaveBase } from '@/hooks';
 import { commentSchema } from '@/schemaValidations';
-import { apiConfig } from '@/constants';
+import { apiConfig, queryKeys } from '@/constants';
 import type { CommentBodyType, CommentResType } from '@/types';
 import { emojiIcon } from '@/assets';
 import { useCommentStore } from '@/store';
@@ -17,7 +17,6 @@ import { useShallow } from 'zustand/react/shallow';
 type CommentFormProps = {
   parentId: string;
   movieId: string;
-  queryKey: string;
   defaultMention?: string;
   onSubmitted?: () => void;
   onCancel?: () => void;
@@ -26,7 +25,6 @@ type CommentFormProps = {
 export default function CommentForm({
   parentId,
   movieId,
-  queryKey,
   defaultMention,
   onSubmitted,
   onCancel
@@ -54,7 +52,7 @@ export default function CommentForm({
   >({
     apiConfig: apiConfig.comment,
     options: {
-      queryKey,
+      queryKey: queryKeys.COMMENT,
       objectName: 'bình luận',
       pathParams: { id: editingComment?.id },
       mode: editingComment === null ? 'create' : 'edit',

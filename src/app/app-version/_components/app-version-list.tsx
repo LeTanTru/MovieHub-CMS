@@ -3,7 +3,7 @@
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
-import { apiConfig, ErrorCode, FieldTypes } from '@/constants';
+import { apiConfig, ErrorCode, FieldTypes, queryKeys } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { appVersionSearchSchema } from '@/schemaValidations';
@@ -15,14 +15,14 @@ import type {
 } from '@/types';
 import { convertUTCToLocal, notify } from '@/utils';
 
-export default function AppVersionList({ queryKey }: { queryKey: string }) {
+export default function AppVersionList() {
   const { data, pagination, loading, handlers } = useListBase<
     AppVersionResType,
     AppVersionSearchType
   >({
     apiConfig: apiConfig.appVersion,
     options: {
-      queryKey,
+      queryKey: queryKeys.APP_VERSION,
       objectName: 'phiên bản ứng dụng'
     },
     override: (handlers) => {

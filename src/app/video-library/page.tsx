@@ -1,5 +1,4 @@
 import { VideoLibraryList } from '@/app/video-library/_components';
-import { queryKeys } from '@/constants';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function VideoLibraryListPage() {
-  return <VideoLibraryList queryKey={queryKeys.VIDEO_LIBRARY} />;
+  return <VideoLibraryList />;
 }

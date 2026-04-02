@@ -4,7 +4,12 @@ import { Button, ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
-import { apiConfig, DEFAULT_DATE_FORMAT, FieldTypes } from '@/constants';
+import {
+  apiConfig,
+  DEFAULT_DATE_FORMAT,
+  FieldTypes,
+  queryKeys
+} from '@/constants';
 import { useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
@@ -19,7 +24,7 @@ import type {
 import { formatDate, notify, renderImageUrl } from '@/utils';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
-export default function SidebarList({ queryKey }: { queryKey: string }) {
+export default function SidebarList() {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusPending } =
     useChangeActiveSidebarMutation();
 
@@ -29,7 +34,7 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
   >({
     apiConfig: apiConfig.sidebar,
     options: {
-      queryKey,
+      queryKey: queryKeys.SIDEBAR,
       objectName: 'phim'
     },
     override: (handlers) => {
@@ -92,7 +97,7 @@ export default function SidebarList({ queryKey }: { queryKey: string }) {
     sortedData,
     onDragEnd
   } = useDragDrop<MovieSidebarResType>({
-    key: `${queryKey}-list`,
+    key: `${queryKeys.SIDEBAR}-list`,
     objectName: 'phim',
     data,
     apiConfig: apiConfig.sidebar.updateOrdering,

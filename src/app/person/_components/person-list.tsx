@@ -10,7 +10,8 @@ import {
   ErrorCode,
   FieldTypes,
   genderOptions,
-  PERSON_KIND_ACTOR
+  PERSON_KIND_ACTOR,
+  queryKeys
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { personSearchSchema } from '@/schemaValidations';
@@ -22,20 +23,14 @@ import type {
 } from '@/types';
 import { formatDate, getLastWord, notify, renderImageUrl } from '@/utils';
 
-export default function PersonList({
-  queryKey,
-  kind
-}: {
-  queryKey: string;
-  kind: number;
-}) {
+export default function PersonList({ kind }: { kind: number }) {
   const { data, pagination, loading, handlers } = useListBase<
     PersonResType,
     PersonSearchType
   >({
     apiConfig: apiConfig.person,
     options: {
-      queryKey,
+      queryKey: queryKeys.PERSON,
       objectName: kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
       defaultFilters: { kind },
       notShowFromSearchParams: ['kind', 'page', 'size']
@@ -125,25 +120,6 @@ export default function PersonList({
       align: 'center',
       width: 120
     },
-    // {
-    //   title: 'Vai trò',
-    //   dataIndex: 'kinds',
-    //   render: (kinds: number[]) => {
-    //     const label = kinds
-    //       .map(
-    //         (kind) =>
-    //           personKinds.find((personKind) => personKind.value === kind)?.label
-    //       )
-    //       .join(', ');
-    //     return (
-    //       <span className='line-clamp-1 block truncate' title={label}>
-    //         {label ?? '------'}
-    //       </span>
-    //     );
-    //   },
-    //   width: 200,
-    //   align: 'center'
-    // },
     handlers.renderActionColumn({
       actions: {
         edit: handlers.hasPermission({

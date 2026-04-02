@@ -15,7 +15,8 @@ import {
   MOVIE_TYPE_SINGLE,
   movieItemKindOptions,
   movieItemSeriesKindOptions,
-  movieItemSingleKindOptions
+  movieItemSingleKindOptions,
+  queryKeys
 } from '@/constants';
 import {
   useDisclosure,
@@ -53,11 +54,7 @@ import { useMarkLatestMovieItemMutation } from '@/queries';
 import { IoCheckmarkDone } from 'react-icons/io5';
 import { logger } from '@/logger';
 
-export default function MovieItemSeasonDetailList({
-  queryKey
-}: {
-  queryKey: string;
-}) {
+export default function MovieItemSeasonDetailList() {
   const { id: movieId, movieItemId } = useParams<{
     id: string;
     movieItemId: string;
@@ -95,7 +92,7 @@ export default function MovieItemSeasonDetailList({
   >({
     apiConfig: apiConfig.movieItem,
     options: {
-      queryKey,
+      queryKey: queryKeys.MOVIE_ITEM,
       objectName: getMovieTypeLabel(type),
       excludeFromQueryFilter: ['type', 'season', 'movieTitle'],
       defaultFilters: {
@@ -235,7 +232,7 @@ export default function MovieItemSeasonDetailList({
     sortedData,
     onDragEnd
   } = useDragDrop<MovieItemResType>({
-    key: `${queryKey}-list`,
+    key: `${queryKeys.MOVIE_ITEM}-list`,
     objectName: getMovieTypeLabel(type),
     data,
     apiConfig: apiConfig.movieItem.updateOrdering,

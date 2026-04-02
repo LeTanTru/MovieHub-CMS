@@ -1,5 +1,4 @@
 import { ReviewList } from '@/app/movie/[id]/review/_components';
-import { queryKeys } from '@/constants';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function ReviewListPage() {
-  return <ReviewList queryKey={queryKeys.REVIEW} />;
+  return <ReviewList />;
 }

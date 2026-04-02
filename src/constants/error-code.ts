@@ -12,6 +12,7 @@ import type {
   PermissionBodyType,
   PersonBodyType,
   ProfileBodyType,
+  ServerConfigBodyType,
   StyleBodyType,
   VideoLibraryBodyType
 } from '@/types';
@@ -110,7 +111,13 @@ export const ErrorCode = {
   // === Collection item error code ===
   COLLECTION_ITEM_ERROR_NOT_FOUND: 'ERROR-COLLECTION-ITEM-0000',
   COLLECTION_ITEM_ERROR_MOVIE_EXIST: 'ERROR-COLLECTION-ITEM-0001',
-  COLLECTION_ITEM_ERROR_MAX_ITEM: 'ERROR-COLLECTION-ITEM-0002'
+  COLLECTION_ITEM_ERROR_MAX_ITEM: 'ERROR-COLLECTION-ITEM-0002',
+
+  // === Server config error code ===
+  SERVER_CONFIG_ERROR_NOT_FOUND: 'ERROR-SERVER-CONFIG-0000',
+  SERVER_CONFIG_ERROR_SERVER_NUMBER_EXISTED: 'ERROR-SERVER-CONFIG-0001',
+  SERVER_CONFIG_ERROR_HOSTNAME_EXISTED: 'ERROR-SERVER-CONFIG-0002',
+  SERVER_CONFIG_ERROR_IP_PORT_EXISTED: 'ERROR-SERVER-CONFIG-0003'
 };
 
 export const groupErrorMaps: ErrorMaps<GroupBodyType> = {
@@ -267,6 +274,24 @@ export const collectionItemErrorMaps: ErrorMaps<CollectionItemBodyType> = {
     [
       'movieId',
       { type: 'manual', message: 'Phim này đã tồn tại trong bộ sưu tập' }
+    ]
+  ]
+};
+
+export const serverConfigErrorMaps: ErrorMaps<ServerConfigBodyType> = {
+  [ErrorCode.SERVER_CONFIG_ERROR_SERVER_NUMBER_EXISTED]: [
+    ['serverNumber', { type: 'manual', message: 'Số server đã tồn tại' }]
+  ],
+  [ErrorCode.SERVER_CONFIG_ERROR_HOSTNAME_EXISTED]: [
+    ['hostname', { type: 'manual', message: 'Hostname đã tồn tại' }]
+  ],
+  [ErrorCode.SERVER_CONFIG_ERROR_IP_PORT_EXISTED]: [
+    [
+      'port',
+      {
+        type: 'manual',
+        message: 'Cổng đã tồn tại với IP này'
+      }
     ]
   ]
 };

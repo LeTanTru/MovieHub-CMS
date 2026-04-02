@@ -8,7 +8,12 @@ import { ListPageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { DragDropTable } from '@/components/table';
 import { Separator } from '@/components/ui/separator';
-import { apiConfig, MAX_PAGE_SIZE, PERSON_KIND_ACTOR } from '@/constants';
+import {
+  apiConfig,
+  MAX_PAGE_SIZE,
+  PERSON_KIND_ACTOR,
+  queryKeys
+} from '@/constants';
 import { useDisclosure, useDragDrop, useListBase } from '@/hooks';
 import { logger } from '@/logger';
 import { useUpdateMoviePersonMutation } from '@/queries';
@@ -26,13 +31,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AiOutlineClear, AiOutlineEdit, AiOutlineSave } from 'react-icons/ai';
 import { z } from 'zod';
 
-export default function MoviePersonList({
-  queryKey,
-  kind
-}: {
-  queryKey: string;
-  kind: number;
-}) {
+export default function MoviePersonList({ kind }: { kind: number }) {
   const { id: movieId } = useParams<{ id: string }>();
 
   const [selectedRow, setSelectedRow] = useState<string>('');
@@ -54,7 +53,7 @@ export default function MoviePersonList({
   >({
     apiConfig: apiConfig.moviePerson,
     options: {
-      queryKey,
+      queryKey: queryKeys.MOVIE_PERSON,
       objectName: kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
       defaultFilters: { kind, movieId },
       notShowFromSearchParams: ['kind', 'movieId'],
@@ -129,7 +128,7 @@ export default function MoviePersonList({
     sortedData,
     onDragEnd
   } = useDragDrop<MoviePersonResType>({
-    key: `${queryKey}-list`,
+    key: `${queryKeys.MOVIE_PERSON}-list`,
     objectName: kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
     data,
     apiConfig: apiConfig.moviePerson.updateOrdering,

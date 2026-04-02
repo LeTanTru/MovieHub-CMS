@@ -12,7 +12,7 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { apiConfig, ErrorCode, styleErrorMaps } from '@/constants';
+import { apiConfig, ErrorCode, queryKeys, styleErrorMaps } from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
@@ -23,7 +23,7 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export default function StyleForm({ queryKey }: { queryKey: string }) {
+export default function StyleForm() {
   const { id } = useParams<{ id: string }>();
 
   const { mutateAsync: uploadImageMutate, isPending: uploadImageLoading } =
@@ -42,7 +42,7 @@ export default function StyleForm({ queryKey }: { queryKey: string }) {
   } = useSaveBase<StyleResType, StyleBodyType>({
     apiConfig: apiConfig.style,
     options: {
-      queryKey,
+      queryKey: queryKeys.STYLE,
       objectName: 'thiết kế',
       listPageUrl: route.style.getList.path,
       pathParams: {

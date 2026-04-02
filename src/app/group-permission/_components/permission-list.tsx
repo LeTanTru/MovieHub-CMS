@@ -81,7 +81,7 @@ export default function PermissionList() {
     });
 
   const sortedGroupPermissions = useMemo(() => {
-    return [...groupPermissions].sort((a, b) => a.ordering - b.ordering);
+    return [...groupPermissions].sort((a, b) => a.name.localeCompare(b.name));
   }, [groupPermissions]);
 
   const handleAdd = (group: string) => {
@@ -117,7 +117,7 @@ export default function PermissionList() {
           ) : (
             sortedGroupPermissions.map((groupPermission) => {
               const group = groupPermission.name;
-              const groupPermissionsList = groupedPermissions[group];
+              const permissionList = groupedPermissions[group];
               return (
                 <div
                   className='rounded-lg border border-solid border-gray-200 text-sm'
@@ -135,12 +135,13 @@ export default function PermissionList() {
                   <div
                     className={cn('grid gap-4 p-4', {
                       'grid-cols-4 max-[1560px]:grid-cols-3':
-                        groupPermissionsList?.length > 0
+                        permissionList?.length > 0
                     })}
                   >
-                    {groupPermissionsList?.length > 0 ? (
-                      groupPermissionsList.map(
-                        (permission: PermissionResType, index: number) => {
+                    {permissionList?.length > 0 ? (
+                      permissionList
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((permission: PermissionResType, index: number) => {
                           return (
                             <div key={permission.id}>
                               <div className='flex items-center justify-between'>
@@ -217,8 +218,7 @@ export default function PermissionList() {
                               </span>
                             </div>
                           );
-                        }
-                      )
+                        })
                     ) : (
                       <NoData
                         content='Không có dữ liệu'
@@ -234,7 +234,6 @@ export default function PermissionList() {
       </ListPageWrapper>
       <PermissionModal
         open={opened}
-        queryKey='permission'
         selectedRow={selectedRow}
         selectedGroupPermissionId={selectedGroupPermissionId}
         onClose={handleClose}

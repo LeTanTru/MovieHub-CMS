@@ -1,5 +1,4 @@
 import { PersonForm } from '@/app/person/_components';
-import { queryKeys } from '@/constants';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function PersonSavePage() {
-  return <PersonForm queryKey={queryKeys.PERSON} />;
+  return <PersonForm />;
 }

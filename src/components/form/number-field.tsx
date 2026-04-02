@@ -32,6 +32,7 @@ type NumberFieldProps<T extends FieldValues> = {
   prefixIcon?: ReactNode;
   suffixIcon?: ReactNode;
   isFloat?: boolean;
+  format?: boolean;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'name' | 'defaultValue'>;
 
 const toNumberIfPossible = (value: string): string | number => {
@@ -88,6 +89,7 @@ function NumberFieldInner<T extends FieldValues>(
     suffixIcon,
     min,
     isFloat = false,
+    format = false,
     ...inputProps
   }: NumberFieldProps<T>,
   ref: ForwardedRef<HTMLInputElement>
@@ -119,13 +121,17 @@ function NumberFieldInner<T extends FieldValues>(
             <div className='relative' ref={containerRef}>
               <Input
                 placeholder={placeholder}
-                type='text'
+                type='number'
                 inputMode={isFloat ? 'decimal' : 'numeric'}
                 disabled={disabled}
                 readOnly={readOnly}
                 {...inputProps}
                 min={min}
-                value={formatNumberWithSeparator(field.value, isFloat)}
+                value={
+                  format
+                    ? formatNumberWithSeparator(field.value, isFloat)
+                    : field.value
+                }
                 ref={ref}
                 className={cn(
                   className,

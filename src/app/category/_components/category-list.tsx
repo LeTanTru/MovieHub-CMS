@@ -5,7 +5,7 @@ import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
-import { apiConfig, ErrorCode } from '@/constants';
+import { apiConfig, ErrorCode, queryKeys } from '@/constants';
 import { useDisclosure, useListBase } from '@/hooks';
 import { categorySearchSchema } from '@/schemaValidations';
 import type {
@@ -19,7 +19,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 
-export default function CategoryList({ queryKey }: { queryKey: string }) {
+export default function CategoryList() {
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryResType | null>(null);
   const { opened, open, close } = useDisclosure();
@@ -30,7 +30,7 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
   >({
     apiConfig: apiConfig.category,
     options: {
-      queryKey,
+      queryKey: queryKeys.CATEGORY,
       objectName: 'thể loại'
     },
     override: (handlers) => {

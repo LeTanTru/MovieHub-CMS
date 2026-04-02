@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   PERSON_KIND_ACTOR,
   PERSON_KIND_DIRECTOR,
-  queryKeys,
   storageKeys,
   TAB_MOVIE_PERSON_KIND_ACTOR,
   TAB_MOVIE_PERSON_KIND_DIRECTOR
@@ -25,22 +24,12 @@ export default function PersonTab() {
     {
       value: TAB_MOVIE_PERSON_KIND_ACTOR,
       label: 'Diễn viên',
-      component: (
-        <MoviePersonList
-          queryKey={queryKeys.MOVIE_PERSON}
-          kind={PERSON_KIND_ACTOR}
-        />
-      )
+      component: <MoviePersonList kind={PERSON_KIND_ACTOR} />
     },
     {
       value: TAB_MOVIE_PERSON_KIND_DIRECTOR,
       label: 'Đạo diễn',
-      component: (
-        <MoviePersonList
-          queryKey={queryKeys.MOVIE_PERSON}
-          kind={PERSON_KIND_DIRECTOR}
-        />
-      )
+      component: <MoviePersonList kind={PERSON_KIND_DIRECTOR} />
     }
   ];
 

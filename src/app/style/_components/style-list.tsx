@@ -3,20 +3,20 @@
 import { ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
-import { apiConfig, ErrorCode } from '@/constants';
+import { apiConfig, ErrorCode, queryKeys } from '@/constants';
 import { useListBase } from '@/hooks';
 import type { Column, StyleResType, StyleSearchType } from '@/types';
 import { notify, renderImageUrl } from '@/utils';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 
-export default function StyleList({ queryKey }: { queryKey: string }) {
+export default function StyleList() {
   const { data, pagination, loading, handlers } = useListBase<
     StyleResType,
     StyleSearchType
   >({
     apiConfig: apiConfig.style,
     options: {
-      queryKey,
+      queryKey: queryKeys.STYLE,
       objectName: 'thiết kế'
     },
     override: (handlers) => {

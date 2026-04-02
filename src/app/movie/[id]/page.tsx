@@ -1,5 +1,4 @@
 import { MovieForm } from '@/app/movie/_components';
-import { queryKeys } from '@/constants';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function MovieSavePage() {
-  return <MovieForm queryKey={queryKeys.MOVIE} />;
+  return <MovieForm />;
 }

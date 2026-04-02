@@ -9,6 +9,7 @@ import {
   employeeStatusOptions,
   FieldTypes,
   MAX_PAGE_SIZE,
+  queryKeys,
   STATUS_ACTIVE,
   STATUS_LOCK
 } from '@/constants';
@@ -24,7 +25,7 @@ import type {
 import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
-export default function EmployeeList({ queryKey }: { queryKey: string }) {
+export default function EmployeeList() {
   const { data: groupListData } = useGroupListQuery({ size: MAX_PAGE_SIZE });
 
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
@@ -36,7 +37,7 @@ export default function EmployeeList({ queryKey }: { queryKey: string }) {
   >({
     apiConfig: apiConfig.employee,
     options: {
-      queryKey,
+      queryKey: queryKeys.EMPLOYEE,
       objectName: 'nhân viên'
     },
     override: (handlers) => {

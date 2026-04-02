@@ -6,6 +6,7 @@ import { BaseTable } from '@/components/table';
 import {
   apiConfig,
   FieldTypes,
+  queryKeys,
   STATUS_ACTIVE,
   STATUS_LOCK,
   employeeStatusOptions,
@@ -24,7 +25,7 @@ import type {
 import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
-export default function UserList({ queryKey }: { queryKey: string }) {
+export default function UserList() {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
     useChangeUserStatusMutation();
 
@@ -34,7 +35,7 @@ export default function UserList({ queryKey }: { queryKey: string }) {
   >({
     apiConfig: apiConfig.user,
     options: {
-      queryKey,
+      queryKey: queryKeys.USER,
       objectName: 'người dùng'
     },
     override: (handlers) => {
@@ -142,7 +143,7 @@ export default function UserList({ queryKey }: { queryKey: string }) {
     handlers.renderActionColumn({
       actions: {
         changeStatus: handlers.hasPermission({
-          requiredPermissions: [apiConfig.employee.changeStatus.permissionCode]
+          requiredPermissions: [apiConfig.user.changeStatus.permissionCode]
         })
       }
     })

@@ -79,7 +79,7 @@ export default function BaseTable<T extends Record<any, any>>({
         >
           <Table className='w-full min-w-200'>
             <TableHeader className='bg-gray-50'>
-              <TableRow className='border-b-[0.2px]'>
+              <TableRow className='border-b-[0.2px] border-b-gray-100'>
                 {columns.map((col, idx) => {
                   const isLast = idx === columns.length - (col.fixed ? 2 : 1);
                   return (

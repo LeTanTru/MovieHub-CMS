@@ -270,6 +270,22 @@ const route = defineRoute({
   privacy: {
     path: '/privacy',
     auth: false
+  },
+  serverConfig: {
+    getList: {
+      path: '/server-config',
+      auth: true,
+      permissionCode: [apiConfig.serverConfig.getList.permissionCode]
+    },
+    savePage: {
+      path: '/server-config/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.serverConfig.create.permissionCode,
+        apiConfig.serverConfig.update.permissionCode
+      ],
+      separate: true
+    }
   }
 });
 

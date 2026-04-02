@@ -25,6 +25,7 @@ import {
   PERSON_KIND_DIRECTOR,
   STATUS_ACTIVE,
   STATUS_DELETED,
+  STATUS_INACTIVE,
   STATUS_LOCK,
   STATUS_PENDING,
   UPLOAD_AVATAR,
@@ -98,6 +99,19 @@ export const employeeStatusOptions = [
   }
 ];
 
+export const serverStatusOptions = [
+  {
+    value: STATUS_ACTIVE,
+    label: 'Hoạt động',
+    color: '#00c950'
+  },
+  {
+    value: STATUS_INACTIVE,
+    label: 'Không hoạt động',
+    color: '#dc3545'
+  }
+];
+
 export const FieldTypes = {
   STRING: 'STRING_TYPE',
   NUMBER: 'NUMBER_TYPE',
@@ -144,6 +158,7 @@ export const queryKeys = {
   PROFILE: 'profile',
   REFRESH_TOKEN: 'refresh-token',
   REVIEW: 'review',
+  SERVER_CONFIG: 'server-config',
   SIDEBAR: 'sidebar',
   SNS_CONFIG: 'sns-config',
   STYLE: 'style',

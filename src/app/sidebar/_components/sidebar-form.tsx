@@ -12,7 +12,7 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { apiConfig, ErrorCode } from '@/constants';
+import { apiConfig, ErrorCode, queryKeys } from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
@@ -26,7 +26,7 @@ import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 
-export default function SidebarForm({ queryKey }: { queryKey: string }) {
+export default function SidebarForm() {
   const { id } = useParams<{
     id: string;
   }>();
@@ -47,7 +47,7 @@ export default function SidebarForm({ queryKey }: { queryKey: string }) {
   } = useSaveBase<MovieSidebarResType, MovieSidebarBodyType>({
     apiConfig: apiConfig.sidebar,
     options: {
-      queryKey,
+      queryKey: queryKeys.SIDEBAR,
       objectName: 'phim',
       listPageUrl: route.sidebar.getList.path,
       pathParams: {

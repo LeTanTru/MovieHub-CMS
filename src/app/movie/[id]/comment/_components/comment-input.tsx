@@ -3,7 +3,7 @@
 import { emojiIcon } from '@/assets';
 import { Button, Col, Row, TextAreaField } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { apiConfig } from '@/constants';
+import { apiConfig, queryKeys } from '@/constants';
 import { useClickOutside, useSaveBase } from '@/hooks';
 import { commentSchema } from '@/schemaValidations';
 import type { CommentBodyType, CommentResType } from '@/types';
@@ -13,13 +13,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export default function CommentInput({
-  queryKey,
-  movieId
-}: {
-  queryKey: string;
-  movieId: string;
-}) {
+export default function CommentInput({ movieId }: { movieId: string }) {
   const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
 
   const [showPicker, setShowPicker] = useState(false);

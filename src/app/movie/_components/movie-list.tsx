@@ -11,7 +11,8 @@ import {
   ErrorCode,
   FieldTypes,
   languageOptions,
-  movieTypeOptions
+  movieTypeOptions,
+  queryKeys
 } from '@/constants';
 import { useListBase, useNavigate, useQueryParams } from '@/hooks';
 import { cn } from '@/lib';
@@ -36,7 +37,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { AiOutlineUser } from 'react-icons/ai';
 
-export default function MovieList({ queryKey }: { queryKey: string }) {
+export default function MovieList() {
   const navigate = useNavigate(false);
   const { data: categoryListData } = useCategoryListQuery();
 
@@ -55,7 +56,7 @@ export default function MovieList({ queryKey }: { queryKey: string }) {
   >({
     apiConfig: apiConfig.movie,
     options: {
-      queryKey,
+      queryKey: queryKeys.MOVIE,
       objectName: 'phim'
     },
     override: (handlers) => {

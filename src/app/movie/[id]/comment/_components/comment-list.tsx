@@ -4,7 +4,7 @@ import './comment.css';
 import CommentInput from './comment-input';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { NoData } from '@/components/no-data';
-import { apiConfig } from '@/constants';
+import { apiConfig, queryKeys } from '@/constants';
 import {
   useInfiniteListBase,
   useIsMounted,
@@ -26,7 +26,7 @@ import { Button } from '@/components/form';
 import CommentItemSkeleton from './comment-item-skeleton';
 import { useQueryClient } from '@tanstack/react-query';
 
-export default function CommentList({ queryKey }: { queryKey: string }) {
+export default function CommentList() {
   const { id: movieId } = useParams<{ id: string }>();
   const isMounted = useIsMounted();
   const queryClient = useQueryClient();
@@ -54,7 +54,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
     apiConfig: apiConfig.comment,
     options: {
       objectName: 'bình luận',
-      queryKey,
+      queryKey: queryKeys.COMMENT,
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId'],
       excludeFromQueryFilter: ['movieTitle'],
@@ -91,13 +91,15 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
         onSuccess: async () => {
           if (commentToDelete.parent) {
             await queryClient.invalidateQueries({
-              queryKey: [`${queryKey}-${commentToDelete.parent.id}-infinite`]
+              queryKey: [
+                `${queryKeys.COMMENT}-${commentToDelete.parent.id}-infinite`
+              ]
             });
           }
         }
       });
     },
-    [handlers, queryClient, queryKey]
+    [handlers, queryClient]
   );
 
   const handleReplySuccess = useCallback(async () => {
@@ -142,7 +144,7 @@ export default function CommentList({ queryKey }: { queryKey: string }) {
       <ListPageWrapper>
         {hasPermission({
           requiredPermissions: [apiConfig.comment.create.permissionCode]
-        }) && <CommentInput queryKey={queryKey} movieId={movieId} />}
+        }) && <CommentInput movieId={movieId} />}
 
         {loading ? (
           <div className='space-y-4 px-4'>

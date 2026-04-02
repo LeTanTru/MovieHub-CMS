@@ -204,7 +204,7 @@ export default function DragDropTable<T extends Record<any, any>>({
           >
             <Table className='w-full min-w-200'>
               <TableHeader className='bg-gray-50'>
-                <TableRow className='not-last:border-b-[0.2px]'>
+                <TableRow className='border-b-gray-100 not-last:border-b-[0.2px]'>
                   {columns.map((col, idx) => {
                     const isLast = idx === columns.length - (col.fixed ? 2 : 1);
                     return (

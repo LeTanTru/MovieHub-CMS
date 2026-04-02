@@ -16,6 +16,7 @@ import { CircleLoading } from '@/components/loading';
 import {
   apiConfig,
   ErrorCode,
+  queryKeys,
   STATUS_ACTIVE,
   VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL,
   VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
@@ -49,7 +50,7 @@ import type { AxiosProgressEvent } from 'axios';
 import { logger } from '@/logger';
 import envConfig from '@/config';
 
-export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
+export default function VideoLibraryForm() {
   const { id } = useParams<{ id: string }>();
 
   const { mutateAsync: uploadLogoMutation, isPending: uploadLogoLoading } =
@@ -68,7 +69,7 @@ export default function VideoLibraryForm({ queryKey }: { queryKey: string }) {
   } = useSaveBase<VideoLibraryResType, VideoLibraryBodyType>({
     apiConfig: apiConfig.videoLibrary,
     options: {
-      queryKey,
+      queryKey: queryKeys.VIDEO_LIBRARY,
       objectName: 'video',
       listPageUrl: route.videoLibrary.getList.path,
       pathParams: {
