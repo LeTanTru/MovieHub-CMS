@@ -141,7 +141,7 @@ export default function AppVersionForm() {
                 <UploadFileField
                   control={form.control}
                   name='filePath'
-                  uploadFileFn={async (file: Blob, onProgress) => {
+                  uploadFileFn={async (file, onProgress) => {
                     const res = await uploadFileMutate({
                       file,
                       options: {

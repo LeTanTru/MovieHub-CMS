@@ -115,7 +115,7 @@ export default function ProfileForm() {
                 control={form.control}
                 onChange={avatarImageManager.trackUpload}
                 size={120}
-                uploadImageFn={async (file: Blob) => {
+                uploadImageFn={async (file) => {
                   const res = await uploadAvatarMutate({
                     file
                   });

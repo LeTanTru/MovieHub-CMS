@@ -247,7 +247,7 @@ export default function MovieForm() {
                   name='posterUrl'
                   onChange={posterImageManager.trackUpload}
                   size={150}
-                  uploadImageFn={async (file: Blob) => {
+                  uploadImageFn={async (file) => {
                     setPosterLoading(true);
                     try {
                       const res = await uploadImageMutate({ file });
@@ -271,7 +271,7 @@ export default function MovieForm() {
                   name='thumbnailUrl'
                   onChange={thumbnailImageManager.trackUpload}
                   size={150}
-                  uploadImageFn={async (file: Blob) => {
+                  uploadImageFn={async (file) => {
                     setThumbnailLoading(true);
                     try {
                       const res = await uploadImageMutate({ file });
@@ -295,7 +295,7 @@ export default function MovieForm() {
                   name='imageTitleUrl'
                   onChange={imageTitleManager.trackUpload}
                   size={150}
-                  uploadImageFn={async (file: Blob) => {
+                  uploadImageFn={async (file) => {
                     setImageTitleLoading(true);
                     try {
                       const res = await uploadImageMutate({ file });

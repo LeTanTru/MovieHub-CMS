@@ -1,5 +1,6 @@
 export { default as useAuth } from './use-auth';
 export { default as useBaseForm } from './use-base-form';
+export { default as useChunkUpload } from './use-chunk-upload';
 export { default as useClickOutside } from './use-click-out-side';
 export { default as useDisclosure } from './use-disclosure';
 export { default as useDragDrop } from './use-drag-drop';
