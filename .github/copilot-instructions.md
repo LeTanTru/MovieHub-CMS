@@ -21,6 +21,11 @@
 - Commitlint enforces conventional commits format (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`)
 - All commits must include the Co-authored-by trailer: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
 
+### Git workflow
+
+- Branch naming: `feature/`, `fix/`, `refactor/` prefixes
+- Never commit secrets, `.env` files, or credentials
+
 ## High-level architecture
 
 - This is a Next.js App Router CMS (`src/app`) with feature routes (admin, employee, movie, category, collection, style, sidebar, etc.) and centralized auth/permission gating.
@@ -57,9 +62,15 @@
 ### TypeScript
 
 - `strict: true` — no `any` where a type exists, but `@typescript-eslint/no-explicit-any` is `off` (pragmatic)
-- Prefix unused vars with `_` to suppress warnings (`argsIgnorePattern`, `varsIgnorePattern`)
+- Prefix unused vars with `_` to suppress warnings (`argsIgnorePattern`, `varsIgnorePattern`, `caughtErrorsIgnorePattern`)
 - Use Zod v4 schemas for all form validation. Pattern: `.check(z.email(...))` for email
 - `FieldValues` from react-hook-form as generic constraint for form types
+- `noNonNullAssertedOptionalChain` is off — avoid `?.!` but don't fight the linter
+
+### ESLint rules
+
+- `no-duplicate-imports` enforced as warning
+- `no-console` is a warning (use `logger.info` for debug logging instead)
 
 ### Naming conventions
 

@@ -16,6 +16,8 @@ yarn format       # Prettier write all
 
 **Pre-commit hooks** (Husky + lint-staged) auto-run `eslint --fix` and `prettier --write` on staged `*.{js,jsx,ts,tsx}` files. Commit messages must follow conventional commits (enforced by commitlint).
 
+**All commits must include** the Co-authored-by trailer: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
+
 ## Code Style
 
 ### Imports
@@ -24,6 +26,7 @@ yarn format       # Prettier write all
 - Group imports: React/Next first, then third-party libs, then `@/` internal modules, then relative imports.
 - Use `type` imports for types: `import type { Foo } from '@/types'`.
 - `'use client'` directive required for any file using browser APIs, hooks with side effects, or interactive components.
+- `no-duplicate-imports` is enforced as a warning.
 
 ### Formatting (Prettier)
 
@@ -36,9 +39,10 @@ yarn format       # Prettier write all
 ### TypeScript
 
 - `strict: true` — no `any` where a type exists, but `@typescript-eslint/no-explicit-any` is `off` (pragmatic).
-- Prefix unused vars with `_` to suppress warnings (`argsIgnorePattern`, `varsIgnorePattern`).
+- Prefix unused vars with `_` to suppress warnings (`argsIgnorePattern`, `varsIgnorePattern`, `caughtErrorsIgnorePattern`).
 - Use Zod v4 schemas for all form validation. Pattern: `.check(z.email(...))` for email.
 - `FieldValues` from react-hook-form as generic constraint for form types.
+- `noNonNullAssertedOptionalChain` is off — avoid `?.!` but don't fight the linter.
 
 ### Naming Conventions
 
@@ -53,7 +57,7 @@ yarn format       # Prettier write all
 - API errors: caught in `useSaveBase` mutation `onError`, applied to form via `applyFormErrors`.
 - HTTP layer (`http.util.ts`): auto-injects auth tokens, handles refresh-token rotation with dedup queue.
 - `notify.success` / `notify.error` for user-facing messages (wraps `react-toastify`).
-- Use `logger.info` for debug logging, not `console.log`.
+- Use `logger.info` for debug logging, not `console.log` (`no-console` is a warning).
 
 ### React Patterns
 
@@ -72,9 +76,27 @@ yarn format       # Prettier write all
 - Component variants via `class-variance-authority`.
 - `Col` form layout defaults `span=12` (50% width).
 - `FormControl` uses Radix Slot — props apply only to direct child.
+- Form grid uses `grid-row`/`grid-col` + `grid-c-0..12` classes (12-column grid in `src/styles/grid.css`).
+
+### Form Components
+
+- `BaseForm` supports `onFormChange(isDirty)` callback to track form dirty state.
+- `ImageField` supports `freeAspect` and `freePreviewAspect` props for rendering images without fixed aspect ratios.
+- `UploadImageField` supports `originalSize` prop that adds 'Gốc' checkbox for uploading images at original dimensions without cropping.
+
+### Architecture Notes
+
+- App Router CMS (`src/app`). Providers order: `ThemeProvider` → `QueryProvider` → `AppProvider` → `PermissionGuard`.
+- `QueryProvider` defaults: `staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`.
+- API config-driven: endpoints/permissions in `src/constants/api-config.ts`, HTTP behavior in `src/utils/http.util.ts`.
+- Access control: route metadata in `src/routes/route.ts`, enforced by `PermissionGuard`.
+- Storage keys centralized in `src/constants/storage-key.ts` (dual-use as localStorage keys AND HTTP header names).
+- `useSaveBase` invalidates React Query caches for `[queryKey]` and `[`${queryKey}-list`]` after success.
+- `ProfileForm` cancel reads `localStorage` key `storageKeys.PREVIOUS_PATH` (then removes it) to navigate back; otherwise it falls back to `route.home.path`.
 
 ### Git Conventions
 
-- Branch naming: `feature/`, `fix/`, `refactor/` prefixes.
-- Commit messages: conventional commits (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`).
-- Never commit secrets, `.env` files, or credentials.
+- Branch naming: `feature/`, `fix/`, `refactor/` prefixes
+- Commit messages: conventional commits (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`)
+- All commits must include: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
+- Never commit secrets, `.env` files, or credentials
