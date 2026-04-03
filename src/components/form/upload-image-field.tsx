@@ -529,7 +529,7 @@ export default function UploadImageField<T extends FieldValues>({
                     type='button'
                     variant='outline'
                     size='icon'
-                    className='hover:border-destructive/80 text-destructive border-destructive dark:border-destructive dark:text-destructive dark:hover:border-destructive/80 hover:text-destructive/80 dark:hover:text-destructive/80 -my-1 w-25'
+                    className='hover:border-destructive/80 text-destructive border-destructive dark:border-destructive dark:text-destructive dark:hover:border-destructive/80 hover:text-destructive/80 dark:hover:text-destructive/80 disabled:border-destructive/80 -my-1 w-25'
                     onClick={() => setDialogOpen(false)}
                     disabled={isUploading}
                   >
