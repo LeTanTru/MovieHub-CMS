@@ -367,8 +367,20 @@ const apiConfig = defineApiConfig({
       permissionCode: 'FILE_U_V',
       isUpload: true
     },
-    uploadVideoMinio: {
-      baseUrl: `/api/file/upload-video`,
+    uploadChunkInit: {
+      baseUrl: `/api/file/upload/video/chunk/init`,
+      method: 'POST',
+      headers: multipartHeader,
+      isUpload: true
+    },
+    uploadChunkPresign: {
+      baseUrl: `/api/file/upload/video/chunk/presign`,
+      method: 'POST',
+      headers: baseHeader,
+      isUpload: true
+    },
+    uploadChunkComplete: {
+      baseUrl: `/api/file/upload/video/chunk/complete`,
       method: 'POST',
       headers: multipartHeader,
       isUpload: true

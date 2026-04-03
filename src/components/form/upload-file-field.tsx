@@ -31,6 +31,7 @@ type UploadFileFieldProps<T extends FieldValues> = {
   required?: boolean;
   className?: string;
   accept: string;
+  maxSize?: number; // Max file size in bytes
   onChange?: (url: string) => void;
   onUploadStart?: () => void;
 
@@ -49,6 +50,7 @@ export default function UploadFileField<T extends FieldValues>({
   required,
   className,
   accept,
+  maxSize,
   onChange,
   onUploadStart,
   uploadFileFn,
@@ -73,20 +75,34 @@ export default function UploadFileField<T extends FieldValues>({
   ] = useFileUpload({ accept });
 
   const file = files[0]?.file as File | undefined;
-  const previewUrl = files[0]?.preview;
+  // const previewUrl = files[0]?.preview;
   const fileId = files[0]?.id;
 
   const [uploading, setUploading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
+  const [sizeError, setSizeError] = useState<string>('');
 
   const prevFileId = useRef<string | null>(null);
 
   useEffect(() => {
     if (!fileId || fileId === prevFileId.current) return;
 
-    if (file) startUpload(file);
+    if (file) {
+      // Check file size if maxSize is specified
+      if (maxSize && file.size > maxSize) {
+        const maxSizeFormatted = formatBytes(maxSize);
+        const fileSizeFormatted = formatBytes(file.size);
+        setSizeError(
+          `Kích thước tệp quá lớn (${fileSizeFormatted}). Kích thước tối đa cho phép: ${maxSizeFormatted}`
+        );
+        clearFiles();
+        return;
+      }
+      setSizeError('');
+      startUpload(file);
+    }
     prevFileId.current = fileId;
-  }, [fileId]);
+  }, [fileId, maxSize]);
 
   const startUpload = async (file: File) => {
     try {
@@ -107,7 +123,6 @@ export default function UploadFileField<T extends FieldValues>({
 
   const handleRemove = async (e: MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault();
     try {
       if (deleteImageFn && value) {
         await deleteImageFn(value);
@@ -120,10 +135,11 @@ export default function UploadFileField<T extends FieldValues>({
     onChange?.('');
     clearFiles();
     setProgress(0);
+    setSizeError('');
   };
 
   return (
-    <div className='space-y-1'>
+    <>
       {label && (
         <FormLabel
           className={cn(
@@ -142,7 +158,8 @@ export default function UploadFileField<T extends FieldValues>({
           'relative mb-0 flex min-h-18 cursor-pointer items-center gap-3 rounded-md border-2 border-dashed p-4 transition-all duration-200 ease-linear hover:bg-gray-100',
           {
             'border-gray-300 bg-gray-100': isDragging,
-            'border border-solid border-red-500': !!error && !uploading
+            'border border-solid border-red-500':
+              (!!error || !!sizeError) && !uploading
           }
         )}
         onClick={openFileDialog}
@@ -155,7 +172,7 @@ export default function UploadFileField<T extends FieldValues>({
 
         <FileIcon
           className={cn('stroke-1 text-gray-300', {
-            'text-destructive': !!error && !uploading
+            'text-destructive': (!!error || !!sizeError) && !uploading
           })}
         />
 
@@ -167,8 +184,8 @@ export default function UploadFileField<T extends FieldValues>({
               <span>Đã tải tệp lên</span>
             ) : (
               <span
-                className={cn('font-medium text-gray-300', {
-                  'text-destructive': !!error && !uploading
+                className={cn('text-gray-300', {
+                  'text-destructive': (!!error || !!sizeError) && !uploading
                 })}
               >
                 {isDragging ? 'Thả tệp vào đây' : 'Chọn tệp để tải lên'}
@@ -177,6 +194,15 @@ export default function UploadFileField<T extends FieldValues>({
           </span>
           {file && (
             <span className='text-xs opacity-60'>{formatBytes(file.size)}</span>
+          )}
+          {maxSize && !file && !value && (
+            <span
+              className={cn('text-xs text-gray-300', {
+                'text-destructive': (!!error || !!sizeError) && !uploading
+              })}
+            >
+              Kích thước tối đa: {formatBytes(maxSize)}
+            </span>
           )}
         </div>
 
@@ -198,28 +224,33 @@ export default function UploadFileField<T extends FieldValues>({
       )} */}
 
       {uploading && (
-        <div className='mt-2 h-2 w-full overflow-hidden rounded-full'>
-          <div
-            className='bg-main-color! skeleton h-full transition-all'
-            style={{ width: `${progress}%` }}
-          />
+        <div className='mt-2 flex items-center gap-2'>
+          <div className='flex shrink-0 items-center gap-2'>
+            <CircleLoading className='stroke-main-color size-4' />
+            {progress}% đang tải...
+          </div>
+          <div className='h-2 w-full overflow-hidden rounded-full'>
+            <div
+              className='bg-main-color! skeleton h-full transition-all'
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
       )}
 
-      {uploading && (
-        <div className='flex items-center gap-2'>
-          <CircleLoading className='stroke-main-color size-4' />
-          {progress}% đang tải...
+      {sizeError && !uploading && (
+        <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
+          <p className='text-destructive text-sm leading-5.5'>{sizeError}</p>
         </div>
       )}
 
-      {error?.message && !uploading && (
+      {error?.message && !uploading && !sizeError && (
         <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
           <p className='text-destructive text-sm leading-5.5'>
             {error.message}
           </p>
         </div>
       )}
-    </div>
+    </>
   );
 }

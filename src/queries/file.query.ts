@@ -56,7 +56,7 @@ export const useUploadVideoMutation = () => {
       file,
       options
     }: {
-      file: Blob;
+      file: File;
       options?: AxiosRequestConfig;
     }) =>
       http.post<ApiResponse<UploadVideoResType>>(apiConfig.file.uploadVideo, {
@@ -69,29 +69,6 @@ export const useUploadVideoMutation = () => {
   });
 };
 
-export const useUploadVideoMinioMutation = () => {
-  return useMutation({
-    mutationKey: [`upload-video-${queryKeys.FILE}`],
-    mutationFn: ({
-      file,
-      options
-    }: {
-      file: Blob;
-      options?: AxiosRequestConfig;
-    }) =>
-      http.post<ApiResponse<UploadVideoResType>>(
-        apiConfig.file.uploadVideoMinio,
-        {
-          body: {
-            file: file,
-            type: uploadOptions.VIDEO
-          },
-          options
-        }
-      )
-  });
-};
-
 export const useUploadFileMutation = () => {
   return useMutation({
     mutationKey: [`upload-${queryKeys.FILE}`],
@@ -99,7 +76,7 @@ export const useUploadFileMutation = () => {
       file,
       options
     }: {
-      file: Blob;
+      file: File;
       options?: AxiosRequestConfig;
     }) =>
       http.post<ApiResponse<UploadFileResType>>(apiConfig.file.upload, {

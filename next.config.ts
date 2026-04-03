@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['@vidstack/react'],
     optimizeCss: true,
     serverActions: {
-      bodySizeLimit: '3GB'
+      bodySizeLimit: '2GB'
     }
   },
   // Optimize bundle size

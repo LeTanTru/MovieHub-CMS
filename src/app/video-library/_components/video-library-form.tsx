@@ -23,12 +23,8 @@ import {
   videoLibraryErrorMaps,
   videoLibrarySourceTypeOptions
 } from '@/constants';
-import { useFileUploadManager, useSaveBase } from '@/hooks';
-import {
-  useDeleteFileMutation,
-  useUploadLogoMutation,
-  useUploadVideoMinioMutation
-} from '@/queries';
+import { useChunkUpload, useFileUploadManager, useSaveBase } from '@/hooks';
+import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
 import { videoLibrarySchema } from '@/schemaValidations';
 import type { VideoLibraryBodyType, VideoLibraryResType } from '@/types';
@@ -46,8 +42,6 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { VideoPlayer } from '@/components/video-player';
-import type { AxiosProgressEvent } from 'axios';
-import { logger } from '@/logger';
 import envConfig from '@/config';
 
 export default function VideoLibraryForm() {
@@ -55,8 +49,8 @@ export default function VideoLibraryForm() {
 
   const { mutateAsync: uploadLogoMutation, isPending: uploadLogoLoading } =
     useUploadLogoMutation();
-  const { mutateAsync: uploadVideoMutate } = useUploadVideoMinioMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
+  const { upload } = useChunkUpload();
   const {
     data,
     loading,
@@ -249,7 +243,7 @@ export default function VideoLibraryForm() {
                     name='thumbnailUrl'
                     onChange={imageManager.trackUpload}
                     size={150}
-                    uploadImageFn={async (file: Blob) => {
+                    uploadImageFn={async (file) => {
                       const res = await uploadLogoMutation({
                         file
                       });
@@ -471,22 +465,12 @@ export default function VideoLibraryForm() {
                         required
                         onChange={videoManager.trackUpload}
                         onUploadStart={videoManager.trackUploadStart}
-                        uploadVideoFn={async (file: Blob, onProgress) => {
-                          const res = await uploadVideoMutate({
-                            file,
-                            options: {
-                              onUploadProgress: (e: AxiosProgressEvent) => {
-                                const percent = Math.round(
-                                  (e.loaded * 100) / (e.total ?? 1)
-                                );
-                                logger.info(`Upload video: ${percent}%`);
-                                onProgress(percent);
-                              }
-                            }
-                          });
-                          return res.data?.filePath ?? '';
+                        uploadVideoFn={async (file, onProgress) => {
+                          const filePath = await upload(file, onProgress);
+                          return filePath;
                         }}
                         deleteImageFn={videoManager.handleDeleteOnClick}
+                        maxSize={2 * 1024 * 1024 * 1024}
                       />
                     )}
                   </Col>

@@ -169,7 +169,7 @@ export default function AdminForm() {
                   name='avatarPath'
                   onChange={imageManager.trackUpload}
                   size={120}
-                  uploadImageFn={async (file: Blob) => {
+                  uploadImageFn={async (file) => {
                     const res = await uploadImageMutate({ file });
                     return res.data?.filePath ?? '';
                   }}

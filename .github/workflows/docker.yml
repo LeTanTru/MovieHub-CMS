@@ -47,10 +47,8 @@ jobs:
             MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }}
             MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}
             MINIO_BUCKET=${{ secrets.MINIO_BUCKET }}
-            MINIO_ENDPOINT=${{ secrets.MINIO_ENDPOINT }}
-            MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }}
-            MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}
-            MINIO_BUCKET=${{ secrets.MINIO_BUCKET }}
+            MINIO_UPLOAD_FOLDER=${{ secrets.MINIO_UPLOAD_FOLDER }}
+            MINIO_UPLOAD_PREFIX=${{ secrets.MINIO_UPLOAD_PREFIX }}
 
       - name: Show Image Size
         run: docker images ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest

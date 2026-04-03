@@ -265,7 +265,7 @@ export default function MovieItemModal({
                     name='thumbnailUrl'
                     onChange={imageManager.trackUpload}
                     size={150}
-                    uploadImageFn={async (file: Blob) => {
+                    uploadImageFn={async (file) => {
                       const res = await uploadImageMutate({
                         file
                       });
