@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { s3Client, BUCKET_NAME } from '@/lib/s3';
 import { CreateMultipartUploadCommand } from '@aws-sdk/client-s3';
 import { randomBytes } from 'crypto';
+import { logger } from '@/logger';
+import { HttpStatusCode } from 'axios';
 
 function generateRandomFileName(length = 10): string {
   const chars =
@@ -29,14 +31,26 @@ export async function POST(req: NextRequest) {
 
   const objectName = `${process.env.MINIO_UPLOAD_FOLDER}/${process.env.MINIO_UPLOAD_PREFIX}_${randomName}.${ext}`;
 
-  // Create multipart upload
-  const { UploadId } = await s3Client.send(
-    new CreateMultipartUploadCommand({
-      Bucket: BUCKET_NAME,
-      Key: objectName,
-      ContentType: mimeType
-    })
-  );
-
-  return NextResponse.json({ uploadId: UploadId, objectName });
+  try {
+    // Create multipart upload
+    const { UploadId } = await s3Client.send(
+      new CreateMultipartUploadCommand({
+        Bucket: BUCKET_NAME,
+        Key: objectName,
+        ContentType: mimeType
+      })
+    );
+    return NextResponse.json(
+      { uploadId: UploadId, objectName },
+      {
+        status: HttpStatusCode.Ok
+      }
+    );
+  } catch (error) {
+    logger.error('Error creating multipart upload:', error);
+    return NextResponse.json(
+      { error: 'Error creating multipart upload' },
+      { status: HttpStatusCode.BadRequest }
+    );
+  }
 }
