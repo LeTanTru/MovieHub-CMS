@@ -7,7 +7,7 @@ import {
   ageRatingOptions,
   apiConfig,
   countryOptions,
-  DEFAULT_DATE_FORMAT,
+  DATE_FORMAT,
   ErrorCode,
   FieldTypes,
   languageOptions,
@@ -227,7 +227,7 @@ export default function MovieList() {
     {
       title: 'Ngày phát hành',
       dataIndex: 'releaseDate',
-      render: (value) => formatDate(value, DEFAULT_DATE_FORMAT) ?? '---',
+      render: (value) => formatDate(value, DATE_FORMAT) ?? '---',
       align: 'center',
       width: 150
     },

@@ -17,7 +17,7 @@ import {
   apiConfig,
   countryOptions,
   DATE_TIME_FORMAT,
-  DEFAULT_DATE_FORMAT,
+  DATE_FORMAT,
   ErrorCode,
   GENDER_MALE,
   genderOptions,
@@ -103,7 +103,7 @@ export default function PersonForm() {
       avatarPath: data?.avatarPath ?? '',
       bio: data?.bio ?? '',
       country: data?.country ?? '',
-      dateOfBirth: formatDate(data?.dateOfBirth, DEFAULT_DATE_FORMAT),
+      dateOfBirth: formatDate(data?.dateOfBirth, DATE_FORMAT),
       gender: data?.gender ?? GENDER_MALE,
       kinds: data?.kinds ?? getKinds(),
       name: data?.name ?? '',
@@ -132,11 +132,7 @@ export default function PersonForm() {
       handleSubmit({
         ...values,
         dateOfBirth: values.dateOfBirth
-          ? formatDate(
-              values.dateOfBirth,
-              DATE_TIME_FORMAT,
-              DEFAULT_DATE_FORMAT
-            )
+          ? formatDate(values.dateOfBirth, DATE_TIME_FORMAT, DATE_FORMAT)
           : null,
         avatarPath: imageManager.currentUrl
       })

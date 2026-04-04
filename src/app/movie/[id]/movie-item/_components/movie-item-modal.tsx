@@ -4,7 +4,7 @@ import {
   AutoCompleteField,
   CheckboxField,
   Col,
-  DatePickerField,
+  DateTimePickerField,
   InputField,
   NumberField,
   RichTextField,
@@ -18,7 +18,6 @@ import { Modal } from '@/components/modal';
 import {
   apiConfig,
   DATE_TIME_FORMAT,
-  DEFAULT_DATE_FORMAT,
   ErrorCode,
   MOVIE_ITEM_KIND_SEASON,
   MOVIE_TYPE_SERIES,
@@ -162,7 +161,7 @@ export default function MovieItemModal({
       kind: data?.kind ?? kindOptions?.[0]?.value,
       label: data?.label ?? '',
       movieId: movieId,
-      releaseDate: formatDate(data?.releaseDate, DEFAULT_DATE_FORMAT) ?? '',
+      releaseDate: formatDate(data?.releaseDate) ?? '',
       status: STATUS_ACTIVE,
       title: data?.title ?? '',
       parentId: parentId,
@@ -220,7 +219,7 @@ export default function MovieItemModal({
           releaseDate: formatDate(
             values.releaseDate,
             DATE_TIME_FORMAT,
-            DEFAULT_DATE_FORMAT
+            DATE_TIME_FORMAT
           ),
           thumbnailUrl: imageManager.currentUrl
         },
@@ -313,7 +312,7 @@ export default function MovieItemModal({
                   />
                 </Col>
                 <Col className='grid-c-6'>
-                  <DatePickerField
+                  <DateTimePickerField
                     control={form.control}
                     name='releaseDate'
                     label='Ngày phát hành'

@@ -5,7 +5,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import {
   apiConfig,
-  DEFAULT_DATE_FORMAT,
+  DATE_FORMAT,
   FieldTypes,
   MAX_PAGE_SIZE,
   MOVIE_ITEM_KIND_EPISODE,
@@ -286,7 +286,7 @@ export default function MovieItemSeasonDetailList() {
       title: 'Ngày phát hành',
       dataIndex: 'releaseDate',
       width: 150,
-      render: (value) => formatDate(value, DEFAULT_DATE_FORMAT),
+      render: (value) => formatDate(value, DATE_FORMAT),
       align: 'center'
     },
     {

@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { DATE_TIME_FORMAT } from '@/constants';
+import { DATE_TIME_FORMAT, DATE_FORMAT } from '@/constants';
 import { type ChangeEvent, useState } from 'react';
 import { CalendarIcon, X } from 'lucide-react';
 import { format, isValid, Locale, parse } from 'date-fns';
@@ -66,8 +66,14 @@ export default function DateTimePickerField<T extends FieldValues>({
 
   const parseDate = (value: string) => {
     if (!value) return undefined;
-    const parsed = parse(value, DATE_TIME_FORMAT, new Date(), { locale: vi });
-    return isValid(parsed) ? parsed : new Date(value);
+
+    const parsedDateTime = parse(value, DATE_TIME_FORMAT, new Date());
+    if (isValid(parsedDateTime)) return parsedDateTime;
+
+    const parsedDate = parse(value, DATE_FORMAT, new Date());
+    if (isValid(parsedDate)) return parsedDate;
+
+    return new Date(value);
   };
 
   return (
@@ -206,12 +212,33 @@ export default function DateTimePickerField<T extends FieldValues>({
                             date.toLocaleString('vi-VN', { month: 'long' })
                         }}
                         onMonthChange={(month: Date) => {
-                          const firstDay = new Date(
+                          // Preserve the current day when changing month/year
+                          const currentDate = date || new Date();
+                          const currentDay = currentDate.getDate();
+
+                          // Get the last day of the new month
+                          const lastDayOfNewMonth = new Date(
+                            month.getFullYear(),
+                            month.getMonth() + 1,
+                            0
+                          ).getDate();
+
+                          // Use the current day, but clamp it if it exceeds the new month's days
+                          const validDay = Math.min(
+                            currentDay,
+                            lastDayOfNewMonth
+                          );
+
+                          const newDate = new Date(
                             month.getFullYear(),
                             month.getMonth(),
-                            1
+                            validDay,
+                            currentDate.getHours(),
+                            currentDate.getMinutes(),
+                            currentDate.getSeconds()
                           );
-                          updateFieldValue(firstDay);
+
+                          updateFieldValue(newDate);
                         }}
                       />
                       <div className='flex flex-col divide-y sm:h-85 sm:flex-row sm:divide-x sm:divide-y-0'>

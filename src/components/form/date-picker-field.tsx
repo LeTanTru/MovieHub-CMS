@@ -28,7 +28,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { DropdownProps } from 'react-day-picker';
-import { DEFAULT_DATE_FORMAT } from '@/constants';
+import { DATE_FORMAT } from '@/constants';
 import { vi } from 'date-fns/locale';
 import { format, parse, isValid, Locale } from 'date-fns';
 
@@ -52,7 +52,7 @@ export default function DatePickerField<T extends FieldValues>({
   label,
   description,
   className,
-  format: dateFormat = DEFAULT_DATE_FORMAT,
+  format: dateFormat = DATE_FORMAT,
   disabled,
   required,
   placeholder,
@@ -65,7 +65,7 @@ export default function DatePickerField<T extends FieldValues>({
 
   const parseDate = (value: string) => {
     if (!value) return undefined;
-    const parsed = parse(value, DEFAULT_DATE_FORMAT, new Date(), {
+    const parsed = parse(value, DATE_FORMAT, new Date(), {
       locale: vi
     });
     return isValid(parsed) ? parsed : new Date(value);
@@ -142,7 +142,11 @@ export default function DatePickerField<T extends FieldValues>({
                             <X className='h-3.5 w-3.5' />
                           </span>
                         )}
-                        <CalendarIcon className='h-4 w-4' />
+                        <CalendarIcon
+                          className={cn('h-4 w-4', {
+                            'text-gray-300': !hasValue
+                          })}
+                        />
                       </span>
                     </Button>
                   </PopoverTrigger>
