@@ -9,7 +9,7 @@ import {
   ageRatingOptions,
   apiConfig,
   countryOptions,
-  DEFAULT_DATE_FORMAT,
+  DATE_FORMAT,
   languageOptions,
   movieTypeOptions,
   queryKeys
@@ -172,7 +172,7 @@ export default function CollectionItemList() {
     {
       title: 'Ngày phát hành',
       dataIndex: ['movie', 'releaseDate'],
-      render: (value) => formatDate(value, DEFAULT_DATE_FORMAT) ?? '---',
+      render: (value) => formatDate(value, DATE_FORMAT) ?? '---',
       align: 'center',
       width: 150
     },

@@ -67,7 +67,8 @@ export default function TimePickerField<T extends FieldValues>({
         const hasValue =
           field.value !== null &&
           field.value !== undefined &&
-          field.value !== '';
+          field.value !== '' &&
+          field.value !== 0;
 
         let hour = 0,
           minute = 0,
@@ -162,7 +163,9 @@ export default function TimePickerField<T extends FieldValues>({
                           'text-gray-300': !hasValue
                         })}
                       >
-                        {formatDisplay(hour, minute, second)}
+                        {field.value
+                          ? formatDisplay(hour, minute, second)
+                          : placeholder}
                       </span>
                       {clearable && hasValue && !disabled && (
                         <span

@@ -20,7 +20,7 @@ import {
   apiConfig,
   countryOptions,
   DATE_TIME_FORMAT,
-  DEFAULT_DATE_FORMAT,
+  DATE_FORMAT,
   ErrorCode,
   languageOptions,
   MOVIE_TYPE_SERIES,
@@ -150,7 +150,7 @@ export default function MovieForm() {
       language: data?.language ?? '',
       originalTitle: data?.originalTitle ?? '',
       posterUrl: data?.posterUrl ?? '',
-      releaseDate: formatDate(data?.releaseDate, DEFAULT_DATE_FORMAT) ?? '',
+      releaseDate: formatDate(data?.releaseDate, DATE_FORMAT) ?? '',
       status: STATUS_ACTIVE,
       thumbnailUrl: data?.thumbnailUrl ?? '',
       title: data?.title ?? '',
@@ -194,7 +194,7 @@ export default function MovieForm() {
         releaseDate: formatDate(
           values.releaseDate,
           DATE_TIME_FORMAT,
-          DEFAULT_DATE_FORMAT
+          DATE_FORMAT
         ),
         thumbnailUrl: thumbnailImageManager.currentUrl,
         posterUrl: posterImageManager.currentUrl,

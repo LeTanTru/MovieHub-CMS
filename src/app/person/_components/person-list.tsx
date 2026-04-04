@@ -6,7 +6,7 @@ import { BaseTable } from '@/components/table';
 import {
   apiConfig,
   countryOptions,
-  DEFAULT_DATE_FORMAT,
+  DATE_FORMAT,
   ErrorCode,
   FieldTypes,
   genderOptions,
@@ -84,7 +84,7 @@ export default function PersonList({ kind }: { kind: number }) {
     {
       title: 'Ngày sinh',
       dataIndex: 'dateOfBirth',
-      render: (value) => formatDate(value, DEFAULT_DATE_FORMAT) || '------',
+      render: (value) => formatDate(value, DATE_FORMAT) || '------',
       align: 'center',
       width: 120
     },

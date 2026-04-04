@@ -21,14 +21,14 @@ export const GENDER_MALE = 1;
 export const GENDER_FEMALE = 2;
 export const GENDER_OTHER = 3;
 
-export const DEFAULT_DATE_FORMAT = 'dd/MM/yyyy';
+export const DATE_FORMAT = 'dd/MM/yyyy';
 export const TIME_DATE_FORMAT = 'HH:mm:ss dd/MM/yyyy';
 export const DATE_TIME_FORMAT = 'dd/MM/yyyy HH:mm:ss';
-export const DATE_DAY_TIME_FORMAT = 'EEEE HH:mm:ss dd/MM/yyyy';
+export const DAY_DATE_TIME_FORMAT = 'EEEE HH:mm:ss dd/MM/yyyy';
 
-export const DEFAULT_DATE_FORMAT_UTC = 'MM/dd/yyyy';
-export const DATE_TIME_FORMAT_UTC = 'HH:mm:ss MM/dd/yyyy';
-export const DATE_DAY_TIME_FORMAT_UTC = 'EEEE HH:mm:ss MM/dd/yyyy';
+export const DATE_FORMAT_UTC = 'MM/dd/yyyy';
+export const TIME_DATE_FORMAT_UTC = 'HH:mm:ss MM/dd/yyyy';
+export const DAY_DATE_TIME_FORMAT_UTC = 'EEEE HH:mm:ss MM/dd/yyyy';
 
 export const PERSON_KIND_ACTOR = 1;
 export const PERSON_KIND_DIRECTOR = 2;
