@@ -27,5 +27,6 @@ eslint.config.*
 kilo.jsonc
 next-env.d.ts
 node_modules
+opencode.json
 prettier.config.*
 skills-lock.json
