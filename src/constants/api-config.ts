@@ -727,11 +727,24 @@ const apiConfig = defineApiConfig({
     }
   },
   serverConfig: {
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/server-config/auto-complete`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    },
     create: {
       baseUrl: `${AppConstants.apiUrl}/v1/server-config/create`,
       method: 'POST',
       headers: baseHeader,
       permissionCode: 'SC_C',
+      isRequiredXClientType: true
+    },
+    changeStatus: {
+      baseUrl: `${AppConstants.apiUrl}/v1/server-config/change-status`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'SC_C_S',
       isRequiredXClientType: true
     },
     delete: {
@@ -822,6 +835,12 @@ const apiConfig = defineApiConfig({
     }
   },
   style: {
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/style/auto-complete`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    },
     getById: {
       baseUrl: `${AppConstants.apiUrl}/v1/style/get/:id`,
       method: 'GET',
@@ -855,12 +874,6 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'STL_U',
-      isRequiredXClientType: true
-    },
-    autoComplete: {
-      baseUrl: `${AppConstants.apiUrl}/v1/style/auto-complete`,
-      method: 'GET',
-      headers: baseHeader,
       isRequiredXClientType: true
     }
   },
@@ -902,6 +915,12 @@ const apiConfig = defineApiConfig({
     }
   },
   videoLibrary: {
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library/auto-complete`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    },
     getById: {
       baseUrl: `${AppConstants.apiUrl}/v1/video-library/get/:id`,
       method: 'GET',
@@ -935,12 +954,6 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'VID_L_U',
-      isRequiredXClientType: true
-    },
-    autoComplete: {
-      baseUrl: `${AppConstants.apiUrl}/v1/video-library/auto-complete`,
-      method: 'GET',
-      headers: baseHeader,
       isRequiredXClientType: true
     }
   }

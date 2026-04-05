@@ -407,7 +407,11 @@ export default function VideoLibraryForm() {
                           )}
                           src={validatedContent}
                           thumbnailUrl={renderImageUrl(imageManager.currentUrl)}
-                          vttUrl={validatedVttUrl || ''}
+                          vttUrl={
+                            validatedVttUrl
+                              ? renderVttUrl(data.hostname, validatedVttUrl)
+                              : ''
+                          }
                           volume={
                             envConfig.NEXT_PUBLIC_NODE_ENV === 'development'
                               ? 0
@@ -443,9 +447,9 @@ export default function VideoLibraryForm() {
                           timeToSeconds((outroStart as string) || '00:00:00') ||
                           data.outroStart
                         }
-                        src={renderVideoUrl(data.content)}
+                        src={renderVideoUrl(data.hostname, data.content)}
                         thumbnailUrl={renderImageUrl(data.thumbnailUrl)}
-                        vttUrl={renderVttUrl(data.vttUrl)}
+                        vttUrl={renderVttUrl(data.hostname, data.vttUrl)}
                         token={getAccessTokenFromLocalStorage() || ''}
                         skipOutro={true}
                         volume={

@@ -19,9 +19,11 @@ export function generatePath(
   });
 }
 
-export function renderVideoUrl(url?: string) {
+export function renderVideoUrl(host: string, url?: string) {
   if (!url) return '';
-  return url.startsWith('https') ? url : `${AppConstants.videoRootUrl}${url}`;
+  return url.startsWith('https')
+    ? url
+    : `https://${host}/v1/file/download-video-resource${url}`;
 }
 
 export const renderImageUrl = (url: string | undefined | null) => {
@@ -29,14 +31,14 @@ export const renderImageUrl = (url: string | undefined | null) => {
   return url.startsWith('https') ? url : `${AppConstants.contentRootUrl}${url}`;
 };
 
-export const renderVttUrl = (url: string | undefined | null) => {
+export const renderVttUrl = (host: string, url?: string) => {
   if (!url) return '';
   return url.startsWith('https')
     ? url
-    : `${AppConstants.publicContentUrl}${url}`;
+    : `https://${host}/v1/file/public-download${url}`;
 };
 
-export const renderFileUrl = (url: string | undefined | null) => {
+export const renderFileUrl = (url?: string) => {
   if (!url) return '';
   return url.startsWith('https') ? url : `${AppConstants.contentRootUrl}${url}`;
 };

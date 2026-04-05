@@ -13,9 +13,12 @@ import {
   VIDEO_LIBRARY_STATE_PROCESSING,
   videoLibrarySourceTypeOptions,
   videoLibraryStateOptions,
-  queryKeys
+  queryKeys,
+  MAX_PAGE_SIZE,
+  DEFAULT_TABLE_PAGE_START
 } from '@/constants';
 import { useDisclosure, useListBase, useSocketEvent } from '@/hooks';
+import { useServerConfigListQuery } from '@/queries';
 import { videoLibrarySearchSchema } from '@/schemaValidations';
 import type {
   Column,
@@ -36,6 +39,17 @@ export default function VideoLibraryList() {
     close: closePlayModal
   } = useDisclosure();
   const [selectedVideo, setSelectedVideo] = useState<VideoLibraryResType>();
+
+  const { data: serverConfigListData } = useServerConfigListQuery({
+    page: DEFAULT_TABLE_PAGE_START,
+    size: MAX_PAGE_SIZE
+  });
+
+  const serverConfigOptions =
+    serverConfigListData?.data?.content?.map((sc) => ({
+      label: sc.name,
+      value: sc.id
+    })) || [];
 
   const { data, pagination, loading, handlers, listQuery } = useListBase<
     VideoLibraryResType,
@@ -171,6 +185,12 @@ export default function VideoLibraryList() {
         placeholder: 'Tình trạng',
         type: FieldTypes.SELECT,
         options: videoLibraryStateOptions
+      },
+      {
+        key: 'serverConfigId',
+        placeholder: 'Máy chủ',
+        type: FieldTypes.SELECT,
+        options: serverConfigOptions
       }
     ];
 

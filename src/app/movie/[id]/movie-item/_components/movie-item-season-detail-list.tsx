@@ -241,7 +241,12 @@ export default function MovieItemSeasonDetailList() {
   });
 
   const columns: Column<MovieItemResType>[] = [
-    ...(sortedData.length > 1 ? [sortColumn] : []),
+    ...(sortedData.length > 1 &&
+    handlers.hasPermission({
+      requiredPermissions: [apiConfig.movieItem.updateOrdering.permissionCode]
+    })
+      ? [sortColumn]
+      : []),
     {
       title: '#',
       dataIndex: 'thumbnailUrl',

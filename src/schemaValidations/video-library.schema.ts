@@ -148,5 +148,6 @@ export const videoLibrarySchema = z
 export const videoLibrarySearchSchema = z.object({
   name: z.string().optional().nullable(),
   state: z.number().optional().nullable(),
-  sourceType: z.number().optional().nullable()
+  sourceType: z.number().optional().nullable(),
+  serverConfigId: z.string().optional().nullable()
 });

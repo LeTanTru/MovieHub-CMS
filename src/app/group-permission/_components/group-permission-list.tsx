@@ -99,7 +99,14 @@ export default function GroupPermissionList() {
   });
 
   const columns: Column<GroupPermissionResType>[] = [
-    ...(sortedData.length > 1 ? [sortColumn] : []),
+    ...(sortedData.length > 1 &&
+    handlers.hasPermission({
+      requiredPermissions: [
+        apiConfig.groupPermission.updateOrdering.permissionCode
+      ]
+    })
+      ? [sortColumn]
+      : []),
     {
       title: 'Tên',
       dataIndex: 'name'

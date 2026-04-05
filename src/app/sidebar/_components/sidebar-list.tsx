@@ -101,7 +101,12 @@ export default function SidebarList() {
   });
 
   const columns: Column<MovieSidebarResType>[] = [
-    ...(sortedData.length > 1 ? [sortColumn] : []),
+    ...(sortedData.length > 1 &&
+    handlers.hasPermission({
+      requiredPermissions: [apiConfig.sidebar.updateOrdering.permissionCode]
+    })
+      ? [sortColumn]
+      : []),
     {
       title: '#',
       dataIndex: 'webThumbnailUrl',
@@ -195,11 +200,14 @@ export default function SidebarList() {
           requiredPermissions: [apiConfig.sidebar.update.permissionCode]
         }),
         changeStatus: handlers.hasPermission({
-          requiredPermissions: [apiConfig.sidebar.update.permissionCode]
+          requiredPermissions: [apiConfig.sidebar.changeActive.permissionCode]
         }),
         delete: handlers.hasPermission({
           requiredPermissions: [apiConfig.sidebar.delete.permissionCode]
         })
+      },
+      columnProps: {
+        width: 150
       }
     })
   ];

@@ -175,6 +175,9 @@ export default function EmployeeList() {
         delete: handlers.hasPermission({
           requiredPermissions: [apiConfig.employee.delete.permissionCode]
         })
+      },
+      columnProps: {
+        width: 150
       }
     })
   ];

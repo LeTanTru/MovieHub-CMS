@@ -146,7 +146,12 @@ export default function CollectionList() {
   });
 
   const columns: Column<CollectionResType>[] = [
-    ...(sortedData.length > 1 ? [sortColumn] : []),
+    ...(sortedData.length > 1 &&
+    handlers.hasPermission({
+      requiredPermissions: [apiConfig.collection.updateOrdering.permissionCode]
+    })
+      ? [sortColumn]
+      : []),
     {
       title: 'Tên',
       dataIndex: 'name',

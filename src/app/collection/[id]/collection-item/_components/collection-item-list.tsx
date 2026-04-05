@@ -55,6 +55,10 @@ export default function CollectionItemList() {
     },
     override: (handlers) => {
       handlers.renderAddButton = () => {
+        const handleAddCollectionItem = () => {
+          open();
+        };
+
         return (
           <HasPermission
             requiredPermissions={[
@@ -90,12 +94,15 @@ export default function CollectionItemList() {
     updateOnDragEnd: true
   });
 
-  const handleAddCollectionItem = () => {
-    open();
-  };
-
   const columns: Column<CollectionItemResType>[] = [
-    ...(sortedData.length > 1 ? [sortColumn] : []),
+    ...(sortedData.length > 1 &&
+    handlers.hasPermission({
+      requiredPermissions: [
+        apiConfig.collectionItem.updateOrdering.permissionCode
+      ]
+    })
+      ? [sortColumn]
+      : []),
     {
       title: '#',
       dataIndex: ['movie', 'posterUrl'],
