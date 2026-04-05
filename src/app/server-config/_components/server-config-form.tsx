@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Col,
-  InputField,
-  NumberField,
-  Row,
-  SelectField
-} from '@/components/form';
+import { Col, InputField, NumberField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
@@ -14,9 +8,7 @@ import {
   apiConfig,
   ErrorCode,
   queryKeys,
-  serverConfigErrorMaps,
-  serverStatusOptions,
-  STATUS_ACTIVE
+  serverConfigErrorMaps
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { route } from '@/routes';
@@ -66,8 +58,7 @@ export default function ServerConfigForm() {
     ip: '',
     name: '',
     port: 0,
-    serverNumber: 0,
-    status: STATUS_ACTIVE
+    serverNumber: 0
   };
 
   const initialValues: ServerConfigBodyType = useMemo(
@@ -76,17 +67,9 @@ export default function ServerConfigForm() {
       ip: data?.ip || '',
       name: data?.name || '',
       port: data?.port || 0,
-      serverNumber: data?.serverNumber || 0,
-      status: data?.status || STATUS_ACTIVE
+      serverNumber: data?.serverNumber || 0
     }),
-    [
-      data?.hostname,
-      data?.ip,
-      data?.name,
-      data?.port,
-      data?.serverNumber,
-      data?.status
-    ]
+    [data?.hostname, data?.ip, data?.name, data?.port, data?.serverNumber]
   );
 
   const onSubmit = async (
@@ -167,16 +150,6 @@ export default function ServerConfigForm() {
                   label='Số server'
                   placeholder='Số server'
                   required
-                />
-              </Col>
-              <Col className='grid-c-6'>
-                <SelectField
-                  control={form.control}
-                  name='status'
-                  label='Trạng thái'
-                  placeholder='Trạng thái'
-                  required
-                  options={serverStatusOptions}
                 />
               </Col>
             </Row>

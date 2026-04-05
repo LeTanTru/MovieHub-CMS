@@ -89,9 +89,6 @@ export default function StyleList() {
         edit: handlers.hasPermission({
           requiredPermissions: [apiConfig.style.update.permissionCode]
         }),
-        changeStatus: handlers.hasPermission({
-          requiredPermissions: [apiConfig.style.update.permissionCode]
-        }),
         delete: handlers.hasPermission({
           requiredPermissions: [apiConfig.style.delete.permissionCode]
         })

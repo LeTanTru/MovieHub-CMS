@@ -169,6 +169,9 @@ export default function AdminList() {
           handlers.hasPermission({
             requiredPermissions: [apiConfig.account.delete.permissionCode]
           }) && !record.isSuperAdmin
+      },
+      columnProps: {
+        width: 150
       }
     })
   ];

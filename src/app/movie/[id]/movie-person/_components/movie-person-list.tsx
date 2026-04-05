@@ -210,7 +210,12 @@ export default function MoviePersonList({ kind }: { kind: number }) {
   };
 
   const columns: Column<MoviePersonResType>[] = [
-    ...(sortedData.length > 1 ? [sortColumn] : []),
+    ...(sortedData.length > 1 &&
+    handlers.hasPermission({
+      requiredPermissions: [apiConfig.moviePerson.updateOrdering.permissionCode]
+    })
+      ? [sortColumn]
+      : []),
     {
       title: '#',
       dataIndex: ['person', 'avatarPath'],

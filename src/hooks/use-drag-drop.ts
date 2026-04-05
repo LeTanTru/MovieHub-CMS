@@ -39,7 +39,7 @@ const useDragDrop = <T extends Record<string, any>>({
       []
   );
 
-  const updateOrderingMutation = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationKey: ['updateOrdering', apiConfig.baseUrl],
     mutationFn: (body: any) =>
       http.put<ApiResponse<any>>(apiConfig, {
@@ -66,7 +66,7 @@ const useDragDrop = <T extends Record<string, any>>({
         dataUpdate.push(baseData);
       });
 
-      await updateOrderingMutation.mutateAsync(dataUpdate, {
+      await mutateAsync(dataUpdate, {
         onSuccess: async () => {
           await queryClient.invalidateQueries({
             queryKey: [key]
@@ -84,13 +84,13 @@ const useDragDrop = <T extends Record<string, any>>({
       });
     },
     [
-      sortedData,
-      updateOrderingMutation,
-      sortField,
-      mappingData,
-      queryClient,
       key,
-      objectName
+      mappingData,
+      mutateAsync,
+      objectName,
+      queryClient,
+      sortField,
+      sortedData
     ]
   );
 
@@ -129,7 +129,7 @@ const useDragDrop = <T extends Record<string, any>>({
     isChanged,
     sortColumn,
     sortedData,
-    loading: updateOrderingMutation.isPending,
+    loading: isPending,
     setIsChanged,
     onDragEnd,
     handleUpdate

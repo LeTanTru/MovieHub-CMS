@@ -10,6 +10,7 @@ export type VideoLibraryResType = {
   createdDate: string;
   description: string;
   duration: number;
+  hostname: string;
   id: string;
   introEnd: number;
   introStart: number;
@@ -17,12 +18,12 @@ export type VideoLibraryResType = {
   name: string;
   outroStart: number;
   relativeContentPath: string;
+  sourceType: number;
   spriteUrl: string;
   state: number;
   status: number;
   thumbnailUrl: string;
   vttUrl: string;
-  sourceType: number;
 };
 
 export type VideoLibraryBodyType = z.infer<typeof videoLibrarySchema>;

@@ -10,5 +10,6 @@ export * from './movie-item.query';
 export * from './movie-person.query';
 export * from './permission.query';
 export * from './review.query';
+export * from './server-config.query';
 export * from './sidebar.query';
 export * from './user.query';
