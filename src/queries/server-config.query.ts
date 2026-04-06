@@ -2,7 +2,7 @@ import { apiConfig, queryKeys } from '@/constants';
 import {
   ApiResponse,
   ApiResponseList,
-  ServerConfigChangeActiveBodyType,
+  ServerConfigChangeStatusBodyType,
   ServerConfigResType,
   ServerConfigSearchType
 } from '@/types';
@@ -25,7 +25,7 @@ export const useServerConfigListQuery = (params?: ServerConfigSearchType) => {
 export const useChangeServerConfigStatusMutation = () => {
   return useMutation({
     mutationKey: [`${queryKeys.SERVER_CONFIG}-change-status`],
-    mutationFn: (body: ServerConfigChangeActiveBodyType) =>
+    mutationFn: (body: ServerConfigChangeStatusBodyType) =>
       http.post<ApiResponse<any>>(apiConfig.serverConfig.changeStatus, {
         body
       })

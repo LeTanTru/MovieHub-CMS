@@ -51,7 +51,7 @@ export default function VideoLibraryList() {
       value: sc.id
     })) || [];
 
-  const { data, pagination, loading, handlers, listQuery } = useListBase<
+  const { data, pagination, loading, handlers } = useListBase<
     VideoLibraryResType,
     VideoLibrarySearchType
   >({
@@ -211,7 +211,7 @@ export default function VideoLibraryList() {
           </>
         );
       }
-      listQuery.refetch();
+      handlers.invalidateQueries();
     }
   );
 

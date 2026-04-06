@@ -45,7 +45,6 @@ export default function CommentList() {
     data,
     loading,
     handlers,
-    listQuery,
     isFetchingMore,
     hasMore,
     totalLeft,
@@ -80,9 +79,9 @@ export default function CommentList() {
   const handlePinComment = useCallback(
     async (id: string, isPinned: boolean) => {
       await pinCommentMutate({ id, isPinned });
-      await listQuery.refetch();
+      handlers.invalidateQueries();
     },
-    [pinCommentMutate, listQuery]
+    [pinCommentMutate] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const handleDeleteComment = useCallback(
@@ -103,8 +102,8 @@ export default function CommentList() {
   );
 
   const handleReplySuccess = useCallback(async () => {
-    await listQuery.refetch();
-  }, [listQuery]);
+    handlers.invalidateQueries();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderChildren = useCallback(
     (list: CommentResType[], level: number, rootId?: string) =>

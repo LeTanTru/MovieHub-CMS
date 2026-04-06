@@ -49,10 +49,10 @@ export default function SidebarList() {
               {
                 onSuccess: (res) => {
                   if (res.result) {
-                    notify.success('Cập nhật trạng thái thành công');
+                    notify.success(`${statusLabel} phim thành công`);
                     handlers.invalidateQueries();
                   } else {
-                    notify.error('Cập nhật trạng thái thất bại');
+                    notify.error(`${statusLabel} phim thất bại`);
                   }
                 },
                 onError: (error) => {
@@ -76,7 +76,12 @@ export default function SidebarList() {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <Icon className='text-main-color size-4' />
+                  <Icon
+                    className={cn('size-4', {
+                      'text-main-color': !record.active,
+                      'text-destructive': record.active
+                    })}
+                  />
                 </Button>
               </span>
             </ToolTip>

@@ -22,7 +22,7 @@ export type ServerConfigBodyType = z.infer<typeof serverConfigSchema>;
 export type ServerConfigSearchType = z.infer<typeof serverConfigSearchSchema> &
   BaseSearchType;
 
-export type ServerConfigChangeActiveBodyType = {
+export type ServerConfigChangeStatusBodyType = {
   id: string;
-  active: boolean;
+  status: number;
 };
