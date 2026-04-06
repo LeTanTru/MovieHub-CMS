@@ -16,7 +16,8 @@ import {
   queryKeys,
   serverConfigErrorMaps,
   serverConfigStatusOptions,
-  STATUS_ACTIVE
+  STATUS_ACTIVE,
+  STATUS_PENDING
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { route } from '@/routes';
@@ -87,6 +88,16 @@ export default function ServerConfigForm() {
       data?.serverNumber,
       data?.status
     ]
+  );
+
+  const statusOptions = useMemo(
+    () =>
+      isEditing
+        ? serverConfigStatusOptions.filter(
+            (opt) => opt.value !== STATUS_PENDING
+          )
+        : serverConfigStatusOptions,
+    [isEditing]
   );
 
   const onSubmit = async (
@@ -176,7 +187,7 @@ export default function ServerConfigForm() {
                   label='Trạng thái'
                   placeholder='Trạng thái'
                   required
-                  options={serverConfigStatusOptions}
+                  options={statusOptions}
                 />
               </Col>
             </Row>
