@@ -155,7 +155,7 @@ export default function MovieForm() {
       thumbnailUrl: data?.thumbnailUrl ?? '',
       title: data?.title ?? '',
       type: data?.type ?? 0,
-      year: data?.year || new Date().getFullYear()
+      year: data?.year ?? new Date().getFullYear()
     }),
     [
       data?.ageRating,

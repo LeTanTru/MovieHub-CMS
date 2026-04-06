@@ -13,6 +13,7 @@ import {
   userKindOptions
 } from '@/constants';
 import { useListBase } from '@/hooks';
+import { cn } from '@/lib';
 import { useChangeUserStatusMutation } from '@/queries';
 import { userSearchSchema } from '@/schemaValidations';
 import type {
@@ -29,7 +30,7 @@ export default function UserList() {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
     useChangeUserStatusMutation();
 
-  const { data, pagination, loading, handlers, listQuery } = useListBase<
+  const { data, pagination, loading, handlers } = useListBase<
     UserResType,
     UserSearchType
   >({
@@ -58,7 +59,7 @@ export default function UserList() {
               {
                 onSuccess: (res: ApiResponse<any>) => {
                   if (res.result) {
-                    listQuery.refetch();
+                    handlers.invalidateQueries();
                     notify.success(message);
                   }
                 }
@@ -66,26 +67,26 @@ export default function UserList() {
             );
           };
 
+          const Icon =
+            record.status === STATUS_ACTIVE ? AiOutlineCheck : AiOutlineLock;
+
+          const statusLabel =
+            record.status === STATUS_ACTIVE ? 'Hoạt động' : 'Bị khóa';
+
           return (
-            <ToolTip
-              title={
-                record.status === STATUS_ACTIVE
-                  ? 'Khóa tài khoản'
-                  : 'Mở khóa tài khoản'
-              }
-              sideOffset={0}
-            >
+            <ToolTip title={statusLabel} sideOffset={0}>
               <span>
                 <Button
                   onClick={() => handleChangeStatus(record)}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  {record.status === STATUS_ACTIVE ? (
-                    <AiOutlineLock className='text-destructive size-4' />
-                  ) : (
-                    <AiOutlineCheck className='text-main-color size-4' />
-                  )}
+                  <Icon
+                    className={cn('size-4', {
+                      'text-main-color': record.status === STATUS_ACTIVE,
+                      'text-destructive': record.status !== STATUS_ACTIVE
+                    })}
+                  />
                 </Button>
               </span>
             </ToolTip>

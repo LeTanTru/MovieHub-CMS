@@ -85,9 +85,9 @@ export default function SidebarForm() {
       description: data?.description ?? '',
       active: data?.active ?? false,
       mainColor: data?.mainColor ?? '#000000',
-      mobileThumbnailUrl: data?.mobileThumbnailUrl || '',
+      mobileThumbnailUrl: data?.mobileThumbnailUrl ?? '',
       movieId: data?.movie?.id?.toString() ?? '',
-      webThumbnailUrl: data?.webThumbnailUrl || ''
+      webThumbnailUrl: data?.webThumbnailUrl ?? ''
     }),
     [
       data?.active,

@@ -309,6 +309,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
                 handleEditClick(record.id);
               }}
               className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+              variant='ghost'
               {...buttonProps}
             >
               <AiOutlineEdit className='text-main-color size-4' />
@@ -334,6 +335,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
               <ToolTip title={`Xóa ${objectName}`} sideOffset={0}>
                 <Button
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  variant='ghost'
                   {...buttonProps}
                 >
                   <AiOutlineDelete className='text-destructive size-4' />

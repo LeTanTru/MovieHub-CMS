@@ -1605,3 +1605,21 @@ export const collectionTypeOptions = [
     value: COLLECTION_TYPE_SECTION
   }
 ];
+
+export const serverConfigStatusOptions = [
+  {
+    value: STATUS_ACTIVE,
+    label: 'Hoạt động',
+    color: '#00c950'
+  },
+  {
+    value: STATUS_LOCK,
+    label: 'Khóa',
+    color: '#dc3545'
+  },
+  {
+    value: STATUS_PENDING,
+    label: 'Đang chờ',
+    color: '#ffc107'
+  }
+];

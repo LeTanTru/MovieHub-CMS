@@ -3,8 +3,16 @@
 import { Button, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
-import { apiConfig, queryKeys, STATUS_ACTIVE } from '@/constants';
+import {
+  apiConfig,
+  queryKeys,
+  serverConfigStatusOptions,
+  STATUS_ACTIVE,
+  STATUS_LOCK,
+  STATUS_PENDING
+} from '@/constants';
 import { useListBase } from '@/hooks';
+import { cn } from '@/lib';
 import { logger } from '@/logger';
 import { useChangeServerConfigStatusMutation } from '@/queries';
 import { serverConfigSearchSchema } from '@/schemaValidations';
@@ -15,7 +23,7 @@ import {
   ServerConfigSearchType
 } from '@/types';
 import { notify } from '@/utils';
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
 export default function ServerConfigList() {
   const { mutateAsync: changeStatusMutate } =
@@ -40,15 +48,20 @@ export default function ServerConfigList() {
             await changeStatusMutate(
               {
                 id: record.id,
-                active: !record.status
+                status:
+                  record.status === STATUS_ACTIVE ? STATUS_LOCK : STATUS_ACTIVE
               },
               {
                 onSuccess: (res) => {
                   if (res.result) {
-                    notify.success('Cập nhật trạng thái thành công');
+                    notify.success(
+                      `${record.status === STATUS_ACTIVE ? 'Khóa' : 'Mở khóa'} máy chủ thành công`
+                    );
                     handlers.invalidateQueries();
                   } else {
-                    notify.error('Cập nhật trạng thái thất bại');
+                    notify.error(
+                      `${record.status === STATUS_ACTIVE ? 'Khóa' : 'Mở khóa'} máy chủ thất bại, vui lòng thử lại sau.`
+                    );
                   }
                 },
                 onError: (error) => {
@@ -60,12 +73,14 @@ export default function ServerConfigList() {
           };
 
           const Icon =
-            record.status === STATUS_ACTIVE
-              ? AiOutlineEyeInvisible
-              : AiOutlineEye;
+            record.status === STATUS_ACTIVE ? AiOutlineLock : AiOutlineCheck;
 
           const statusLabel =
-            record.status === STATUS_ACTIVE ? 'Hoạt động' : 'Không hoạt động';
+            record.status === STATUS_ACTIVE
+              ? 'Khóa máy chủ'
+              : 'Mở khóa máy chủ';
+
+          if (record.status === STATUS_PENDING) return null;
 
           return (
             <ToolTip title={statusLabel} sideOffset={0}>
@@ -76,9 +91,16 @@ export default function ServerConfigList() {
                     handleChangeStatus();
                   }}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  variant='ghost'
+                  disabled={record.status === STATUS_PENDING}
                   {...buttonProps}
                 >
-                  <Icon className='text-main-color size-4' />
+                  <Icon
+                    className={cn('size-4', {
+                      'text-main-color': record.status === STATUS_LOCK,
+                      'text-destructive': record.status === STATUS_ACTIVE
+                    })}
+                  />
                 </Button>
               </span>
             </ToolTip>
@@ -141,6 +163,9 @@ export default function ServerConfigList() {
       width: 150,
       align: 'center'
     },
+    handlers.renderStatusColumn({
+      statusOptions: serverConfigStatusOptions
+    }),
     handlers.renderActionColumn({
       actions: {
         edit: handlers.hasPermission({
@@ -165,7 +190,7 @@ export default function ServerConfigList() {
     [{ key: 'name', placeholder: 'Tên' }];
 
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Thể loại' }]}>
+    <PageWrapper breadcrumbs={[{ label: 'Máy chủ' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,

@@ -71,12 +71,12 @@ export default function CommentForm({
 
   const initialValues: CommentBodyType = useMemo(
     () => ({
-      content: editingComment?.content || '',
-      movieId: editingComment?.movieId?.toString() || movieId,
-      movieItemId: editingComment?.movieId?.toString() || '',
-      parentId: editingComment?.parent?.id?.toString() || parentId,
-      replyToId: authorInfo?.id?.toString() || '',
-      replyToKind: authorInfo?.kind || 0
+      content: editingComment?.content ?? '',
+      movieId: editingComment?.movieId?.toString() ?? movieId,
+      movieItemId: editingComment?.movieId?.toString() ?? '',
+      parentId: editingComment?.parent?.id?.toString() ?? parentId,
+      replyToId: authorInfo?.id?.toString() ?? '',
+      replyToKind: authorInfo?.kind ?? 0
     }),
     [
       authorInfo?.id,

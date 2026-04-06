@@ -14,6 +14,8 @@ import {
   STATUS_LOCK
 } from '@/constants';
 import { useListBase } from '@/hooks';
+import { cn } from '@/lib';
+import { logger } from '@/logger';
 import { useChangeEmployeeStatusMutation, useGroupListQuery } from '@/queries';
 import { employeeSearchSchema } from '@/schemaValidations';
 import type {
@@ -31,7 +33,7 @@ export default function EmployeeList() {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
     useChangeEmployeeStatusMutation();
 
-  const { data, pagination, loading, handlers, listQuery } = useListBase<
+  const { data, pagination, loading, handlers } = useListBase<
     EmployeeResType,
     EmployeeSearchType
   >({
@@ -47,10 +49,6 @@ export default function EmployeeList() {
           buttonProps?: Record<string, any>
         ) => {
           const handleChangeStatus = async (record: EmployeeResType) => {
-            const message =
-              record.status === STATUS_ACTIVE
-                ? 'Khóa tài khoản thành công'
-                : 'Mở khóa tài khoản thành công';
             await changeStatusMutate(
               {
                 id: record.id,
@@ -60,34 +58,46 @@ export default function EmployeeList() {
               {
                 onSuccess: (res) => {
                   if (res.result) {
-                    listQuery.refetch();
-                    notify.success(message);
+                    handlers.invalidateQueries();
+                    notify.success(
+                      `${record.status === STATUS_ACTIVE ? 'Khóa' : 'Mở khóa'} tài khoản thành công`
+                    );
+                  } else {
+                    notify.error(
+                      `${record.status === STATUS_ACTIVE ? 'Khóa' : 'Mở khóa'} tài khoản thất bại`
+                    );
                   }
+                },
+                onError: (error) => {
+                  logger.error('Error while changing status:', error);
+                  notify.error('Có lỗi xảy ra, vui lòng thử lại sau.');
                 }
               }
             );
           };
 
+          const Icon =
+            record.status === STATUS_ACTIVE ? AiOutlineLock : AiOutlineCheck;
+
+          const statusLabel =
+            record.status === STATUS_ACTIVE
+              ? 'Khóa tài khoản'
+              : 'Mở khóa tài khoản';
+
           return (
-            <ToolTip
-              title={
-                record.status === STATUS_ACTIVE
-                  ? 'Khóa tài khoản'
-                  : 'Mở khóa tài khoản'
-              }
-              sideOffset={0}
-            >
+            <ToolTip title={statusLabel} sideOffset={0}>
               <span>
                 <Button
                   onClick={() => handleChangeStatus(record)}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  {record.status === STATUS_ACTIVE ? (
-                    <AiOutlineLock className='text-destructive size-4' />
-                  ) : (
-                    <AiOutlineCheck className='text-main-color size-4' />
-                  )}
+                  <Icon
+                    className={cn('size-4', {
+                      'text-main-color': record.status === STATUS_LOCK,
+                      'text-destructive': record.status === STATUS_ACTIVE
+                    })}
+                  />
                 </Button>
               </span>
             </ToolTip>

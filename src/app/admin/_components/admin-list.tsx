@@ -25,12 +25,14 @@ import type {
 } from '@/types';
 import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { Badge } from '@/components/ui/badge';
+import { logger } from '@/logger';
+import { cn } from '@/lib';
 
 export default function AdminList() {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
     useChangeAccountStatusMutation();
 
-  const { data, pagination, loading, handlers, listQuery } = useListBase<
+  const { data, pagination, loading, handlers } = useListBase<
     AccountAutoResType,
     AccountSearchType
   >({
@@ -48,10 +50,6 @@ export default function AdminList() {
           buttonProps?: Record<string, any>
         ) => {
           const handleChangeStatus = async (record: AccountAutoResType) => {
-            const message =
-              record.status === STATUS_ACTIVE
-                ? 'Khóa tài khoản thành công'
-                : 'Mở khóa tài khoản thành công';
             await changeStatusMutate(
               {
                 id: record.id,
@@ -61,34 +59,46 @@ export default function AdminList() {
               {
                 onSuccess: (res) => {
                   if (res.result) {
-                    listQuery.refetch();
-                    notify.success(message);
+                    handlers.invalidateQueries();
+                    notify.success(
+                      `${record.status === STATUS_ACTIVE ? 'Khóa' : 'Mở khóa'} tài khoản thành công`
+                    );
+                  } else {
+                    notify.error(
+                      `${record.status === STATUS_ACTIVE ? 'Khóa' : 'Mở khóa'} tài khoản thất bại`
+                    );
                   }
+                },
+                onError: (error) => {
+                  logger.error('Error while changing status:', error);
+                  notify.error('Có lỗi xảy ra, vui lòng thử lại sau.');
                 }
               }
             );
           };
 
+          const Icon =
+            record.status === STATUS_ACTIVE ? AiOutlineLock : AiOutlineCheck;
+
+          const statusLabel =
+            record.status === STATUS_ACTIVE
+              ? 'Khóa tài khoản'
+              : 'Mở khóa tài khoản';
+
           return (
-            <ToolTip
-              title={
-                record.status === STATUS_ACTIVE
-                  ? 'Khóa tài khoản'
-                  : 'Mở khóa tài khoản'
-              }
-              sideOffset={0}
-            >
+            <ToolTip title={statusLabel} sideOffset={0}>
               <span>
                 <Button
                   onClick={() => handleChangeStatus(record)}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  {record.status === STATUS_ACTIVE ? (
-                    <AiOutlineLock className='text-destructive size-4' />
-                  ) : (
-                    <AiOutlineCheck className='text-main-color size-4' />
-                  )}
+                  <Icon
+                    className={cn('size-4', {
+                      'text-main-color': record.status === STATUS_LOCK,
+                      'text-destructive': record.status === STATUS_ACTIVE
+                    })}
+                  />
                 </Button>
               </span>
             </ToolTip>

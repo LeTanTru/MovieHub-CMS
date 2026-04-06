@@ -111,7 +111,7 @@ export default function GroupForm() {
     () => ({
       description: data?.description ?? '',
       name: data?.name ?? '',
-      permissions: data?.permissions.map((g) => g.id.toString()) ?? [],
+      permissions: data?.permissions?.map((g) => g.id.toString()) ?? [],
       kind: data?.kind ?? GROUP_KIND_ADMIN,
       color: data?.color ?? '#000000'
     }),

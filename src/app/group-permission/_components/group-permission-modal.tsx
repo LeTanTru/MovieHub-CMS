@@ -51,7 +51,7 @@ export default function GroupPermissionModal({
 
   const initialValues: GroupPermissionBodyType = useMemo(
     () => ({
-      name: selectedRow?.name || ''
+      name: selectedRow?.name ?? ''
     }),
     [selectedRow?.name]
   );
