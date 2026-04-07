@@ -38,6 +38,13 @@ export const buttonVariants = cva(
   }
 );
 
+type ButtonProps = ComponentProps<'button'> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+    loading?: boolean;
+    iconClassName?: string;
+  };
+
 export default function Button({
   className,
   variant,
@@ -47,12 +54,7 @@ export default function Button({
   children,
   iconClassName,
   ...props
-}: ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
-    loading?: boolean;
-    iconClassName?: string;
-  }) {
+}: ButtonProps) {
   const Comp = asChild ? Slot : 'button';
 
   return (

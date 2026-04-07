@@ -1,6 +1,8 @@
 import { SidebarLayout } from '@/components/layout';
 import type { ReactNode } from 'react';
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+type AdminLayoutProps = { children: ReactNode };
+
+export default function AdminLayout({ children }: AdminLayoutProps) {
   return <SidebarLayout>{children}</SidebarLayout>;
 }

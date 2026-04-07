@@ -13,7 +13,9 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export default function CommentInput({ movieId }: { movieId: string }) {
+type CommentInputProps = { movieId: string };
+
+export default function CommentInput({ movieId }: CommentInputProps) {
   const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
 
   const [showPicker, setShowPicker] = useState(false);

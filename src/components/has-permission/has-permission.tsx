@@ -3,13 +3,15 @@
 import { useIsMounted, useValidatePermission } from '@/hooks';
 import type { ReactNode } from 'react';
 
+type HasPermissionProps = {
+  children: ReactNode;
+  requiredPermissions: string[];
+};
+
 export default function HasPermission({
   children,
   requiredPermissions
-}: {
-  children: ReactNode;
-  requiredPermissions: string[];
-}) {
+}: HasPermissionProps) {
   const isMounted = useIsMounted();
   const hasPermission = useValidatePermission();
 

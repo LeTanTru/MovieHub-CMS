@@ -5,6 +5,8 @@ export const metadata: Metadata = {
   title: 'Liên hệ'
 };
 
-export default function ContactLayout({ children }: { children: ReactNode }) {
+type ContactLayoutProps = { children: ReactNode };
+
+export default function ContactLayout({ children }: ContactLayoutProps) {
   return <>{children}</>;
 }

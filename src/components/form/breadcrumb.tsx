@@ -10,11 +10,13 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb';
 import { Fragment } from 'react';
-import type { ReusableBreadcrumbProps } from '@/types';
+import type { BreadcrumbProps } from '@/types';
 import { useIsMounted } from '@/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
 
-function BreadcrumbSkeleton({ count = 3 }: { count?: number }) {
+type BreadcrumbSkeletonProps = { count?: number };
+
+function BreadcrumbSkeleton({ count = 3 }: BreadcrumbSkeletonProps) {
   return (
     <OriginBreadcrumb>
       <BreadcrumbList className='gap-1.5!'>
@@ -41,7 +43,7 @@ function BreadcrumbSkeleton({ count = 3 }: { count?: number }) {
 export default function Breadcrumb({
   items,
   separator = <BreadcrumbSeparator />
-}: ReusableBreadcrumbProps) {
+}: BreadcrumbProps) {
   const isMounted = useIsMounted();
 
   if (!isMounted) {

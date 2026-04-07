@@ -9,7 +9,7 @@ import {
 import { cn } from '@/lib';
 import type { ReactNode } from 'react';
 
-type TooltipProps = {
+type ToolTipProps = {
   title: ReactNode;
   children: ReactNode;
   side?: 'top' | 'bottom' | 'left' | 'right';
@@ -25,7 +25,7 @@ export default function ToolTip({
   align = 'center',
   sideOffset = 4,
   className
-}: TooltipProps) {
+}: ToolTipProps) {
   return (
     <TooltipProvider>
       <Tooltip>

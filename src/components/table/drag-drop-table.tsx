@@ -55,6 +55,17 @@ function getValueByPath<T extends Record<string, any>>(
   return obj[path as keyof T];
 }
 
+type SortableRowProps<T extends Record<any, any>> = {
+  row: T;
+  rowIndex: number;
+  columns: BaseTableProps<T>['columns'];
+  rowKey: string;
+  onSelect?: () => void;
+  rowClassName?: (row: T, index: number) => string;
+  rowStyle?: (row: T, index: number) => CSSProperties;
+  scrollAtEnd: boolean;
+};
+
 function SortableRow<T extends Record<any, any>>({
   row,
   rowIndex,
@@ -64,16 +75,7 @@ function SortableRow<T extends Record<any, any>>({
   rowClassName,
   rowStyle,
   scrollAtEnd
-}: {
-  row: T;
-  rowIndex: number;
-  columns: BaseTableProps<T>['columns'];
-  rowKey: string;
-  onSelect?: () => void;
-  rowClassName?: (row: T, index: number) => string;
-  rowStyle?: (row: T, index: number) => CSSProperties;
-  scrollAtEnd: boolean;
-}) {
+}: SortableRowProps<T>) {
   const {
     attributes,
     listeners,

@@ -23,7 +23,9 @@ import type {
 } from '@/types';
 import { formatDate, getLastWord, notify, renderImageUrl } from '@/utils';
 
-export default function PersonList({ kind }: { kind: number }) {
+type PersonListProps = { kind: number };
+
+export default function PersonList({ kind }: PersonListProps) {
   const { data, pagination, loading, handlers } = useListBase<
     PersonResType,
     PersonSearchType

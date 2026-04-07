@@ -37,7 +37,9 @@ import { getLastWord, renderImageUrl } from '@/utils';
 import { menuConfig } from '@/constants';
 import { useShallow } from 'zustand/react/shallow';
 
-function CollapsibleMenuItem({ item }: { item: MenuItem }) {
+type CollapsibleMenuItemProps = { item: MenuItem };
+
+function CollapsibleMenuItem({ item }: CollapsibleMenuItemProps) {
   const pathname = usePathname();
   const { state } = useSidebar();
   const { serializeParams } = useQueryParams();
