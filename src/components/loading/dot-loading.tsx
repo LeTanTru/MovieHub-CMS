@@ -1,6 +1,8 @@
 import { cn } from '@/lib';
 
-export default function DotLoading({ className }: { className?: string }) {
+type DotLoadingProps = { className?: string };
+
+export default function DotLoading({ className }: DotLoadingProps) {
   return (
     <div
       className={cn(

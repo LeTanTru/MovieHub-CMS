@@ -5,6 +5,8 @@ export const metadata: Metadata = {
   title: 'Chính sách'
 };
 
-export default function ContactLayout({ children }: { children: ReactNode }) {
+type PrivacyLayoutProps = { children: ReactNode };
+
+export default function PrivacyLayout({ children }: PrivacyLayoutProps) {
   return <>{children}</>;
 }

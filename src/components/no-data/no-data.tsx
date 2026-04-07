@@ -2,13 +2,15 @@ import { emptyData } from '@/assets';
 import { cn } from '@/lib';
 import Image from 'next/image';
 
+type NoDataProps = {
+  className?: string;
+  content?: string;
+};
+
 export default function NoData({
   className,
   content = 'Không có dữ liệu'
-}: {
-  className?: string;
-  content?: string;
-}) {
+}: NoDataProps) {
   return (
     <div
       className={cn(

@@ -1,19 +1,21 @@
 import { cn } from '@/lib';
 import type { ReactNode } from 'react';
 
+type ListPageWrapperProps = {
+  className?: string;
+  children?: ReactNode;
+  searchForm?: ReactNode;
+  addButton?: ReactNode;
+  reloadButton?: ReactNode;
+};
+
 export default function ListPageWrapper({
   className,
   children,
   searchForm,
   addButton,
   reloadButton
-}: {
-  className?: string;
-  children?: ReactNode;
-  searchForm?: ReactNode;
-  addButton?: ReactNode;
-  reloadButton?: ReactNode;
-}) {
+}: ListPageWrapperProps) {
   return (
     <div
       tabIndex={-1}

@@ -9,6 +9,13 @@ import { cn } from '@/lib';
 import type { BreadcrumbType } from '@/types';
 import type { HTMLAttributes } from 'react';
 
+type PageWrapperProps = HTMLAttributes<HTMLElement> & {
+  breadcrumbs: BreadcrumbType[];
+  loading?: boolean;
+  notFound?: boolean;
+  notFoundContent?: string;
+};
+
 export default function PageWrapper({
   children,
   breadcrumbs,
@@ -16,12 +23,7 @@ export default function PageWrapper({
   notFound,
   notFoundContent,
   ...props
-}: HTMLAttributes<HTMLElement> & {
-  breadcrumbs: BreadcrumbType[];
-  loading?: boolean;
-  notFound?: boolean;
-  notFoundContent?: string;
-}) {
+}: PageWrapperProps) {
   const firstRoutePath = useFirstActiveRoute();
   const fullBreadcrumbs: BreadcrumbType[] = [
     { label: 'Trang chủ', href: firstRoutePath },

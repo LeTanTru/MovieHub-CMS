@@ -5,7 +5,7 @@ export type BreadcrumbType = {
   href?: string;
 };
 
-export type ReusableBreadcrumbProps = {
+export type BreadcrumbProps = {
   items: BreadcrumbType[];
   separator?: ReactNode;
 };

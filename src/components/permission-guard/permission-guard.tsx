@@ -24,7 +24,9 @@ import { storageKeys } from '@/constants';
 import type { RouteItem } from '@/routes/route';
 import { useShallow } from 'zustand/react/shallow';
 
-export default function PermissionGuard({ children }: { children: ReactNode }) {
+type PermissionGuardProps = { children: ReactNode };
+
+export default function PermissionGuard({ children }: PermissionGuardProps) {
   const { permissionCode: userPermissions, isAuthenticated } = useAuth();
 
   const { loading, setLoading } = useAppLoadingStore(

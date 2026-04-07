@@ -1,6 +1,8 @@
 import { SidebarLayout } from '@/components/layout';
 import type { ReactNode } from 'react';
 
-export default function PersonLayout({ children }: { children: ReactNode }) {
+type PersonLayoutProps = { children: ReactNode };
+
+export default function PersonLayout({ children }: PersonLayoutProps) {
   return <SidebarLayout>{children}</SidebarLayout>;
 }

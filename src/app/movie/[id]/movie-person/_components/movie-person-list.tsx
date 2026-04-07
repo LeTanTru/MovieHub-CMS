@@ -31,7 +31,9 @@ import { useEffect, useRef, useState } from 'react';
 import { AiOutlineClear, AiOutlineEdit, AiOutlineSave } from 'react-icons/ai';
 import { z } from 'zod';
 
-export default function MoviePersonList({ kind }: { kind: number }) {
+type MoviePersonListProps = { kind: number };
+
+export default function MoviePersonList({ kind }: MoviePersonListProps) {
   const { id: movieId } = useParams<{ id: string }>();
 
   const [selectedRow, setSelectedRow] = useState<string>('');

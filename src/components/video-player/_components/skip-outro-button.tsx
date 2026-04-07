@@ -2,7 +2,9 @@
 
 import { Button } from '@/components/form';
 
-export default function SkipOutroButton({ onClick }: { onClick?: () => void }) {
+type SkipOutroButtonProps = { onClick?: () => void };
+
+export default function SkipOutroButton({ onClick }: SkipOutroButtonProps) {
   return (
     <Button
       type='button'

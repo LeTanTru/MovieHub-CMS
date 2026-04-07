@@ -15,7 +15,7 @@ import { CheckIcon, EyeIcon, EyeOffIcon, XIcon } from 'lucide-react';
 import { useId, useState } from 'react';
 import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 
-type InputFieldProps<T extends FieldValues> = {
+type PasswordFieldProps<T extends FieldValues> = {
   control: Control<T>;
   name: FieldPath<T>;
   label?: string;
@@ -85,7 +85,7 @@ export default function PasswordField<T extends FieldValues>({
   disabled,
   readOnly = false,
   showStrength = false
-}: InputFieldProps<T>) {
+}: PasswordFieldProps<T>) {
   const id = useId();
   const [isVisible, setIsVisible] = useState<boolean>(false);
 

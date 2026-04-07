@@ -15,7 +15,9 @@ import { getData } from '@/utils';
 import { domAnimation, LazyMotion } from 'framer-motion';
 import { type ReactNode, useEffect } from 'react';
 
-export default function AppProvider({ children }: { children: ReactNode }) {
+type AppProviderProps = { children: ReactNode };
+
+export default function AppProvider({ children }: AppProviderProps) {
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
   const setLoading = useAppLoadingStore((s) => s.setLoading);
   const setProfile = useAuthStore((s) => s.setProfile);

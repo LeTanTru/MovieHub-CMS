@@ -6,7 +6,11 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { useSidebarStore } from '@/store';
 import type { CSSProperties, ReactNode } from 'react';
 
-export default function SidebarLayout({ children }: { children: ReactNode }) {
+type SidebarLayoutProps = {
+  children: ReactNode;
+};
+
+export default function SidebarLayout({ children }: SidebarLayoutProps) {
   const state = useSidebarStore((s) => s.state);
   return (
     <SidebarProvider

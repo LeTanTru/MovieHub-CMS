@@ -1,6 +1,8 @@
 import { SidebarLayout } from '@/components/layout';
 import type { ReactNode } from 'react';
 
-export default function MovieLayout({ children }: { children: ReactNode }) {
+type MovieLayoutProps = { children: ReactNode };
+
+export default function MovieLayout({ children }: MovieLayoutProps) {
   return <SidebarLayout>{children}</SidebarLayout>;
 }
