@@ -1,4 +1,5 @@
 'use client';
+
 import VideoPlayModal from './video-play-modal';
 import { Button, ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
