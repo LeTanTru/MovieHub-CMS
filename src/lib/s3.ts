@@ -22,15 +22,15 @@ if (missingVars.length > 0) {
 }
 
 export const s3Client = new S3Client({
-  endpoint: process.env.MINIO_ENDPOINT!,
+  endpoint: process.env.MINIO_ENDPOINT as string,
   region: 'us-east-1',
   credentials: {
-    accessKeyId: process.env.MINIO_ROOT_USER!,
-    secretAccessKey: process.env.MINIO_ROOT_PASSWORD!
+    accessKeyId: process.env.MINIO_ROOT_USER as string,
+    secretAccessKey: process.env.MINIO_ROOT_PASSWORD as string
   },
   forcePathStyle: true // required for MinIO
 });
 
-export const BUCKET_NAME = process.env.MINIO_BUCKET;
-export const UPLOAD_FOLDER = process.env.MINIO_UPLOAD_FOLDER;
-export const UPLOAD_PREFIX = process.env.MINIO_UPLOAD_PREFIX;
+export const BUCKET_NAME = process.env.MINIO_BUCKET as string;
+export const UPLOAD_FOLDER = process.env.MINIO_UPLOAD_FOLDER as string;
+export const UPLOAD_PREFIX = process.env.MINIO_UPLOAD_PREFIX as string;

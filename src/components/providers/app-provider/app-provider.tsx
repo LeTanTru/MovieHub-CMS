@@ -45,56 +45,56 @@ export default function AppProvider({ children }: AppProviderProps) {
     setLoading(profileLoading || employeeProfileLoading);
   }, [profileLoading, employeeProfileLoading, setLoading]);
 
-  useEffect(() => {
-    if (!accessToken) return;
+  // useEffect(() => {
+  //   if (!accessToken) return;
 
-    const socket = new WebSocket(envConfig.NEXT_PUBLIC_API_SOCKET_URL);
-    setSocket(socket);
+  //   const socket = new WebSocket(envConfig.NEXT_PUBLIC_API_SOCKET_URL);
+  //   setSocket(socket);
 
-    let pingInterval: NodeJS.Timeout | null = null;
+  //   let pingInterval: NodeJS.Timeout | null = null;
 
-    socket.onopen = () => {
-      if (socket.readyState === WebSocket.OPEN) {
-        logger.info('Socket connected');
-        socket.send(
-          JSON.stringify({
-            cmd: socketSendCMDs.CMD_CLIENT_VERIFY_TOKEN,
-            platform: WEB_PLATFORM,
-            clientVersion: '1.0',
-            lang: 'vi',
-            token: accessToken,
-            app: 'CLIENT_APP',
-            data: { app: 'CLIENT_APP' }
-          })
-        );
+  //   socket.onopen = () => {
+  //     if (socket.readyState === WebSocket.OPEN) {
+  //       logger.info('Socket connected');
+  //       socket.send(
+  //         JSON.stringify({
+  //           cmd: socketSendCMDs.CMD_CLIENT_VERIFY_TOKEN,
+  //           platform: WEB_PLATFORM,
+  //           clientVersion: '1.0',
+  //           lang: 'vi',
+  //           token: accessToken,
+  //           app: 'CLIENT_APP',
+  //           data: { app: 'CLIENT_APP' }
+  //         })
+  //       );
 
-        pingInterval = setInterval(() => {
-          socket.send(
-            JSON.stringify({
-              cmd: socketSendCMDs.CMD_CLIENT_PING,
-              platform: WEB_PLATFORM,
-              clientVersion: '1.0',
-              lang: 'vi',
-              token: accessToken,
-              app: 'CLIENT_APP',
-              data: { app: 'CLIENT_APP' }
-            })
-          );
-        }, 30 * 1000);
-      }
-    };
+  //       pingInterval = setInterval(() => {
+  //         socket.send(
+  //           JSON.stringify({
+  //             cmd: socketSendCMDs.CMD_CLIENT_PING,
+  //             platform: WEB_PLATFORM,
+  //             clientVersion: '1.0',
+  //             lang: 'vi',
+  //             token: accessToken,
+  //             app: 'CLIENT_APP',
+  //             data: { app: 'CLIENT_APP' }
+  //           })
+  //         );
+  //       }, 30 * 1000);
+  //     }
+  //   };
 
-    socket.onclose = () => {
-      if (pingInterval) clearInterval(pingInterval);
-    };
+  //   socket.onclose = () => {
+  //     if (pingInterval) clearInterval(pingInterval);
+  //   };
 
-    // socket.onmessage = logger.info;
+  //   // socket.onmessage = logger.info;
 
-    return () => {
-      if (pingInterval) clearInterval(pingInterval);
-      socket.close();
-    };
-  }, [accessToken, setSocket]);
+  //   return () => {
+  //     if (pingInterval) clearInterval(pingInterval);
+  //     socket.close();
+  //   };
+  // }, [accessToken, setSocket]);
 
   return (
     <LazyMotion features={domAnimation} strict>
