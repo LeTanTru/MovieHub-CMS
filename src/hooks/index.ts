@@ -13,6 +13,5 @@ export { default as useListBase } from './use-list-base';
 export { default as useNavigate } from './use-navigate';
 export { default as useQueryParams } from './use-query-params';
 export { default as useSaveBase } from './use-save-base';
-export { default as useSocketEvent } from './use-socket-event';
 export { default as useValidatePermission } from './use-validate-permission';
 export { useFileUpload } from './use-file-upload';

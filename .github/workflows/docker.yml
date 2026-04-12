@@ -37,12 +37,14 @@ jobs:
             NEXT_PUBLIC_APP_PASSWORD=${{ secrets.NEXT_PUBLIC_APP_PASSWORD }}
             NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }}
             NEXT_PUBLIC_TINYMCE_URL=${{ secrets.NEXT_PUBLIC_TINYMCE_URL }}
-            NEXT_PUBLIC_API_SOCKET_URL=${{ secrets.NEXT_PUBLIC_API_SOCKET_URL }}
             NEXT_PUBLIC_GRANT_TYPE=${{ secrets.NEXT_PUBLIC_GRANT_TYPE }}
             NEXT_PUBLIC_APP_NAME=${{ secrets.NEXT_PUBLIC_APP_NAME }}
             NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN=${{ secrets.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN }}
             NEXT_PUBLIC_MEDIA_HOST=${{ secrets.NEXT_PUBLIC_MEDIA_HOST }}
             NEXT_PUBLIC_CLIENT_TYPE=${{ secrets.NEXT_PUBLIC_CLIENT_TYPE }}
+            NEXT_PUBLIC_MQTT_BROKER=${{ secrets.NEXT_PUBLIC_MQTT_BROKER }}
+            NEXT_PUBLIC_MQTT_USERNAME=${{ secrets.NEXT_PUBLIC_MQTT_USERNAME }}
+            NEXT_PUBLIC_MQTT_PASSWORD=${{ secrets.NEXT_PUBLIC_MQTT_PASSWORD }}
 
       - name: Show Image Size
         run: docker images ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest

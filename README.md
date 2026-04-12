@@ -149,7 +149,6 @@ Built with **Next.js 16 (App Router)** and **TypeScript**, the system emphasizes
    NEXT_PUBLIC_APP_PASSWORD=your-app-password
    NEXT_PUBLIC_URL=http://localhost:3001
    NEXT_PUBLIC_TINYMCE_URL=https://cdn.tiny.cloud
-   NEXT_PUBLIC_API_SOCKET_URL=wss://your-socket-url
    NEXT_PUBLIC_GRANT_TYPE=password
    NEXT_PUBLIC_APP_NAME=MovieHub CMS
    NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN=refresh_token
@@ -419,7 +418,6 @@ git push origin feature/your-feature-name
 | `NEXT_PUBLIC_APP_PASSWORD`             | App credentials password    | `secret-password`            |
 | `NEXT_PUBLIC_URL`                      | Application URL             | `http://localhost:3001`      |
 | `NEXT_PUBLIC_TINYMCE_URL`              | TinyMCE CDN URL             | `https://cdn.tiny.cloud`     |
-| `NEXT_PUBLIC_API_SOCKET_URL`           | WebSocket API URL           | `wss://socket.example.com`   |
 | `NEXT_PUBLIC_GRANT_TYPE`               | OAuth grant type            | `password`                   |
 | `NEXT_PUBLIC_APP_NAME`                 | Application name            | `MovieHub CMS`               |
 | `NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN` | Refresh token grant type    | `refresh_token`              |
