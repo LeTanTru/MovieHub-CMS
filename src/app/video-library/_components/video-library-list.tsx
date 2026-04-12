@@ -8,16 +8,18 @@ import {
   apiConfig,
   ErrorCode,
   FieldTypes,
-  socketReceiveCMDs,
   VIDEO_LIBRARY_STATE_COMPLETE,
   VIDEO_LIBRARY_STATE_PROCESSING,
   videoLibrarySourceTypeOptions,
   videoLibraryStateOptions,
   queryKeys,
   MAX_PAGE_SIZE,
-  DEFAULT_TABLE_PAGE_START
+  DEFAULT_TABLE_PAGE_START,
+  mqttTopics,
+  mqttCMDs
 } from '@/constants';
-import { useDisclosure, useListBase, useSocketEvent } from '@/hooks';
+import { useDisclosure, useListBase } from '@/hooks';
+import useMqtt from '@/hooks/use-mqtt';
 import { useServerConfigListQuery } from '@/queries';
 import { videoLibrarySearchSchema } from '@/schemaValidations';
 import type {
@@ -194,26 +196,13 @@ export default function VideoLibraryList() {
       }
     ];
 
-  useSocketEvent(
-    socketReceiveCMDs.CMD_CLIENT_RECEIVED_PUSH_NOTIFICATION,
-    socketReceiveCMDs.CMD_DONE_CONVERT_VIDEO,
-    (data: VideoLibraryResType) => {
-      if (data.state === VIDEO_LIBRARY_STATE_COMPLETE) {
-        notify.success(
-          <span>
-            Convert video <b>{data.name}</b> thành công
-          </span>
-        );
-      } else {
-        notify.error(
-          <>
-            Convert video <b>{data.name}</b> thất bại
-          </>
-        );
-      }
+  useMqtt({
+    topic: mqttTopics.NOTIFICATION_CMS,
+    cmd: mqttCMDs.DONE_CONVERT_VIDEO,
+    callback: () => {
       handlers.invalidateQueries();
     }
-  );
+  });
 
   return (
     <PageWrapper breadcrumbs={[{ label: 'Video' }]}>

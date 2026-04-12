@@ -1574,16 +1574,6 @@ export const movieSidebarStatusOptions = [
   }
 ];
 
-export const socketSendCMDs = {
-  CMD_CLIENT_VERIFY_TOKEN: 'CLIENT_VERIFY_TOKEN',
-  CMD_CLIENT_PING: 'CLIENT_PING'
-};
-
-export const socketReceiveCMDs = {
-  CMD_CLIENT_RECEIVED_PUSH_NOTIFICATION: 'CLIENT_RECEIVED_PUSH_NOTIFICATION',
-  CMD_DONE_CONVERT_VIDEO: 'CMD_DONE_CONVERT_VIDEO'
-};
-
 export const videoLibrarySourceTypeOptions = [
   {
     label: 'Tải lên',
@@ -1623,3 +1613,11 @@ export const serverConfigStatusOptions = [
     color: '#ffc107'
   }
 ];
+
+export const mqttTopics = {
+  NOTIFICATION_CMS: 'notification/cms'
+};
+
+export const mqttCMDs = {
+  DONE_CONVERT_VIDEO: 'CMD_DONE_CONVERT_VIDEO'
+};

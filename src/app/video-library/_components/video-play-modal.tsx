@@ -87,9 +87,9 @@ export default function VideoPlayModal({
           duration={video.duration}
           introEnd={video.introEnd}
           introStart={video.introStart}
-          src={renderVideoUrl(video.hostname, video.content)}
+          src={renderVideoUrl(video.hostname, video.content, video.sourceType)}
           thumbnailUrl={renderImageUrl(video.thumbnailUrl)}
-          vttUrl={renderVttUrl(video.hostname, video.vttUrl)}
+          vttUrl={renderVttUrl(video.hostname, video.vttUrl, video.sourceType)}
           outroStart={video.outroStart}
           token={getAccessTokenFromLocalStorage() || ''}
           volume={

@@ -409,7 +409,11 @@ export default function VideoLibraryForm() {
                           thumbnailUrl={renderImageUrl(imageManager.currentUrl)}
                           vttUrl={
                             validatedVttUrl
-                              ? renderVttUrl(data.hostname, validatedVttUrl)
+                              ? renderVttUrl(
+                                  data.hostname,
+                                  validatedVttUrl,
+                                  data.sourceType
+                                )
                               : ''
                           }
                           volume={
@@ -447,9 +451,17 @@ export default function VideoLibraryForm() {
                           timeToSeconds((outroStart as string) || '00:00:00') ||
                           data.outroStart
                         }
-                        src={renderVideoUrl(data.hostname, data.content)}
+                        src={renderVideoUrl(
+                          data.hostname,
+                          data.content,
+                          data.sourceType
+                        )}
                         thumbnailUrl={renderImageUrl(data.thumbnailUrl)}
-                        vttUrl={renderVttUrl(data.hostname, data.vttUrl)}
+                        vttUrl={renderVttUrl(
+                          data.hostname,
+                          data.vttUrl,
+                          data.sourceType
+                        )}
                         token={getAccessTokenFromLocalStorage() || ''}
                         skipOutro={true}
                         volume={

@@ -112,7 +112,7 @@ export default function Modal({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open, confirmOnClose]);
+  }, [open, confirmOnClose]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleScrollDown = () => {
     scrollRef.current?.scrollBy({ top: 200, behavior: 'smooth' });
