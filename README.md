@@ -69,40 +69,55 @@ Built with **Next.js 16 (App Router)** and **TypeScript**, the system emphasizes
 
 ### Core Framework
 
-- **[Next.js 16](https://nextjs.org/)** - React framework with App Router
-- **[React 19](https://react.dev/)** - UI library
-- **[TypeScript](https://www.typescriptlang.org/)** - Type safety
+| Technology                                    | Version | Purpose                                     |
+| --------------------------------------------- | ------- | ------------------------------------------- |
+| [Next.js](https://nextjs.org/)                | 16      | React framework with App Router & Turbopack |
+| [React](https://react.dev/)                   | 19      | UI library with React Compiler              |
+| [TypeScript](https://www.typescriptlang.org/) | 5       | Strict type safety                          |
+| [Tailwind CSS](https://tailwindcss.com/)      | 4       | Utility-first styling                       |
 
 ### State & Data Management
 
-- **[TanStack Query](https://tanstack.com/query)** - Server state management
-- **[Zustand](https://github.com/pmndrs/zustand)** - Client state management
-- **[Axios](https://axios-http.com/)** - HTTP client
+| Technology                                   | Purpose                 |
+| -------------------------------------------- | ----------------------- |
+| [TanStack Query](https://tanstack.com/query) | Server state & caching  |
+| [Zustand](https://github.com/pmndrs/zustand) | Client state management |
+| [Axios](https://axios-http.com/)             | HTTP client with auth   |
 
 ### Forms & Validation
 
-- **[React Hook Form](https://react-hook-form.com/)** - Form state management
-- **[Zod](https://zod.dev/)** - Schema validation
+| Technology                                      | Purpose                               |
+| ----------------------------------------------- | ------------------------------------- |
+| [React Hook Form](https://react-hook-form.com/) | Performant form handling              |
+| [Zod](https://zod.dev/)                         | v4 schema validation & type inference |
 
-### UI & Styling
+### UI Components & Animations
 
-- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
-- **[Radix UI](https://www.radix-ui.com/)** - Headless UI components
-- **[Framer Motion](https://www.framer.com/motion/)** - Animation library
-- **[Lucide React](https://lucide.dev/)** - Icon library
+| Technology                                      | Purpose                         |
+| ----------------------------------------------- | ------------------------------- |
+| [Radix UI](https://www.radix-ui.com/)           | Headless UI primitives          |
+| [Framer Motion](https://www.framer.com/motion/) | Animations (LazyMotion pattern) |
+| [Lucide React](https://lucide.dev/)             | Icon library                    |
+| [Recharts](https://recharts.org/)               | Charts & data visualization     |
+| [@dnd-kit](https://dndkit.com/)                 | Drag & drop functionality       |
 
 ### Media & Rich Content
 
-- **[Vidstack](https://www.vidstack.io/)** - Video player components
-- **[HLS.js](https://github.com/video-dev/hls.js/)** - HLS video streaming
-- **[TinyMCE](https://www.tiny.cloud/)** - Rich text editor
+| Technology                                               | Purpose                       |
+| -------------------------------------------------------- | ----------------------------- |
+| [Vidstack](https://www.vidstack.io/)                     | Video player with HLS support |
+| [TinyMCE](https://www.tiny.cloud/)                       | Rich text editor              |
+| [AWS SDK S3](https://aws.amazon.com/sdk-for-javascript/) | Presigned URL uploads         |
+| [MQTT](https://mqtt.org/)                                | Real-time messaging           |
 
 ### Development Tools
 
-- **[ESLint](https://eslint.org/)** - Code linting
-- **[Prettier](https://prettier.io/)** - Code formatting
-- **[Husky](https://typicode.github.io/husky/)** - Git hooks
-- **[Commitlint](https://commitlint.js.org/)** - Commit message linting
+| Technology                                 | Purpose                         |
+| ------------------------------------------ | ------------------------------- |
+| [ESLint](https://eslint.org/)              | Code linting                    |
+| [Prettier](https://prettier.io/)           | Code formatting                 |
+| [Husky](https://typicode.github.io/husky/) | Git pre-commit hooks            |
+| [Commitlint](https://commitlint.js.org/)   | Conventional commit enforcement |
 
 ## 🚀 Getting Started
 
@@ -181,74 +196,53 @@ Built with **Next.js 16 (App Router)** and **TypeScript**, the system emphasizes
 ```
 MovieHub-CMS/
 ├── .github/                    # GitHub configuration and CI/CD
-│   └── copilot-instructions.md # Copilot AI assistant instructions
 ├── public/                     # Static assets
 ├── src/
 │   ├── app/                    # Next.js App Router pages
-│   │   ├── (auth)/            # Auth-related pages (login)
-│   │   ├── admin/             # Admin management pages
-│   │   ├── category/          # Category management
+│   │   ├── (auth)/            # Auth route group (login)
+│   │   ├── admin/             # Admin management
+│   │   ├── category/          # Category CRUD
 │   │   ├── collection/        # Collection management
 │   │   ├── employee/          # Employee management
-│   │   ├── group-permission/  # Permission group management
-│   │   ├── movie/             # Movie management
-│   │   ├── person/            # People (actors/directors) management
-│   │   ├── profile/           # User profile pages
+│   │   ├── group-permission/  # Permission groups
+│   │   ├── movie/             # Movie & series management
+│   │   ├── person/            # People (actors/directors)
+│   │   ├── profile/           # User profile
 │   │   ├── sidebar/           # Sidebar configuration
-│   │   ├── style/             # Style/theme management
-│   │   ├── user/              # User management
-│   │   ├── video-library/     # Video library management
-│   │   ├── layout.tsx         # Root layout with providers
-│   │   └── page.tsx           # Home page
-│   ├── assets/                # Images, fonts, and static resources
+│   │   ├── style/             # Theme & style management
+│   │   ├── user/              # End-user management
+│   │   └── video-library/     # Video library
+│   ├── assets/                # Images, fonts, static resources
 │   ├── components/            # Reusable React components
-│   │   ├── form/             # Form components (fields, inputs, etc.)
-│   │   ├── providers/        # React context providers
-│   │   ├── ui/               # UI primitives (Radix UI wrappers)
-│   │   ├── modal/            # Modal components
-│   │   ├── permission-guard/ # Route permission wrapper
-│   │   └── ...
-│   ├── constants/             # Application constants
-│   │   ├── api-config.ts     # API endpoint configuration
-│   │   ├── master-data.ts    # Query keys and dropdown options
-│   │   ├── menu-config.ts    # Sidebar menu configuration
-│   │   ├── route.ts          # Route definitions
-│   │   └── storage-key.ts    # LocalStorage key constants
-│   ├── hooks/                 # Custom React hooks
-│   │   ├── use-list-base.tsx # Standardized list page hook
-│   │   ├── use-save-base.tsx # Standardized save/edit hook
-│   │   ├── use-auth.ts       # Authentication hook
-│   │   └── ...
-│   ├── queries/               # TanStack Query hooks by domain
-│   ├── routes/                # Route metadata and permissions
-│   │   └── route.ts          # Route configuration with auth/permissions
-│   ├── schemaValidations/     # Zod validation schemas
-│   ├── store/                 # Zustand stores
-│   │   ├── use-auth-store.ts # Auth state
-│   │   └── ...
-│   ├── types/                 # TypeScript type definitions
+│   │   ├── form/             # 34 form field components
+│   │   ├── ui/               # Radix UI wrappers
+│   │   ├── providers/        # Context providers
+│   │   ├── table/            # Table with pagination
+│   │   ├── video-player/     # Vidstack player
+│   │   └── permission-guard/ # Route access control
+│   ├── constants/             # Centralized configuration
+│   │   ├── api-config.ts     # ~900 lines of endpoint definitions
+│   │   ├── route.ts          # Route metadata & permissions
+│   │   ├── menu-config.ts    # Sidebar navigation
+│   │   └── storage-key.ts    # LocalStorage keys
+│   ├── hooks/                 # 20 custom React hooks
+│   │   ├── use-list-base.tsx # Standardized list page logic
+│   │   ├── use-save-base.tsx # Standardized create/edit logic
+│   │   └── use-auth.ts       # Authentication hook
+│   ├── queries/               # 16 TanStack Query hook files
+│   ├── routes/                # Route definitions with permissions
+│   ├── schemaValidations/     # 23 Zod validation schemas
+│   ├── store/                 # Zustand stores (auth, sidebar, etc.)
+│   ├── types/                 # 32 TypeScript type definitions
 │   ├── utils/                 # Utility functions
-│   │   ├── http.util.ts      # HTTP client wrapper
-│   │   ├── storage.util.ts   # LocalStorage helpers
-│   │   └── ...
-│   └── lib/                   # Third-party library configurations
-├── .env                       # Environment variables (git-ignored)
-├── .env.example               # Environment variables template
-├── next.config.ts             # Next.js configuration
-├── tailwind.config.ts         # Tailwind CSS configuration
-├── tsconfig.json              # TypeScript configuration
-└── package.json               # Dependencies and scripts
+│   │   ├── http.util.ts      # Axios wrapper with auth
+│   │   └── storage.util.ts   # LocalStorage helpers
+│   └── lib/                   # Third-party library configs
+├── .env.example               # Environment template
+├── next.config.ts             # Next.js config (React Compiler, 2GB body limit)
+├── tailwind.config.ts         # Tailwind CSS v4 config
+└── tsconfig.json              # TypeScript strict mode
 ```
-
-### Key Directories
-
-- **`src/app`**: Next.js 16 App Router pages with nested routing and layouts
-- **`src/components`**: Reusable UI components, form fields, and shared widgets
-- **`src/hooks`**: Custom React hooks for common patterns (lists, forms, auth)
-- **`src/queries`**: TanStack Query hooks organized by domain (movies, users, etc.)
-- **`src/constants`**: Centralized configuration for APIs, routes, and app constants
-- **`src/schemaValidations`**: Zod schemas for form validation and type inference
-- **`src/utils`**: Pure utility functions (HTTP, formatting, storage, etc.)
 
 ## 🏗 Architecture Overview
 
@@ -303,80 +297,50 @@ ThemeProvider (next-themes)
 
 ## 💻 Development
 
-### Code Organization Patterns
+### Notable Architecture Patterns
 
-#### List Pages
+**Configuration-Driven CRUD**
+All pages follow the same pattern using `useListBase` (list pages) and `useSaveBase` (create/edit pages). This dramatically reduces boilerplate and ensures consistency across the entire application.
 
-Use `useListBase` hook for standardized list functionality:
+**Single Source of Truth**
 
-```typescript
-const { data, loading, handlers } = useListBase({
-  apiConfig: apiConfig.movie,
-  options: {
-    queryKey: 'movies',
-    objectName: 'phim',
-    defaultFilters: { status: STATUS_ACTIVE },
-    notShowFromSearchParams: ['status']
-  }
-});
-```
+- API endpoints defined in `api-config.ts` (~900 lines)
+- Permission codes cascade automatically through routes, menus, and components
+- Adding a new feature requires updates to only 3 places: api-config, routes, and menu config
 
-#### Save Pages (Create/Edit)
+**Form Dirty Guard**
+When navigating away from unsaved changes, users see a confirmation dialog. Cancel stores the previous path in localStorage for "return to previous" behavior.
 
-Use `useSaveBase` hook for standardized form operations:
+**Dual Token Storage**
+JWT tokens stored in both cookies (SSR) and localStorage (CSR) for seamless authentication across server and client.
 
-```typescript
-const { data, loading, handleSubmit } = useSaveBase({
-  apiConfig: {
-    getById: apiConfig.movie.getById,
-    create: apiConfig.movie.create,
-    update: apiConfig.movie.update
-  },
-  options: {
-    queryKey: 'movie',
-    objectName: 'phim',
-    mode: isNew ? 'create' : 'edit',
-    pathParams: { id }
-  }
-});
-```
+**No Test Framework**
+There is intentionally no test setup -- no `test` script in package.json, no test files, no testing library dependency.
 
-#### Forms
-
-Use `BaseForm` with Zod schema:
-
-```typescript
-<BaseForm
-  schema={movieSchema}
-  defaultValues={defaultValues}
-  initialValues={data}
-  onSubmit={handleSubmit}
->
-  {(form) => (
-    <>
-      <InputField name="title" label="Tiêu đề" control={form.control} />
-      <TextAreaField name="description" label="Mô tả" control={form.control} />
-    </>
-  )}
-</BaseForm>
-```
-
-### Common Conventions
+### Code Conventions
 
 - Use `'use client'` directive for hooks and components using browser APIs
 - Import from `@/*` aliases instead of relative paths
 - Use `m` from framer-motion (not `motion`)
-- Centralize storage keys in `src/constants/storage-key.ts`
-- Reuse query keys from `src/constants/master-data.ts`
+- Use `cn()` from `@/lib/utils` for conditional class merging
 - Follow Zod v4 patterns (`.check()` for chained validators)
+- Prefix unused vars with `_` to suppress warnings
+- All commits must include: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
 
 ### Styling Conventions
 
-- Use Tailwind utility classes
+- Tailwind CSS v4 utility classes
 - Component variants with `class-variance-authority`
 - Radix UI for headless component primitives
-- `cn()` utility from `@/lib` for conditional classes
-- Framer Motion for animations (via LazyMotion)
+- Framer Motion animations via LazyMotion + domAnimation
+- 12-column grid system (`src/styles/grid.css`)
+
+### Form Patterns
+
+- `BaseForm` + `useForm` (react-hook-form) + Zod resolver
+- `ImageField` supports `freeAspect` and `freePreviewAspect` props
+- `UploadImageField` supports `originalSize` prop for original dimensions
+- `onFormChange(isDirty)` callback for dirty tracking
 
 ## 🤝 Contributing
 
