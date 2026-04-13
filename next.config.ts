@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
     removeConsole:
       process.env.NODE_ENV === 'development'
         ? {
-            exclude: ['log', 'warn']
+            exclude: ['log', 'error']
           }
         : false
   }
