@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
   // Optimize bundle size
   compiler: {
     removeConsole:
-      process.env.NODE_ENV === 'development'
+      process.env.NODE_ENV === 'production'
         ? {
             exclude: ['log', 'error']
           }
