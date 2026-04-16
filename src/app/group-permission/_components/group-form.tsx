@@ -293,24 +293,31 @@ export default function GroupForm() {
                               return (
                                 <div
                                   key={permission.id.toString()}
-                                  className='flex items-center gap-x-2'
+                                  className='flex flex-col gap-1'
                                 >
-                                  <Checkbox
-                                    checked={selected.includes(
-                                      permission.id.toString()
-                                    )}
-                                    onCheckedChange={handleToggle}
-                                    id={permission.id.toString()}
-                                    className={
-                                      'data-[state=checked]:bg-main-color data-[state=checked]:border-main-color cursor-pointer transition-all duration-100 ease-linear data-[state=unchecked]:text-white'
-                                    }
-                                  />
-                                  <label
-                                    className='cursor-pointer select-none'
-                                    htmlFor={permission.id.toString()}
-                                  >
-                                    {permission.name}
-                                  </label>
+                                  <div className='flex items-center gap-2'>
+                                    <Checkbox
+                                      checked={selected.includes(
+                                        permission.id.toString()
+                                      )}
+                                      onCheckedChange={handleToggle}
+                                      id={permission.id.toString()}
+                                      className={
+                                        'data-[state=checked]:bg-main-color data-[state=checked]:border-main-color cursor-pointer transition-all duration-100 ease-linear data-[state=unchecked]:text-white'
+                                      }
+                                    />
+                                    <label
+                                      className='line-clamp-1 cursor-pointer select-none'
+                                      htmlFor={permission.id.toString()}
+                                      title={`${permission.name} (${permission.permissionCode})`}
+                                    >
+                                      {permission.name}
+                                      gdfsg
+                                    </label>
+                                  </div>
+                                  <span className='ml-6 inline-block text-xs'>
+                                    ({permission.permissionCode})
+                                  </span>
                                 </div>
                               );
                             })
