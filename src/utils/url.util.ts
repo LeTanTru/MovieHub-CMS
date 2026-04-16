@@ -49,9 +49,9 @@ export const renderVttUrl = (
   if (sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL) return url;
 
   if (hostname.startsWith('https'))
-    return `${hostname}/v1/file/download-video-resource${url}`;
+    return `${hostname}/v1/file/public-download${url}`;
 
-  return `https://${hostname}/v1/file/download-video-resource${url}`;
+  return `https://${hostname}/v1/file/public-download${url}`;
 };
 
 export const renderFileUrl = (url: string) => {
