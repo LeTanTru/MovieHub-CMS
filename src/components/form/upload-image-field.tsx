@@ -164,6 +164,7 @@ export default function UploadImageField<T extends FieldValues>({
   const [keepOriginalSize, setKeepOriginalSize] =
     useState<boolean>(originalSize);
   const [isUploading, setIsUploading] = useState<boolean>(false);
+
   const {
     field: { value: fieldValue, onChange: fieldOnChange },
     fieldState: { error }
@@ -261,7 +262,7 @@ export default function UploadImageField<T extends FieldValues>({
       }
     }
     previousFileIdRef.current = fileId;
-  }, [fileId]);
+  }, [fileId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
