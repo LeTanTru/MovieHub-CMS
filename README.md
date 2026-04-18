@@ -71,44 +71,44 @@ Built with **Next.js 16 (App Router)** and **TypeScript**, the system emphasizes
 
 | Technology                                    | Version | Purpose                                     |
 | --------------------------------------------- | ------- | ------------------------------------------- |
-| [Next.js](https://nextjs.org/)                | 16      | React framework with App Router & Turbopack |
-| [React](https://react.dev/)                   | 19      | UI library with React Compiler              |
-| [TypeScript](https://www.typescriptlang.org/) | 5       | Strict type safety                          |
-| [Tailwind CSS](https://tailwindcss.com/)      | 4       | Utility-first styling                       |
+| [Next.js](https://nextjs.org/)                | 16.1.1  | React framework with App Router & Turbopack |
+| [React](https://react.dev/)                   | 19.2.3  | UI library with React Compiler              |
+| [TypeScript](https://www.typescriptlang.org/) | ^5      | Strict type safety                          |
+| [Tailwind CSS](https://tailwindcss.com/)      | v4      | Utility-first styling                       |
 
 ### State & Data Management
 
-| Technology                                   | Purpose                 |
-| -------------------------------------------- | ----------------------- |
-| [TanStack Query](https://tanstack.com/query) | Server state & caching  |
-| [Zustand](https://github.com/pmndrs/zustand) | Client state management |
-| [Axios](https://axios-http.com/)             | HTTP client with auth   |
+| Technology                                   | Version | Purpose                 |
+| -------------------------------------------- | ------- | ----------------------- |
+| [TanStack Query](https://tanstack.com/query) | 5.90.16 | Server state & caching  |
+| [Zustand](https://github.com/pmndrs/zustand) | 5.0.9   | Client state management |
+| [Axios](https://axios-http.com/)             | 1.13.2  | HTTP client with auth   |
 
 ### Forms & Validation
 
-| Technology                                      | Purpose                               |
-| ----------------------------------------------- | ------------------------------------- |
-| [React Hook Form](https://react-hook-form.com/) | Performant form handling              |
-| [Zod](https://zod.dev/)                         | v4 schema validation & type inference |
+| Technology                                      | Version | Purpose                               |
+| ----------------------------------------------- | ------- | ------------------------------------- |
+| [React Hook Form](https://react-hook-form.com/) | 7.69.0  | Performant form handling              |
+| [Zod](https://zod.dev/)                         | 4.3.4   | v4 schema validation & type inference |
 
 ### UI Components & Animations
 
-| Technology                                      | Purpose                         |
-| ----------------------------------------------- | ------------------------------- |
-| [Radix UI](https://www.radix-ui.com/)           | Headless UI primitives          |
-| [Framer Motion](https://www.framer.com/motion/) | Animations (LazyMotion pattern) |
-| [Lucide React](https://lucide.dev/)             | Icon library                    |
-| [Recharts](https://recharts.org/)               | Charts & data visualization     |
-| [@dnd-kit](https://dndkit.com/)                 | Drag & drop functionality       |
+| Technology                                      | Version  | Purpose                         |
+| ----------------------------------------------- | -------- | ------------------------------- |
+| [Radix UI](https://www.radix-ui.com/)           | 1.x      | Headless UI primitives          |
+| [Framer Motion](https://www.framer.com/motion/) | 12.23.26 | Animations (LazyMotion pattern) |
+| [Lucide React](https://lucide.dev/)             | 0.562.0  | Icon library                    |
+| [Recharts](https://recharts.org/)               | -        | Charts & data visualization     |
+| [@dnd-kit](https://dndkit.com/)                 | -        | Drag & drop functionality       |
 
 ### Media & Rich Content
 
-| Technology                                               | Purpose                       |
-| -------------------------------------------------------- | ----------------------------- |
-| [Vidstack](https://www.vidstack.io/)                     | Video player with HLS support |
-| [TinyMCE](https://www.tiny.cloud/)                       | Rich text editor              |
-| [AWS SDK S3](https://aws.amazon.com/sdk-for-javascript/) | Presigned URL uploads         |
-| [MQTT](https://mqtt.org/)                                | Real-time messaging           |
+| Technology                                               | Version | Purpose                       |
+| -------------------------------------------------------- | ------- | ----------------------------- |
+| [Vidstack](https://www.vidstack.io/)                     | 1.12.13 | Video player with HLS support |
+| [TinyMCE](https://www.tiny.cloud/)                       | -       | Rich text editor              |
+| [AWS SDK S3](https://aws.amazon.com/sdk-for-javascript/) | -       | Presigned URL uploads         |
+| [MQTT](https://mqtt.org/)                                | -       | Real-time messaging           |
 
 ### Development Tools
 
@@ -297,7 +297,17 @@ ThemeProvider (next-themes)
 
 ## 💻 Development
 
-### Notable Architecture Patterns
+### Provider Hierarchy
+
+```
+ThemeProvider (next-themes)
+  └─ QueryProvider (TanStack Query, staleTime: 60s)
+      └─ AppProvider (auth + LazyMotion)
+          └─ PermissionGuard (route-level access control)
+              └─ Page Content
+```
+
+### Key Architecture Patterns
 
 **Configuration-Driven CRUD**
 All pages follow the same pattern using `useListBase` (list pages) and `useSaveBase` (create/edit pages). This dramatically reduces boilerplate and ensures consistency across the entire application.
@@ -326,6 +336,22 @@ There is intentionally no test setup -- no `test` script in package.json, no tes
 - Follow Zod v4 patterns (`.check()` for chained validators)
 - Prefix unused vars with `_` to suppress warnings
 - All commits must include: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
+
+### Modal Patterns
+
+```tsx
+<Modal
+  open={open}
+  onClose={handleClose}
+  className='...'
+  aria-labelledby='...'
+  confirmOnClose={isFormChanged}
+>
+  <Modal.Header>Title</Modal.Header>
+  <Modal.Body>{/* Form content */}</Modal.Body>
+  <Modal.Confirm message='Bạn có chắc chắn muốn hùy không ?' />
+</Modal>
+```
 
 ### Styling Conventions
 

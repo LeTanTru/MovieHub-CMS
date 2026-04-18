@@ -16,8 +16,6 @@ yarn format       # Prettier write all
 
 **Pre-commit hooks** (Husky + lint-staged) auto-run `eslint --fix` and `prettier --write` on staged `*.{js,jsx,ts,tsx}` files. Commit messages must follow conventional commits (enforced by commitlint).
 
-**All commits must include** the Co-authored-by trailer: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
-
 ## Code Style
 
 ### Imports
@@ -84,6 +82,28 @@ yarn format       # Prettier write all
 - `ImageField` supports `freeAspect` and `freePreviewAspect` props for rendering images without fixed aspect ratios.
 - `UploadImageField` supports `originalSize` prop that adds 'Gốc' checkbox for uploading images at original dimensions without cropping.
 
+### Modal Components
+
+Pattern for create/edit modals (see `video-play-modal.tsx` for reference):
+
+```tsx
+<Modal
+  open={open}
+  onClose={handleClose}
+  className='...'
+  aria-labelledby='...'
+  confirmOnClose={isFormChanged} // Show confirm on close if form is dirty
+>
+  <Modal.Header>Title</Modal.Header>
+  <Modal.Body>{/* Form content */}</Modal.Body>
+  <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
+</Modal>
+```
+
+- Always wrap form content in `Modal.Body`
+- Add `Modal.Confirm` with Vietnamese message for dirty form confirm
+- `handleClose` should call `onFormChange(false)` before `onClose()` to reset dirty state
+
 ### Architecture Notes
 
 - App Router CMS (`src/app`). Providers order: `ThemeProvider` → `QueryProvider` → `AppProvider` → `PermissionGuard`.
@@ -98,5 +118,5 @@ yarn format       # Prettier write all
 
 - Branch naming: `feature/`, `fix/`, `refactor/` prefixes
 - Commit messages: conventional commits (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`)
-- All commits must include: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
-- Never commit secrets, `.env` files, or credentials
+- All commits include: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
+- Never commit secrets, `.env`, or credentials

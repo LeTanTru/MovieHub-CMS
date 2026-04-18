@@ -18,8 +18,7 @@ import {
   mqttTopics,
   mqttCMDs
 } from '@/constants';
-import { useDisclosure, useListBase } from '@/hooks';
-import useMqtt from '@/hooks/use-mqtt';
+import { useDisclosure, useListBase, useMqtt } from '@/hooks';
 import { useServerConfigListQuery } from '@/queries';
 import { videoLibrarySearchSchema } from '@/schemaValidations';
 import type {
