@@ -154,7 +154,7 @@ export default function AutoCompleteField<
     if (debouncedSearch !== '') {
       query.refetch();
     }
-  }, [debouncedSearch]);
+  }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const options: AutoCompleteOption<TOption>[] = (
     query.data?.data.content || []
@@ -268,7 +268,7 @@ export default function AutoCompleteField<
                       disabled={disabled}
                       title={selectedOption?.label ?? ''}
                       className={cn(
-                        'hover:border-input focus-visible:border-input dark:hover:border-input dark:bg-input/30 dark:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 dark:text-white dark:hover:text-white',
+                        'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2',
                         {
                           'ring-main-color border-transparent! ring-2': open,
                           '[&>div>span]:text-gray-300': fieldState.invalid,

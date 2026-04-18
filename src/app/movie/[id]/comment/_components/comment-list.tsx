@@ -23,7 +23,6 @@ import { useMemo, useCallback } from 'react';
 import CommentItem from './comment-item';
 import { DotLoading } from '@/components/loading';
 import { Button } from '@/components/form';
-import CommentItemSkeleton from './comment-item-skeleton';
 import { useQueryClient } from '@tanstack/react-query';
 
 export default function CommentList() {
@@ -149,7 +148,7 @@ export default function CommentList() {
           <div className='space-y-4 px-4'>
             <h4 className='skeleton ml-4 h-5 w-20'></h4>
             {Array.from({ length: 8 }).map((_, index) => (
-              <CommentItemSkeleton key={index} />
+              <CommentItem.Skeleton key={index} />
             ))}
           </div>
         ) : data.length === 0 ? (

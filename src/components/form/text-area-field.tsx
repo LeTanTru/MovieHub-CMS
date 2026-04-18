@@ -2,14 +2,14 @@
 
 import {
   forwardRef,
-  useEffect,
   useId,
   useRef,
   type ForwardedRef,
   useImperativeHandle,
   type ReactNode,
   type TextareaHTMLAttributes,
-  type ReactElement
+  type ReactElement,
+  useEffectEvent
 } from 'react';
 import {
   FormControl,
@@ -37,7 +37,6 @@ type TextAreaFieldProps<T extends FieldValues> = {
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
-  floatLabel?: boolean;
   maxLength?: number;
   rows?: number;
   maxRows?: number;
@@ -54,10 +53,9 @@ const TextAreaField = <T extends FieldValues>(
     required = false,
     disabled = false,
     readOnly = false,
-    floatLabel = false,
     maxLength,
     rows = 8,
-    maxRows = 15,
+    maxRows = 8,
     ...rest
   }: TextAreaFieldProps<T>,
   ref: ForwardedRef<HTMLTextAreaElement>
@@ -70,7 +68,7 @@ const TextAreaField = <T extends FieldValues>(
 
   useImperativeHandle(ref, () => internalRef.current!);
 
-  const resizeTextarea = () => {
+  const resizeTextarea = useEffectEvent(() => {
     if (!internalRef.current) return;
     internalRef.current.style.height = 'auto';
     const scrollHeight = internalRef.current.scrollHeight;
@@ -79,11 +77,7 @@ const TextAreaField = <T extends FieldValues>(
     );
     const maxHeight = maxRows ? maxRows * lineHeight : Infinity;
     internalRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
-  };
-
-  useEffect(() => {
-    resizeTextarea();
-  }, [fieldValue]);
+  });
 
   return (
     <FormField
@@ -91,18 +85,11 @@ const TextAreaField = <T extends FieldValues>(
       name={name}
       render={({ field, fieldState }) => (
         <FormItem className='relative'>
-          <div className={cn('relative', floatLabel && 'group')}>
+          <div className='relative'>
             {label && (
               <FormLabel
                 htmlFor={id}
-                className={cn(
-                  'mb-2 ml-2',
-                  {
-                    'origin-start text-muted-foreground/70 group-focus-within:text-foreground has-[+textarea:not(:placeholder-shown)]:text-foreground has-aria-invalid:border-destructive/60 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive bg-background absolute top-0 block translate-y-2 cursor-text rounded px-1 transition-all group-focus-within:pointer-events-none group-focus-within:-translate-y-1/2 group-focus-within:cursor-default group-focus-within:text-xs group-focus-within:font-medium has-[+textarea:not(:placeholder-shown)]:pointer-events-none has-[+textarea:not(:placeholder-shown)]:-translate-y-1/2 has-[+textarea:not(:placeholder-shown)]:cursor-default has-[+textarea:not(:placeholder-shown)]:text-xs has-[+textarea:not(:placeholder-shown)]:font-medium':
-                      floatLabel
-                  },
-                  labelClassName
-                )}
+                className={cn('mb-2 ml-2', labelClassName)}
               >
                 {label}
                 {required && <span className='text-destructive'>*</span>}
@@ -117,10 +104,9 @@ const TextAreaField = <T extends FieldValues>(
                   disabled={disabled}
                   readOnly={readOnly}
                   maxLength={maxLength}
-                  rows={rows ?? 4}
+                  rows={rows}
                   className={cn(
-                    floatLabel && 'bg-background pt-6',
-                    'focus-visible:ring-main-color min-h-40 w-full pt-4 break-all shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
+                    'focus-visible:ring-main-color field-sizing-fixed w-full pt-4 break-all shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
                     {
                       'border-red-500 focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-red-500':
                         !!fieldState.error

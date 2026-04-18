@@ -600,6 +600,8 @@ const useInfiniteListBase = <
       disabled={infiniteQuery.isFetching}
       onClick={() => infiniteQuery.refetch()}
       variant='primary'
+      loading={infiniteQuery.isFetching}
+      iconClassName='size-4'
     >
       <RefreshCcw />
     </Button>

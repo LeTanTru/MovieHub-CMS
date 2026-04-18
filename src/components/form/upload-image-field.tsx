@@ -164,6 +164,7 @@ export default function UploadImageField<T extends FieldValues>({
   const [keepOriginalSize, setKeepOriginalSize] =
     useState<boolean>(originalSize);
   const [isUploading, setIsUploading] = useState<boolean>(false);
+
   const {
     field: { value: fieldValue, onChange: fieldOnChange },
     fieldState: { error }
@@ -261,7 +262,7 @@ export default function UploadImageField<T extends FieldValues>({
       }
     }
     previousFileIdRef.current = fileId;
-  }, [fileId]);
+  }, [fileId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -285,10 +286,10 @@ export default function UploadImageField<T extends FieldValues>({
             className={cn(
               'group relative inline-flex cursor-pointer items-center justify-center rounded',
               {
-                'border-input border-2 border-dashed transition-all transition-colors duration-200 ease-linear hover:bg-gray-100 dark:hover:bg-gray-800':
+                'border-input border-2 border-dashed transition-all transition-colors duration-200 ease-linear hover:bg-gray-100':
                   !value,
                 'rounded-full': avatar,
-                'border-gray-300 bg-gray-100 dark:bg-gray-800': isDragging,
+                'border-gray-300 bg-gray-100': isDragging,
                 'border-red-500': !!error
               }
             )}
@@ -352,7 +353,7 @@ export default function UploadImageField<T extends FieldValues>({
                 )}
               </div>
             ) : loading && !showCrop ? (
-              <CircleLoading className='stroke-main-color dark:stroke-white' />
+              <CircleLoading className='stroke-main-color' />
             ) : avatar ? (
               <CircleUserRoundIcon
                 strokeWidth={1}
@@ -403,7 +404,7 @@ export default function UploadImageField<T extends FieldValues>({
 
             <AspectRatio
               ratio={customAspect < 1 ? 1 : customAspect}
-              className={cn('bg-muted h-full dark:bg-black', {
+              className={cn('bg-muted h-full', {
                 'bg-black': keepOriginalSize && !shouldCrop
               })}
             >
@@ -529,7 +530,7 @@ export default function UploadImageField<T extends FieldValues>({
                     type='button'
                     variant='outline'
                     size='icon'
-                    className='hover:border-destructive/80 text-destructive border-destructive dark:border-destructive dark:text-destructive dark:hover:border-destructive/80 hover:text-destructive/80 dark:hover:text-destructive/80 disabled:border-destructive/80 -my-1 w-25'
+                    className='hover:border-destructive/80 text-destructive border-destructive hover:text-destructive/80 disabled:border-destructive/80 -my-1 w-25'
                     onClick={() => setDialogOpen(false)}
                     disabled={isUploading}
                   >

@@ -178,17 +178,15 @@ export default function Modal({
               <Activity visible={!!title || !!showClose}>
                 <div
                   className={cn(
-                    'header-title flex h-10 items-center justify-between border-b border-none border-solid border-gray-200 py-2 pr-2 pl-4 dark:border-none dark:text-white',
+                    'header-title flex h-10 items-center justify-between border-b border-none border-solid border-gray-200 py-2 pr-2 pl-4',
                     headerClassName
                   )}
                 >
-                  <div className='font-semibold text-gray-800 dark:text-white'>
-                    {title}
-                  </div>
+                  <div className='font-semibold text-gray-800'>{title}</div>
 
                   <Activity visible={showClose && onClose !== undefined}>
                     <Button
-                      className='h-fit! p-0! text-gray-500 transition hover:bg-transparent hover:text-black dark:text-gray-400 dark:hover:text-white'
+                      className='h-fit! p-0! text-gray-500 transition hover:bg-transparent hover:text-black'
                       onClick={handleCloseRequest}
                       variant='ghost'
                     >
@@ -241,7 +239,7 @@ export default function Modal({
                   >
                     <m.div
                       className={cn(
-                        'flex flex-col items-center gap-2 rounded-lg bg-white p-4 shadow-lg dark:bg-gray-800',
+                        'flex flex-col items-center gap-2 rounded-lg bg-white p-4 shadow-lg',
                         confirmClassName
                       )}
                       initial={{ scale: 0.85, opacity: 0 }}
@@ -251,7 +249,7 @@ export default function Modal({
                     >
                       <div className='flex items-center'>
                         <Info className='size-6 fill-orange-500 stroke-white' />
-                        <p className='ml-1 text-center font-medium text-gray-700 dark:text-gray-200'>
+                        <p className='ml-1 text-center font-medium text-gray-700'>
                           {confirmOnCloseMessage}
                         </p>
                       </div>
@@ -259,14 +257,14 @@ export default function Modal({
                         <Button
                           variant='outline'
                           size='sm'
-                          className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80 dark:border-red-500 dark:hover:border-red-500/80 dark:hover:text-red-500/80'
+                          className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
                           onClick={handleConfirmNo}
                         >
                           Không
                         </Button>
                         <Button
                           size='sm'
-                          className='bg-main-color hover:bg-main-color/80 dark:bg-primary-button dark:hover:bg-primary-button/80 text-white dark:text-black'
+                          className='bg-main-color hover:bg-main-color/80 text-white'
                           onClick={handleConfirmYes}
                         >
                           Có

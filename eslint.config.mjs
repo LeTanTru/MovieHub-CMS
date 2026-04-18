@@ -48,6 +48,11 @@ const eslintConfig = [
       'react-refresh': reactRefresh
     },
     rules: {
+      'padding-line-between-statements': [
+        'error',
+        { blankLine: 'always', prev: 'directive', next: '*' }
+      ],
+
       'no-unused-vars': ['off'],
       '@typescript-eslint/no-unused-vars': [
         'warn',
