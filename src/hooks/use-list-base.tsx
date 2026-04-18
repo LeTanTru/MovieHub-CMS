@@ -585,6 +585,8 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
       disabled={listQuery.isFetching}
       onClick={() => listQuery.refetch()}
       variant='primary'
+      loading={listQuery.isFetching}
+      iconClassName='size-4'
     >
       <RefreshCcw />
     </Button>

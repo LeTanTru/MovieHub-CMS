@@ -3,7 +3,8 @@
 import { AvatarField } from '@/components/form';
 import { List, ListItem } from '@/components/list';
 import { CircleLoading } from '@/components/loading';
-import { storageKeys } from '@/constants';
+import { getQueryClient } from '@/components/providers/query-provider';
+import { queryKeys, storageKeys } from '@/constants';
 import { useDisclosure, useNavigate, useQueryParams } from '@/hooks';
 import { logger } from '@/logger';
 import { useLogoutMutation } from '@/queries';
@@ -19,6 +20,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 export default function DropdownAvatar() {
   const navigate = useNavigate();
+  const queryClient = getQueryClient();
   const { opened: openedDropdown, toggle: toggleDropDown } = useDisclosure();
   const pathname = usePathname();
   const setLoading = useAppLoadingStore((s) => s.setLoading);
@@ -47,6 +49,11 @@ export default function DropdownAvatar() {
             storageKeys.REFRESH_TOKEN,
             storageKeys.USER_KIND
           ]);
+
+          queryClient.removeQueries({ queryKey: [queryKeys.PROFILE] });
+          queryClient.removeQueries({
+            queryKey: [`${queryKeys.EMPLOYEE}-profile`]
+          });
 
           setProfile(null);
           setIsLoggedOut(true);

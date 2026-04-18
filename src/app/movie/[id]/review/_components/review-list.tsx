@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/form';
-import ReviewItemSkeleton from './review-item-skeleton';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DotLoading } from '@/components/loading';
 import { NoData } from '@/components/no-data';
@@ -61,7 +60,7 @@ export default function ReviewList() {
           <div className='space-y-4 p-4'>
             <h4 className='skeleton ml-4 h-5 w-20'></h4>
             {Array.from({ length: 8 }).map((_, index) => (
-              <ReviewItemSkeleton key={index} />
+              <ReviewItem.Skeleton key={index} />
             ))}
           </div>
         ) : data.length === 0 ? (

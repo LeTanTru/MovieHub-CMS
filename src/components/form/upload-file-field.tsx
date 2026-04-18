@@ -102,7 +102,7 @@ export default function UploadFileField<T extends FieldValues>({
       startUpload(file);
     }
     prevFileId.current = fileId;
-  }, [fileId, maxSize]);
+  }, [fileId, maxSize]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const startUpload = async (file: File) => {
     try {
