@@ -64,44 +64,54 @@ export default function VideoPlayModal({
 
   return (
     <Modal
-      title={video.name}
       open={open}
       onClose={onClose}
       className='video-play-modal overflow-hidden'
       aria-labelledby='video-play-modal-title'
-      bodyRef={bodyRef}
-      confirmOnClose={true}
+      confirmOnClose
     >
-      <div
-        style={
-          {
-            height: '100%',
-            '--player-height': `${bodyHeight}px`,
-            '--media-height': `${bodyHeight}px`
-          } as React.CSSProperties
-        }
-        className='p-4'
-      >
-        <VideoPlayer
-          auth={video.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL}
-          duration={video.duration}
-          introEnd={video.introEnd}
-          introStart={video.introStart}
-          src={renderVideoUrl(video.hostname, video.content, video.sourceType)}
-          thumbnailUrl={renderImageUrl(video.thumbnailUrl)}
-          vttUrl={renderVttUrl(video.hostname, video.vttUrl, video.sourceType)}
-          outroStart={video.outroStart}
-          token={getAccessTokenFromLocalStorage() || ''}
-          title={video.name}
-          volume={
-            envConfig.NEXT_PUBLIC_NODE_ENV === 'development'
-              ? 0
-              : isMobileDevice() || isTabletDevice()
-                ? 1
-                : 0.5
+      <Modal.Header>{video.name}</Modal.Header>
+      <Modal.Body ref={bodyRef}>
+        <div
+          style={
+            {
+              height: '100%',
+              '--player-height': `${bodyHeight}px`,
+              '--media-height': `${bodyHeight}px`
+            } as React.CSSProperties
           }
-        />
-      </div>
+          className='p-4'
+        >
+          <VideoPlayer
+            auth={video.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL}
+            duration={video.duration}
+            introEnd={video.introEnd}
+            introStart={video.introStart}
+            src={renderVideoUrl(
+              video.hostname,
+              video.content,
+              video.sourceType
+            )}
+            thumbnailUrl={renderImageUrl(video.thumbnailUrl)}
+            vttUrl={renderVttUrl(
+              video.hostname,
+              video.vttUrl,
+              video.sourceType
+            )}
+            outroStart={video.outroStart}
+            token={getAccessTokenFromLocalStorage() || ''}
+            title={video.name}
+            volume={
+              envConfig.NEXT_PUBLIC_NODE_ENV === 'development'
+                ? 0
+                : isMobileDevice() || isTabletDevice()
+                  ? 1
+                  : 0.5
+            }
+          />
+        </div>
+      </Modal.Body>
+      <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
 }

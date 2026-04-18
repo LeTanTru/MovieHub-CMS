@@ -243,158 +243,162 @@ export default function MovieItemModal({
     <Modal
       open={open}
       onClose={handleClose}
-      bodyWrapperClassName='h-[80vh] max-[1537px]:w-225 max-[1367px]:w-200'
-      title={`${isEditing ? 'Cập nhật' : 'Thêm'} ${objectName}`}
+      className='h-[80vh] w-270 max-[1537px]:w-225 max-[1367px]:w-200'
       aria-labelledby='movie-item-modal-title'
-      scrollable
       confirmOnClose={isFormChanged}
     >
-      <BaseForm
-        onSubmit={onSubmit}
-        defaultValues={defaultValues}
-        schema={movieItemSchema}
-        initialValues={initialValues}
-        onFormChange={onFormChange}
-      >
-        {(form) => {
-          const kind = form.watch('kind');
-          return (
-            <>
-              <Row>
-                <Col className='grid-c-12'>
-                  <UploadImageField
-                    value={renderImageUrl(imageManager.currentUrl)}
-                    loading={updateImageLoading}
-                    control={form.control}
-                    name='thumbnailUrl'
-                    onChange={imageManager.trackUpload}
-                    size={150}
-                    uploadImageFn={async (file) => {
-                      const res = await uploadImageMutate({
-                        file
-                      });
-                      return res.data?.filePath ?? '';
-                    }}
-                    deleteImageFn={imageManager.handleDeleteOnClick}
-                    label='Ảnh xem trước (16:9)'
-                    aspect={16 / 9}
-                    defaultCrop={false}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col className='grid-c-6'>
-                  <SelectField
-                    options={movieItemId ? kindOptions : [kindOptions[0]]}
-                    control={form.control}
-                    name='kind'
-                    label='Loại'
-                    placeholder='Loại'
-                    required
-                    disabled={
-                      isEditing || !movieItemId || kindOptions.length === 1
-                    }
-                  />
-                </Col>
-                <Col className='grid-c-6'>
-                  <InputField
-                    control={form.control}
-                    name='title'
-                    label='Tiêu đề'
-                    placeholder='Tiêu đề'
-                    required
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col className='grid-c-6'>
-                  <InputField
-                    control={form.control}
-                    name='label'
-                    label='Nhãn'
-                    placeholder='Nhãn'
-                    required
-                  />
-                </Col>
-                <Col className='grid-c-6'>
-                  <DateTimePickerField
-                    control={form.control}
-                    name='releaseDate'
-                    label='Ngày phát hành'
-                    placeholder='Ngày phát hành'
-                    required
-                  />
-                </Col>
-              </Row>
-              <Row>
-                {!!type &&
-                  +type === MOVIE_TYPE_SERIES &&
-                  kind === MOVIE_ITEM_KIND_SEASON && (
-                    <Col className='grid-c-6'>
-                      <NumberField
-                        control={form.control}
-                        name='totalEpisode'
-                        label='Tổng số tập'
-                        placeholder='Tổng số tập'
-                        required
-                        min={0}
-                      />
-                    </Col>
-                  )}
-                {(kind !== MOVIE_ITEM_KIND_SEASON ||
-                  (!!type && +type === MOVIE_TYPE_SINGLE)) && (
-                  <Col className='grid-c-6'>
-                    <AutoCompleteField
-                      apiConfig={apiConfig.videoLibrary.autoComplete}
-                      mappingData={(item: VideoLibraryResType) => ({
-                        label: item.name,
-                        value: item.id.toString()
-                      })}
-                      searchParams={['name']}
+      <Modal.Header>
+        {`${isEditing ? 'Cập nhật' : 'Thêm'} ${objectName}`}
+      </Modal.Header>
+      <Modal.Body scrollable>
+        <BaseForm
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+          schema={movieItemSchema}
+          initialValues={initialValues}
+          onFormChange={onFormChange}
+        >
+          {(form) => {
+            const kind = form.watch('kind');
+            return (
+              <>
+                <Row>
+                  <Col className='grid-c-12'>
+                    <UploadImageField
+                      value={renderImageUrl(imageManager.currentUrl)}
+                      loading={updateImageLoading}
                       control={form.control}
-                      name='videoId'
-                      label='Video'
-                      placeholder='Video'
+                      name='thumbnailUrl'
+                      onChange={imageManager.trackUpload}
+                      size={150}
+                      uploadImageFn={async (file) => {
+                        const res = await uploadImageMutate({
+                          file
+                        });
+                        return res.data?.filePath ?? '';
+                      }}
+                      deleteImageFn={imageManager.handleDeleteOnClick}
+                      label='Ảnh xem trước (16:9)'
+                      aspect={16 / 9}
+                      defaultCrop={false}
                     />
                   </Col>
-                )}
-                {kind !== MOVIE_TYPE_TRAILER && !isEditing && (
-                  <Col className='grid-c-6 mb-3 justify-end'>
-                    <CheckboxField
+                </Row>
+                <Row>
+                  <Col className='grid-c-6'>
+                    <SelectField
+                      options={movieItemId ? kindOptions : [kindOptions[0]]}
                       control={form.control}
-                      name='isLatest'
-                      label='Đánh dấu là mới nhất'
+                      name='kind'
+                      label='Loại'
+                      placeholder='Loại'
+                      required
+                      disabled={
+                        isEditing || !movieItemId || kindOptions.length === 1
+                      }
+                    />
+                  </Col>
+                  <Col className='grid-c-6'>
+                    <InputField
+                      control={form.control}
+                      name='title'
+                      label='Tiêu đề'
+                      placeholder='Tiêu đề'
                       required
                     />
                   </Col>
+                </Row>
+                <Row>
+                  <Col className='grid-c-6'>
+                    <InputField
+                      control={form.control}
+                      name='label'
+                      label='Nhãn'
+                      placeholder='Nhãn'
+                      required
+                    />
+                  </Col>
+                  <Col className='grid-c-6'>
+                    <DateTimePickerField
+                      control={form.control}
+                      name='releaseDate'
+                      label='Ngày phát hành'
+                      placeholder='Ngày phát hành'
+                      required
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  {!!type &&
+                    +type === MOVIE_TYPE_SERIES &&
+                    kind === MOVIE_ITEM_KIND_SEASON && (
+                      <Col className='grid-c-6'>
+                        <NumberField
+                          control={form.control}
+                          name='totalEpisode'
+                          label='Tổng số tập'
+                          placeholder='Tổng số tập'
+                          required
+                          min={0}
+                        />
+                      </Col>
+                    )}
+                  {(kind !== MOVIE_ITEM_KIND_SEASON ||
+                    (!!type && +type === MOVIE_TYPE_SINGLE)) && (
+                    <Col className='grid-c-6'>
+                      <AutoCompleteField
+                        apiConfig={apiConfig.videoLibrary.autoComplete}
+                        mappingData={(item: VideoLibraryResType) => ({
+                          label: item.name,
+                          value: item.id.toString()
+                        })}
+                        searchParams={['name']}
+                        control={form.control}
+                        name='videoId'
+                        label='Video'
+                        placeholder='Video'
+                      />
+                    </Col>
+                  )}
+                  {kind !== MOVIE_TYPE_TRAILER && !isEditing && (
+                    <Col className='grid-c-6 mb-3 justify-end'>
+                      <CheckboxField
+                        control={form.control}
+                        name='isLatest'
+                        label='Đánh dấu là mới nhất'
+                        required
+                      />
+                    </Col>
+                  )}
+                </Row>
+                <Row>
+                  <Col className='grid-c-12'>
+                    <RichTextField
+                      control={form.control}
+                      name='description'
+                      label='Mô tả'
+                      placeholder='Mô tả'
+                      required
+                      height={300}
+                    />
+                  </Col>
+                </Row>
+                <>
+                  {renderActions(form, {
+                    onCancel: handleCancel
+                  })}
+                </>
+                {loading && (
+                  <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
+                    <CircleLoading className='stroke-main-color mt-10' />
+                  </div>
                 )}
-              </Row>
-              <Row>
-                <Col className='grid-c-12'>
-                  <RichTextField
-                    control={form.control}
-                    name='description'
-                    label='Mô tả'
-                    placeholder='Mô tả'
-                    required
-                    height={300}
-                  />
-                </Col>
-              </Row>
-              <>
-                {renderActions(form, {
-                  onCancel: handleCancel
-                })}
               </>
-              {loading && (
-                <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
-                  <CircleLoading className='stroke-main-color mt-10' />
-                </div>
-              )}
-            </>
-          );
-        }}
-      </BaseForm>
+            );
+          }}
+        </BaseForm>
+      </Modal.Body>
+      <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
 }

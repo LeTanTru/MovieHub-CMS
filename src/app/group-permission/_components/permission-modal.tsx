@@ -112,110 +112,113 @@ export default function PermissionModal({
 
   return (
     <Modal
-      title={`${!isEditing ? 'Thêm' : 'Cập nhật'} quyền`}
       open={open}
       onClose={handleClose}
-      bodyWrapperClassName='w-200 overflow-hidden'
+      className='w-200 overflow-hidden'
       confirmOnClose={isFormChanged}
     >
-      <BaseForm
-        defaultValues={defaultValues}
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        schema={permissionSchema}
-        onFormChange={onFormChange}
-        className='rounded-none'
-      >
-        {(form) => (
-          <>
-            <Row>
-              <Col className='grid-c-6'>
-                <SelectField
-                  name='groupPermissionId'
-                  control={form.control}
-                  options={
-                    groupPermissions.map((gp) => ({
-                      label: gp.name,
-                      value: gp.id.toString()
-                    })) || []
-                  }
-                  getLabel={(opt) => opt.label}
-                  getValue={(opt) => opt.value.toString()}
-                  label='Nhóm quyền'
-                  required
-                  disabled={isEditing}
-                  placeholder='Chọn nhóm quyền'
-                />
-              </Col>
-              <Col className='grid-c-6'>
-                <InputField
-                  control={form.control}
-                  name='name'
-                  label='Tên quyền'
-                  placeholder='Nhập tên quyền'
-                  required
-                  options={[
-                    'Change status',
-                    'Create',
-                    'Delete',
-                    'Get',
-                    'List',
-                    'Update ordering',
-                    'Update'
-                  ]}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col className='grid-c-6'>
-                <InputField
-                  control={form.control}
-                  name='permissionCode'
-                  label='Mã quyền'
-                  placeholder='Mã quyền'
-                  required
-                />
-              </Col>
-              <Col className='grid-c-6'>
-                <InputField
-                  control={form.control}
-                  name='action'
-                  label='Hành động'
-                  placeholder='Hành động'
-                  required
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col className='grid-c-6'>
-                <BooleanField
-                  control={form.control}
-                  name='showMenu'
-                  label='Hiển thị trên menu'
-                  required
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col className='grid-c-12'>
-                <TextAreaField
-                  control={form.control}
-                  name='description'
-                  label='Mô tả'
-                  placeholder='Nhập mô tả'
-                  required
-                />
-              </Col>
-            </Row>
-            <>{renderActions(form, { onCancel: handleClose })}</>
-            {loading && (
-              <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
-                <CircleLoading className='stroke-main-color mt-10' />
-              </div>
-            )}
-          </>
-        )}
-      </BaseForm>
+      <Modal.Header>{`${!isEditing ? 'Thêm' : 'Cập nhật'} quyền`}</Modal.Header>
+      <Modal.Body>
+        <BaseForm
+          defaultValues={defaultValues}
+          initialValues={initialValues}
+          onSubmit={onSubmit}
+          schema={permissionSchema}
+          onFormChange={onFormChange}
+          className='rounded-none'
+        >
+          {(form) => (
+            <>
+              <Row>
+                <Col className='grid-c-6'>
+                  <SelectField
+                    name='groupPermissionId'
+                    control={form.control}
+                    options={
+                      groupPermissions.map((gp) => ({
+                        label: gp.name,
+                        value: gp.id.toString()
+                      })) || []
+                    }
+                    getLabel={(opt) => opt.label}
+                    getValue={(opt) => opt.value.toString()}
+                    label='Nhóm quyền'
+                    required
+                    disabled={isEditing}
+                    placeholder='Chọn nhóm quyền'
+                  />
+                </Col>
+                <Col className='grid-c-6'>
+                  <InputField
+                    control={form.control}
+                    name='name'
+                    label='Tên quyền'
+                    placeholder='Nhập tên quyền'
+                    required
+                    options={[
+                      'Change status',
+                      'Create',
+                      'Delete',
+                      'Get',
+                      'List',
+                      'Update ordering',
+                      'Update'
+                    ]}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col className='grid-c-6'>
+                  <InputField
+                    control={form.control}
+                    name='permissionCode'
+                    label='Mã quyền'
+                    placeholder='Mã quyền'
+                    required
+                  />
+                </Col>
+                <Col className='grid-c-6'>
+                  <InputField
+                    control={form.control}
+                    name='action'
+                    label='Hành động'
+                    placeholder='Hành động'
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col className='grid-c-6'>
+                  <BooleanField
+                    control={form.control}
+                    name='showMenu'
+                    label='Hiển thị trên menu'
+                    required
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col className='grid-c-12'>
+                  <TextAreaField
+                    control={form.control}
+                    name='description'
+                    label='Mô tả'
+                    placeholder='Nhập mô tả'
+                    required
+                  />
+                </Col>
+              </Row>
+              <>{renderActions(form, { onCancel: handleClose })}</>
+              {loading && (
+                <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
+                  <CircleLoading className='stroke-main-color mt-10' />
+                </div>
+              )}
+            </>
+          )}
+        </BaseForm>
+      </Modal.Body>
+      <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
 }

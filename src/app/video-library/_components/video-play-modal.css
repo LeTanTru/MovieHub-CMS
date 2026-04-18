@@ -1,12 +1,11 @@
 .video-play-modal {
-  & .body-wrapper {
-    width: 80vw;
-    height: unset;
-    min-height: unset;
-    & .body {
-      height: 100%;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-    }
+  width: 80vw;
+  height: unset;
+  min-height: unset;
+
+  & .body {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 16 / 9;
   }
 }

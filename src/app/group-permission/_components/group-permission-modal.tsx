@@ -82,46 +82,51 @@ export default function GroupPermissionModal({
 
   return (
     <Modal
-      title={`${!isEditing ? 'Thêm' : 'Cập nhật'} nhóm quyền`}
       open={open}
       onClose={handleClose}
-      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3 overflow-hidden'
+      className='top-1/3 w-200 overflow-hidden max-[1537px]:w-175 max-[1367px]:w-150'
       confirmOnClose={isFormChanged}
     >
-      <BaseForm
-        defaultValues={defaultValues}
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        schema={groupPermissionSchema}
-        onFormChange={onFormChange}
-        className='rounded-none'
-      >
-        {(form) => (
-          <>
-            <Row>
-              <Col className='grid-c-12'>
-                <InputField
-                  control={form.control}
-                  name='name'
-                  label='Tên nhóm quyền'
-                  placeholder='Nhập tên nhóm quyền...'
-                  required
-                />
-              </Col>
-            </Row>
+      <Modal.Header>
+        {`${!isEditing ? 'Thêm' : 'Cập nhật'} nhóm quyền`}
+      </Modal.Header>
+      <Modal.Body>
+        <BaseForm
+          defaultValues={defaultValues}
+          initialValues={initialValues}
+          onSubmit={onSubmit}
+          schema={groupPermissionSchema}
+          onFormChange={onFormChange}
+          className='rounded-none'
+        >
+          {(form) => (
             <>
-              {renderActions(form, {
-                onCancel: handleClose
-              })}
+              <Row>
+                <Col className='grid-c-12'>
+                  <InputField
+                    control={form.control}
+                    name='name'
+                    label='Tên nhóm quyền'
+                    placeholder='Nhập tên nhóm quyền...'
+                    required
+                  />
+                </Col>
+              </Row>
+              <>
+                {renderActions(form, {
+                  onCancel: handleClose
+                })}
+              </>
+              {loading && (
+                <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
+                  <CircleLoading className='stroke-main-color mt-10' />
+                </div>
+              )}
             </>
-            {loading && (
-              <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
-                <CircleLoading className='stroke-main-color mt-10' />
-              </div>
-            )}
-          </>
-        )}
-      </BaseForm>
+          )}
+        </BaseForm>
+      </Modal.Body>
+      <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
 }
