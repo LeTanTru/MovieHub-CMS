@@ -37,7 +37,12 @@ import type {
   MovieItemResType,
   VideoLibraryResType
 } from '@/types';
-import { formatDate, notify, renderImageUrl } from '@/utils';
+import {
+  convertLocalToUTC,
+  convertUTCToLocal,
+  notify,
+  renderImageUrl
+} from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -161,7 +166,7 @@ export default function MovieItemModal({
       kind: data?.kind ?? kindOptions?.[0]?.value,
       label: data?.label ?? '',
       movieId: movieId,
-      releaseDate: formatDate(data?.releaseDate) ?? '',
+      releaseDate: convertUTCToLocal(data?.releaseDate) ?? '',
       status: STATUS_ACTIVE,
       title: data?.title ?? '',
       parentId: parentId,
@@ -216,7 +221,7 @@ export default function MovieItemModal({
               : null,
           movieId,
           parentId,
-          releaseDate: formatDate(
+          releaseDate: convertLocalToUTC(
             values.releaseDate,
             DATE_TIME_FORMAT,
             DATE_TIME_FORMAT

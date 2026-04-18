@@ -4,7 +4,7 @@ import { Button, ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
-import { apiConfig, DATE_FORMAT, FieldTypes, queryKeys } from '@/constants';
+import { apiConfig, FieldTypes, queryKeys } from '@/constants';
 import { useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
@@ -16,7 +16,7 @@ import type {
   MovieSidebarSearchType,
   SearchFormProps
 } from '@/types';
-import { formatDate, notify, renderImageUrl } from '@/utils';
+import { convertUTCToLocal, notify, renderImageUrl } from '@/utils';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 export default function SidebarList() {
@@ -162,10 +162,10 @@ export default function SidebarList() {
       dataIndex: ['movie', 'releaseDate'],
       render: (_, record) => (
         <span className='line-clamp-1 block truncate'>
-          {formatDate(record.movie.releaseDate, DATE_FORMAT)}
+          {convertUTCToLocal(record.movie.releaseDate)}
         </span>
       ),
-      width: 150,
+      width: 250,
       align: 'center'
     },
     {

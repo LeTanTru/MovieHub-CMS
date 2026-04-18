@@ -8,7 +8,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import {
   apiConfig,
-  DATE_FORMAT,
+  DATE_TIME_FORMAT,
   MAX_PAGE_SIZE,
   MOVIE_ITEM_KIND_SEASON,
   MOVIE_TYPE_SINGLE,
@@ -33,7 +33,7 @@ import type {
   VideoLibraryResType
 } from '@/types';
 import {
-  formatDate,
+  convertUTCToLocal,
   generatePath,
   notify,
   renderImageUrl,
@@ -278,8 +278,9 @@ export default function MovieItemSeasonList() {
     {
       title: 'Ngày phát hành',
       dataIndex: 'releaseDate',
-      width: 150,
-      render: (value) => formatDate(value, DATE_FORMAT),
+      width: 250,
+      render: (value) =>
+        convertUTCToLocal(value, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
       align: 'center'
     },
     {
