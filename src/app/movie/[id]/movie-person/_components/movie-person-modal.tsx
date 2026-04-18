@@ -83,84 +83,91 @@ export default function MoviePersonModal({
 
   return (
     <Modal
-      title={`Thêm ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`}
       open={open}
       onClose={handleClose}
-      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-50 overflow-hidden'
+      className='top-50 w-200 overflow-hidden max-[1537px]:w-175 max-[1367px]:w-150'
       aria-labelledby='video-modal-title'
       confirmOnClose={isFormChanged}
     >
-      <BaseForm
-        defaultValues={defaultValues}
-        schema={moviePersonSchema}
-        onSubmit={handleSubmit}
-        onFormChange={(changed) => setIsFormChanged(changed)}
-        className='rounded-none'
-      >
-        {(form) => (
-          <>
-            <Row>
-              <Col className='grid-c-12'>
-                <AutoCompleteField
-                  apiConfig={apiConfig.person.autoComplete}
-                  control={form.control}
-                  mappingData={(item: PersonResType) => {
-                    if (
-                      moviePersonList?.find((mvp) => mvp.person.id === item.id)
-                    )
-                      return null;
-                    return {
-                      label: item.otherName,
-                      value: item.id.toString()
-                    };
-                  }}
-                  name='personId'
-                  initialParams={{
-                    kind,
-                    size:
-                      INITIAL_AUTO_COMPLETE_SIZE +
-                      (moviePersonList?.length ?? 0)
-                  }}
-                  searchParams={['otherName']}
-                  label={`${kind === PERSON_KIND_ACTOR ? 'Diễn viên' : 'Đạo diễn'}`}
-                  placeholder={`${kind === PERSON_KIND_ACTOR ? 'Diễn viên' : 'Đạo diễn'}`}
-                  renderOption={(opt) => {
-                    return (
-                      <div className='flex items-center gap-2'>
-                        <AvatarField
-                          src={renderImageUrl(opt.extra?.avatarPath)}
-                          disablePreview
-                          alt={getLastWord(opt.extra?.name ?? '')}
-                        />
-                        <div className='flex flex-col justify-between'>
-                          <span>{opt.extra?.otherName}</span>
-                          <span className='text-xs text-gray-500'>
-                            {opt.extra?.name}
-                          </span>
+      <Modal.Header>
+        {`Thêm ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`}
+      </Modal.Header>
+      <Modal.Body>
+        <BaseForm
+          defaultValues={defaultValues}
+          schema={moviePersonSchema}
+          onSubmit={handleSubmit}
+          onFormChange={(changed) => setIsFormChanged(changed)}
+          className='rounded-none'
+        >
+          {(form) => (
+            <>
+              <Row>
+                <Col className='grid-c-12'>
+                  <AutoCompleteField
+                    apiConfig={apiConfig.person.autoComplete}
+                    control={form.control}
+                    mappingData={(item: PersonResType) => {
+                      if (
+                        moviePersonList?.find(
+                          (mvp) => mvp.person.id === item.id
+                        )
+                      )
+                        return null;
+                      return {
+                        label: item.otherName,
+                        value: item.id.toString()
+                      };
+                    }}
+                    name='personId'
+                    initialParams={{
+                      kind,
+                      size:
+                        INITIAL_AUTO_COMPLETE_SIZE +
+                        (moviePersonList?.length ?? 0)
+                    }}
+                    searchParams={['otherName']}
+                    label={`${kind === PERSON_KIND_ACTOR ? 'Diễn viên' : 'Đạo diễn'}`}
+                    placeholder={`${kind === PERSON_KIND_ACTOR ? 'Diễn viên' : 'Đạo diễn'}`}
+                    renderOption={(opt) => {
+                      return (
+                        <div className='flex items-center gap-2'>
+                          <AvatarField
+                            src={renderImageUrl(opt.extra?.avatarPath)}
+                            disablePreview
+                            alt={getLastWord(opt.extra?.name ?? '')}
+                          />
+                          <div className='flex flex-col justify-between'>
+                            <span>{opt.extra?.otherName}</span>
+                            <span className='text-xs text-gray-500'>
+                              {opt.extra?.name}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  }}
-                  onValueChange={(value) =>
-                    handleSubmit(
-                      {
-                        ...defaultValues,
-                        personId: value as string
-                      },
-                      form
-                    )
-                  }
-                />
-              </Col>
-            </Row>
-            {createMoviePersonLoading && (
-              <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
-                <CircleLoading className='stroke-main-color mt-10' />
-              </div>
-            )}
-          </>
-        )}
-      </BaseForm>
+                      );
+                    }}
+                    onValueChange={(value) =>
+                      handleSubmit(
+                        {
+                          ...defaultValues,
+                          personId: value as string
+                        },
+                        form
+                      )
+                    }
+                  />
+                </Col>
+              </Row>
+              {createMoviePersonLoading && (
+                <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
+                  <CircleLoading className='stroke-main-color mt-10' />
+                </div>
+              )}
+            </>
+          )}
+        </BaseForm>
+      </Modal.Body>
+      <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
 }

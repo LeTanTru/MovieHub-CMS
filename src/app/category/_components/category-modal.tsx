@@ -85,46 +85,51 @@ export default function CategoryModal({
     <Modal
       open={open}
       onClose={handleClose}
-      title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} thể loại`}
-      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3 overflow-hidden'
+      className='top-1/3 w-200 overflow-hidden max-[1537px]:w-175 max-[1367px]:w-150'
       aria-labelledby='category-modal-title'
       confirmOnClose={isFormChanged}
     >
-      <BaseForm
-        onSubmit={onSubmit}
-        defaultValues={defaultValues}
-        schema={categorySchema}
-        initialValues={initialValues}
-        onFormChange={onFormChange}
-        className='rounded-none'
-      >
-        {(form) => (
-          <>
-            <Row>
-              <Col className='grid-c-12'>
-                <InputField
-                  control={form.control}
-                  name='name'
-                  label='Tên thể loại'
-                  placeholder='Tên thể loại'
-                  required
-                />
-              </Col>
-            </Row>
-
+      <Modal.Header>
+        {`${!isEditing ? 'Thêm mới' : 'Cập nhật'} thể loại`}
+      </Modal.Header>
+      <Modal.Body>
+        <BaseForm
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+          schema={categorySchema}
+          initialValues={initialValues}
+          onFormChange={onFormChange}
+          className='rounded-none'
+        >
+          {(form) => (
             <>
-              {renderActions(form, {
-                onCancel: onClose
-              })}
+              <Row>
+                <Col className='grid-c-12'>
+                  <InputField
+                    control={form.control}
+                    name='name'
+                    label='Tên thể loại'
+                    placeholder='Tên thể loại'
+                    required
+                  />
+                </Col>
+              </Row>
+
+              <>
+                {renderActions(form, {
+                  onCancel: handleClose
+                })}
+              </>
+              {loading && (
+                <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
+                  <CircleLoading className='stroke-main-color mt-10' />
+                </div>
+              )}
             </>
-            {loading && (
-              <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
-                <CircleLoading className='stroke-main-color mt-10' />
-              </div>
-            )}
-          </>
-        )}
-      </BaseForm>
+          )}
+        </BaseForm>
+      </Modal.Body>
+      <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
 }

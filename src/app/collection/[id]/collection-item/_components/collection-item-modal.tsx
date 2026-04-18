@@ -78,62 +78,67 @@ export default function CollectionItemModal({
 
   return (
     <Modal
-      title={`${!isEditing ? 'Thêm mới' : 'Cập nhật'} phim`}
       open={open}
       onClose={handleClose}
-      bodyWrapperClassName='w-200 max-[1537px]:w-175 max-[1367px]:w-150 top-1/3 overflow-hidden'
+      className='top-1/3 w-200 overflow-hidden max-[1537px]:w-175 max-[1367px]:w-150'
       aria-labelledby='collection-item-modal-title'
       confirmOnClose={isFormChanged}
     >
-      <BaseForm
-        onSubmit={onSubmit}
-        defaultValues={defaultValues}
-        schema={collectionItemSchema}
-        onFormChange={onFormChange}
-        className='rounded-none'
-      >
-        {(form) => {
-          return (
-            <>
-              <Row>
-                <Col className='grid-c-12'>
-                  <AutoCompleteField
-                    control={form.control}
-                    name='movieId'
-                    label='Tiêu đề phim'
-                    placeholder='Tiêu đề phim'
-                    required
-                    apiConfig={{
-                      ...apiConfig.movie.collectionFilter,
-                      baseUrl: generatePath(
-                        apiConfig.movie.collectionFilter.baseUrl,
-                        { collectionId }
-                      )
-                    }}
-                    mappingData={(item: MovieResType) => ({
-                      label: item.title,
-                      value: item.id.toString()
-                    })}
-                    searchParams={['title']}
-                    fetchAll
-                  />
-                </Col>
-              </Row>
-
+      <Modal.Header>
+        {`${!isEditing ? 'Thêm mới' : 'Cập nhật'} phim`}
+      </Modal.Header>
+      <Modal.Body>
+        <BaseForm
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+          schema={collectionItemSchema}
+          onFormChange={onFormChange}
+          className='rounded-none'
+        >
+          {(form) => {
+            return (
               <>
-                {renderActions(form, {
-                  onCancel: onClose
-                })}
+                <Row>
+                  <Col className='grid-c-12'>
+                    <AutoCompleteField
+                      control={form.control}
+                      name='movieId'
+                      label='Tiêu đề phim'
+                      placeholder='Tiêu đề phim'
+                      required
+                      apiConfig={{
+                        ...apiConfig.movie.collectionFilter,
+                        baseUrl: generatePath(
+                          apiConfig.movie.collectionFilter.baseUrl,
+                          { collectionId }
+                        )
+                      }}
+                      mappingData={(item: MovieResType) => ({
+                        label: item.title,
+                        value: item.id.toString()
+                      })}
+                      searchParams={['title']}
+                      fetchAll
+                    />
+                  </Col>
+                </Row>
+
+                <>
+                  {renderActions(form, {
+                    onCancel: handleClose
+                  })}
+                </>
+                {loading && (
+                  <div className='absolute inset-0 flex justify-center bg-white/80'>
+                    <CircleLoading className='stroke-main-color mt-10' />
+                  </div>
+                )}
               </>
-              {loading && (
-                <div className='absolute inset-0 flex justify-center bg-white/80'>
-                  <CircleLoading className='stroke-main-color mt-10' />
-                </div>
-              )}
-            </>
-          );
-        }}
-      </BaseForm>
+            );
+          }}
+        </BaseForm>
+      </Modal.Body>
+      <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
 }
