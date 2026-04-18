@@ -29,7 +29,12 @@ import type {
   Column,
   SearchFormProps
 } from '@/types';
-import { formatDate, renderImageUrl, renderListPageUrl } from '@/utils';
+import {
+  convertUTCToLocal,
+  formatDate,
+  renderImageUrl,
+  renderListPageUrl
+} from '@/utils';
 import { PlusIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
@@ -179,7 +184,7 @@ export default function CollectionItemList() {
     {
       title: 'Ngày phát hành',
       dataIndex: ['movie', 'releaseDate'],
-      render: (value) => formatDate(value, DATE_FORMAT) ?? '---',
+      render: (value) => convertUTCToLocal(value, DATE_FORMAT) ?? '---',
       align: 'center',
       width: 150
     },
