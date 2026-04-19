@@ -68,10 +68,12 @@ export default function UserList() {
           };
 
           const Icon =
-            record.status === STATUS_ACTIVE ? AiOutlineCheck : AiOutlineLock;
+            record.status === STATUS_ACTIVE ? AiOutlineLock : AiOutlineCheck;
 
           const statusLabel =
-            record.status === STATUS_ACTIVE ? 'Hoạt động' : 'Bị khóa';
+            record.status === STATUS_ACTIVE
+              ? 'Khóa tài khoản'
+              : 'Mở khóa tài khoản';
 
           return (
             <ToolTip title={statusLabel} sideOffset={0}>
@@ -83,8 +85,8 @@ export default function UserList() {
                 >
                   <Icon
                     className={cn('size-4', {
-                      'text-main-color': record.status === STATUS_ACTIVE,
-                      'text-destructive': record.status !== STATUS_ACTIVE
+                      'text-main-color': record.status !== STATUS_ACTIVE,
+                      'text-destructive': record.status === STATUS_ACTIVE
                     })}
                   />
                 </Button>

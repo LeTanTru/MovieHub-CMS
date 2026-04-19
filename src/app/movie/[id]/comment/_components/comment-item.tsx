@@ -488,15 +488,14 @@ function CommentItem({
                       {canDelete && (
                         <AlertDialog>
                           <AlertDialogTrigger className='w-full' asChild>
-                            <span onClick={(e) => e.stopPropagation()}>
-                              <Button
-                                variant='ghost'
-                                className='text-destructive hover:text-destructive/50 h-fit w-full justify-start border-none bg-transparent p-2! shadow-none hover:bg-transparent'
-                              >
-                                <AiOutlineDelete className='size-5' />
-                                Xóa
-                              </Button>
-                            </span>
+                            <Button
+                              variant='ghost'
+                              className='text-destructive hover:text-destructive/50 h-fit w-full justify-start border-none bg-transparent p-2! shadow-none hover:bg-transparent'
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <AiOutlineDelete className='size-5' />
+                              Xóa
+                            </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] w-fit max-w-lg gap-0 p-4'>
                             <AlertDialogHeader>

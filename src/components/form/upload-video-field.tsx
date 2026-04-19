@@ -150,6 +150,7 @@ export default function UploadVideoField<T extends FieldValues>({
       )}
 
       <div
+        role='button'
         className={cn(
           'relative mb-0 flex min-h-18 cursor-pointer items-center gap-3 rounded-md border-2 border-dashed p-4 transition-all duration-200 ease-linear hover:bg-gray-100',
           {
@@ -159,6 +160,12 @@ export default function UploadVideoField<T extends FieldValues>({
           }
         )}
         onClick={openFileDialog}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openFileDialog();
+          }
+        }}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}

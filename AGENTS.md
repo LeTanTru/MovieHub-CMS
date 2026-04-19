@@ -1,102 +1,80 @@
 # AGENTS.md — MovieHub CMS
 
-## Build / Lint / Test Commands
+## Commands
 
 ```bash
-yarn              # Install dependencies
-yarn dev          # Start dev server (port 3001, Turbopack)
-yarn clean-dev    # Clear .next cache then start dev
-yarn build        # Production build
-yarn start        # Production server (port 3001)
-yarn lint         # ESLint on .ts/.tsx/.js/.jsx
-yarn format       # Prettier write all
+yarn              # Install deps
+yarn dev          # Dev server (port 3001, Turbopack)
+yarn clean-dev    # Clear .next then dev
+yarn build      # Production build
+yarn start      # Production server (port 3001)
+yarn lint       # ESLint
+yarn format     # Prettier write all
 ```
 
-**No test framework is configured.** There is no `test` script in `package.json`. Do not invent test files or test commands unless the user asks.
+**No test framework.** Do not invent tests.
 
-**Pre-commit hooks** (Husky + lint-staged) auto-run `eslint --fix` and `prettier --write` on staged `*.{js,jsx,ts,tsx}` files. Commit messages must follow conventional commits (enforced by commitlint).
+**Pre-commit hooks** (Husky + lint-staged) auto-fix and format. Commit messages must follow conventional commits (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`).
 
-**All commits must include** the Co-authored-by trailer: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
+## Architecture
+
+- App Router CMS (`src/app`). Providers order: `ThemeProvider` → `QueryProvider` → `AppProvider` → `PermissionGuard`.
+- `QueryProvider`: `staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`.
+- API endpoints + permissions: `src/constants/api-config.ts`
+- Routes + permissions: `src/routes/route.ts`
+- HTTP layer: `src/utils/http.util.ts` (auto-injects auth, refresh-token rotation, dedup queue)
+- Access: `PermissionGuard` enforces route-level auth/permission
+
+## Stores
+
+- `useAuthStore` (Zustand): profile, auth state
+- `useAppLoadingStore`: global loading state
+- Use `useShallow` for selector optimization
+- **Store updates in render**: If a parent component needs derived state, use `useLayoutEffect`, not direct render-time calls (causes "update while rendering" error)
+
+## React Patterns
+
+- **Forms**: `BaseForm` + `useForm` (react-hook-form) + Zod resolver. `onFormChange(isDirty)` callback.
+- **List pages**: `useListBase` hook
+- **Save pages**: `useSaveBase` hook (create/edit, getById, submit, cache invalidation)
+- **Server state**: TanStack Query (`useQuery`, `useMutation`)
+- **Animations**: Import `m` from `framer-motion`, use `LazyMotion` + `domAnimation`
+
+## UI Patterns
+
+- `ImageField`: `freeAspect`, `freePreviewAspect` props
+- `UploadImageField`: `originalSize` prop
+- Modal dirty guard:
+  ```tsx
+  <Modal confirmOnClose={isFormChanged}>
+    <Modal.Header>Title</Modal.Header>
+    <Modal.Body>{/* form */}</Modal.Body>
+    <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
+  </Modal>
+  ```
+
+## ESLint Rules (Common Issues)
+
+- **jsx-a11y/click-events-have-key-events**: Add `onKeyDown` handler to elements with `role='button'` or click handlers. Handle `Enter` or `Space`.
+- **react-doctor/no-derived-state-effect**: Compute derived state during render, not in `useEffect`. For store sync, use `useLayoutEffect`.
+- **react-doctor/no-inline-bounce-easing**: Use custom animation with `cubic-bezier(0.16, 1, 0.3, 1)`, not `animate-bounce`.
+- **nextjs-no-img-element**: Use `next/image` with `fill` + `unoptimized` for external SVGs.
 
 ## Code Style
 
-### Imports
+- `@/*` path aliases, never deep relative
+- `'use client'` for browser APIs/hooks
+- Zod v4: `.check()` for validators
+- Prefix unused: `_args`, `_var`
+- Unused array index in map: `key={index}` satisfies `react/jsx-key`
+- `cn()` from `@/lib/utils` for conditional classes
 
-- Use `@/*` path aliases (`src/*`), never deep relative paths.
-- Group imports: React/Next first, then third-party libs, then `@/` internal modules, then relative imports.
-- Use `type` imports for types: `import type { Foo } from '@/types'`.
-- `'use client'` directive required for any file using browser APIs, hooks with side effects, or interactive components.
-- `no-duplicate-imports` is enforced as a warning.
+## Git
 
-### Formatting (Prettier)
+- Branch: `feature/`, `fix/`, `refactor/` prefixes
+- Commits: conventional + `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
+- Never commit `.env`, secrets, credentials
 
-- Single quotes for JS/TS and JSX (`singleQuote: true`, `jsxSingleQuote: true`)
-- Semicolons required
-- Trailing commas: **none**
-- Tab width: 2
-- Tailwind classes sorted automatically via `prettier-plugin-tailwindcss`
+## Restricted Files
 
-### TypeScript
-
-- `strict: true` — no `any` where a type exists, but `@typescript-eslint/no-explicit-any` is `off` (pragmatic).
-- Prefix unused vars with `_` to suppress warnings (`argsIgnorePattern`, `varsIgnorePattern`, `caughtErrorsIgnorePattern`).
-- Use Zod v4 schemas for all form validation. Pattern: `.check(z.email(...))` for email.
-- `FieldValues` from react-hook-form as generic constraint for form types.
-- `noNonNullAssertedOptionalChain` is off — avoid `?.!` but don't fight the linter.
-
-### Naming Conventions
-
-- Components: PascalCase (`CommentInput`, `BaseForm`)
-- Hooks: camelCase starting with `use` (`useSaveBase`, `useListBase`)
-- Constants: UPPER_SNAKE_CASE (`GROUP_KIND_ADMIN`, `queryKeys`)
-- Files: kebab-case (`comment-input.tsx`, `api-config.ts`)
-- Directories: kebab-case or flat (`_components/`, `use-list-base.tsx`)
-
-### Error Handling
-
-- API errors: caught in `useSaveBase` mutation `onError`, applied to form via `applyFormErrors`.
-- HTTP layer (`http.util.ts`): auto-injects auth tokens, handles refresh-token rotation with dedup queue.
-- `notify.success` / `notify.error` for user-facing messages (wraps `react-toastify`).
-- Use `logger.info` for debug logging, not `console.log` (`no-console` is a warning).
-
-### React Patterns
-
-- **Forms**: `BaseForm` + `useForm` (react-hook-form) + Zod resolver. Use `onFormChange` callback for dirty tracking.
-- **List pages**: `useListBase` hook — handles fetching, pagination, filters, delete, permission checks.
-- **Save pages**: `useSaveBase` hook — handles create/edit, getById fetch, submit, cache invalidation.
-- **Server state**: TanStack Query (`useQuery`, `useMutation`). Query keys centralized in `queryKeys`.
-- **Client state**: Zustand stores in `src/store/`. Use `useShallow` for selector optimization.
-- **Animations**: Import `m` from `framer-motion` (not `motion`). Use `LazyMotion` + `domAnimation`.
-- **UI components**: Radix UI primitives wrapped in `src/components/ui/`. Use `cn()` from `@/lib/utils` for conditional classes.
-
-### Styling
-
-- Tailwind CSS v4 with utility classes.
-- Use `cn()` (from `@/lib/utils`) for conditional class merging.
-- Component variants via `class-variance-authority`.
-- `Col` form layout defaults `span=12` (50% width).
-- `FormControl` uses Radix Slot — props apply only to direct child.
-- Form grid uses `grid-row`/`grid-col` + `grid-c-0..12` classes (12-column grid in `src/styles/grid.css`).
-
-### Form Components
-
-- `BaseForm` supports `onFormChange(isDirty)` callback to track form dirty state.
-- `ImageField` supports `freeAspect` and `freePreviewAspect` props for rendering images without fixed aspect ratios.
-- `UploadImageField` supports `originalSize` prop that adds 'Gốc' checkbox for uploading images at original dimensions without cropping.
-
-### Architecture Notes
-
-- App Router CMS (`src/app`). Providers order: `ThemeProvider` → `QueryProvider` → `AppProvider` → `PermissionGuard`.
-- `QueryProvider` defaults: `staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`.
-- API config-driven: endpoints/permissions in `src/constants/api-config.ts`, HTTP behavior in `src/utils/http.util.ts`.
-- Access control: route metadata in `src/routes/route.ts`, enforced by `PermissionGuard`.
-- Storage keys centralized in `src/constants/storage-key.ts` (dual-use as localStorage keys AND HTTP header names).
-- `useSaveBase` invalidates React Query caches for `[queryKey]` and `[`${queryKey}-list`]` after success.
-- `ProfileForm` cancel reads `localStorage` key `storageKeys.PREVIOUS_PATH` (then removes it) to navigate back; otherwise it falls back to `route.home.path`.
-
-### Git Conventions
-
-- Branch naming: `feature/`, `fix/`, `refactor/` prefixes
-- Commit messages: conventional commits (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`)
-- All commits must include: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
-- Never commit secrets, `.env` files, or credentials
+- `.env`, `credentials.json`, `supesecrets.txt` — do not read

@@ -19,7 +19,6 @@ import {
 import { route } from '@/routes';
 import type { CommentResType, CommentSearchType } from '@/types';
 import { useParams } from 'next/navigation';
-import { useMemo, useCallback } from 'react';
 import CommentItem from './comment-item';
 import { DotLoading } from '@/components/loading';
 import { Button } from '@/components/form';
@@ -60,74 +59,61 @@ export default function CommentList() {
     }
   });
 
-  const voteMap = useMemo(() => {
+  const voteMap = (() => {
     const map: Record<string, number> = {};
     voteListData?.data?.forEach((v) => (map[v.id] = v.type));
     return map;
-  }, [voteListData]);
+  })();
+  const handleVote = async (
+    id: string,
+    type: number,
+    onSuccess?: () => void
+  ) => {
+    await voteCommentMutate({ id, type });
+    await Promise.all([getVoteList()]);
+    onSuccess?.();
+  };
 
-  const handleVote = useCallback(
-    async (id: string, type: number, onSuccess?: () => void) => {
-      await voteCommentMutate({ id, type });
-      await Promise.all([getVoteList()]);
-      onSuccess?.();
-    },
-    [getVoteList, voteCommentMutate]
-  );
-
-  const handlePinComment = useCallback(
-    async (id: string, isPinned: boolean) => {
-      await pinCommentMutate({ id, isPinned });
-      handlers.invalidateQueries();
-    },
-    [pinCommentMutate] // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  const handleDeleteComment = useCallback(
-    async (commentToDelete: CommentResType) => {
-      handlers.handleDeleteClick(commentToDelete.id, {
-        onSuccess: async () => {
-          if (commentToDelete.parent) {
-            await queryClient.invalidateQueries({
-              queryKey: [
-                `${queryKeys.COMMENT}-${commentToDelete.parent.id}-infinite`
-              ]
-            });
-          }
-        }
-      });
-    },
-    [handlers, queryClient]
-  );
-
-  const handleReplySuccess = useCallback(async () => {
+  const handlePinComment = async (id: string, isPinned: boolean) => {
+    await pinCommentMutate({ id, isPinned });
     handlers.invalidateQueries();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  };
 
-  const renderChildren = useCallback(
-    (list: CommentResType[], level: number, rootId?: string) =>
-      list.map((c) => (
-        <CommentItem
-          key={c.id}
-          comment={c}
-          level={level}
-          rootId={rootId ?? c.id}
-          voteMap={voteMap}
-          onVote={handleVote}
-          onPin={handlePinComment}
-          onDelete={() => handleDeleteComment(c)}
-          onReplySuccess={handleReplySuccess}
-          renderChildren={renderChildren}
-        />
-      )),
-    [
-      voteMap,
-      handleVote,
-      handlePinComment,
-      handleDeleteComment,
-      handleReplySuccess
-    ]
-  );
+  const handleDeleteComment = async (commentToDelete: CommentResType) => {
+    handlers.handleDeleteClick(commentToDelete.id, {
+      onSuccess: async () => {
+        if (commentToDelete.parent) {
+          await queryClient.invalidateQueries({
+            queryKey: [
+              `${queryKeys.COMMENT}-${commentToDelete.parent.id}-infinite`
+            ]
+          });
+        }
+      }
+    });
+  };
+
+  const handleReplySuccess = () => handlers.invalidateQueries();
+
+  const renderChildren = (
+    list: CommentResType[],
+    level: number,
+    rootId?: string
+  ) =>
+    list.map((c) => (
+      <CommentItem
+        key={c.id}
+        comment={c}
+        level={level}
+        rootId={rootId ?? c.id}
+        voteMap={voteMap}
+        onVote={handleVote}
+        onPin={handlePinComment}
+        onDelete={() => handleDeleteComment(c)}
+        onReplySuccess={handleReplySuccess}
+        renderChildren={renderChildren}
+      />
+    ));
 
   if (!isMounted) return null;
 
@@ -146,7 +132,7 @@ export default function CommentList() {
 
         {loading ? (
           <div className='space-y-4 px-4'>
-            <h4 className='skeleton ml-4 h-5 w-20'></h4>
+            <div className='skeleton ml-4 h-5 w-20' />
             {Array.from({ length: 8 }).map((_, index) => (
               <CommentItem.Skeleton key={index} />
             ))}

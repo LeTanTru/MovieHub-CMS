@@ -111,7 +111,11 @@ export default function TimePickerField<T extends FieldValues>({
           }
         };
 
-        const handleClear = (e: React.MouseEvent) => {
+        const handleClear = (
+          e:
+            | React.MouseEvent<HTMLSpanElement>
+            | React.KeyboardEvent<HTMLSpanElement>
+        ) => {
           e.stopPropagation();
           field.onChange(isNumberValue ? 0 : '');
           onChange?.('');
@@ -146,6 +150,9 @@ export default function TimePickerField<T extends FieldValues>({
                       disabled={disabled}
                       variant='outline'
                       role='combobox'
+                      aria-controls='combobox'
+                      aria-expanded={isOpen}
+                      aria-label='Select time'
                       className={cn(
                         'w-full justify-between text-left font-normal text-black opacity-100',
                         'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
@@ -172,6 +179,12 @@ export default function TimePickerField<T extends FieldValues>({
                           role='button'
                           aria-label='Clear time'
                           onClick={handleClear}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleClear(e);
+                            }
+                          }}
                           className='rounded-full p-0.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600'
                         >
                           <X className='h-3.5 w-3.5' />

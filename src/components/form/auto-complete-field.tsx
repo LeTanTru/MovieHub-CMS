@@ -264,6 +264,8 @@ export default function AutoCompleteField<
                       type='button'
                       variant='outline'
                       role='combobox'
+                      aria-controls='combobox'
+                      aria-expanded={open}
                       aria-label='Select'
                       disabled={disabled}
                       title={selectedOption?.label ?? ''}
@@ -289,6 +291,7 @@ export default function AutoCompleteField<
 
                       {field.value && allowClear ? (
                         <span
+                          role='button'
                           onClick={(e) => {
                             e.stopPropagation();
                             clearValue();

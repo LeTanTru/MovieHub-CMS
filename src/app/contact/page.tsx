@@ -1,5 +1,8 @@
 'use client';
 
+import Image from 'next/image';
+import Link from 'next/link';
+
 export default function ContactPage() {
   return (
     <div className='flex min-h-screen flex-col gap-12.5 bg-[#191B24] py-10 max-lg:py-5'>
@@ -23,9 +26,9 @@ export default function ContactPage() {
           </h3>
           <p className='mb-4 text-neutral-400'>
             Email hỗ trợ khách hàng:{' '}
-            <a className='text-white' href='mailto:lienhe@moviehub.biz'>
+            <Link className='text-white' href='mailto:lienhe@moviehub.biz'>
               <b>lienhe@moviehub.biz</b>
-            </a>
+            </Link>
           </p>
           <ul className='mb-4 list-disc pl-9 text-neutral-400 *:leading-[1.6]'>
             <li>
@@ -43,9 +46,9 @@ export default function ContactPage() {
           </ul>
           <p className='mb-4 text-neutral-400'>
             Email liên hệ về Chính Sách Riêng Tư:{' '}
-            <a href='mailto:lienhe@moviehub.biz'>
+            <Link href='mailto:lienhe@moviehub.biz'>
               <b className='text-white'>lienhe@moviehub.biz</b>
-            </a>
+            </Link>
           </p>
           <p className='mb-4 text-neutral-400'>
             Mọi thắc mắc liên quan đến bảo mật thông tin và chính sách riêng tư
@@ -61,97 +64,112 @@ export default function ContactPage() {
           </p>
           <div className='mb-2'>
             <div className='inline-flex min-h-7.5 items-center justify-center gap-2 rounded border border-white bg-white px-3 py-2 text-xs font-medium text-black opacity-100'>
-              <div className='h-3 w-3 shrink-0'>
-                <img
+              <div className='relative h-3 w-3 shrink-0'>
+                <Image
                   alt='Telegram'
-                  src='https://www.rophim.moi/images/social/telegram-icon-black.svg'
+                  src='/telegram.svg'
+                  fill
+                  unoptimized
+                  sizes='(max-width: 768px) 100vw, 50vw'
                 />
               </div>
               <span>Telegram:</span>
-              <a
+              <Link
                 className='line-clamp-1 block truncate text-left text-[#212529]'
                 href='https://t.me/congdongrophim'
                 title='Telegram'
                 target='_blank'
               >
                 https://t.me/congdongmoviehub
-              </a>
+              </Link>
             </div>
           </div>
           <div className='mb-2'>
             <div className='inline-flex min-h-7.5 items-center justify-center gap-2 rounded border border-white bg-white px-3 py-2 text-xs font-medium text-black opacity-100'>
-              <div className='h-3 w-3 shrink-0'>
-                <img
+              <div className='relative h-3 w-3 shrink-0'>
+                <Image
                   alt='Discord'
-                  src='https://www.rophim.moi/images/social/discord-icon-black.svg'
+                  src='/discord.svg'
+                  fill
+                  unoptimized
+                  sizes='(max-width: 768px) 100vw, 50vw'
                 />
               </div>
               <span>Discord:</span>
-              <a
+              <Link
                 className='line-clamp-1 block truncate text-left text-[#212529]'
                 href='https://discord.gg/rophim'
                 title='Discord'
                 target='_blank'
               >
                 https://discord.gg/moviehub
-              </a>
+              </Link>
             </div>
           </div>
           <div className='mb-2'>
             <div className='inline-flex min-h-7.5 items-center justify-center gap-2 rounded border border-white bg-white px-3 py-2 text-xs font-medium text-black opacity-100'>
-              <div className='h-3 w-3 shrink-0'>
-                <img
+              <div className='relative h-3 w-3 shrink-0'>
+                <Image
                   alt='Facebook'
-                  src='https://www.rophim.moi/images/social/facebook-icon-black.svg'
+                  src='/facebook.svg'
+                  fill
+                  unoptimized
+                  sizes='(max-width: 768px) 100vw, 50vw'
                 />
               </div>
               <span>Facebook:</span>
-              <a
+              <Link
                 className='line-clamp-1 block truncate text-left text-[#212529]'
                 href='https://www.facebook.com/rogiaitri'
                 title='Facebook'
                 target='_blank'
               >
                 https://www.facebook.com/moviehub
-              </a>
+              </Link>
             </div>
           </div>
           <div className='mb-2'>
             <div className='inline-flex min-h-7.5 items-center justify-center gap-2 rounded border border-white bg-white px-3 py-2 text-xs font-medium text-black opacity-100'>
-              <div className='h-3 w-3 shrink-0'>
-                <img
+              <div className='relative h-3 w-3 shrink-0'>
+                <Image
                   alt='Instagram'
-                  src='https://www.rophim.moi/images/social/instagram-icon-black.svg'
+                  src='/instagram.svg'
+                  fill
+                  unoptimized
+                  sizes='(max-width: 768px) 100vw, 50vw'
                 />
               </div>
               <span>Instagram:</span>
-              <a
+              <Link
                 className='text-dark name-short grow text-start'
                 href='https://www.instagram.com/rophimtv'
                 title='Instagram'
                 target='_blank'
               >
                 https://www.instagram.com/moviehub
-              </a>
+              </Link>
             </div>
           </div>
           <div className='mb-4'>
             <div className='inline-flex min-h-7.5 items-center justify-center gap-2 rounded border border-white bg-white px-3 py-2 text-xs font-medium text-black opacity-100'>
-              <div className='h-3 w-3 shrink-0'>
-                <img
+              <div className='relative h-3 w-3 shrink-0'>
+                <Image
                   alt='X'
-                  src='https://www.rophim.moi/images/social/x-icon-black.svg'
+                  src='/x.svg'
+                  fill
+                  unoptimized
+                  sizes='(max-width: 768px) 100vw, 50vw'
                 />
               </div>
               <span>X:</span>
-              <a
+              <Link
                 className='line-clamp-1 block truncate text-left text-[#212529]'
                 href='https://x.com/rophimtv'
                 title='X'
                 target='_blank'
               >
                 https://x.com/moviehub
-              </a>
+              </Link>
             </div>
           </div>
           <p className='mb-8 max-lg:mb-4'>&nbsp;</p>
@@ -160,9 +178,9 @@ export default function ContactPage() {
           </h3>
           <p className='mb-4 text-justify leading-[1.6] text-neutral-400'>
             Trước khi gửi yêu cầu hỗ trợ, bạn có thể tham khảo trang{' '}
-            <a href='/hoi-dap'>
+            <Link href='/hoi-dap'>
               <b>Câu Hỏi Thường Gặp (F.A.Q)</b>
-            </a>{' '}
+            </Link>{' '}
             để tìm câu trả lời nhanh cho các vấn đề phổ biến nhất tại{' '}
             <b>F.A.Q - MovieHub.</b>
           </p>

@@ -208,6 +208,14 @@ function InputFieldInner<T extends FieldValues>(
                             onOptionSelect?.(option);
                             setShowOptions(false);
                           }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              field.onChange(option);
+                              onOptionSelect?.(option);
+                              setShowOptions(false);
+                            }
+                          }}
                           aria-selected={field.value === option}
                         >
                           <span className='flex-1'>{option}</span>

@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/sidebar';
 import { logo, logoWithText } from '@/assets';
 import { m, AnimatePresence } from 'framer-motion';
-import { type MouseEvent, useEffect, useMemo, useState } from 'react';
+import { type MouseEvent, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib';
 import { AvatarField } from '@/components/form';
@@ -59,13 +59,11 @@ function CollapsibleMenuItem({ item }: CollapsibleMenuItemProps) {
   const [pos, setPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   // Initial open when reload
-  const isInitiallyOpen = useMemo(
-    () =>
-      item.children?.some(
-        (child) => child.path && pathname.includes(child.path)
-      ) ?? false,
-    [item.children, pathname]
-  );
+  const isInitiallyOpen =
+    item.children?.some(
+      (child) => child.path && pathname.includes(child.path)
+    ) ?? false;
+
   const open = storeOpen ?? isInitiallyOpen;
   useEffect(() => {
     if (isInitiallyOpen) {
@@ -330,28 +328,25 @@ const AppSidebar = () => {
     }
   }, [state, openLastMenu]);
 
-  const clientMenu = useMemo(() => {
-    const filterMenuByPermission = (menu: MenuItem[]): MenuItem[] => {
-      return menu
-        .map((item) => {
-          let children: MenuItem[] | undefined;
-          if (item.children) {
-            children = filterMenuByPermission(item.children);
-          }
+  const filterMenuByPermission = (menu: MenuItem[]): MenuItem[] => {
+    return menu.flatMap((item) => {
+      const children = item.children
+        ? filterMenuByPermission(item.children)
+        : undefined;
 
-          const allowed =
-            !item.permissionCode ||
-            hasPermission({ requiredPermissions: item.permissionCode });
+      const allowed =
+        !item.permissionCode ||
+        hasPermission({ requiredPermissions: item.permissionCode });
 
-          if (!allowed && (!children || children.length === 0)) return null;
+      if (!allowed && (!children || children.length === 0)) {
+        return [];
+      }
 
-          return { ...item, children };
-        })
-        .filter(Boolean) as MenuItem[];
-    };
+      return [{ ...item, children }];
+    });
+  };
 
-    return filterMenuByPermission(menuConfig);
-  }, [hasPermission]);
+  const clientMenu = filterMenuByPermission(menuConfig);
 
   if (!isMounted || !clientMenu) {
     return (

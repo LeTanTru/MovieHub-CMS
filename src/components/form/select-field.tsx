@@ -160,6 +160,8 @@ export default function SelectField<
                       type='button'
                       variant='outline'
                       role='combobox'
+                      aria-controls='combobox'
+                      aria-expanded={open}
                       aria-label='Select'
                       disabled={disabled}
                       className={cn(
@@ -185,11 +187,11 @@ export default function SelectField<
                       {selectedOption && allowClear ? (
                         <span
                           role='button'
+                          aria-label='Clear selection'
                           onClick={handleClear}
                           onKeyDown={(e) => e.key === 'Enter' && handleClear(e)}
                           className='bg-accent ml-2 flex h-4 w-4 items-center justify-center rounded-full hover:opacity-80'
                           tabIndex={0}
-                          aria-label='Clear selection'
                         >
                           <X className='size-3' />
                         </span>

@@ -398,14 +398,20 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
       render: (_: any, record: T) => {
         if (!options?.actions) return null;
 
-        const actions = Object.keys(options.actions)
-          .filter((key) => {
-            const condition = options.actions?.[key];
-            if (typeof condition === 'function') return condition(record);
-            return condition === true;
-          })
-          .map((key) => actionsObj[key]?.(record, options?.buttonProps))
-          .filter(Boolean);
+        const actions = Object.keys(options.actions).flatMap((key) => {
+          const condition = options.actions?.[key];
+
+          const isValid =
+            typeof condition === 'function'
+              ? condition(record)
+              : condition === true;
+
+          if (!isValid) return [];
+
+          const action = actionsObj[key]?.(record, options?.buttonProps);
+
+          return action ? [action] : [];
+        });
 
         return (
           <div className='flex items-center justify-center gap-2'>
@@ -635,7 +641,8 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
   return {
     data,
     pagination,
-    loading: listQuery.isLoading || deleteMutation.isPending,
+    loading:
+      listQuery.isLoading || listQuery.isFetching || deleteMutation.isPending,
     handlers,
     queryFilter,
     listQuery,
