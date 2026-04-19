@@ -3,8 +3,11 @@
 import {
   GROUP_KIND_ADMIN,
   GROUP_KIND_EMPLOYEE,
+  mqttTopics,
   storageKeys
 } from '@/constants';
+import { getMqttClient } from '@/lib/mqtt';
+import { logger } from '@/logger';
 import { useEmployeeProfileQuery, useProfileQuery } from '@/queries';
 import { useAppLoadingStore, useAuthStore } from '@/store';
 import { getData } from '@/utils';
@@ -39,6 +42,57 @@ export default function AppProvider({ children }: AppProviderProps) {
   useEffect(() => {
     setLoading(profileLoading || employeeProfileLoading);
   }, [profileLoading, employeeProfileLoading, setLoading]);
+
+  const client = getMqttClient();
+
+  useEffect(() => {
+    client.subscribe(mqttTopics.NOTIFICATION_CMS, (err) => {
+      if (!err)
+        logger.info(`Subscribed to MQTT topic: ${mqttTopics.NOTIFICATION_CMS}`);
+      else
+        logger.error(
+          `Failed to subscribe to MQTT topic: ${mqttTopics.NOTIFICATION_CMS}`,
+          err
+        );
+    });
+
+    return () => {
+      client.unsubscribe(mqttTopics.NOTIFICATION_CMS);
+    };
+  }, [client]);
+
+  useEffect(() => {
+    if (profile?.id) {
+      client.subscribe(
+        mqttTopics.NOTIFICATION_ACCOUNT.replace(':accountId', profile.id),
+        (err) => {
+          if (!err)
+            logger.info(
+              `Subscribed to MQTT topic: ${mqttTopics.NOTIFICATION_ACCOUNT.replace(
+                ':accountId',
+                profile.id
+              )}`
+            );
+          else
+            logger.error(
+              `Failed to subscribe to MQTT topic: ${mqttTopics.NOTIFICATION_ACCOUNT.replace(
+                ':accountId',
+                profile.id
+              )}`,
+              err
+            );
+        }
+      );
+    }
+
+    return () => {
+      if (profile?.id) {
+        client.unsubscribe(
+          mqttTopics.NOTIFICATION_ACCOUNT.replace(':accountId', profile.id)
+        );
+      }
+    };
+  }, [profile?.id, client]);
 
   return (
     <LazyMotion features={domAnimation} strict>

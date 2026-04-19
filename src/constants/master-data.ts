@@ -1615,7 +1615,8 @@ export const serverConfigStatusOptions = [
 ];
 
 export const mqttTopics = {
-  NOTIFICATION_CMS: 'notification/cms'
+  NOTIFICATION_CMS: 'notification/cms',
+  NOTIFICATION_ACCOUNT: 'notification/:accountId'
 };
 
 export const mqttCMDs = {
