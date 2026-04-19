@@ -8,6 +8,7 @@ import { PermissionGuard } from '@/components/permission-guard';
 import { QueryProvider } from '@/components/providers/query-provider';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { AppProvider } from '@/components/providers/app-provider';
+import { CircleLoading } from '@/components/loading';
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['300', '400', '500', '600', '700', '800'],
@@ -42,7 +43,13 @@ export default async function RootLayout({
         >
           <QueryProvider>
             <AppProvider>
-              <Suspense>
+              <Suspense
+                fallback={
+                  <div className='flex h-screen items-center justify-center'>
+                    <CircleLoading className='stroke-main-color size-8' />
+                  </div>
+                }
+              >
                 <PermissionGuard>{children}</PermissionGuard>
               </Suspense>
               <NextTopLoader showSpinner={false} />

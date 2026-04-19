@@ -676,7 +676,10 @@ const useInfiniteListBase = <
   return {
     data,
     pagination,
-    loading: infiniteQuery.isLoading || deleteMutation.isPending,
+    loading:
+      infiniteQuery.isLoading ||
+      infiniteQuery.isFetching ||
+      deleteMutation.isPending,
     handlers,
     queryFilter,
     listQuery: infiniteQuery,

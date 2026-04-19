@@ -635,7 +635,8 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
   return {
     data,
     pagination,
-    loading: listQuery.isLoading || deleteMutation.isPending,
+    loading:
+      listQuery.isLoading || listQuery.isFetching || deleteMutation.isPending,
     handlers,
     queryFilter,
     listQuery,
