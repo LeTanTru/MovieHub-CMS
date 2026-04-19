@@ -3,53 +3,59 @@
 ## Build, lint, and test commands
 
 - Install dependencies: `yarn`
-- Dev server (port 3001, Turbopack): `yarn dev`
-- Dev server with cache cleanup: `yarn clean-dev`
-- Production build: `yarn build`
-- Production server (port 3001): `yarn start`
+- Start dev server (port 3001, Turbopack): `yarn dev`
+- Start dev server after clearing `.next`: `yarn clean-dev`
+- Build production bundle: `yarn build`
+- Start production server (port 3001): `yarn start`
 - Lint: `yarn lint`
 - Format: `yarn format`
-- Tests: no `test` script is configured in `package.json`
-- Single-test run: not available (no test framework/scripts configured)
+- Tests: no test framework is configured
+- Single-test run: not available (no `test` script / test runner in `package.json`)
 
 ## High-level architecture
 
-- Next.js App Router CMS with route-level permission gating.
-- Global provider chain in `src/app/layout.tsx`: `ThemeProvider` → `QueryProvider` → `AppProvider` → `PermissionGuard`.
-- `QueryProvider` creates one shared TanStack Query client with defaults from `get-query-provider.ts` (`staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`).
-- `AppProvider` bootstraps authenticated app state by:
-  - reading token/user kind from storage,
-  - fetching the matching profile query (`useProfileQuery` for admin, `useEmployeeProfileQuery` for employee),
-  - syncing `useAuthStore.profile`,
-  - and driving `useAppLoadingStore.loading`.
-- API, route, and permission wiring is config-driven:
-  - endpoint definitions + permission codes in `src/constants/api-config.ts`,
-  - route metadata (`auth`, `permissionCode`, `separate`) in `src/routes/route.ts`,
-  - runtime auth headers/refresh queue/path-param replacement/upload handling in `src/utils/http.util.ts`.
-- `PermissionGuard` resolves the current route by path pattern and enforces auth + permission before rendering. Save-page permission split (`separate`) is interpreted in `validate-permission.util.ts` (create vs edit permission).
-- CRUD screens are standardized around:
-  - `useListBase` for list/search/pagination/delete/query-sync,
-  - `useSaveBase` for create/edit fetch + submit + optimistic UX around dirty-form navigation.
+- Next.js App Router CMS with React Compiler enabled (`next.config.ts`).
+- Provider chain in `src/app/layout.tsx`: `ThemeProvider` -> `QueryProvider` -> `AppProvider` -> `PermissionGuard`.
+- `QueryProvider` uses one shared TanStack Query client (`src/components/providers/query-provider/get-query-provider.ts`) with:
+  - `staleTime: 60s`
+  - `refetchOnWindowFocus: false`
+  - `retry: false`
+- `AppProvider` (`src/components/providers/app-provider/app-provider.tsx`) handles:
+  - profile bootstrapping (`useProfileQuery` / `useEmployeeProfileQuery`)
+  - syncing auth profile into Zustand (`useAuthStore`)
+  - global animation setup (`LazyMotion` + `domAnimation`)
+  - MQTT topic subscription lifecycle
+- Auth + permission are configuration-driven across multiple layers:
+  - endpoint definitions + permission codes in `src/constants/api-config.ts`
+  - route metadata (`auth`, `permissionCode`, `separate`) in `src/routes/route.ts`
+  - request/refresh-token queue/path-param/upload handling in `src/utils/http.util.ts`
+  - save-page permission split (create vs edit) in `src/utils/validate-permission.util.ts`
+- CRUD pages are standardized by hooks:
+  - `useListBase` for list, filters, query-param sync, delete flows
+  - `useSaveBase` for create/edit fetch, submit, dirty-navigation guard, cache invalidation
 
 ## Key conventions for this codebase
 
-- Keep `apiConfig` as the source of truth. Route permissions should reference `apiConfig.*.permissionCode` instead of duplicating strings.
+- Keep `apiConfig` as the source of truth for endpoints and permission codes. Avoid duplicating permission strings in pages/components.
 - `useListBase` conventions:
-  - Use `defaultFilters` + `notShowFromSearchParams` for required filters that should not appear in URL params.
-  - Reuse the standardized query key shape (`[${queryKey}-list, queryFilter]`) for list invalidation/refetch behavior.
-- `useSaveBase` convention: successful create/update invalidates both `[queryKey]` and `[${queryKey}-list]`.
-- Prefer dedicated `apiConfig.*.autoComplete` endpoints for autocomplete controls when available.
-- Storage keys are centralized in `src/constants/storage-key.ts`; `storageKeys.X_CLIENT_TYPE` is intentionally dual-use (local storage key and HTTP header name in `sendRequest`).
-- Auth/permission model is split by design:
-  - UI authentication state comes from `useAuthStore.profile`,
-  - permission codes come from JWT authorities decoded in `useAuth`.
-- Form layout and accessibility conventions:
-  - Use the custom grid utilities from `src/styles/grid.css` (`grid-row`, `grid-col`, `grid-c-*`) via `globals.css`.
-  - `FormControl` is a Radix `Slot`; the actual input must be its direct child so id/aria props are applied correctly.
-- Animation convention: use Framer Motion `m` components (not `motion`) and keep animations inside the existing `LazyMotion` setup.
-
-## Existing contributor/assistant constraints to preserve
-
-- Commit format is enforced by commitlint (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`).
-- Husky + lint-staged runs `eslint --fix` and `prettier --write` on staged files.
-- Branch naming convention: `feature/`, `fix/`, `refactor/`.
+  - Keep required hidden filters in `defaultFilters` + `notShowFromSearchParams`.
+  - Preserve query key shape for list data: ``[`${queryKey}-list`, queryFilter]``.
+- `useSaveBase` invalidates both `[queryKey]` and ``[`${queryKey}-list`]`` after successful create/update.
+- Prefer `apiConfig.*.autoComplete` endpoints for autocomplete fields when available.
+- Storage keys are centralized in `src/constants/storage-key.ts`; `storageKeys.X_CLIENT_TYPE` is intentionally both:
+  - a localStorage key
+  - an HTTP header name in `sendRequest`
+- Form/layout patterns:
+  - Use grid utilities from `src/styles/grid.css` (`grid-row`, `grid-col`, `grid-c-*`).
+  - `Col` does not have a `span` prop; width is controlled via classes.
+  - `FormControl` is a Radix `Slot`; the form control element must be the direct child so `id`/`aria-*` props are applied.
+- Motion/style patterns:
+  - Use `m` from `framer-motion` (not `motion`) and stay within existing `LazyMotion` setup.
+  - Use `cn()` from `@/lib/utils` for class composition.
+- Import/style conventions:
+  - Use `@/*` aliases instead of deep relative imports.
+  - Use `type` imports where appropriate.
+- Git workflow constraints:
+  - Conventional commits are enforced (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`).
+  - Pre-commit hooks run `eslint --fix` and `prettier --write` via lint-staged.
+  - Branch prefixes: `feature/`, `fix/`, `refactor/`.

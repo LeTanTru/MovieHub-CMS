@@ -3,7 +3,7 @@
 <h1 align="center">MovieHub CMS</h1>
 
 <p align="center">
-  <strong>A comprehensive content management system for movie streaming platforms</strong>
+  <strong>A content management system for movie streaming platforms</strong>
 </p>
 
 <p align="center">
@@ -19,96 +19,96 @@
 
 ## 📋 Overview
 
-**MovieHub CMS** is an enterprise-grade administration console designed for managing movie streaming platforms. Built with modern web technologies, it provides operations teams with powerful tools to manage content, users, permissions, and platform configuration.
+**MovieHub CMS** is an administration console for managing a movie streaming platform. It is built with Next.js App Router and TypeScript, with configuration-driven APIs, routes, and permissions.
 
 ### What is MovieHub CMS?
 
 This system serves as the central hub for:
 
-- **Content Management**: Comprehensive movie catalog with metadata, categories, people, and collections
-- **User Administration**: Role-based access control for admins, employees, and end users
-- **Media Management**: Video library with upload, processing, and playback capabilities
-- **Platform Configuration**: Customizable UI elements, sidebar navigation, and styling
-- **Permission System**: Granular permission management with group-based access control
+- **Content Management**: Manage movies, categories, people, collections, comments, and reviews
+- **User Administration**: Manage admins, employees, groups, and profiles
+- **Media Management**: Manage video library and related media metadata
+- **Platform Configuration**: Manage sidebar, style, and app/server configuration
+- **Permission System**: Enforce route and action permissions using permission codes
 
-Built with **Next.js 16 (App Router)** and **TypeScript**, the system emphasizes type safety, performance, and developer experience.
+Built with **Next.js (App Router)** and **TypeScript**, the system emphasizes type safety, consistency, and maintainability.
 
 ## ✨ Features
 
 ### Content Management
 
-- **Movies & Series**: Complete lifecycle management for movies, TV series, episodes, and trailers
-- **Categories & Collections**: Organize content with categories, sections, and curated collections
-- **People Management**: Track directors, actors, and other crew members with detailed profiles
-- **Rich Metadata**: Support for ratings, reviews, comments, and age classifications
-- **Media Assets**: Advanced video library with HLS streaming support
+- **Movies & Series**: Manage movies, episodes/items, and related data
+- **Categories & Collections**: Organize content with categories and collections
+- **People Management**: Manage actors/directors and related references
+- **Rich Metadata**: Handle comments, reviews, and classifications
+- **Media Assets**: Video-library workflows and uploads
 
 ### User & Access Management
 
-- **Role System**: Admin, employee, and user role hierarchies
-- **Permission Groups**: Flexible group-based permission assignment
-- **Profile Management**: User profiles with avatar uploads and personal information
-- **Authentication**: JWT-based auth with refresh token rotation
+- **Role System**: Admin and employee flows with user management
+- **Permission Groups**: Group-based permission assignment
+- **Profile Management**: Profile update workflows
+- **Authentication**: JWT-based auth with refresh token handling
 - **Authorization**: Route-level and API-level permission enforcement
 
 ### Platform Configuration
 
-- **Dynamic Sidebar**: Configurable navigation menus
-- **Style Management**: Customizable themes and UI styling
-- **App Version Control**: Feature flag management and version tracking
+- **Dynamic Sidebar**: Configurable navigation
+- **Style Management**: UI styling configuration
+- **Version/Server Config**: App version and server settings modules
 
 ### Developer Experience
 
-- **Type Safety**: Full TypeScript coverage with Zod schema validation
-- **Form Management**: React Hook Form integration with automatic error handling
-- **State Management**: Zustand for global state, TanStack Query for server state
-- **UI Components**: Radix UI primitives with custom styling and animations
-- **Code Quality**: ESLint, Prettier, Husky pre-commit hooks, and Commitlint
+- **Type Safety**: TypeScript + Zod schemas
+- **Form Management**: React Hook Form + shared form components
+- **State Management**: Zustand + TanStack Query
+- **UI Components**: Radix UI wrappers + Framer Motion
+- **Code Quality**: ESLint, Prettier, Husky, lint-staged, Commitlint
 
 ## 🛠 Tech Stack
 
 ### Core Framework
 
-| Technology                                    | Version | Purpose                                     |
-| --------------------------------------------- | ------- | ------------------------------------------- |
-| [Next.js](https://nextjs.org/)                | 16.1.1  | React framework with App Router & Turbopack |
-| [React](https://react.dev/)                   | 19.2.3  | UI library with React Compiler              |
-| [TypeScript](https://www.typescriptlang.org/) | ^5      | Strict type safety                          |
-| [Tailwind CSS](https://tailwindcss.com/)      | v4      | Utility-first styling                       |
+| Technology                                    | Purpose                                     |
+| --------------------------------------------- | ------------------------------------------- |
+| [Next.js](https://nextjs.org/)                | React framework with App Router & Turbopack |
+| [React](https://react.dev/)                   | UI library                                  |
+| [TypeScript](https://www.typescriptlang.org/) | Strict type safety                          |
+| [Tailwind CSS](https://tailwindcss.com/)      | Utility-first styling                       |
 
 ### State & Data Management
 
-| Technology                                   | Version | Purpose                 |
-| -------------------------------------------- | ------- | ----------------------- |
-| [TanStack Query](https://tanstack.com/query) | 5.90.16 | Server state & caching  |
-| [Zustand](https://github.com/pmndrs/zustand) | 5.0.9   | Client state management |
-| [Axios](https://axios-http.com/)             | 1.13.2  | HTTP client with auth   |
+| Technology                                   | Purpose                 |
+| -------------------------------------------- | ----------------------- |
+| [TanStack Query](https://tanstack.com/query) | Server state & caching  |
+| [Zustand](https://github.com/pmndrs/zustand) | Client state management |
+| [Axios](https://axios-http.com/)             | HTTP client with auth   |
 
 ### Forms & Validation
 
-| Technology                                      | Version | Purpose                               |
-| ----------------------------------------------- | ------- | ------------------------------------- |
-| [React Hook Form](https://react-hook-form.com/) | 7.69.0  | Performant form handling              |
-| [Zod](https://zod.dev/)                         | 4.3.4   | v4 schema validation & type inference |
+| Technology                                      | Purpose                             |
+| ----------------------------------------------- | ----------------------------------- |
+| [React Hook Form](https://react-hook-form.com/) | Performant form handling            |
+| [Zod](https://zod.dev/)                         | v4 schema validation & type support |
 
 ### UI Components & Animations
 
-| Technology                                      | Version  | Purpose                         |
-| ----------------------------------------------- | -------- | ------------------------------- |
-| [Radix UI](https://www.radix-ui.com/)           | 1.x      | Headless UI primitives          |
-| [Framer Motion](https://www.framer.com/motion/) | 12.23.26 | Animations (LazyMotion pattern) |
-| [Lucide React](https://lucide.dev/)             | 0.562.0  | Icon library                    |
-| [Recharts](https://recharts.org/)               | -        | Charts & data visualization     |
-| [@dnd-kit](https://dndkit.com/)                 | -        | Drag & drop functionality       |
+| Technology                                      | Purpose                   |
+| ----------------------------------------------- | ------------------------- |
+| [Radix UI](https://www.radix-ui.com/)           | Headless UI primitives    |
+| [Framer Motion](https://www.framer.com/motion/) | Animations (`LazyMotion`) |
+| [Lucide React](https://lucide.dev/)             | Icon library              |
+| [Recharts](https://recharts.org/)               | Charts                    |
+| [@dnd-kit](https://dndkit.com/)                 | Drag & drop               |
 
 ### Media & Rich Content
 
-| Technology                                               | Version | Purpose                       |
-| -------------------------------------------------------- | ------- | ----------------------------- |
-| [Vidstack](https://www.vidstack.io/)                     | 1.12.13 | Video player with HLS support |
-| [TinyMCE](https://www.tiny.cloud/)                       | -       | Rich text editor              |
-| [AWS SDK S3](https://aws.amazon.com/sdk-for-javascript/) | -       | Presigned URL uploads         |
-| [MQTT](https://mqtt.org/)                                | -       | Real-time messaging           |
+| Technology                                               | Purpose               |
+| -------------------------------------------------------- | --------------------- |
+| [Vidstack](https://www.vidstack.io/)                     | Video player          |
+| [TinyMCE](https://www.tiny.cloud/)                       | Rich text editor      |
+| [AWS SDK S3](https://aws.amazon.com/sdk-for-javascript/) | Presigned URL uploads |
+| [MQTT](https://mqtt.org/)                                | Realtime messaging    |
 
 ### Development Tools
 
@@ -168,7 +168,7 @@ Built with **Next.js 16 (App Router)** and **TypeScript**, the system emphasizes
    NEXT_PUBLIC_APP_NAME=MovieHub CMS
    NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN=refresh_token
    NEXT_PUBLIC_MEDIA_HOST=https://your-media-host.com
-    NEXT_PUBLIC_CLIENT_TYPE=CMS
+   NEXT_PUBLIC_CLIENT_TYPE=CMS
    ```
 
 4. **Start the development server**
@@ -181,201 +181,169 @@ Built with **Next.js 16 (App Router)** and **TypeScript**, the system emphasizes
 
 ## 📜 Available Scripts
 
-| Command            | Description                                          |
-| ------------------ | ---------------------------------------------------- |
-| `yarn dev`         | Start development server on port 3001 with Turbopack |
-| `yarn clean-dev`   | Remove `.next` cache and start dev server            |
-| `yarn build`       | Build production bundle                              |
-| `yarn start`       | Start production server on port 3001                 |
-| `yarn lint`        | Run ESLint on TypeScript/JavaScript files            |
-| `yarn format`      | Format code with Prettier                            |
-| `yarn lint-staged` | Run linting and formatting on staged files           |
+These commands match `package.json` exactly:
+
+| Command            | Description                                       |
+| ------------------ | ------------------------------------------------- |
+| `yarn dev`         | Start development server (`next dev --turbopack`) |
+| `yarn clean-dev`   | Remove `.next`, then start dev server             |
+| `yarn prebuild`    | Remove `.next` and `out` before build             |
+| `yarn build`       | Build production bundle                           |
+| `yarn start`       | Start production server on port 3001              |
+| `yarn prepare`     | Install/refresh Husky hooks                       |
+| `yarn lint`        | Run ESLint on `.ts/.tsx/.js/.jsx`                 |
+| `yarn format`      | Format code with Prettier                         |
+| `yarn lint-staged` | Run lint-staged                                   |
+
+### Testing status
+
+- No test framework is configured in this repository.
+- There is no `test` script in `package.json`.
+- There is no single-test command available.
 
 ## 📁 Project Structure
 
-```
+```text
 MovieHub-CMS/
 ├── .github/                    # GitHub configuration and CI/CD
 ├── public/                     # Static assets
 ├── src/
 │   ├── app/                    # Next.js App Router pages
-│   │   ├── (auth)/            # Auth route group (login)
-│   │   ├── admin/             # Admin management
-│   │   ├── category/          # Category CRUD
-│   │   ├── collection/        # Collection management
-│   │   ├── employee/          # Employee management
-│   │   ├── group-permission/  # Permission groups
-│   │   ├── movie/             # Movie & series management
-│   │   ├── person/            # People (actors/directors)
-│   │   ├── profile/           # User profile
-│   │   ├── sidebar/           # Sidebar configuration
-│   │   ├── style/             # Theme & style management
-│   │   ├── user/              # End-user management
-│   │   └── video-library/     # Video library
-│   ├── assets/                # Images, fonts, static resources
-│   ├── components/            # Reusable React components
-│   │   ├── form/             # 34 form field components
-│   │   ├── ui/               # Radix UI wrappers
-│   │   ├── providers/        # Context providers
-│   │   ├── table/            # Table with pagination
-│   │   ├── video-player/     # Vidstack player
-│   │   └── permission-guard/ # Route access control
-│   ├── constants/             # Centralized configuration
-│   │   ├── api-config.ts     # ~900 lines of endpoint definitions
-│   │   ├── route.ts          # Route metadata & permissions
-│   │   ├── menu-config.ts    # Sidebar navigation
-│   │   └── storage-key.ts    # LocalStorage keys
-│   ├── hooks/                 # 20 custom React hooks
-│   │   ├── use-list-base.tsx # Standardized list page logic
-│   │   ├── use-save-base.tsx # Standardized create/edit logic
-│   │   └── use-auth.ts       # Authentication hook
-│   ├── queries/               # 16 TanStack Query hook files
-│   ├── routes/                # Route definitions with permissions
-│   ├── schemaValidations/     # 23 Zod validation schemas
-│   ├── store/                 # Zustand stores (auth, sidebar, etc.)
-│   ├── types/                 # 32 TypeScript type definitions
-│   ├── utils/                 # Utility functions
-│   │   ├── http.util.ts      # Axios wrapper with auth
-│   │   └── storage.util.ts   # LocalStorage helpers
-│   └── lib/                   # Third-party library configs
-├── .env.example               # Environment template
-├── next.config.ts             # Next.js config (React Compiler, 2GB body limit)
-├── tailwind.config.ts         # Tailwind CSS v4 config
-└── tsconfig.json              # TypeScript strict mode
+│   │   ├── (auth)/             # Auth route group
+│   │   ├── admin/              # Admin management
+│   │   ├── category/           # Category CRUD
+│   │   ├── collection/         # Collection management
+│   │   ├── employee/           # Employee management
+│   │   ├── group-permission/   # Permission groups
+│   │   ├── movie/              # Movie management
+│   │   ├── person/             # People management
+│   │   ├── profile/            # User profile
+│   │   ├── sidebar/            # Sidebar configuration
+│   │   ├── style/              # Style management
+│   │   ├── user/               # User management
+│   │   └── video-library/      # Video library
+│   ├── assets/                 # Images, fonts, static resources
+│   ├── components/             # Reusable React components
+│   │   ├── form/               # Form building blocks
+│   │   ├── ui/                 # Radix UI wrappers
+│   │   ├── providers/          # Context providers
+│   │   ├── table/              # Table components
+│   │   └── video-player/       # Vidstack player
+│   ├── constants/              # App constants/configuration
+│   │   ├── api-config.ts       # Endpoints + permission codes
+│   │   ├── menu-config.ts      # Sidebar navigation
+│   │   └── storage-key.ts      # Storage/header keys
+│   ├── hooks/                  # Shared hooks
+│   │   ├── use-list-base.tsx   # Standardized list-page logic
+│   │   ├── use-save-base.tsx   # Standardized save-page logic
+│   │   └── use-auth.ts         # Authentication/permission hook
+│   ├── queries/                # TanStack Query hooks
+│   ├── routes/                 # Route definitions + metadata
+│   ├── schemaValidations/      # Zod validation schemas
+│   ├── store/                  # Zustand stores
+│   ├── types/                  # TypeScript types
+│   ├── utils/                  # Utility functions
+│   │   ├── http.util.ts        # HTTP wrapper + token refresh flow
+│   │   └── storage.util.ts     # Storage helpers
+│   └── lib/                    # Third-party library configs
+├── .env.example                # Environment template
+├── next.config.ts              # Next.js config
+├── tailwind.config.ts          # Tailwind config
+└── tsconfig.json               # TypeScript strict mode
 ```
 
 ## 🏗 Architecture Overview
 
 ### Provider Hierarchy
 
-The application uses a layered provider architecture in `src/app/layout.tsx`:
+The application uses this provider chain in `src/app/layout.tsx`:
 
-```
-ThemeProvider (next-themes)
-  └─ QueryProvider (TanStack Query client)
-      └─ AppProvider (auth bootstrapping + Framer Motion)
-          └─ PermissionGuard (route-level auth/permission check)
+```text
+ThemeProvider
+  └─ QueryProvider
+      └─ AppProvider
+          └─ PermissionGuard
               └─ Page Content
 ```
 
-### Data Flow
+### Core Architecture
 
-1. **API Configuration** (`src/constants/api-config.ts`)
-   - Defines all endpoints, HTTP methods, headers, and permission codes
-   - Used by HTTP utility and hooks as single source of truth
+1. **Query Provider** (`src/components/providers/query-provider/get-query-provider.ts`)
+   - Uses one shared browser query client
+   - Defaults: `staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`
 
-2. **Route Configuration** (`src/routes/route.ts`)
-   - Maps paths to permission requirements
-   - Used by PermissionGuard for access control
+2. **App Provider** (`src/components/providers/app-provider/app-provider.tsx`)
+   - Reads token and user kind from storage
+   - Loads profile via `useProfileQuery` or `useEmployeeProfileQuery`
+   - Syncs profile into `useAuthStore`
+   - Initializes `LazyMotion` and MQTT subscriptions
 
-3. **HTTP Layer** (`src/utils/http.util.ts`)
-   - Axios wrapper with token injection
-   - Automatic refresh token handling
-   - Path parameter replacement
-   - Multipart form data support
+3. **Config-driven access control**
+   - Endpoints + permission codes: `src/constants/api-config.ts`
+   - Route metadata (`auth`, `permissionCode`, `separate`): `src/routes/route.ts`
+   - Route checks at render time: `PermissionGuard`
 
-4. **Data Hooks** (`src/hooks/use-list-base.tsx`, `use-save-base.tsx`)
-   - Standardized CRUD operations
-   - Query parameter synchronization
-   - Permission-aware UI rendering
-   - Automatic cache invalidation
+4. **HTTP layer** (`src/utils/http.util.ts`)
+   - Auth header injection
+   - Refresh-token retry queue for concurrent 401 handling
+   - Path param replacement and multipart upload support
+
+5. **Shared CRUD hooks**
+   - `useListBase`: list query, filter/query-string sync, pagination, delete flow
+   - `useSaveBase`: create/edit fetch + submit, dirty-leave guard, query invalidation
 
 ### Authentication Flow
 
-1. User logs in → JWT access token + refresh token stored
-2. HTTP requests include `Authorization: Bearer {token}` header
-3. 401 responses trigger refresh token flow (queued to prevent duplicates)
-4. Profile data fetched and stored in Zustand `useAuthStore`
-5. Permissions extracted from JWT and checked against route requirements
+1. User logs in and tokens are stored
+2. HTTP requests include `Authorization: Bearer <token>`
+3. `401` responses trigger refresh-token flow with queued retries
+4. Profile is loaded and synced to `useAuthStore`
+5. Permission checks are enforced by route metadata and permission utilities
 
 ### Permission System
 
-- **API-Level**: Each endpoint in `api-config.ts` has a `permissionCode`
-- **Route-Level**: Routes in `route.ts` require specific permission codes
-- **Component-Level**: `<HasPermission>` wrapper for conditional rendering
-- **Hook-Level**: `useValidatePermission()` for programmatic checks
+- **API-Level**: `permissionCode` is defined in `api-config.ts`
+- **Route-Level**: `auth`, `permissionCode`, `separate` are defined in `route.ts`
+- **Component-Level**: `<HasPermission>` is used for conditional UI
+- **Save-page split**: create vs edit checks use `separate` semantics
 
 ## 💻 Development
 
-### Provider Hierarchy
+### Key Patterns
 
-```
-ThemeProvider (next-themes)
-  └─ QueryProvider (TanStack Query, staleTime: 60s)
-      └─ AppProvider (auth + LazyMotion)
-          └─ PermissionGuard (route-level access control)
-              └─ Page Content
-```
-
-### Key Architecture Patterns
-
-**Configuration-Driven CRUD**
-All pages follow the same pattern using `useListBase` (list pages) and `useSaveBase` (create/edit pages). This dramatically reduces boilerplate and ensures consistency across the entire application.
-
-**Single Source of Truth**
-
-- API endpoints defined in `api-config.ts` (~900 lines)
-- Permission codes cascade automatically through routes, menus, and components
-- Adding a new feature requires updates to only 3 places: api-config, routes, and menu config
-
-**Form Dirty Guard**
-When navigating away from unsaved changes, users see a confirmation dialog. Cancel stores the previous path in localStorage for "return to previous" behavior.
-
-**Dual Token Storage**
-JWT tokens stored in both cookies (SSR) and localStorage (CSR) for seamless authentication across server and client.
-
-**No Test Framework**
-There is intentionally no test setup -- no `test` script in package.json, no test files, no testing library dependency.
+- Keep `apiConfig` as the source of truth for endpoints and permission codes.
+- Use `useListBase` for list pages and `useSaveBase` for create/edit pages.
+- Keep required hidden filters in `defaultFilters` + `notShowFromSearchParams`.
+- Prefer `apiConfig.*.autoComplete` endpoints for autocomplete fields when available.
+- `useSaveBase` already handles dirty-form leave confirmation and invalidation of `[queryKey]` and `[`${queryKey}-list`]`.
 
 ### Code Conventions
 
-- Use `'use client'` directive for hooks and components using browser APIs
-- Import from `@/*` aliases instead of relative paths
-- Use `m` from framer-motion (not `motion`)
-- Use `cn()` from `@/lib/utils` for conditional class merging
-- Follow Zod v4 patterns (`.check()` for chained validators)
-- Prefix unused vars with `_` to suppress warnings
-- All commits must include: `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
+- Use `'use client'` for interactive/client-only code
+- Use `@/*` path aliases instead of deep relative imports
+- Use `m` from `framer-motion` (not `motion`)
+- Use `cn()` from `@/lib/utils` for class composition
+- Follow Zod v4 form validation patterns (`.check(...)`)
+- Prefix intentionally unused variables with `_`
 
-### Modal Patterns
+### Modal Pattern
 
 ```tsx
-<Modal
-  open={open}
-  onClose={handleClose}
-  className='...'
-  aria-labelledby='...'
-  confirmOnClose={isFormChanged}
->
+<Modal open={open} onClose={handleClose} confirmOnClose={isFormChanged}>
   <Modal.Header>Title</Modal.Header>
   <Modal.Body>{/* Form content */}</Modal.Body>
-  <Modal.Confirm message='Bạn có chắc chắn muốn hùy không ?' />
+  <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
 </Modal>
 ```
 
-### Styling Conventions
-
-- Tailwind CSS v4 utility classes
-- Component variants with `class-variance-authority`
-- Radix UI for headless component primitives
-- Framer Motion animations via LazyMotion + domAnimation
-- 12-column grid system (`src/styles/grid.css`)
-
-### Form Patterns
-
-- `BaseForm` + `useForm` (react-hook-form) + Zod resolver
-- `ImageField` supports `freeAspect` and `freePreviewAspect` props
-- `UploadImageField` supports `originalSize` prop for original dimensions
-- `onFormChange(isDirty)` callback for dirty tracking
-
 ## 🤝 Contributing
 
-1. Follow the established code patterns (see `.github/copilot-instructions.md`)
+1. Follow the established code patterns (see `.github/copilot-instructions.md` and `AGENTS.md`)
 2. Use TypeScript for all new code
-3. Add Zod schemas for form validation
-4. Write commit messages following conventional commits
+3. Add Zod schemas for form validation where needed
+4. Use conventional commit messages (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`)
 5. Run `yarn lint` and `yarn format` before committing
-6. Test changes across different user permission levels
+6. Test changes manually across different user permission levels (no automated test setup)
 
 ### Git Workflow
 
@@ -387,10 +355,9 @@ git checkout -b feature/your-feature-name
 git add .
 git commit -m "feat: add new feature"  # Commitlint enforces format
 
-# Pre-commit hooks will run automatically:
+# Pre-commit hooks run on staged files:
 # - ESLint (auto-fix)
 # - Prettier (auto-format)
-# - Commitlint (message validation)
 
 # Push and create PR
 git push origin feature/your-feature-name
@@ -412,7 +379,7 @@ git push origin feature/your-feature-name
 | `NEXT_PUBLIC_APP_NAME`                 | Application name            | `MovieHub CMS`               |
 | `NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN` | Refresh token grant type    | `refresh_token`              |
 | `NEXT_PUBLIC_MEDIA_HOST`               | Media files host            | `https://cdn.example.com`    |
-| `NEXT_PUBLIC_CLIENT_TYPE`              | Client type identifier      | `WEB`                        |
+| `NEXT_PUBLIC_CLIENT_TYPE`              | Client type identifier      | `CMS`                        |
 
 ## 📄 License
 
