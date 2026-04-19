@@ -3,13 +3,14 @@
 import { AvatarField } from '@/components/form';
 import { List, ListItem } from '@/components/list';
 import { CircleLoading } from '@/components/loading';
+import { useAppContext } from '@/components/providers/app-provider';
 import { getQueryClient } from '@/components/providers/query-provider';
 import { queryKeys, storageKeys } from '@/constants';
 import { useDisclosure, useNavigate, useQueryParams } from '@/hooks';
 import { logger } from '@/logger';
 import { useLogoutMutation } from '@/queries';
 import { route } from '@/routes';
-import { useAppLoadingStore, useAuthStore } from '@/store';
+import { useAuthStore } from '@/store';
 import { getLastWord, notify, removeData, renderImageUrl } from '@/utils';
 import { m, AnimatePresence } from 'framer-motion';
 import { ChevronDown, LogOut, User } from 'lucide-react';
@@ -23,7 +24,8 @@ export default function DropdownAvatar() {
   const queryClient = getQueryClient();
   const { opened: openedDropdown, toggle: toggleDropDown } = useDisclosure();
   const pathname = usePathname();
-  const setLoading = useAppLoadingStore((s) => s.setLoading);
+
+  const { setLoading } = useAppContext();
   const { profile, setProfile, setIsLoggedOut } = useAuthStore(
     useShallow((s) => ({
       profile: s.profile,

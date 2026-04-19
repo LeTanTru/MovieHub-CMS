@@ -98,6 +98,14 @@ export default function Modal({
     if (!open) setShowConfirm(false);
   }, [open]);
 
+  const handleClose = () => {
+    if (confirmOnClose) {
+      setShowConfirm(true);
+    } else {
+      onClose?.();
+    }
+  };
+
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleClose();
@@ -110,14 +118,6 @@ export default function Modal({
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleClose = () => {
-    if (confirmOnClose) {
-      setShowConfirm(true);
-    } else {
-      onClose?.();
-    }
-  };
 
   const handleConfirmYes = () => {
     setShowConfirm(false);
@@ -169,6 +169,8 @@ export default function Modal({
                 animate={variants.animate}
                 exit={variants.exit}
                 transition={{ duration: 0.15, ease: 'linear' }}
+                onClick={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
                 {...rest}
               >
                 {children}
@@ -223,7 +225,7 @@ function Body({ children, className, ref, scrollable }: BodyProps) {
 
     checkOverflow();
     const scrollElement = scrollRef.current;
-    scrollElement?.addEventListener('scroll', checkOverflow);
+    scrollElement?.addEventListener('scroll', checkOverflow, { passive: true });
     window.addEventListener('resize', checkOverflow);
 
     return () => {
@@ -256,7 +258,8 @@ function Body({ children, className, ref, scrollable }: BodyProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             onClick={handleScrollDown}
-            className='absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce rounded-full p-2 text-white shadow-[0px_0px_10px_2px] shadow-gray-300 transition-all'
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className='absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full p-2 text-white shadow-[0px_0px_10px_2px] shadow-gray-300'
             aria-label='Scroll down'
           >
             <ChevronDown className='size-5 text-slate-800' />

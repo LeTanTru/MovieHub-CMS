@@ -431,6 +431,7 @@ export default function UploadImageField<T extends FieldValues>({
                       'object-contain': keepOriginalSize && !shouldCrop,
                       'object-cover': !keepOriginalSize && shouldCrop
                     })}
+                    sizes='(max-width: 768px) 100vw, 50vw'
                   />
                 )
               )}

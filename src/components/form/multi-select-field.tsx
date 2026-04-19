@@ -153,10 +153,10 @@ export default function MultiSelectField<
   const selectedValues: Array<string | number> = (() => {
     if (Array.isArray(watchedValue)) return watchedValue;
     if (typeof watchedValue === 'string' && watchedValue)
-      return (watchedValue as string)
-        .split(',')
-        .map((v) => v.trim())
-        .filter(Boolean);
+      return (watchedValue as string).split(',').flatMap((v) => {
+        const trimmed = v.trim();
+        return trimmed ? [trimmed] : [];
+      });
     return [];
   })();
 
@@ -229,7 +229,10 @@ export default function MultiSelectField<
           onValueChange?.(newValues);
         };
 
-        const handleRemove = (val: string | number, e: MouseEvent) => {
+        const handleRemove = (
+          val: string | number,
+          e: MouseEvent<HTMLSpanElement>
+        ) => {
           e.stopPropagation();
           e.preventDefault();
           const newValues = selectedValues.filter((v) => v !== val);
@@ -270,6 +273,9 @@ export default function MultiSelectField<
                       type='button'
                       variant='outline'
                       role='combobox'
+                      aria-controls='combobox'
+                      aria-expanded={open}
+                      aria-label='Select'
                       disabled={disabled}
                       className={cn(
                         'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 pl-1! text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2',
@@ -302,6 +308,7 @@ export default function MultiSelectField<
                               >
                                 {getLabel(option)}
                                 <span
+                                  role='button'
                                   className='flex items-center justify-center rounded-sm transition-colors hover:bg-gray-300/60'
                                   onClick={(e) => handleRemove(val, e)}
                                   onMouseDown={(e) => e.stopPropagation()}

@@ -184,7 +184,9 @@ export default function DragDropTable<T extends Record<any, any>>({
       setScrollAtEnd((div?.scrollLeft ?? 0) >= maxScrollLeft);
     };
 
-    el.querySelector('div')?.addEventListener('scroll', handleScroll);
+    el.querySelector('div')?.addEventListener('scroll', handleScroll, {
+      passive: true
+    });
     handleScroll();
 
     return () => {

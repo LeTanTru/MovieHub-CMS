@@ -18,20 +18,18 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
 import { AnimatePresence, m } from 'framer-motion';
 import { Loader } from 'lucide-react';
-import { useAppLoadingStore, useAuthStore } from '@/store';
+import { useAuthStore } from '@/store';
 import { route } from '@/routes';
 import { storageKeys } from '@/constants';
 import type { RouteItem } from '@/routes/route';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppContext } from '@/components/providers/app-provider';
 
 type PermissionGuardProps = { children: ReactNode };
 
 export default function PermissionGuard({ children }: PermissionGuardProps) {
   const { permissionCode: userPermissions, isAuthenticated } = useAuth();
 
-  const { loading, setLoading } = useAppLoadingStore(
-    useShallow((s) => ({ loading: s.loading, setLoading: s.setLoading }))
-  );
+  const { loading, setLoading } = useAppContext();
 
   const isLoggedOut = useAuthStore((s) => s.isLoggedOut);
 

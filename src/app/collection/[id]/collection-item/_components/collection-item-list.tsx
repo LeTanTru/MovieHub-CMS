@@ -29,12 +29,7 @@ import type {
   Column,
   SearchFormProps
 } from '@/types';
-import {
-  convertUTCToLocal,
-  formatDate,
-  renderImageUrl,
-  renderListPageUrl
-} from '@/utils';
+import { convertUTCToLocal, renderImageUrl, renderListPageUrl } from '@/utils';
 import { PlusIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 

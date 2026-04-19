@@ -8,7 +8,7 @@ import { logoWithText } from '@/assets';
 import { notify, setData } from '@/utils';
 import { route } from '@/routes';
 import { GROUP_KIND_ADMIN, storageKeys } from '@/constants';
-import { useAppLoadingStore, useAuthStore } from '@/store';
+import { useAuthStore } from '@/store';
 import { useFirstActiveRoute, useNavigate } from '@/hooks';
 import {
   useEmployeeProfileQuery,
@@ -18,6 +18,7 @@ import {
 import envConfig from '@/config';
 import Image from 'next/image';
 import type { LoginBodyType, LoginResType } from '@/types';
+import { useAppContext } from '@/components/providers/app-provider';
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ export default function LoginForm() {
   const { refetch: getEmployeeProfile, isLoading: employeeProfileLoading } =
     useEmployeeProfileQuery();
 
-  const setLoading = useAppLoadingStore((s) => s.setLoading);
+  const { setLoading } = useAppContext();
   const setProfile = useAuthStore((s) => s.setProfile);
 
   const defaultValues: LoginBodyType = {

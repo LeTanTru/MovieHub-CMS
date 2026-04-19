@@ -131,11 +131,11 @@ export default function CollectionForm() {
       filter: data?.filter
         ? { ...filter, noLimit: filter.limit ? false : true }
         : {},
-      name: data?.name ?? '',
+      name: data?.name || '',
       randomData: false,
-      styleId: data?.style?.id?.toString() ?? '',
-      type: (data?.type ?? type) ? Number(type) : COLLECTION_TYPE_TOPIC,
-      fillData: data?.fillData ?? false
+      styleId: data?.style?.id?.toString() || '',
+      type: data?.type || type ? Number(type) : COLLECTION_TYPE_TOPIC,
+      fillData: data?.fillData || false
     };
   }, [
     data?.color,
@@ -270,7 +270,7 @@ export default function CollectionForm() {
               <Row>
                 <Col className='grid-c-6'>
                   <div className='space-y-2'>
-                    <label className='ml-2 text-sm font-medium'>
+                    <label htmlFor='color' className='ml-2 text-sm font-medium'>
                       Màu (chọn ít nhất 2)
                       <span className='text-red-500'>*</span>
                     </label>
@@ -285,6 +285,7 @@ export default function CollectionForm() {
                                 updateColor(index, e.target.value)
                               }
                               className='h-10 w-full cursor-pointer rounded border border-gray-300'
+                              id='color'
                             />
                           </div>
                           <input

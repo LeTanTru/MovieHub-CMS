@@ -31,18 +31,18 @@ export default function StyleInfoModal({
         <Row className='mb-0'>
           <Col className='grid-c-12'>
             <div className='flex items-center gap-2'>
-              <label className='block text-sm font-bold text-gray-700'>
+              <span className='block text-sm font-bold text-gray-700'>
                 Loại:
-              </label>
+              </span>
               <span className='text-gray-900'>{style.type || '------'}</span>
             </div>
           </Col>
         </Row>
         <Row className='mb-0'>
           <Col className='grid-c-6'>
-            <label className='mb-1 block text-sm font-bold text-gray-700'>
+            <span className='mb-1 block text-sm font-bold text-gray-700'>
               Ảnh Mobile:
-            </label>
+            </span>
             {style.imageMobileUrl ? (
               <ImageField
                 disablePreview={false}
@@ -56,9 +56,9 @@ export default function StyleInfoModal({
             )}
           </Col>
           <Col className='grid-c-6'>
-            <label className='mb-1 block text-sm font-bold text-gray-700'>
+            <span className='mb-1 block text-sm font-bold text-gray-700'>
               Ảnh Web:
-            </label>
+            </span>
             {style.imageWebUrl ? (
               <ImageField
                 disablePreview={false}

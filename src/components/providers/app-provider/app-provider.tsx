@@ -9,16 +9,41 @@ import {
 import { getMqttClient } from '@/lib/mqtt';
 import { logger } from '@/logger';
 import { useEmployeeProfileQuery, useProfileQuery } from '@/queries';
-import { useAppLoadingStore, useAuthStore } from '@/store';
+import { useAuthStore } from '@/store';
 import { getData } from '@/utils';
 import { domAnimation, LazyMotion } from 'framer-motion';
-import { type ReactNode, useEffect } from 'react';
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
+
+type AppContextType = {
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
+};
+
+const AppContext = createContext<AppContextType>({
+  loading: false,
+  setLoading: () => {}
+});
+
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useAppContext must be used within an AppProvider');
+  }
+  return context;
+};
 
 type AppProviderProps = { children: ReactNode };
 
 export default function AppProvider({ children }: AppProviderProps) {
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
-  const setLoading = useAppLoadingStore((s) => s.setLoading);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const setProfile = useAuthStore((s) => s.setProfile);
   const userKind = getData(storageKeys.USER_KIND);
 
@@ -38,10 +63,6 @@ export default function AppProvider({ children }: AppProviderProps) {
       setProfile(profile);
     }
   }, [profile, setProfile]);
-
-  useEffect(() => {
-    setLoading(profileLoading || employeeProfileLoading);
-  }, [profileLoading, employeeProfileLoading, setLoading]);
 
   const client = getMqttClient();
 
@@ -95,8 +116,15 @@ export default function AppProvider({ children }: AppProviderProps) {
   }, [profile?.id, client]);
 
   return (
-    <LazyMotion features={domAnimation} strict>
-      {children}
-    </LazyMotion>
+    <AppContext.Provider
+      value={{
+        loading: loading || profileLoading || employeeProfileLoading,
+        setLoading
+      }}
+    >
+      <LazyMotion features={domAnimation} strict>
+        {children}
+      </LazyMotion>
+    </AppContext.Provider>
   );
 }

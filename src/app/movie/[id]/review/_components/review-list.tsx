@@ -58,7 +58,7 @@ export default function ReviewList() {
       <ListPageWrapper>
         {loading ? (
           <div className='space-y-4 p-4'>
-            <h4 className='skeleton ml-4 h-5 w-20'></h4>
+            <div className='skeleton ml-4 h-5 w-20' />
             {Array.from({ length: 8 }).map((_, index) => (
               <ReviewItem.Skeleton key={index} />
             ))}
