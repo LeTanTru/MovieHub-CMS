@@ -85,3 +85,9 @@ export const EMPTY_ARRAY = [];
 export const TAB_GROUP = 'group-list';
 export const TAB_GROUP_PERMISSION = 'group-permission-list';
 export const TAB_PERMISSION = 'permission-list';
+
+export const VIDEO_QUALITY_AUTO = 0;
+export const VIDEO_QUALITY_720 = 1;
+export const VIDEO_QUALITY_1080 = 2;
+export const VIDEO_QUALITY_1440 = 3;
+export const VIDEO_QUALITY_MAX = 4;

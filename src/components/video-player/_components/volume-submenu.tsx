@@ -21,15 +21,10 @@ export default function VolumeSubmenu() {
         icon={MusicIcon}
       />
       <Menu.Content className={submenuClass}>
-        <div className='space-y-3 p-2'>
-          {/* <div className='flex items-center justify-between text-sm'>
-            <span className='text-white/70'>Volume</span>
-            <span className='text-white/70'>{currentVolume}%</span>
-          </div> */}
-
+        <div className='p-2'>
           <div className='flex items-center gap-2 rounded-sm bg-white/10 px-3'>
             <VolumeLowIcon className='h-4 w-4 shrink-0 text-white/70' />
-            <VolumeSlider.Root className='vds-slider h-6 w-full'>
+            <VolumeSlider.Root className='vds-slider w-full'>
               <VolumeSlider.Track className='vds-slider-track' />
               <VolumeSlider.TrackFill className='vds-slider-track-fill vds-slider-track' />
               <VolumeSlider.Thumb className='vds-slider-thumb' />
