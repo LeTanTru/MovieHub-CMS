@@ -8,8 +8,7 @@ import {
   useImperativeHandle,
   type ReactNode,
   type TextareaHTMLAttributes,
-  type ReactElement,
-  useEffectEvent
+  type ReactElement
 } from 'react';
 import {
   FormControl,
@@ -55,7 +54,6 @@ const TextAreaField = <T extends FieldValues>(
     readOnly = false,
     maxLength,
     rows = 8,
-    maxRows = 8,
     ...rest
   }: TextAreaFieldProps<T>,
   ref: ForwardedRef<HTMLTextAreaElement>
@@ -67,17 +65,6 @@ const TextAreaField = <T extends FieldValues>(
   const charCount = String(fieldValue || '').length;
 
   useImperativeHandle(ref, () => internalRef.current!);
-
-  const resizeTextarea = useEffectEvent(() => {
-    if (!internalRef.current) return;
-    internalRef.current.style.height = 'auto';
-    const scrollHeight = internalRef.current.scrollHeight;
-    const lineHeight = parseInt(
-      window.getComputedStyle(internalRef.current).lineHeight || '20'
-    );
-    const maxHeight = maxRows ? maxRows * lineHeight : Infinity;
-    internalRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
-  });
 
   return (
     <FormField
@@ -106,7 +93,7 @@ const TextAreaField = <T extends FieldValues>(
                   maxLength={maxLength}
                   rows={rows}
                   className={cn(
-                    'focus-visible:ring-main-color field-sizing-fixed w-full pt-4 break-all shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
+                    'focus-visible:ring-main-color scrollbar-none field-sizing-fixed w-full pt-4 break-all shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
                     {
                       'border-red-500 focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-red-500':
                         !!fieldState.error
@@ -118,7 +105,6 @@ const TextAreaField = <T extends FieldValues>(
                   ref={internalRef}
                   onChange={(e) => {
                     field.onChange(e);
-                    resizeTextarea();
                     rest.onChange?.(e);
                   }}
                 />
