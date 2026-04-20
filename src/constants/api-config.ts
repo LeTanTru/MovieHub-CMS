@@ -956,6 +956,22 @@ const apiConfig = defineApiConfig({
       permissionCode: 'VID_L_U',
       isRequiredXClientType: true
     }
+  },
+  notification: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}/v1/notification/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'NOTI_L',
+      isRequiredXClientType: true
+    },
+    updateRead: {
+      baseUrl: `${AppConstants.apiUrl}/v1/notification/update-read`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'NOTI_U',
+      isRequiredXClientType: true
+    }
   }
 });
 
