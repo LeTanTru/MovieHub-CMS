@@ -117,7 +117,7 @@ export default function UserList() {
       dataIndex: 'fullName',
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       )
     },
@@ -127,7 +127,7 @@ export default function UserList() {
       width: 220,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       )
     },
@@ -137,7 +137,7 @@ export default function UserList() {
       width: 200,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       ),
       align: 'center'

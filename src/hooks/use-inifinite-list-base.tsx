@@ -442,7 +442,7 @@ const useInfiniteListBase = <
                     )}
                   </div>
                 ))
-              : '---'}
+              : 'N/A'}
           </div>
         );
       }

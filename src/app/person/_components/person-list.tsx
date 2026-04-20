@@ -86,7 +86,7 @@ export default function PersonList({ kind }: PersonListProps) {
     {
       title: 'Ngày sinh',
       dataIndex: 'dateOfBirth',
-      render: (value) => formatDate(value, DATE_FORMAT) || '------',
+      render: (value) => formatDate(value, DATE_FORMAT) || 'N/A',
       align: 'center',
       width: 120
     },
@@ -99,7 +99,7 @@ export default function PersonList({ kind }: PersonListProps) {
         )?.label;
         return (
           <span className='line-clamp-1 block truncate' title={label}>
-            {label ?? '------'}
+            {label || 'N/A'}
           </span>
         );
       },
@@ -115,7 +115,7 @@ export default function PersonList({ kind }: PersonListProps) {
         )?.label;
         return (
           <span className='line-clamp-1 block truncate' title={label}>
-            {label || '------'}
+            {label || 'N/A'}
           </span>
         );
       },

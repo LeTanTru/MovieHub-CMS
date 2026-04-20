@@ -136,7 +136,7 @@ export default function EmployeeList() {
                 backgroundColor: `${record.group.color}10`
               }}
             >
-              {record.group.name ?? '---'}
+              {record.group.name}
             </Badge>
           </div>
         );
@@ -148,7 +148,7 @@ export default function EmployeeList() {
       width: 220,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       )
     },
@@ -158,7 +158,7 @@ export default function EmployeeList() {
       width: 220,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       )
     },
@@ -168,7 +168,7 @@ export default function EmployeeList() {
       width: 150,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       ),
       align: 'center'

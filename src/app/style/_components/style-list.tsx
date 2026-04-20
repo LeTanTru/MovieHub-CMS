@@ -63,7 +63,7 @@ export default function StyleList() {
       render: (value, record) => (
         <div className='flex items-center gap-x-2'>
           <span className='line-clamp-1 block truncate' title={value}>
-            {value ?? '------'}
+            {value}
           </span>
           {record.isDefault && (
             <ToolTip title='Mặc định'>
@@ -78,7 +78,7 @@ export default function StyleList() {
       dataIndex: 'type',
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       ),
       width: 120,

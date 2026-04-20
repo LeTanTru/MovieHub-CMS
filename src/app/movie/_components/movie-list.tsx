@@ -7,7 +7,6 @@ import {
   ageRatingOptions,
   apiConfig,
   countryOptions,
-  DATE_FORMAT,
   ErrorCode,
   FieldTypes,
   languageOptions,
@@ -26,7 +25,7 @@ import type {
   SearchFormProps
 } from '@/types';
 import {
-  formatDate,
+  convertUTCToLocal,
   generatePath,
   notify,
   renderImageUrl,
@@ -209,7 +208,7 @@ export default function MovieList() {
       )
     },
     {
-      title: 'Thể loại',
+      title: 'Phim',
       dataIndex: 'type',
       render: (value) => {
         const label = movieTypeOptions.find(
@@ -217,7 +216,7 @@ export default function MovieList() {
         )?.label;
         return (
           <span className='line-clamp-1 block truncate' title={label}>
-            {label ?? '------'}
+            {label || 'N/A'}
           </span>
         );
       },
@@ -227,9 +226,9 @@ export default function MovieList() {
     {
       title: 'Ngày phát hành',
       dataIndex: 'releaseDate',
-      render: (value) => formatDate(value, DATE_FORMAT) ?? '---',
+      render: (value) => convertUTCToLocal(value) || 'N/A',
       align: 'center',
-      width: 150
+      width: 250
     },
     {
       title: 'Độ tuổi',
@@ -245,7 +244,7 @@ export default function MovieList() {
             </span>
           </ToolTip>
         ) : (
-          '------'
+          'N/A'
         );
       },
       align: 'center',
@@ -260,7 +259,7 @@ export default function MovieList() {
         )?.label;
         return (
           <span className='line-clamp-1 block truncate' title={label}>
-            {label ?? '------'}
+            {label || 'N/A'}
           </span>
         );
       },
@@ -276,7 +275,7 @@ export default function MovieList() {
         )?.label;
         return (
           <span className='line-clamp-1 block truncate' title={label}>
-            {label ?? '------'}
+            {label || 'N/A'}
           </span>
         );
       },
@@ -333,7 +332,7 @@ export default function MovieList() {
     },
     {
       key: 'type',
-      placeholder: 'Thể loại',
+      placeholder: 'Phim',
       type: FieldTypes.SELECT,
       options: movieTypeOptions
     },

@@ -161,7 +161,7 @@ export default function CollectionItemList() {
       )
     },
     {
-      title: 'Thể loại',
+      title: 'Phim',
       dataIndex: ['movie', 'type'],
       render: (value) => {
         const label = movieTypeOptions.find(
@@ -169,7 +169,7 @@ export default function CollectionItemList() {
         )?.label;
         return (
           <span className='line-clamp-1 block truncate' title={label}>
-            {label ?? '------'}
+            {label || 'N/A'}
           </span>
         );
       },
@@ -179,7 +179,7 @@ export default function CollectionItemList() {
     {
       title: 'Ngày phát hành',
       dataIndex: ['movie', 'releaseDate'],
-      render: (value) => convertUTCToLocal(value, DATE_FORMAT) ?? '---',
+      render: (value) => convertUTCToLocal(value, DATE_FORMAT) || 'N/A',
       align: 'center',
       width: 150
     },
@@ -192,7 +192,7 @@ export default function CollectionItemList() {
         );
         return (
           <span className='line-clamp-1 block truncate' title={ageRating?.mean}>
-            {ageRating?.label ?? '------'}
+            {ageRating?.label || 'N/A'}
           </span>
         );
       },
@@ -208,7 +208,7 @@ export default function CollectionItemList() {
         )?.label;
         return (
           <span className='line-clamp-1 block truncate' title={label}>
-            {label ?? '------'}
+            {label || 'N/A'}
           </span>
         );
       },
@@ -224,7 +224,7 @@ export default function CollectionItemList() {
         )?.label;
         return (
           <span className='line-clamp-1 block truncate' title={label}>
-            {label ?? '------'}
+            {label || 'N/A'}
           </span>
         );
       },
@@ -254,7 +254,7 @@ export default function CollectionItemList() {
           )
         },
         {
-          label: searchParams.collectionTitle ?? 'Phim'
+          label: searchParams.collectionTitle || 'Phim'
         }
       ]}
     >

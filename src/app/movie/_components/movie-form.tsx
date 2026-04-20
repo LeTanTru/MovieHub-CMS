@@ -3,7 +3,7 @@
 import {
   BooleanField,
   Col,
-  DatePickerField,
+  DateTimePickerField,
   InputField,
   MultiSelectField,
   RichTextField,
@@ -19,8 +19,6 @@ import {
   ageRatingOptions,
   apiConfig,
   countryOptions,
-  DATE_TIME_FORMAT,
-  DATE_FORMAT,
   ErrorCode,
   languageOptions,
   MOVIE_TYPE_SERIES,
@@ -38,7 +36,12 @@ import {
 import { route } from '@/routes';
 import { movieSchema } from '@/schemaValidations';
 import type { MetadataType, MovieBodyType, MovieResType } from '@/types';
-import { formatDate, renderImageUrl, renderListPageUrl } from '@/utils';
+import {
+  convertLocalToUTC,
+  convertUTCToLocal,
+  renderImageUrl,
+  renderListPageUrl
+} from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
@@ -150,7 +153,7 @@ export default function MovieForm() {
       language: data?.language ?? '',
       originalTitle: data?.originalTitle ?? '',
       posterUrl: data?.posterUrl ?? '',
-      releaseDate: formatDate(data?.releaseDate, DATE_FORMAT) ?? '',
+      releaseDate: convertUTCToLocal(data?.releaseDate) ?? '',
       status: STATUS_ACTIVE,
       thumbnailUrl: data?.thumbnailUrl ?? '',
       title: data?.title ?? '',
@@ -191,11 +194,7 @@ export default function MovieForm() {
       imageTitleManager.handleSubmit(),
       handleSubmit({
         ...values,
-        releaseDate: formatDate(
-          values.releaseDate,
-          DATE_TIME_FORMAT,
-          DATE_FORMAT
-        ),
+        releaseDate: convertLocalToUTC(values.releaseDate),
         thumbnailUrl: thumbnailImageManager.currentUrl,
         posterUrl: posterImageManager.currentUrl,
         imageTitleUrl: imageTitleManager.currentUrl
@@ -371,8 +370,8 @@ export default function MovieForm() {
                   options={movieTypeOptions}
                   control={form.control}
                   name='type'
-                  label='Phân loại'
-                  placeholder='Phân loại'
+                  label='Phim'
+                  placeholder='Phim'
                   required
                   disabled={isEditing}
                 />
@@ -380,7 +379,7 @@ export default function MovieForm() {
             </Row>
             <Row>
               <Col className='grid-c-6'>
-                <DatePickerField
+                <DateTimePickerField
                   control={form.control}
                   name='releaseDate'
                   label='Ngày phát hành'

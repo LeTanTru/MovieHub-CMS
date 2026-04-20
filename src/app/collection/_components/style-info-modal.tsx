@@ -26,7 +26,7 @@ export default function StyleInfoModal({
               <span className='block text-sm font-bold text-gray-700'>
                 Tên thiết kế:
               </span>
-              <span className='text-gray-900'>{style.name || '------'}</span>
+              <span className='text-gray-900'>{style.name}</span>
             </div>
           </Col>
         </Row>
@@ -36,7 +36,7 @@ export default function StyleInfoModal({
               <span className='block text-sm font-bold text-gray-700'>
                 Loại:
               </span>
-              <span className='text-gray-900'>{style.type || '------'}</span>
+              <span className='text-gray-900'>{style.type}</span>
             </div>
           </Col>
         </Row>

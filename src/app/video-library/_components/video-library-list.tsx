@@ -118,7 +118,7 @@ export default function VideoLibraryList() {
       dataIndex: 'name',
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       )
     },
@@ -127,7 +127,7 @@ export default function VideoLibraryList() {
       dataIndex: 'duration',
       render: (value) => (
         <span className='line-clamp-1 block truncate'>
-          {formatSecondsToHMS(value) ?? '------'}
+          {formatSecondsToHMS(value)}
         </span>
       ),
       width: 120,

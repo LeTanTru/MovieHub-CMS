@@ -116,7 +116,7 @@ export default function ServerConfigList() {
       dataIndex: 'name',
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       )
     },
@@ -125,7 +125,7 @@ export default function ServerConfigList() {
       dataIndex: 'hostname',
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       ),
       align: 'center'
@@ -135,7 +135,7 @@ export default function ServerConfigList() {
       dataIndex: 'ip',
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       ),
       width: 150,
@@ -146,7 +146,7 @@ export default function ServerConfigList() {
       dataIndex: 'port',
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       ),
       width: 150,
@@ -157,7 +157,7 @@ export default function ServerConfigList() {
       dataIndex: 'serverNumber',
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       ),
       width: 150,

@@ -70,15 +70,13 @@ export default function GroupList() {
       title: 'Màu',
       dataIndex: 'color',
       render: (value) => {
-        return value ? (
+        return (
           <ToolTip title={value}>
             <div
               className='mx-auto h-6 w-20 rounded'
               style={{ background: value }}
             ></div>
           </ToolTip>
-        ) : (
-          '----'
         );
       },
       width: 120,

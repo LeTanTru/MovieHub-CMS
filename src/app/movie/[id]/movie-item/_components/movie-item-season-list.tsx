@@ -8,7 +8,6 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import {
   apiConfig,
-  DATE_TIME_FORMAT,
   MAX_PAGE_SIZE,
   MOVIE_ITEM_KIND_SEASON,
   MOVIE_TYPE_SINGLE,
@@ -279,8 +278,7 @@ export default function MovieItemSeasonList() {
       title: 'Ngày phát hành',
       dataIndex: 'releaseDate',
       width: 250,
-      render: (value) =>
-        convertUTCToLocal(value, DATE_TIME_FORMAT, DATE_TIME_FORMAT),
+      render: (value) => convertUTCToLocal(value) || 'N/A',
       align: 'center'
     },
     {
@@ -291,7 +289,7 @@ export default function MovieItemSeasonList() {
         const label = movieItemKindOptions.find(
           (kind) => kind.value === value
         )?.label;
-        return label ?? '------';
+        return label || 'N/A';
       },
       align: 'center'
     },

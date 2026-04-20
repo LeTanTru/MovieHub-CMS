@@ -290,7 +290,7 @@ export default function MovieItemSeasonDetailList() {
       title: 'Ngày phát hành',
       dataIndex: 'releaseDate',
       width: 250,
-      render: (value) => convertUTCToLocal(value),
+      render: (value) => convertUTCToLocal(value) || 'N/A',
       align: 'center'
     },
     {
@@ -300,7 +300,7 @@ export default function MovieItemSeasonDetailList() {
         if (record.video) {
           return formatSecondsToHMS(record.video.duration);
         }
-        return '------';
+        return 'N/A';
       },
       align: 'center'
     },
@@ -312,7 +312,7 @@ export default function MovieItemSeasonDetailList() {
         const label = movieItemKindOptions.find(
           (kind) => kind.value === value
         )?.label;
-        return label ?? '------';
+        return label || 'N/A';
       },
       align: 'center'
     },
