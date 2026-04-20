@@ -23,6 +23,15 @@ import type { UseFormReturn } from 'react-hook-form';
 import { useState } from 'react';
 import { CircleLoading } from '@/components/loading';
 
+type MoviePersonModalProps = {
+  moviePersonList?: MoviePersonResType[];
+  movieId: string;
+  kind: number;
+  open: boolean;
+  listQuery: UseQueryResult<ApiResponseList<MoviePersonResType>, Error>;
+  onClose: () => void;
+};
+
 export default function MoviePersonModal({
   moviePersonList,
   kind,
@@ -30,14 +39,7 @@ export default function MoviePersonModal({
   open,
   listQuery,
   onClose
-}: {
-  moviePersonList?: MoviePersonResType[];
-  movieId: string;
-  kind: number;
-  open: boolean;
-  listQuery: UseQueryResult<ApiResponseList<MoviePersonResType>, Error>;
-  onClose: () => void;
-}) {
+}: MoviePersonModalProps) {
   const {
     mutateAsync: createMoviePersonMutate,
     isPending: createMoviePersonLoading

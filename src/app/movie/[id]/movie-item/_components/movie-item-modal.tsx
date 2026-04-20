@@ -47,15 +47,17 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
+type MovieItemModalProps = {
+  open: boolean;
+  onClose: () => void;
+  movieItem?: MovieItemResType | null;
+};
+
 export default function MovieItemModal({
   open,
   onClose,
   movieItem
-}: {
-  open: boolean;
-  onClose: () => void;
-  movieItem?: MovieItemResType | null;
-}) {
+}: MovieItemModalProps) {
   const {
     searchParams: { type }
   } = useQueryParams<{ type: string }>();

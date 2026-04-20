@@ -1,10 +1,12 @@
 import { SidebarLayout } from '@/components/layout';
 import type { ReactNode } from 'react';
 
+type VideoLibraryLayoutProps = {
+  children: ReactNode;
+};
+
 export default function VideoLibraryLayout({
   children
-}: {
-  children: ReactNode;
-}) {
+}: VideoLibraryLayoutProps) {
   return <SidebarLayout>{children}</SidebarLayout>;
 }

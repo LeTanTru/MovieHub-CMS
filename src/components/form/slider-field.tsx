@@ -29,6 +29,7 @@ type SliderFieldProps<T extends FieldValues> = {
   showValue?: boolean;
   description?: string;
   unit?: string;
+  showUnit?: boolean;
   step?: number;
   markers?: (number | string)[];
 };
@@ -50,6 +51,7 @@ export default function SliderField<T extends FieldValues>({
   showValue = true,
   description,
   unit,
+  showUnit = true,
   step = 1,
   markers
 }: SliderFieldProps<T>) {
@@ -81,11 +83,9 @@ export default function SliderField<T extends FieldValues>({
                   {markers && markers.length ? (
                     markers[field.value - 1]
                   ) : (
-                    <>
-                      {field.value}
-                      {unit}
-                    </>
+                    <>{field.value}</>
                   )}
+                  {showUnit && unit}
                 </span>
               )}
             </div>

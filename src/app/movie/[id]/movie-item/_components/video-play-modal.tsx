@@ -16,15 +16,17 @@ import { VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL } from '@/constants';
 import { useEffect, useRef, useState } from 'react';
 import envConfig from '@/config';
 
+type VideoPlayModalProps = {
+  video: VideoLibraryResType;
+  open: boolean;
+  onClose: () => void;
+};
+
 export default function VideoPlayModal({
   open,
   video,
   onClose
-}: {
-  video: VideoLibraryResType;
-  open: boolean;
-  onClose: () => void;
-}) {
+}: VideoPlayModalProps) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const [bodyHeight, setBodyHeight] = useState<number>(0);
 

@@ -17,15 +17,17 @@ import { applyFormErrors } from '@/utils';
 import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
+type GroupPermissionModalProps = {
+  open: boolean;
+  selectedRow: GroupPermissionResType | null;
+  onClose: () => void;
+};
+
 export default function GroupPermissionModal({
   open,
   selectedRow,
   onClose
-}: {
-  open: boolean;
-  selectedRow: GroupPermissionResType | null;
-  onClose: () => void;
-}) {
+}: GroupPermissionModalProps) {
   const {
     loading,
     isEditing,

@@ -2,13 +2,12 @@
 
 import { Activity as BaseActivity, type ReactNode } from 'react';
 
-export default function Activity({
-  visible,
-  children
-}: {
+type ActivityProps = {
   visible: boolean;
   children: ReactNode;
-}) {
+};
+
+export default function Activity({ visible, children }: ActivityProps) {
   return (
     <BaseActivity mode={visible ? 'visible' : 'hidden'}>
       {children}
