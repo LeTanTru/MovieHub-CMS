@@ -1,15 +1,10 @@
 'use client';
 
 import {
-  forwardRef,
   useId,
-  useRef,
-  type ForwardedRef,
-  useImperativeHandle,
   type ReactNode,
   type TextareaHTMLAttributes,
-  type ReactElement,
-  useEffectEvent
+  type Ref
 } from 'react';
 import {
   FormControl,
@@ -40,44 +35,28 @@ type TextAreaFieldProps<T extends FieldValues> = {
   maxLength?: number;
   rows?: number;
   maxRows?: number;
+  ref?: Ref<HTMLTextAreaElement>;
 } & TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-const TextAreaField = <T extends FieldValues>(
-  {
-    control,
-    name,
-    label,
-    placeholder = '',
-    className,
-    labelClassName,
-    required = false,
-    disabled = false,
-    readOnly = false,
-    maxLength,
-    rows = 8,
-    maxRows = 8,
-    ...rest
-  }: TextAreaFieldProps<T>,
-  ref: ForwardedRef<HTMLTextAreaElement>
-) => {
+const TextAreaField = <T extends FieldValues>({
+  control,
+  name,
+  label,
+  placeholder = '',
+  className,
+  labelClassName,
+  required = false,
+  disabled = false,
+  readOnly = false,
+  maxLength,
+  rows = 8,
+  ref,
+  ...rest
+}: TextAreaFieldProps<T>) => {
   const id = useId();
-  const internalRef = useRef<HTMLTextAreaElement | null>(null);
 
   const fieldValue = useWatch({ control, name });
   const charCount = String(fieldValue || '').length;
-
-  useImperativeHandle(ref, () => internalRef.current!);
-
-  const resizeTextarea = useEffectEvent(() => {
-    if (!internalRef.current) return;
-    internalRef.current.style.height = 'auto';
-    const scrollHeight = internalRef.current.scrollHeight;
-    const lineHeight = parseInt(
-      window.getComputedStyle(internalRef.current).lineHeight || '20'
-    );
-    const maxHeight = maxRows ? maxRows * lineHeight : Infinity;
-    internalRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
-  });
 
   return (
     <FormField
@@ -106,7 +85,7 @@ const TextAreaField = <T extends FieldValues>(
                   maxLength={maxLength}
                   rows={rows}
                   className={cn(
-                    'focus-visible:ring-main-color field-sizing-fixed w-full pt-4 break-all shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
+                    'focus-visible:ring-main-color scrollbar-none field-sizing-fixed w-full pt-4 break-all shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 aria-invalid:ring-transparent',
                     {
                       'border-red-500 focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-red-500':
                         !!fieldState.error
@@ -115,10 +94,9 @@ const TextAreaField = <T extends FieldValues>(
                   )}
                   {...field}
                   {...rest}
-                  ref={internalRef}
+                  ref={ref}
                   onChange={(e) => {
                     field.onChange(e);
-                    resizeTextarea();
                     rest.onChange?.(e);
                   }}
                 />
@@ -141,8 +119,4 @@ const TextAreaField = <T extends FieldValues>(
   );
 };
 
-export default forwardRef(TextAreaField) as <T extends FieldValues>(
-  props: TextAreaFieldProps<T> & {
-    ref?: ForwardedRef<HTMLTextAreaElement>;
-  }
-) => ReactElement;
+export default TextAreaField;

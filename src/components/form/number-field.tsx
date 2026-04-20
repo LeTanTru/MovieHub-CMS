@@ -11,13 +11,7 @@ import {
 } from '@/components/ui/form';
 import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
-import {
-  type ComponentPropsWithoutRef,
-  type ForwardedRef,
-  type ReactNode,
-  forwardRef,
-  useRef
-} from 'react';
+import { type ComponentPropsWithoutRef, type ReactNode, type Ref } from 'react';
 
 type NumberFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -33,6 +27,7 @@ type NumberFieldProps<T extends FieldValues> = {
   suffixIcon?: ReactNode;
   isFloat?: boolean;
   format?: boolean;
+  ref?: Ref<HTMLInputElement>;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'name' | 'defaultValue'>;
 
 const toNumberIfPossible = (value: string): string | number => {
@@ -47,19 +42,13 @@ const formatNumberWithSeparator = (
   if (value === '' || value === undefined || value === null) return '';
 
   const stringValue = String(value);
-
-  // Handle decimal separator (replace comma with dot for internal processing)
   const normalized = stringValue.replace(',', '.');
-
-  // Split into integer and decimal parts
   const parts = normalized.split('.');
   const integerPart = parts[0];
   const decimalPart = parts[1];
 
-  // Format integer part with thousand separators (dot)
   const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
-  // Return with decimal part if exists and isFloat is true
   if (decimalPart !== undefined && isFloat) {
     return `${formattedInteger},${decimalPart}`;
   }
@@ -68,34 +57,29 @@ const formatNumberWithSeparator = (
 };
 
 const parseFormattedNumber = (value: string): string => {
-  // Remove thousand separators (dots) and replace decimal comma with dot
   return value.replace(/\./g, '').replace(',', '.');
 };
 
-function NumberFieldInner<T extends FieldValues>(
-  {
-    control,
-    name,
-    label,
-    placeholder,
-    description,
-    className,
-    formItemClassName,
-    required,
-    labelClassName,
-    disabled,
-    readOnly = false,
-    prefixIcon,
-    suffixIcon,
-    min,
-    isFloat = false,
-    format = false,
-    ...inputProps
-  }: NumberFieldProps<T>,
-  ref: ForwardedRef<HTMLInputElement>
-) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
+function NumberField<T extends FieldValues>({
+  control,
+  name,
+  label,
+  placeholder,
+  description,
+  className,
+  formItemClassName,
+  required,
+  labelClassName,
+  disabled,
+  readOnly = false,
+  prefixIcon,
+  suffixIcon,
+  min,
+  isFloat = false,
+  format = false,
+  ref,
+  ...inputProps
+}: NumberFieldProps<T>) {
   return (
     <FormField
       control={control}
@@ -118,7 +102,7 @@ function NumberFieldInner<T extends FieldValues>(
             </FormLabel>
           )}
           <FormControl>
-            <div className='relative' ref={containerRef}>
+            <div className='relative'>
               <Input
                 placeholder={placeholder}
                 type='number'
@@ -158,19 +142,15 @@ function NumberFieldInner<T extends FieldValues>(
                     return;
                   }
 
-                  // Allow only numbers, dots (thousand separator), and comma (decimal separator if isFloat)
                   const allowedChars = isFloat ? /[0-9.,]/g : /[0-9.]/g;
                   const filtered = raw.match(allowedChars)?.join('') || '';
 
-                  // Prevent multiple commas
                   if (isFloat && (filtered.match(/,/g) || []).length > 1) {
                     return;
                   }
 
-                  // Parse the formatted number back to a clean number string
                   const parsed = parseFormattedNumber(filtered);
 
-                  // Validate it's a valid number
                   if (parsed && !isNaN(Number(parsed))) {
                     const stripped = parsed.replace(/^0+(?=\d)/, '');
                     field.onChange(toNumberIfPossible(stripped));
@@ -190,9 +170,5 @@ function NumberFieldInner<T extends FieldValues>(
     />
   );
 }
-
-const NumberField = forwardRef(NumberFieldInner) as <T extends FieldValues>(
-  props: NumberFieldProps<T> & { ref?: ForwardedRef<HTMLInputElement> }
-) => ReturnType<typeof NumberFieldInner>;
 
 export default NumberField;

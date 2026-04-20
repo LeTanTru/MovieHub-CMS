@@ -80,10 +80,6 @@ export default function PermissionList() {
       }
     });
 
-  const sortedGroupPermissions = useMemo(() => {
-    return [...groupPermissions].sort((a, b) => a.name.localeCompare(b.name));
-  }, [groupPermissions]);
-
   const handleAdd = (group: string) => {
     const groupPermission = groupPermissions.find((gp) => gp.name === group);
     setSelectedRow(null);
@@ -115,7 +111,7 @@ export default function PermissionList() {
               <CircleLoading className='stroke-main-color mt-20' />
             </div>
           ) : (
-            sortedGroupPermissions.map((groupPermission) => {
+            groupPermissions.map((groupPermission) => {
               const group = groupPermission.name;
               const permissionList = groupedPermissions[group];
               return (

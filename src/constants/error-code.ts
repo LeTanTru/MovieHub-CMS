@@ -280,7 +280,7 @@ export const collectionItemErrorMaps: ErrorMaps<CollectionItemBodyType> = {
 
 export const serverConfigErrorMaps: ErrorMaps<ServerConfigBodyType> = {
   [ErrorCode.SERVER_CONFIG_ERROR_SERVER_NUMBER_EXISTED]: [
-    ['serverNumber', { type: 'manual', message: 'Số server đã tồn tại' }]
+    ['serverNumber', { type: 'manual', message: 'Máy chủ No. đã tồn tại' }]
   ],
   [ErrorCode.SERVER_CONFIG_ERROR_HOSTNAME_EXISTED]: [
     ['hostname', { type: 'manual', message: 'Hostname đã tồn tại' }]
