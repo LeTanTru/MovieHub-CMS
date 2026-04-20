@@ -47,13 +47,12 @@ import {
 } from 'react-icons/ai';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 
-export default function ReviewItem({
-  review,
-  onDelete
-}: {
+type ReviewItemProps = {
   review: ReviewResType;
   onDelete: () => void;
-}) {
+};
+
+export default function ReviewItem({ review, onDelete }: ReviewItemProps) {
   const hasPermission = useValidatePermission();
   const queryClient = useQueryClient();
   const {

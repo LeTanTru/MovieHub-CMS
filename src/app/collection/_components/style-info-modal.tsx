@@ -5,15 +5,17 @@ import { Modal } from '@/components/modal';
 import { StyleResType } from '@/types';
 import { renderImageUrl } from '@/utils';
 
+type StyleInfoModalProps = {
+  opened: boolean;
+  onClose: () => void;
+  style: StyleResType;
+};
+
 export default function StyleInfoModal({
   opened,
   onClose,
   style
-}: {
-  opened: boolean;
-  onClose: () => void;
-  style: StyleResType;
-}) {
+}: StyleInfoModalProps) {
   return (
     <Modal open={opened} onClose={onClose} className='min-h-150 w-200'>
       <Modal.Header>Thông tin thiết kế</Modal.Header>

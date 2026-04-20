@@ -6,10 +6,12 @@ export const metadata: Metadata = {
   title: 'Vai trò'
 };
 
+type GroupPermissionLayoutProps = {
+  children: ReactNode;
+};
+
 export default function GroupPermissionLayout({
   children
-}: {
-  children: ReactNode;
-}) {
+}: GroupPermissionLayoutProps) {
   return <SidebarLayout>{children}</SidebarLayout>;
 }

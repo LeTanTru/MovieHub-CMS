@@ -21,13 +21,15 @@ import { generatePath, notify } from '@/utils';
 import { useParams } from 'next/navigation';
 import type { UseFormReturn } from 'react-hook-form';
 
+type CollectionItemModalProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
 export default function CollectionItemModal({
   open,
   onClose
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+}: CollectionItemModalProps) {
   const { id: collectionId } = useParams<{
     id: string;
   }>();

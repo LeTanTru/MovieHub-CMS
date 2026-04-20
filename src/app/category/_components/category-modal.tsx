@@ -16,15 +16,17 @@ import type { CategoryBodyType, CategoryResType } from '@/types';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
+type CategoryModalProps = {
+  open: boolean;
+  category: CategoryResType | null;
+  onClose: () => void;
+};
+
 export default function CategoryModal({
   open,
   category,
   onClose
-}: {
-  open: boolean;
-  category: CategoryResType | null;
-  onClose: () => void;
-}) {
+}: CategoryModalProps) {
   const {
     data,
     loading,

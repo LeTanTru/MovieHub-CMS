@@ -15,6 +15,16 @@ const sortColumn: Column<any> = {
   align: 'center'
 };
 
+type UseDragDropType<T extends Record<string, any>> = {
+  key: string;
+  objectName: string;
+  data: T[];
+  apiConfig: ApiConfig;
+  sortField?: keyof T;
+  updateOnDragEnd?: boolean;
+  mappingData?: (record: T, index: number) => Record<string, any>;
+};
+
 const useDragDrop = <T extends Record<string, any>>({
   key,
   objectName,
@@ -23,15 +33,7 @@ const useDragDrop = <T extends Record<string, any>>({
   sortField = 'ordering',
   updateOnDragEnd,
   mappingData
-}: {
-  key: string;
-  objectName: string;
-  data: T[];
-  apiConfig: ApiConfig;
-  sortField?: keyof T;
-  updateOnDragEnd?: boolean;
-  mappingData?: (record: T, index: number) => Record<string, any>;
-}) => {
+}: UseDragDropType<T>) => {
   const queryClient = useQueryClient();
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const [sortedData, setSortedData] = useState<T[]>(
