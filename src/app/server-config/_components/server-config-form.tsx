@@ -175,8 +175,8 @@ export default function ServerConfigForm() {
                 <NumberField
                   control={form.control}
                   name='serverNumber'
-                  label='Số server'
-                  placeholder='Số server'
+                  label='Máy chủ No.'
+                  placeholder='Máy chủ No.'
                   required
                 />
               </Col>

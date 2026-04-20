@@ -153,7 +153,7 @@ export default function ServerConfigList() {
       align: 'center'
     },
     {
-      title: 'Số server',
+      title: 'Máy chủ No.',
       dataIndex: 'serverNumber',
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>

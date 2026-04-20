@@ -13,9 +13,8 @@ import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import {
   type ComponentPropsWithoutRef,
-  type ForwardedRef,
   type ReactNode,
-  forwardRef,
+  type Ref,
   useEffect,
   useRef,
   useState
@@ -38,6 +37,7 @@ type InputFieldProps<T extends FieldValues> = {
   suffixIcon?: ReactNode;
   options?: string[];
   onOptionSelect?: (value: string) => void;
+  ref?: Ref<HTMLInputElement>;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'name' | 'defaultValue'>;
 
 const toNumberIfPossible = (value: string): string | number => {
@@ -45,28 +45,26 @@ const toNumberIfPossible = (value: string): string | number => {
   return !isNaN(num) && value.trim() !== '' ? num : value;
 };
 
-function InputFieldInner<T extends FieldValues>(
-  {
-    control,
-    name,
-    label,
-    placeholder,
-    description,
-    type = 'text',
-    className,
-    formItemClassName,
-    required,
-    labelClassName,
-    disabled,
-    readOnly = false,
-    prefixIcon,
-    suffixIcon,
-    options = EMPTY_ARRAY,
-    onOptionSelect,
-    ...inputProps
-  }: InputFieldProps<T>,
-  ref: ForwardedRef<HTMLInputElement>
-) {
+export default function InputField<T extends FieldValues>({
+  control,
+  name,
+  label,
+  placeholder,
+  description,
+  type = 'text',
+  className,
+  formItemClassName,
+  required,
+  labelClassName,
+  disabled,
+  readOnly = false,
+  prefixIcon,
+  suffixIcon,
+  options = EMPTY_ARRAY,
+  onOptionSelect,
+  ref,
+  ...inputProps
+}: InputFieldProps<T>) {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const [filteredOptions, setFilteredOptions] = useState<string[]>(options);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -163,32 +161,16 @@ function InputFieldInner<T extends FieldValues>(
                   }
                 }}
               />
-              {/* Options Dropdown */}
               <AnimatePresence>
                 {showOptions &&
                   filteredOptions.length > 0 &&
                   !disabled &&
                   !readOnly && (
                     <m.div
-                      initial={{
-                        opacity: 0,
-                        rotateX: -15,
-                        scale: 0.95
-                      }}
-                      animate={{
-                        opacity: 1,
-                        rotateX: 0,
-                        scale: 1
-                      }}
-                      exit={{
-                        opacity: 0,
-                        rotateX: -15,
-                        scale: 0.95
-                      }}
-                      transition={{
-                        duration: 0.2,
-                        ease: 'linear'
-                      }}
+                      initial={{ opacity: 0, rotateX: -15, scale: 0.95 }}
+                      animate={{ opacity: 1, rotateX: 0, scale: 1 }}
+                      exit={{ opacity: 0, rotateX: -15, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: 'linear' }}
                       style={{
                         transformPerspective: 1000,
                         transformOrigin: 'top center'
@@ -245,9 +227,3 @@ function InputFieldInner<T extends FieldValues>(
     />
   );
 }
-
-const InputField = forwardRef(InputFieldInner) as <T extends FieldValues>(
-  props: InputFieldProps<T> & { ref?: ForwardedRef<HTMLInputElement> }
-) => ReturnType<typeof InputFieldInner>;
-
-export default InputField;

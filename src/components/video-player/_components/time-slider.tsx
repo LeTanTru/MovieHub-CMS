@@ -1,8 +1,15 @@
 'use client';
 
-import { Activity } from '@/components/activity';
 import { cn } from '@/lib';
 import { TimeSlider as BaseTimeSlider } from '@vidstack/react';
+
+type TimeSliderProps = {
+  introStart: number;
+  introEnd: number;
+  outroStart: number;
+  duration: number;
+  vttUrl: string;
+};
 
 export default function TimeSlider({
   introStart,
@@ -10,36 +17,28 @@ export default function TimeSlider({
   outroStart,
   duration,
   vttUrl
-}: {
-  introStart: number;
-  introEnd: number;
-  outroStart: number;
-  duration: number;
-  vttUrl: string;
-}) {
+}: TimeSliderProps) {
   return (
     <BaseTimeSlider.Root className='group relative mx-[7.5px] inline-flex h-10 w-full cursor-pointer touch-none items-center rounded outline-none select-none aria-hidden:hidden'>
       <BaseTimeSlider.Track className='relative z-0 h-1.25 w-full overflow-hidden rounded-sm bg-white/30 ring-sky-400 group-data-focus:ring-[3px]'>
         <BaseTimeSlider.TrackFill className='absolute h-full w-(--slider-fill) rounded-sm bg-[#f5f5f5] will-change-[width]' />
         <BaseTimeSlider.Progress className='absolute z-10 h-full w-(--slider-progress) rounded-sm bg-[#ffffff80] will-change-[width]' />
 
-        <Activity visible={duration > 0 && introEnd > introStart}>
+        {duration > 0 && introEnd > introStart && (
           <IntroRangeHighlight
             start={introStart || 0}
             end={introEnd}
             duration={duration}
           />
-        </Activity>
+        )}
 
-        <Activity
-          visible={duration > 0 && outroStart > 0 && outroStart < duration}
-        >
+        {duration > 0 && outroStart > 0 && outroStart < duration && (
           <IntroRangeHighlight
             start={outroStart}
             end={duration}
             duration={duration}
           />
-        </Activity>
+        )}
       </BaseTimeSlider.Track>
 
       <BaseTimeSlider.Preview
@@ -60,15 +59,17 @@ export default function TimeSlider({
   );
 }
 
+type IntroRangeHighlightProps = {
+  start: number;
+  end: number;
+  duration: number;
+};
+
 function IntroRangeHighlight({
   start,
   end,
   duration
-}: {
-  start: number;
-  end: number;
-  duration: number;
-}) {
+}: IntroRangeHighlightProps) {
   const left = (start / duration) * 100;
   const width = ((end - start) / duration) * 100;
   const styles = {

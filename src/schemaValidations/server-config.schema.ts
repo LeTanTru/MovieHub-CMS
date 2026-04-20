@@ -8,7 +8,7 @@ export const serverConfigSchema = z.object({
   serverNumber: z
     .number()
     .int()
-    .nonnegative('Số server phải là số nguyên dương'),
+    .nonnegative('Máy chủ No. phải là số nguyên dương'),
   status: z
     .number({ error: 'Bắt buộc' })
     .int({ error: 'Trạng thái phải là số nguyên' })

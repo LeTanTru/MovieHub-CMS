@@ -7,6 +7,7 @@ import '@vidstack/react/player/styles/default/layouts/video.css';
 import {
   BufferingIndicator,
   CaptionButton,
+  DefaultQuality,
   FullscreenToggleButton,
   NextButton,
   PiPToggleButton,
@@ -68,6 +69,7 @@ type VideoPlayerProps = Omit<
   'ref' | 'children' | 'viewType' | 'streamType'
 > & {
   auth: boolean;
+  defaultQuality?: number;
   duration: number;
   introEnd: number;
   introStart: number;
@@ -90,6 +92,7 @@ const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
   function VideoPlayer(
     {
       auth,
+      defaultQuality = 0,
       duration,
       introEnd,
       introStart,
@@ -132,50 +135,6 @@ const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
       },
       [ref]
     );
-
-    /*
-    * Set pointer to 'fine' for both touch and mouse devices
-    
-    useEffect(() => {
-      let rafId: number;
-
-      const setPointerFine = () => {
-        const player = playerRef.current;
-        if (!player) return;
-        // Set via internal state signal so vidstack's reactive system reflects 'fine'
-        player.$state.pointer.set('fine');
-      };
-
-      const setup = () => {
-        const el = playerRef.current?.el;
-        if (!el) return false;
-
-        // Apply immediately for the current connection
-        setPointerFine();
-
-        // Re-apply every time vidstack reconnects (e.g. modal open/close).
-        // 'media-player-connect' is dispatched at the end of onConnect,
-        // after #onPointerChange has already set pointer to 'coarse'.
-        el.addEventListener('media-player-connect', setPointerFine);
-        return true;
-      };
-
-      let el: HTMLElement | undefined;
-      if (!setup()) {
-        rafId = requestAnimationFrame(() => {
-          setup();
-          el = playerRef.current?.el;
-        });
-      } else {
-        el = playerRef.current?.el;
-      }
-
-      return () => {
-        cancelAnimationFrame(rafId);
-        el?.removeEventListener('media-player-connect', setPointerFine);
-      };
-    }, []);
-    */
 
     const handleTimeChange = (
       detail: MediaTimeUpdateEventDetail,
@@ -233,6 +192,7 @@ const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
               <Track {...(track as any)} key={track.src} />
             ))}
           </MediaProvider>
+          <DefaultQuality defaultQuality={defaultQuality} />
           <DefaultVideoLayout
             smallLayoutWhen={false}
             thumbnails={vttUrl}
@@ -317,3 +277,47 @@ function onProviderChange(
     };
   }
 }
+
+/*
+    * Set pointer to 'fine' for both touch and mouse devices
+    
+    useEffect(() => {
+      let rafId: number;
+
+      const setPointerFine = () => {
+        const player = playerRef.current;
+        if (!player) return;
+        // Set via internal state signal so vidstack's reactive system reflects 'fine'
+        player.$state.pointer.set('fine');
+      };
+
+      const setup = () => {
+        const el = playerRef.current?.el;
+        if (!el) return false;
+
+        // Apply immediately for the current connection
+        setPointerFine();
+
+        // Re-apply every time vidstack reconnects (e.g. modal open/close).
+        // 'media-player-connect' is dispatched at the end of onConnect,
+        // after #onPointerChange has already set pointer to 'coarse'.
+        el.addEventListener('media-player-connect', setPointerFine);
+        return true;
+      };
+
+      let el: HTMLElement | undefined;
+      if (!setup()) {
+        rafId = requestAnimationFrame(() => {
+          setup();
+          el = playerRef.current?.el;
+        });
+      } else {
+        el = playerRef.current?.el;
+      }
+
+      return () => {
+        cancelAnimationFrame(rafId);
+        el?.removeEventListener('media-player-connect', setPointerFine);
+      };
+    }, []);
+    */
