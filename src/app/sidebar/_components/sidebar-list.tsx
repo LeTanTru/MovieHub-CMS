@@ -162,7 +162,7 @@ export default function SidebarList() {
       dataIndex: ['movie', 'releaseDate'],
       render: (_, record) => (
         <span className='line-clamp-1 block truncate'>
-          {convertUTCToLocal(record.movie.releaseDate)}
+          {convertUTCToLocal(record.movie.releaseDate) || 'N/A'}
         </span>
       ),
       width: 250,

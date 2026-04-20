@@ -138,7 +138,7 @@ export default function AdminList() {
                 backgroundColor: `${record.group.color}10`
               }}
             >
-              {record.group.name ?? '---'}
+              {record.group.name}
             </Badge>
           </div>
         );
@@ -150,7 +150,7 @@ export default function AdminList() {
       width: 300,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '----'}
+          {value}
         </span>
       )
     },
@@ -160,7 +160,7 @@ export default function AdminList() {
       width: 200,
       render: (value) => (
         <span className='line-clamp-1' title={value}>
-          {value ?? '-----'}
+          {value}
         </span>
       ),
       align: 'center'

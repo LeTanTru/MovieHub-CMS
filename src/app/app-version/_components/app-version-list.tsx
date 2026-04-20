@@ -40,7 +40,7 @@ export default function AppVersionList() {
       dataIndex: 'name',
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       )
     },
@@ -52,7 +52,7 @@ export default function AppVersionList() {
           className='line-clamp-1 block truncate'
           title={convertUTCToLocal(value)}
         >
-          {convertUTCToLocal(value) ?? '------'}
+          {convertUTCToLocal(value)}
         </span>
       ),
       width: 200,
@@ -63,7 +63,7 @@ export default function AppVersionList() {
       dataIndex: 'code',
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value ?? '------'}
+          {value}
         </span>
       ),
       width: 150,

@@ -32,6 +32,7 @@ import { type ChangeEvent, useState } from 'react';
 import { CalendarIcon, X } from 'lucide-react';
 import { format, isValid, Locale, parse } from 'date-fns';
 import { vi } from 'date-fns/locale';
+import { useIsMounted } from '@/hooks';
 
 type DateTimePickerFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -58,6 +59,8 @@ export default function DateTimePickerField<T extends FieldValues>({
   placeholder,
   clearable = true
 }: DateTimePickerFieldProps<T>) {
+  const isMounted = useIsMounted();
+
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = Array.from({ length: 60 }, (_, i) => i);
   const seconds = Array.from({ length: 60 }, (_, i) => i);
@@ -75,6 +78,8 @@ export default function DateTimePickerField<T extends FieldValues>({
 
     return new Date(value);
   };
+
+  if (!isMounted) return null;
 
   return (
     <FormField

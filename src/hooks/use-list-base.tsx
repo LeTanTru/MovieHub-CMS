@@ -427,7 +427,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
                     )}
                   </div>
                 ))
-              : '---'}
+              : 'N/A'}
           </div>
         );
       }
