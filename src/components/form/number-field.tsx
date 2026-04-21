@@ -123,7 +123,7 @@ function NumberField<T extends FieldValues>({
                   {
                     'pl-10': prefixIcon,
                     'pr-10': suffixIcon,
-                    'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/50 text-gray-500':
+                    'cursor-not-allowed border border-solid bg-gray-200/50 text-gray-500':
                       disabled,
                     'border-red-500 focus-visible:ring-red-500':
                       !!fieldState.error,

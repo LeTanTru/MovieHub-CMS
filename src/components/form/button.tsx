@@ -6,7 +6,7 @@ import type { ComponentProps } from 'react';
 import { CircleLoading } from '@/components/loading';
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-normal disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive transition-all ease-linear duration-200 disabled:pointer-events-auto disabled:cursor-not-allowed focus-visible:ring-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-normal disabled:pointer-events-none disabled:opacity-80 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive transition-all ease-linear duration-200 disabled:pointer-events-auto disabled:cursor-not-allowed focus-visible:ring-0",
   {
     variants: {
       variant: {
@@ -17,7 +17,7 @@ export const buttonVariants = cva(
         outline:
           'border border-input bg-transparent hover:text-gray-400 hover:border-input/50 disabled:hover:text-black disabled:hover:bg-transparent disabled:border-gray-200 disabled:hover:border-gray-200',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:text-gray-400 disabled:text-gray-400',
+          'bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:text-gray-400 disabled:text-gray-400 disabled:bg-secondary/80 disabled:hover:bg-secondary/80 disabled:hover:text-gray-400',
         ghost:
           'hover:bg-accent hover:text-accent-foreground disabled:hover:bg-transparent disabled:hover:text-gray-400 disabled:text-gray-400',
         link: 'text-primary underline-offset-4 hover:underline',

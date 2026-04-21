@@ -164,7 +164,7 @@ export default function DatePickerField<T extends FieldValues>({
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent
-                    className='w-90 origin-top'
+                    className='w-90 p-2'
                     align='center'
                     sideOffset={8}
                   >
@@ -223,7 +223,7 @@ export default function DatePickerField<T extends FieldValues>({
                         field.onChange(format(newDate, dateFormat));
                       }}
                     />
-                    <div className='flex gap-2'>
+                    <div className='flex justify-center gap-2 border-t pt-2'>
                       <Button
                         type='button'
                         variant='outline'
