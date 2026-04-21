@@ -65,8 +65,7 @@ export default function CommentForm({
     movieId,
     movieItemId: '',
     parentId: parentId,
-    replyToId: '',
-    replyToKind: 0
+    replyToId: ''
   };
 
   const initialValues: CommentBodyType = useMemo(
@@ -75,12 +74,10 @@ export default function CommentForm({
       movieId: editingComment?.movieId?.toString() ?? movieId,
       movieItemId: editingComment?.movieId?.toString() ?? '',
       parentId: editingComment?.parent?.id?.toString() ?? parentId,
-      replyToId: authorInfo?.id?.toString() ?? '',
-      replyToKind: authorInfo?.kind ?? 0
+      replyToId: authorInfo?.id?.toString() ?? ''
     }),
     [
       authorInfo?.id,
-      authorInfo?.kind,
       editingComment?.content,
       editingComment?.movieId,
       editingComment?.parent?.id,
@@ -117,7 +114,7 @@ export default function CommentForm({
       picker.style.opacity = '0';
       picker.style.visibility = 'hidden';
       picker.style.right = '170px';
-      picker.style.top = '0px';
+      picker.style.top = '5px';
       picker.style.transition = 'all 0.2s linear';
       picker.style.setProperty('--border-radius', '8px');
       picker.style.setProperty('--border-size', '0');
@@ -221,6 +218,7 @@ export default function CommentForm({
                     !form.formState.validatingFields ||
                     loading
                   }
+                  iconClassName='size-4'
                   className='h-8'
                 >
                   <Send />

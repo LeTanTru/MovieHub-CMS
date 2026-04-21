@@ -105,7 +105,7 @@ export default function CommentList() {
         key={c.id}
         comment={c}
         level={level}
-        rootId={rootId ?? c.id}
+        rootId={rootId || c.id}
         voteMap={voteMap}
         onVote={handleVote}
         onPin={handlePinComment}
@@ -121,7 +121,7 @@ export default function CommentList() {
     <PageWrapper
       breadcrumbs={[
         { label: 'Phim', href: route.movie.getList.path },
-        { label: searchParams.movieTitle ?? 'Chi tiết' },
+        { label: searchParams.movieTitle || 'Chi tiết' },
         { label: 'Bình luận' }
       ]}
     >

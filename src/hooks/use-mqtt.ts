@@ -14,12 +14,9 @@ const useMqtt = <T>({ topic, cmd, callback }: UseMqttType<T>) => {
   const client = getMqttClient();
 
   useEffect(() => {
-    const handleMessage = (_topic: string, message: Buffer) => {
-      logger.info(
-        `Received MQTT message on topic: ${topic}`,
-        message.toString()
-      );
-      if (_topic !== topic) return;
+    const handleMessage = (incomingTopic: string, message: Buffer) => {
+      if (incomingTopic !== topic) return;
+
       try {
         const parsedMessage = JSON.parse(message.toString());
         if (parsedMessage.cmd === cmd) {

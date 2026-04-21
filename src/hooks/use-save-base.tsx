@@ -1,17 +1,7 @@
 'use client';
 
 import { Button, Col, Row } from '@/components/form';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog';
+import { ConfirmModal } from '@/components/modal';
 import { storageKeys } from '@/constants';
 import useDisclosure from '@/hooks/use-disclosure';
 import useNavigate from '@/hooks/use-navigate';
@@ -20,7 +10,7 @@ import type { ApiConfig, ApiResponse, ErrorMaps } from '@/types';
 import { applyFormErrors, http, notify, removeData, setData } from '@/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
+import { ArrowLeftFromLine, Save } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
@@ -255,8 +245,15 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
                 Hủy
               </Button>
             ) : (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
+              <ConfirmModal
+                message='Bạn có chắc chắn muốn hủy không ?'
+                onConfirm={() => {
+                  if (listPageUrl) {
+                    navigate.push(listPageUrl);
+                  }
+                  options?.onCancel?.();
+                }}
+                trigger={
                   <Button
                     type='button'
                     variant='outline'
@@ -265,33 +262,8 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
                     <ArrowLeftFromLine />
                     Hủy
                   </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] w-fit max-w-lg gap-0 p-4'>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className='flex items-center gap-2 text-sm font-normal'>
-                      <Info className='size-8 fill-orange-500 stroke-white' />
-                      Bạn có chắc chắn muốn hủy không ?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription></AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel className='h-8 cursor-pointer border-red-500 font-normal text-red-500 transition-all duration-200 ease-linear hover:border-red-500/50 hover:bg-transparent hover:text-red-500/50'>
-                      Không
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => {
-                        if (listPageUrl) {
-                          navigate.push(listPageUrl);
-                        }
-                        options?.onCancel?.();
-                      }}
-                      className='bg-main-color hover:bg-main-color/80 h-8 cursor-pointer font-normal transition-all duration-200 ease-linear'
-                    >
-                      Có
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                }
+              />
             )}
           </Col>
           <Col className='w-40'>
@@ -311,32 +283,16 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
           </Col>
         </Row>
         {/* Dialog for asking before leaving page */}
-        <AlertDialog open={openedDialog}>
-          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] w-105 gap-0 p-4'>
-            <AlertDialogHeader>
-              <AlertDialogTitle className='flex items-center gap-2 text-sm font-normal'>
-                <Info className='size-8 fill-orange-500 stroke-white' />
-                Bạn có chắc chắn muốn rời khỏi trang này không ?
-              </AlertDialogTitle>
-              <AlertDialogDescription></AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel
-                onClick={handleCancelLeave}
-                className='h-8 cursor-pointer border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/50 hover:bg-transparent hover:text-red-500/50'
-              >
-                Không
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleConfirmLeave}
-                type='button'
-                className='bg-main-color hover:bg-main-color/80 h-8 cursor-pointer transition-all duration-200 ease-linear'
-              >
-                Có
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <ConfirmModal
+          open={openedDialog}
+          onOpenChange={(v) => {
+            if (!v) handleCancelLeave();
+          }}
+          message='Bạn có chắc chắn muốn rời khỏi trang này không ?'
+          onConfirm={handleConfirmLeave}
+          onCancel={handleCancelLeave}
+          className='w-105'
+        />
       </>
     );
   };

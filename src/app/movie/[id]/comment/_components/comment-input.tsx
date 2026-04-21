@@ -76,7 +76,7 @@ export default function CommentInput({ movieId }: CommentInputProps) {
       picker.style.opacity = '0';
       picker.style.visibility = 'hidden';
       picker.style.right = '100px';
-      picker.style.top = '0px';
+      picker.style.top = '5px';
       picker.style.transition = 'all 0.2s linear';
       picker.style.setProperty('--border-radius', '8px');
       picker.style.setProperty('--border-size', '0');
@@ -163,6 +163,7 @@ export default function CommentInput({ movieId }: CommentInputProps) {
                       variant='primary'
                       disabled={!form.watch('content') || loading}
                       className='h-8'
+                      iconClassName='size-4'
                     >
                       <Send />
                     </Button>

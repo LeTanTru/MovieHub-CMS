@@ -115,6 +115,21 @@ export default function AppProvider({ children }: AppProviderProps) {
     };
   }, [profile?.id, client]);
 
+  useEffect(() => {
+    const onMessage = (topic: string, message: Buffer) => {
+      logger.info(
+        `Received MQTT message on topic: ${topic}`,
+        message.toString()
+      );
+    };
+
+    client.on('message', onMessage);
+
+    return () => {
+      client.off('message', onMessage);
+    };
+  }, [client]);
+
   return (
     <AppContext.Provider
       value={{
