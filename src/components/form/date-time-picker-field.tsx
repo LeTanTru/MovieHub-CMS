@@ -64,7 +64,7 @@ export default function DateTimePickerField<T extends FieldValues>({
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = Array.from({ length: 60 }, (_, i) => i);
   const seconds = Array.from({ length: 60 }, (_, i) => i);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
   const calendarLocale: Locale = vi;
 
   const parseDate = (value: string) => {
@@ -151,14 +151,14 @@ export default function DateTimePickerField<T extends FieldValues>({
             )}
             <FormControl>
               <div>
-                <Popover open={isOpen} onOpenChange={setIsOpen}>
+                <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
                     <Button
                       disabled={disabled}
                       variant='outline'
                       role='combobox'
                       aria-controls='combobox'
-                      aria-expanded={isOpen}
+                      aria-expanded={open}
                       aria-label='Select date and time'
                       className={cn(
                         'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2',
@@ -203,7 +203,7 @@ export default function DateTimePickerField<T extends FieldValues>({
                       </span>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent sideOffset={8} className='w-120 p-0'>
+                  <PopoverContent sideOffset={8} className='w-120 p-2'>
                     <div className='sm:flex'>
                       <Calendar
                         className='w-full flex-1 p-0'
@@ -346,15 +346,15 @@ export default function DateTimePickerField<T extends FieldValues>({
                         </ScrollArea>
                       </div>
                     </div>
-                    <div className='flex justify-end gap-2 border-t p-2'>
+                    <div className='flex justify-center gap-2 border-t pt-2'>
                       {clearable && (
                         <Button
                           size='lg'
                           variant='outline'
-                          className='mx-auto w-1/2'
+                          className='flex-1'
                           onClick={() => {
                             field.onChange('');
-                            setIsOpen(false);
+                            setOpen(false);
                           }}
                         >
                           Xóa
@@ -363,11 +363,11 @@ export default function DateTimePickerField<T extends FieldValues>({
                       <Button
                         size='lg'
                         variant='primary'
-                        className='mx-auto w-1/2'
+                        className='flex-1'
                         onClick={() => {
                           const now = new Date();
                           updateFieldValue(now);
-                          setIsOpen(false);
+                          setOpen(false);
                         }}
                       >
                         Hôm nay

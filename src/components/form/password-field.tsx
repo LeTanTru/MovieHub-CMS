@@ -146,7 +146,7 @@ export default function PasswordField<T extends FieldValues>({
                     className,
                     'text-sm shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2',
                     {
-                      'cursor-not-allowed border border-solid border-gray-300 bg-gray-200/50 text-gray-500':
+                      'cursor-not-allowed border border-solid bg-gray-200/50 text-gray-500':
                         disabled,
                       'border-red-500 focus-visible:ring-red-500':
                         !!fieldState.error,
