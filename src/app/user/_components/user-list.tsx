@@ -124,7 +124,7 @@ export default function UserList() {
     {
       title: 'Email',
       dataIndex: 'email',
-      width: 220,
+      width: 300,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
           {value}
@@ -137,7 +137,7 @@ export default function UserList() {
       width: 200,
       render: (value) => (
         <span className='line-clamp-1 block truncate' title={value}>
-          {value}
+          {value || 'N/A'}
         </span>
       ),
       align: 'center'
