@@ -4,17 +4,7 @@ import { Button, ToolTip } from '@/components/form';
 import { ListPageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { NoData } from '@/components/no-data';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog';
+import { ConfirmModal } from '@/components/modal';
 import { Separator } from '@/components/ui/separator';
 import { DEFAULT_TABLE_PAGE_START, MAX_PAGE_SIZE } from '@/constants';
 import { useDisclosure } from '@/hooks';
@@ -25,7 +15,7 @@ import {
   usePermissionListQuery
 } from '@/queries';
 import type { PermissionResType } from '@/types';
-import { Info, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import MediaQuery from 'react-responsive';
@@ -83,7 +73,7 @@ export default function PermissionList() {
   const handleAdd = (group: string) => {
     const groupPermission = groupPermissions.find((gp) => gp.name === group);
     setSelectedRow(null);
-    setSelectedGroupPermissionId(groupPermission?.id ?? '');
+    setSelectedGroupPermissionId(groupPermission?.id || '');
     open();
   };
 
@@ -155,8 +145,10 @@ export default function PermissionList() {
                                       <AiOutlineEdit className='text-main-color size-4' />
                                     </Button>
                                   </ToolTip>
-                                  <AlertDialog>
-                                    <AlertDialogTrigger asChild>
+                                  <ConfirmModal
+                                    message={`Bạn có chắc chắn muốn xóa quyền ${permission.name} này không ?`}
+                                    onConfirm={() => handleDelete(permission)}
+                                    trigger={
                                       <span>
                                         <ToolTip
                                           title={`Xóa ${permission.name}`}
@@ -166,31 +158,8 @@ export default function PermissionList() {
                                           </Button>
                                         </ToolTip>
                                       </span>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] w-fit max-w-lg gap-0 p-4'>
-                                      <AlertDialogHeader>
-                                        <AlertDialogTitle className='flex items-center gap-2 text-sm font-normal'>
-                                          <Info className='size-8 fill-orange-500 stroke-white' />
-                                          Bạn có chắc chắn muốn xóa quyền này
-                                          không ?
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription></AlertDialogDescription>
-                                      </AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                        <AlertDialogCancel className='h-8 cursor-pointer border-red-500 font-normal text-red-500 transition-all duration-200 ease-linear hover:border-red-500/50 hover:bg-transparent hover:text-red-500/50'>
-                                          Không
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                          onClick={() =>
-                                            handleDelete(permission)
-                                          }
-                                          className='bg-main-color hover:bg-main-color/80 h-8 cursor-pointer font-normal transition-all duration-200 ease-linear'
-                                        >
-                                          Có
-                                        </AlertDialogAction>
-                                      </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                  </AlertDialog>
+                                    }
+                                  />
                                   <MediaQuery maxWidth={1560}>
                                     {(index + 1) % 3 !== 0 && (
                                       <Separator

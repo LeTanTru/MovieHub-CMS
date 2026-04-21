@@ -341,7 +341,7 @@ export default function MovieItemSeasonList() {
     <PageWrapper
       breadcrumbs={[
         { label: 'Phim', href: route.movie.getList.path },
-        { label: searchParams.movieTitle ?? 'Phần' }
+        { label: searchParams.movieTitle || 'Phần' }
       ]}
     >
       <ListPageWrapper

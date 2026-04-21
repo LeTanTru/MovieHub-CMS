@@ -51,7 +51,7 @@ export default function ReviewList() {
     <PageWrapper
       breadcrumbs={[
         { label: 'Phim', href: route.movie.getList.path },
-        { label: searchParams.movieTitle ?? 'Chi tiết' },
+        { label: searchParams.movieTitle || 'Chi tiết' },
         { label: 'Đánh giá' }
       ]}
     >

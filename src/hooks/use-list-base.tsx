@@ -3,17 +3,7 @@
 import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { SearchForm } from '@/components/search-form';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog';
+import { ConfirmModal } from '@/components/modal';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -43,7 +33,7 @@ import {
   useQuery,
   useQueryClient
 } from '@tanstack/react-query';
-import { Info, PlusIcon, RefreshCcw } from 'lucide-react';
+import { PlusIcon, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
@@ -329,52 +319,21 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
       //   return null;
 
       return (
-        <AlertDialog>
-          <AlertDialogTrigger asChild onClick={(e) => e.stopPropagation()}>
-            <span>
-              <ToolTip title={`Xóa ${objectName}`} sideOffset={0}>
-                <Button
-                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
-                  variant='ghost'
-                  {...buttonProps}
-                >
-                  <AiOutlineDelete className='text-destructive size-4' />
-                </Button>
-              </ToolTip>
-            </span>
-          </AlertDialogTrigger>
-          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] w-fit max-w-lg gap-0 p-4'>
-            <AlertDialogHeader>
-              <AlertDialogTitle className='flex flex-nowrap items-center text-sm font-normal'>
-                <Info className='size-6 fill-orange-500 stroke-white' />
-                <span className='ml-1'>
-                  Bạn có chắc chắn muốn xóa {objectName} này không ?
-                </span>
-              </AlertDialogTitle>
-              <AlertDialogDescription></AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel asChild>
-                <Button
-                  onClick={(e) => e.stopPropagation()}
-                  variant='outline'
-                  className='h-8 border-red-500 font-normal text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
-                >
-                  Không
-                </Button>
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteClick(record.id);
-                }}
-                className='bg-main-color hover:bg-main-color/80 h-8 cursor-pointer font-normal transition-all duration-200 ease-linear'
+        <ToolTip title={`Xóa ${objectName}`} sideOffset={0}>
+          <ConfirmModal
+            message={`Bạn có chắc chắn muốn xóa ${objectName} này không ?`}
+            onConfirm={() => handleDeleteClick(record.id)}
+            trigger={
+              <Button
+                className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                variant='ghost'
+                {...buttonProps}
               >
-                Có
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+                <AiOutlineDelete className='text-destructive size-4' />
+              </Button>
+            }
+          />
+        </ToolTip>
       );
     }
   });
@@ -592,7 +551,6 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
       onClick={() => listQuery.refetch()}
       variant='primary'
       loading={listQuery.isFetching}
-      iconClassName='size-4'
     >
       <RefreshCcw />
     </Button>

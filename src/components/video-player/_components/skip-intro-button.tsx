@@ -2,7 +2,9 @@
 
 import { Button } from '@/components/form';
 
-type SkipIntroButtonProps = { onClick?: () => void };
+type SkipIntroButtonProps = {
+  onClick?: () => void;
+};
 
 export default function SkipIntroButton({ onClick }: SkipIntroButtonProps) {
   return (

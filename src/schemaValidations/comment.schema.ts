@@ -5,8 +5,7 @@ export const commentSchema = z.object({
   movieId: z.string().optional().nullable(),
   movieItemId: z.string().optional().nullable(),
   parentId: z.string().optional().nullable(),
-  replyToId: z.string().optional().nullable(),
-  replyToKind: z.number().optional().nullable()
+  replyToId: z.string().optional().nullable()
 });
 
 export const commentSearchSchema = z.object({

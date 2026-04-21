@@ -50,16 +50,19 @@ export default function GroupList() {
       dataIndex: 'kind',
       render: (value) => {
         const groupKind = groupKinds.find((gk) => gk.value === value);
+        if (!groupKind) {
+          return <span className='text-gray-400'>N/A</span>;
+        }
         return (
           <Badge
             className='text-sm font-normal'
             style={{
-              borderColor: `${groupKind?.color}80`,
-              color: `${groupKind?.color}`,
-              backgroundColor: `${groupKind?.color}10`
+              borderColor: `${groupKind.color}80`,
+              color: `${groupKind.color}`,
+              backgroundColor: `${groupKind.color}10`
             }}
           >
-            {groupKind?.label}
+            {groupKind.label}
           </Badge>
         );
       },

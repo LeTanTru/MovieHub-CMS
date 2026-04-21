@@ -2,7 +2,8 @@
 
 import { type ReactNode } from 'react';
 import { AvatarField, Button, ToolTip } from '@/components/form';
-import { Ellipsis, Info, Mars, Pin, Reply, Venus } from 'lucide-react';
+import { ConfirmModal } from '@/components/modal';
+import { Ellipsis, Mars, Pin, Reply, Venus } from 'lucide-react';
 import { cn } from '@/lib';
 import {
   convertUTCToLocal,
@@ -28,17 +29,6 @@ import {
   AiOutlineEye,
   AiOutlineEyeInvisible
 } from 'react-icons/ai';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog';
 import CommentForm from './comment-form';
 import { m, AnimatePresence } from 'framer-motion';
 import { useCommentStore } from '@/store';
@@ -486,47 +476,19 @@ function CommentItem({
                     </DropdownMenuItem>
                     <DropdownMenuItem className='cursor-pointer p-0! transition-all duration-200 ease-linear'>
                       {canDelete && (
-                        <AlertDialog>
-                          <AlertDialogTrigger className='w-full' asChild>
+                        <ConfirmModal
+                          message='Bạn có chắc chắn muốn xóa bình luận này không ?'
+                          onConfirm={onDelete}
+                          trigger={
                             <Button
                               variant='ghost'
                               className='text-destructive hover:text-destructive/50 h-fit w-full justify-start border-none bg-transparent p-2! shadow-none hover:bg-transparent'
-                              onClick={(e) => e.stopPropagation()}
                             >
                               <AiOutlineDelete className='size-5' />
                               Xóa
                             </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] w-fit max-w-lg gap-0 p-4'>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle className='flex flex-nowrap items-center text-sm font-normal'>
-                                <Info className='size-6 fill-orange-500 stroke-white' />
-                                <span className='ml-1'>
-                                  Bạn có chắc chắn muốn xóa bình luận này không
-                                  ?
-                                </span>
-                              </AlertDialogTitle>
-                              <AlertDialogDescription></AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel asChild>
-                                <Button
-                                  onClick={(e) => e.stopPropagation()}
-                                  variant='outline'
-                                  className='h-8 border-red-500 font-normal text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
-                                >
-                                  Không
-                                </Button>
-                              </AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={onDelete}
-                                className='bg-main-color hover:bg-main-color/80 h-8 cursor-pointer font-normal transition-all duration-200 ease-linear'
-                              >
-                                Có
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                          }
+                        />
                       )}
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
