@@ -15,9 +15,8 @@ import {
   useLoginMutation,
   useProfileQuery
 } from '@/queries';
-import envConfig from '@/config';
 import Image from 'next/image';
-import type { LoginBodyType, LoginResType } from '@/types';
+import type { LoginBodyType } from '@/types';
 import { useAppContext } from '@/components/providers/app-provider';
 
 export default function LoginForm() {
@@ -38,32 +37,36 @@ export default function LoginForm() {
   const defaultValues: LoginBodyType = {
     username: '',
     password: '',
-    grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE
+    grant_type: ''
   };
 
   const onSubmit = async (values: LoginBodyType) => {
     await loginMutate(values, {
-      onSuccess: async (res: LoginResType) => {
-        const accessToken = res.access_token;
-        const refreshToken = res.refresh_token;
-        const userKind = res.user_kind;
+      onSuccess: async (res) => {
+        if (res.result) {
+          const accessToken = res.data?.access_token;
+          const refreshToken = res.data?.refresh_token;
+          const userKind = res.data?.user_kind;
 
-        setData(storageKeys.ACCESS_TOKEN, accessToken);
-        setData(storageKeys.REFRESH_TOKEN, refreshToken);
-        setData(storageKeys.USER_KIND, String(userKind));
+          setData(storageKeys.ACCESS_TOKEN, accessToken as string);
+          setData(storageKeys.REFRESH_TOKEN, refreshToken as string);
+          setData(storageKeys.USER_KIND, String(userKind));
 
-        const profileQuery =
-          userKind === GROUP_KIND_ADMIN ? getProfile : getEmployeeProfile;
-        const profileData = await profileQuery();
-        const profile = profileData?.data?.data;
+          const profileQuery =
+            userKind === GROUP_KIND_ADMIN ? getProfile : getEmployeeProfile;
+          const profileData = await profileQuery();
+          const profile = profileData?.data?.data;
 
-        setLoading(profileLoading || employeeProfileLoading);
+          setLoading(profileLoading || employeeProfileLoading);
 
-        if (profile) {
-          setProfile(profile);
-          navigate.push(firstActiveRoute ?? route.home.path);
+          if (profile) {
+            setProfile(profile);
+            navigate.push(firstActiveRoute ?? route.home.path);
+          }
+          notify.success('Đăng nhập thành công');
+        } else {
+          notify.error('Đăng nhập thất bại');
         }
-        notify.success('Đăng nhập thành công');
       },
       onError: (error: Error) => {
         logger.error('Error while logging in', error);

@@ -153,22 +153,32 @@ Built with **Next.js (App Router)** and **TypeScript**, the system emphasizes ty
    cp .env.example .env
    ```
 
-   Update the `.env` file with your configuration:
+   Update the `.env` file with your configuration (same keys as `.env.example`):
 
    ```env
+   APP_USERNAME=
+   APP_PASSWORD=
+   GRANT_TYPE=
+   GRANT_TYPE_REFRESH_TOKEN=
+
+   MINIO_ENDPOINT=
+   MINIO_ROOT_USER=
+   MINIO_ROOT_PASSWORD=
+   MINIO_BUCKET=
+   MINIO_UPLOAD_FOLDER=
+   MINIO_UPLOAD_PREFIX=
+
    NEXT_PUBLIC_NODE_ENV=development
    NEXT_PUBLIC_AUTH_API_URL=https://your-auth-api.com
    NEXT_PUBLIC_API_URL=https://your-api.com
    NEXT_PUBLIC_API_MEDIA_URL=https://your-media-api.com
-   NEXT_PUBLIC_APP_USERNAME=your-app-username
-   NEXT_PUBLIC_APP_PASSWORD=your-app-password
-   NEXT_PUBLIC_URL=http://localhost:3001
    NEXT_PUBLIC_TINYMCE_URL=https://cdn.tiny.cloud
-   NEXT_PUBLIC_GRANT_TYPE=password
-   NEXT_PUBLIC_APP_NAME=MovieHub CMS
-   NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN=refresh_token
    NEXT_PUBLIC_MEDIA_HOST=https://your-media-host.com
    NEXT_PUBLIC_CLIENT_TYPE=CMS
+
+   NEXT_PUBLIC_MQTT_BROKER=
+   NEXT_PUBLIC_MQTT_USERNAME=
+   NEXT_PUBLIC_MQTT_PASSWORD=
    ```
 
 4. **Start the development server**
@@ -281,7 +291,8 @@ ThemeProvider
 3. **Config-driven access control**
    - Endpoints + permission codes: `src/constants/api-config.ts`
    - Route metadata (`auth`, `permissionCode`, `separate`): `src/routes/route.ts`
-   - Route checks at render time: `PermissionGuard`
+   - Route checks and redirect/unauthorized handling: `src/components/permission-guard/permission-guard.tsx`
+   - Save-page create/edit permission split: `src/utils/validate-permission.util.ts`
 
 4. **HTTP layer** (`src/utils/http.util.ts`)
    - Auth header injection
@@ -316,6 +327,8 @@ ThemeProvider
 - Keep required hidden filters in `defaultFilters` + `notShowFromSearchParams`.
 - Prefer `apiConfig.*.autoComplete` endpoints for autocomplete fields when available.
 - `useSaveBase` already handles dirty-form leave confirmation and invalidation of `[queryKey]` and `[`${queryKey}-list`]`.
+- `storageKeys.X_CLIENT_TYPE` is intentionally used as both local storage key and HTTP header name.
+- Environment variables are validated by Zod in `src/config.ts` (add new env keys there when introducing config).
 
 ### Code Conventions
 
@@ -325,6 +338,9 @@ ThemeProvider
 - Use `cn()` from `@/lib/utils` for class composition
 - Follow Zod v4 form validation patterns (`.check(...)`)
 - Prefix intentionally unused variables with `_`
+- Use `grid-row`, `grid-col`, `grid-c-*` utilities from `src/styles/grid.css` for form layout
+- `Col` does not have a `span` prop; control width via classes
+- `FormControl` is a Radix Slot, so the actual input must be its direct child
 
 ### Modal Pattern
 
@@ -365,21 +381,32 @@ git push origin feature/your-feature-name
 
 ## 📝 Environment Variables
 
-| Variable                               | Description                 | Example                      |
-| -------------------------------------- | --------------------------- | ---------------------------- |
-| `NEXT_PUBLIC_NODE_ENV`                 | Environment mode            | `development` / `production` |
-| `NEXT_PUBLIC_AUTH_API_URL`             | Authentication API base URL | `https://auth.example.com`   |
-| `NEXT_PUBLIC_API_URL`                  | Main API base URL           | `https://api.example.com`    |
-| `NEXT_PUBLIC_API_MEDIA_URL`            | Media API base URL          | `https://media.example.com`  |
-| `NEXT_PUBLIC_APP_USERNAME`             | App credentials username    | `app-client`                 |
-| `NEXT_PUBLIC_APP_PASSWORD`             | App credentials password    | `secret-password`            |
-| `NEXT_PUBLIC_URL`                      | Application URL             | `http://localhost:3001`      |
-| `NEXT_PUBLIC_TINYMCE_URL`              | TinyMCE CDN URL             | `https://cdn.tiny.cloud`     |
-| `NEXT_PUBLIC_GRANT_TYPE`               | OAuth grant type            | `password`                   |
-| `NEXT_PUBLIC_APP_NAME`                 | Application name            | `MovieHub CMS`               |
-| `NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN` | Refresh token grant type    | `refresh_token`              |
-| `NEXT_PUBLIC_MEDIA_HOST`               | Media files host            | `https://cdn.example.com`    |
-| `NEXT_PUBLIC_CLIENT_TYPE`              | Client type identifier      | `CMS`                        |
+Variables currently validated/used by the app:
+
+**Public (`NEXT_PUBLIC_*`)**
+
+| Variable                    | Description                                            |
+| --------------------------- | ------------------------------------------------------ |
+| `NEXT_PUBLIC_NODE_ENV`      | Environment mode (`development`/`production`)          |
+| `NEXT_PUBLIC_AUTH_API_URL`  | Authentication API base URL                            |
+| `NEXT_PUBLIC_API_URL`       | Main API base URL                                      |
+| `NEXT_PUBLIC_API_MEDIA_URL` | Media API base URL                                     |
+| `NEXT_PUBLIC_TINYMCE_URL`   | TinyMCE CDN URL                                        |
+| `NEXT_PUBLIC_MEDIA_HOST`    | Media hostname (used by `next/image` `remotePatterns`) |
+| `NEXT_PUBLIC_CLIENT_TYPE`   | Client type identifier (used in outbound headers)      |
+| `NEXT_PUBLIC_MQTT_BROKER`   | MQTT broker URL                                        |
+| `NEXT_PUBLIC_MQTT_USERNAME` | MQTT username                                          |
+| `NEXT_PUBLIC_MQTT_PASSWORD` | MQTT password                                          |
+
+**Private (server-side API usage)**
+
+- `APP_USERNAME`, `APP_PASSWORD`
+- `GRANT_TYPE`, `GRANT_TYPE_REFRESH_TOKEN`
+
+**MinIO (S3-compatible storage)**
+
+- `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`
+- `MINIO_BUCKET`, `MINIO_UPLOAD_FOLDER`, `MINIO_UPLOAD_PREFIX`
 
 ## 📄 License
 

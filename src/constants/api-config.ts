@@ -9,6 +9,28 @@ const multipartHeader = {
 const defineApiConfig = <T extends ApiConfigGroup>(config: T) => config;
 
 const apiConfig = defineApiConfig({
+  api: {
+    auth: {
+      login: {
+        baseUrl: `/api/auth/login`,
+        method: 'POST',
+        headers: baseHeader,
+        isRequiredXClientType: true
+      },
+      refreshToken: {
+        baseUrl: `/api/auth/refresh-token`,
+        method: 'POST',
+        headers: baseHeader,
+        isRequiredXClientType: true
+      },
+      logout: {
+        baseUrl: `/api/auth/logout`,
+        method: 'POST',
+        headers: baseHeader,
+        isRequiredXClientType: true
+      }
+    }
+  },
   auth: {
     token: {
       baseUrl: `${AppConstants.authApiUrl}/api/token`,
