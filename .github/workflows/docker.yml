@@ -33,13 +33,7 @@ jobs:
             NEXT_PUBLIC_AUTH_API_URL=${{ secrets.NEXT_PUBLIC_AUTH_API_URL }}
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_API_MEDIA_URL=${{ secrets.NEXT_PUBLIC_API_MEDIA_URL }}
-            NEXT_PUBLIC_APP_USERNAME=${{ secrets.NEXT_PUBLIC_APP_USERNAME }}
-            NEXT_PUBLIC_APP_PASSWORD=${{ secrets.NEXT_PUBLIC_APP_PASSWORD }}
-            NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }}
             NEXT_PUBLIC_TINYMCE_URL=${{ secrets.NEXT_PUBLIC_TINYMCE_URL }}
-            NEXT_PUBLIC_GRANT_TYPE=${{ secrets.NEXT_PUBLIC_GRANT_TYPE }}
-            NEXT_PUBLIC_APP_NAME=${{ secrets.NEXT_PUBLIC_APP_NAME }}
-            NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN=${{ secrets.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN }}
             NEXT_PUBLIC_MEDIA_HOST=${{ secrets.NEXT_PUBLIC_MEDIA_HOST }}
             NEXT_PUBLIC_CLIENT_TYPE=${{ secrets.NEXT_PUBLIC_CLIENT_TYPE }}
             NEXT_PUBLIC_MQTT_BROKER=${{ secrets.NEXT_PUBLIC_MQTT_BROKER }}
@@ -92,6 +86,10 @@ jobs:
               -p 3001:3001 \
               --restart unless-stopped \
               --name cms-moviehub \
+              -e APP_USERNAME=${{ secrets.APP_USERNAME }} \
+              -e APP_PASSWORD=${{ secrets.APP_PASSWORD }} \
+              -e GRANT_TYPE=${{ secrets.GRANT_TYPE }} \
+              -e GRANT_TYPE_REFRESH_TOKEN=${{ secrets.GRANT_TYPE_REFRESH_TOKEN }} \
               -e MINIO_ENDPOINT=${{ secrets.MINIO_ENDPOINT }} \
               -e MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }} \
               -e MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }} \

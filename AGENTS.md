@@ -25,6 +25,35 @@ yarn format     # Prettier write all
 - HTTP layer: `src/utils/http.util.ts` (auto-injects auth, refresh-token rotation, dedup queue)
 - Access: `PermissionGuard` enforces route-level auth/permission
 
+## Environment Variables
+
+Config-driven env validation: `src/config.ts` (Zod schema). Only the following are defined and used:
+
+**Public (NEXT*PUBLIC*\*)**
+| Variable | Description |
+|---|---|
+| `NEXT_PUBLIC_NODE_ENV` | Environment mode (`development`/`production`) |
+| `NEXT_PUBLIC_AUTH_API_URL` | Authentication API base URL |
+| `NEXT_PUBLIC_API_URL` | Main API base URL |
+| `NEXT_PUBLIC_API_MEDIA_URL` | Media API base URL |
+| `NEXT_PUBLIC_TINYMCE_URL` | TinyMCE CDN URL |
+| `NEXT_PUBLIC_MEDIA_HOST` | Media files hostname (for `next/image` remotePatterns) |
+| `NEXT_PUBLIC_CLIENT_TYPE` | Client type identifier (used in HTTP header) |
+| `NEXT_PUBLIC_MQTT_BROKER` | MQTT broker URL |
+| `NEXT_PUBLIC_MQTT_USERNAME` | MQTT username |
+| `NEXT_PUBLIC_MQTT_PASSWORD` | MQTT password |
+
+**Private (server-only, used directly in API routes)**
+
+- `APP_USERNAME`, `APP_PASSWORD` — OAuth credentials
+- `GRANT_TYPE`, `GRANT_TYPE_REFRESH_TOKEN` — OAuth grant types
+
+**Minio (S3-compatible storage)**
+
+- `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`, `MINIO_UPLOAD_FOLDER`, `MINIO_UPLOAD_PREFIX`
+
+Unused variables (`NEXT_PUBLIC_URL`, `NEXT_PUBLIC_APP_NAME`) have been removed from `src/config.ts`, `.env.example`, `Dockerfile`, and `Dockerfile`.
+
 ## Stores
 
 - `useAuthStore` (Zustand): profile, auth state
@@ -77,4 +106,10 @@ yarn format     # Prettier write all
 
 ## Restricted Files
 
-- `.env`, `credentials.json`, `supesecrets.txt` — do not read
+Files in this list MUST NOT be read:
+
+- `.env`
+- `credentials.json`
+- `supesecrets.txt`
+
+See also: `.kilo/rules/restricted-files.md` (referenced in `opencode.json`).

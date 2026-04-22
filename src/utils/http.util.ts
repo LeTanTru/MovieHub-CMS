@@ -68,18 +68,14 @@ const refreshToken = async () => {
     token = await getRefreshTokenFromCookie();
   }
   const res: ApiResponse<RefreshTokenResType> = await axiosInstance.post(
-    apiConfig.auth.refreshToken.baseUrl,
+    apiConfig.api.auth.refreshToken.baseUrl,
     {
-      refresh_token: token,
-      grant_type: envConfig.NEXT_PUBLIC_GRANT_TYPE_REFRESH_TOKEN
-    },
-    {
-      headers: {
-        Authorization: `Basic ${btoa(`${envConfig.NEXT_PUBLIC_APP_USERNAME}:${envConfig.NEXT_PUBLIC_APP_PASSWORD}`)}`
-      }
+      refresh_token: token
     }
   );
+
   const data = res.data;
+
   if (data) {
     const newAccessToken = data.access_token;
     const newRefreshToken = data.refresh_token;
