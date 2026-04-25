@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       }
 
       return NextResponse.json(
-        { result: false, message: 'Error while refreshing token' },
+        { result: false, message: 'Refresh token failed' },
         { status: error.response?.status }
       );
     }
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     logger.error('[REFRESH_TOKEN_ERROR]', error);
 
     return NextResponse.json(
-      { result: false, message: 'Error while refreshing token' },
+      { result: false, message: 'Refresh token failed' },
       { status: HttpStatusCode.InternalServerError }
     );
   }

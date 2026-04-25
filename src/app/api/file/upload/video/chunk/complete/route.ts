@@ -30,9 +30,11 @@ export async function POST(req: NextRequest) {
       { status: HttpStatusCode.Ok }
     );
   } catch (error) {
-    logger.error('Error completing multipart upload:', error);
+    logger.error('[MULTIPART_UPLOAD_ERROR]', error);
     return NextResponse.json(
-      { error: 'Error completing multipart upload' },
+      {
+        message: 'Multipart upload failed'
+      },
       { status: HttpStatusCode.BadRequest }
     );
   }

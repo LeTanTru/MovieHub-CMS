@@ -41,15 +41,18 @@ export async function POST(req: NextRequest) {
       })
     );
     return NextResponse.json(
-      { uploadId: UploadId, objectName },
+      {
+        uploadId: UploadId,
+        objectName: objectName
+      },
       {
         status: HttpStatusCode.Ok
       }
     );
   } catch (error) {
-    logger.error('Error creating multipart upload:', error);
+    logger.error('[CREATE_MULTIPART_UPLOAD_ERROR]', error);
     return NextResponse.json(
-      { error: 'Error creating multipart upload' },
+      { message: 'Create multipart upload failed' },
       { status: HttpStatusCode.BadRequest }
     );
   }
