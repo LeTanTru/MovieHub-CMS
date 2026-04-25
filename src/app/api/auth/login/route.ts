@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       }
 
       return NextResponse.json(
-        { result: false, message: 'Error while logging in' },
+        { result: false, message: 'Login failed' },
         { status: error.response?.status }
       );
     }
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     logger.error('[LOGIN_ERROR]', error);
 
     return NextResponse.json(
-      { result: false, message: 'Error while logging in' },
+      { result: false, message: 'Login failed' },
       { status: HttpStatusCode.InternalServerError }
     );
   }

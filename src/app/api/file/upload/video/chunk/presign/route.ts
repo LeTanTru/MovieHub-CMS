@@ -48,9 +48,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url }, { status: HttpStatusCode.Ok });
   } catch (error) {
-    logger.error('[Presign] Error creating presigned URL:', error);
+    logger.error('[CREATE_PRESIGNED_URL_ERROR]', error);
     return NextResponse.json(
-      { error: 'Error creating presigned URL' },
+      { message: 'Create presigned URL failed' },
       { status: HttpStatusCode.BadRequest }
     );
   }

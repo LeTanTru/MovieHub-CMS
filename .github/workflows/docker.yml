@@ -74,32 +74,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Validate secrets
-        run: |
-          REQUIRED_VARS=(
-            "APP_USERNAME=${{ secrets.APP_USERNAME }}"
-            "APP_PASSWORD=${{ secrets.APP_PASSWORD }}"
-            "GRANT_TYPE=${{ secrets.GRANT_TYPE }}"
-            "GRANT_TYPE_REFRESH_TOKEN=${{ secrets.GRANT_TYPE_REFRESH_TOKEN }}"
-            "MINIO_ENDPOINT=${{ secrets.MINIO_ENDPOINT }}"
-            "MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }}"
-            "MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}"
-            "MINIO_BUCKET=${{ secrets.MINIO_BUCKET }}"
-            "MINIO_UPLOAD_FOLDER=${{ secrets.MINIO_UPLOAD_FOLDER }}"
-            "MINIO_UPLOAD_PREFIX=${{ secrets.MINIO_UPLOAD_PREFIX }}"
-            "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}"
-          )
-
-          for VAR in "${REQUIRED_VARS[@]}"; do
-            KEY="${VAR%%=*}"
-            VALUE="${VAR#*=}"
-            if [[ -z "$VALUE" ]]; then
-              echo "❌ Secret '$KEY' is missing or empty"
-              exit 1
-            fi
-          done
-          echo "✅ All secrets are present"
-
       - name: Deploy to VPS
         run: |
           ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
