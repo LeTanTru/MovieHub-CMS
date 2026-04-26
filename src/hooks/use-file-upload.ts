@@ -58,7 +58,7 @@ export type FileUploadActions = {
   };
 };
 
-export const useFileUpload = (
+const useFileUpload = (
   options: FileUploadOptions = {}
 ): [FileUploadState, FileUploadActions] => {
   const {
@@ -398,6 +398,8 @@ export const useFileUpload = (
     }
   ];
 };
+
+export default useFileUpload;
 
 // Helper function to format bytes to human-readable format
 export const formatBytes = (bytes: number, decimals = 2): string => {

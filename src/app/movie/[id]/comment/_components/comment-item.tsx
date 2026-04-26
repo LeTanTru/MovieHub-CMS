@@ -63,7 +63,7 @@ type CommentItemProps = {
   ) => ReactNode;
 };
 
-function CommentItem({
+export default function CommentItem({
   comment,
   level,
   voteMap,
@@ -603,5 +603,3 @@ CommentItem.Skeleton = function () {
     </div>
   );
 };
-
-export default CommentItem;

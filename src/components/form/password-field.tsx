@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/form';
+import { List, ListItem } from '@/components/list';
 import {
   FormControl,
   FormDescription,
@@ -29,30 +30,6 @@ type PasswordFieldProps<T extends FieldValues> = {
   disabled?: boolean;
   readOnly?: boolean;
   showStrength?: boolean;
-};
-
-const List = ({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLUListElement>) => {
-  return (
-    <ul className={cn('list-none', className)} {...props}>
-      {children}
-    </ul>
-  );
-};
-
-const ListItem = ({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLLIElement>) => {
-  return (
-    <li className={cn(className)} {...props}>
-      {children}
-    </li>
-  );
 };
 
 const getStrengthColor = (score: number): string => {

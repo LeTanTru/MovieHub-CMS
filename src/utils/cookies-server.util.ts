@@ -4,24 +4,26 @@ import { storageKeys } from '@/constants';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { cookies } from 'next/headers';
 
-export async function setCookieData(
+export const setCookieData = async (
   key: string,
   value: any,
   cookie?: Partial<ResponseCookie>
-) {
+): Promise<void> => {
   const cookieStore = await cookies();
   cookieStore.set(key, value, cookie);
-}
+};
 
-export async function getCookieData(key: string) {
+export const getCookieData = async (
+  key: string
+): Promise<{ name: string; value: string } | undefined> => {
   const cookieStore = await cookies();
   return cookieStore.get(key);
-}
+};
 
-export async function removeCookieData(key: string) {
+export const removeCookieData = async (key: string): Promise<void> => {
   const cookieStore = await cookies();
   cookieStore.delete(key);
-}
+};
 
 export const setAccessTokenToCookie = async (
   token: string,
