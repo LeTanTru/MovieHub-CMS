@@ -48,8 +48,9 @@ Built with **Next.js (App Router)** and **TypeScript**, the system emphasizes ty
 - **Role System**: Admin and employee flows with user management
 - **Permission Groups**: Group-based permission assignment
 - **Profile Management**: Profile update workflows
-- **Authentication**: JWT-based auth with refresh token handling
+- **Authentication**: JWT-based auth with refresh-token rotation and dedup queue
 - **Authorization**: Route-level and API-level permission enforcement
+- **Atomic logout**: `clearState()` resets all auth state in one call
 
 ### Platform Configuration
 
@@ -283,10 +284,10 @@ ThemeProvider
    - Defaults: `staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`
 
 2. **App Provider** (`src/components/providers/app-provider/app-provider.tsx`)
-   - Reads token and user kind from storage
-   - Loads profile via `useProfileQuery` or `useEmployeeProfileQuery`
-   - Syncs profile into `useAuthStore`
-   - Initializes `LazyMotion` and MQTT subscriptions
+   - Reads session (token + user kind) from server cookie via `useSession`
+   - Loads profile via `useProfileQuery` or `useEmployeeProfileQuery` (guarded by user kind)
+   - Syncs session and profile into `useAuthStore` with `useShallow` selectors
+   - Initializes `LazyMotion` and MQTT subscriptions (per-account topic)
 
 3. **Config-driven access control**
    - Endpoints + permission codes: `src/constants/api-config.ts`
@@ -296,8 +297,9 @@ ThemeProvider
 
 4. **HTTP layer** (`src/utils/http.util.ts`)
    - Auth header injection
-   - Refresh-token retry queue for concurrent 401 handling
+   - Refresh-token retry queue for concurrent 401 handling (dedup via `isRefreshing` flag)
    - Path param replacement and multipart upload support
+   - On invalid refresh token: calls `clearState()` and hard-redirects to login
 
 5. **Shared CRUD hooks**
    - `useListBase`: list query, filter/query-string sync, pagination, delete flow
@@ -305,11 +307,22 @@ ThemeProvider
 
 ### Authentication Flow
 
-1. User logs in and tokens are stored
-2. HTTP requests include `Authorization: Bearer <token>`
-3. `401` responses trigger refresh-token flow with queued retries
-4. Profile is loaded and synced to `useAuthStore`
-5. Permission checks are enforced by route metadata and permission utilities
+1. User logs in → tokens stored in cookie via server session
+2. `AppProvider` reads session with `useSession` and writes to `useAuthStore`
+3. HTTP requests include `Authorization: Bearer <token>`
+4. `401` responses trigger refresh-token flow with a dedup queue (concurrent requests are replayed after token refresh)
+5. Invalid refresh token → `clearState()` + redirect to `/login`
+6. Profile is loaded and synced to `useAuthStore`
+7. `PermissionGuard` shows a full-screen loader while session is still resolving, then enforces route-level auth
+
+### Auth State — `useAuthStore`
+
+| Action                  | Description                                                           |
+| ----------------------- | --------------------------------------------------------------------- |
+| `setAccessToken(token)` | Store or clear the JWT access token                                   |
+| `setUserKind(kind)`     | Store or clear the user kind (admin / employee)                       |
+| `setProfile(profile)`   | Store or clear the user profile                                       |
+| `clearState()`          | **Atomically** reset all auth state (used on logout and token expiry) |
 
 ### Permission System
 
@@ -329,6 +342,8 @@ ThemeProvider
 - `useSaveBase` already handles dirty-form leave confirmation and invalidation of `[queryKey]` and `[`${queryKey}-list`]`.
 - `storageKeys.X_CLIENT_TYPE` is intentionally used as both local storage key and HTTP header name.
 - Environment variables are validated by Zod in `src/config.ts` (add new env keys there when introducing config).
+- Always use `useShallow` when subscribing to multiple fields from a Zustand store to avoid unnecessary re-renders.
+- Use `clearState()` (not individual setters) when resetting auth on logout or token expiry.
 
 ### Code Conventions
 
