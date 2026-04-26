@@ -1,12 +1,7 @@
 import { apiConfig, storageKeys } from '@/constants';
 import { logger } from '@/logger';
 import { RefreshTokenResType } from '@/types';
-import {
-  getRefreshTokenFromCookie,
-  http,
-  isAxiosError,
-  setCookieData
-} from '@/utils';
+import { getCookie, http, isAxiosError, setCookie } from '@/utils';
 import { HttpStatusCode } from 'axios';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { NextResponse } from 'next/server';
@@ -17,7 +12,7 @@ const maxAgeRefreshToken = 60 * 60 * 24 * 7; // 7 days
 
 export async function POST() {
   try {
-    const refresh_token = await getRefreshTokenFromCookie();
+    const refresh_token = await getCookie(storageKeys.REFRESH_TOKEN);
 
     if (!refresh_token) {
       return NextResponse.json(
@@ -50,21 +45,21 @@ export async function POST() {
     });
 
     if (res.access_token) {
-      await setCookieData(
+      await setCookie(
         storageKeys.ACCESS_TOKEN,
         res.access_token,
         makeCookieOption(maxAgeAccessToken)
       );
     }
     if (res.refresh_token) {
-      await setCookieData(
+      await setCookie(
         storageKeys.REFRESH_TOKEN,
         res.refresh_token,
         makeCookieOption(maxAgeRefreshToken)
       );
     }
     if (res.user_kind !== undefined) {
-      await setCookieData(
+      await setCookie(
         storageKeys.USER_KIND,
         String(res.user_kind),
         makeCookieOption(maxAgeAccessToken)
