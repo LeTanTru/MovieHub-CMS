@@ -1,11 +1,6 @@
 import { apiConfig, storageKeys } from '@/constants';
 import { logger } from '@/logger';
-import {
-  http,
-  removeAccessTokenFromCookie,
-  removeCookieData,
-  removeRefreshTokenFromCookie
-} from '@/utils';
+import { http, removeCookie } from '@/utils';
 import { HttpStatusCode } from 'axios';
 import { NextResponse } from 'next/server';
 
@@ -17,9 +12,9 @@ export async function POST() {
       logger.error('[LOGOUT_BACKEND_ERROR]', e);
     }
 
-    await removeAccessTokenFromCookie();
-    await removeRefreshTokenFromCookie();
-    await removeCookieData(storageKeys.USER_KIND);
+    await removeCookie(storageKeys.ACCESS_TOKEN);
+    await removeCookie(storageKeys.REFRESH_TOKEN);
+    await removeCookie(storageKeys.USER_KIND);
 
     return NextResponse.json(
       {

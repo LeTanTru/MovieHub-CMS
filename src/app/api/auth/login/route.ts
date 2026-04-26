@@ -2,7 +2,7 @@ import envConfig from '@/config';
 import { apiConfig, storageKeys } from '@/constants';
 import { logger } from '@/logger';
 import { LoginResType } from '@/types';
-import { http, isAxiosError, setCookieData } from '@/utils';
+import { http, isAxiosError, setCookie } from '@/utils';
 import { HttpStatusCode } from 'axios';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { NextRequest, NextResponse } from 'next/server';
@@ -51,19 +51,19 @@ export async function POST(request: NextRequest) {
       maxAge: maxAge
     });
 
-    await setCookieData(
+    await setCookie(
       storageKeys.ACCESS_TOKEN,
       accessToken,
       makeCookieOption(maxAgeAccessToken)
     );
 
-    await setCookieData(
+    await setCookie(
       storageKeys.REFRESH_TOKEN,
       refreshToken,
       makeCookieOption(maxAgeRefreshToken)
     );
 
-    await setCookieData(
+    await setCookie(
       storageKeys.USER_KIND,
       String(userKind),
       makeCookieOption(maxAgeAccessToken)

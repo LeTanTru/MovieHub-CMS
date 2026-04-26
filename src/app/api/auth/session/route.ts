@@ -1,18 +1,18 @@
 import { storageKeys } from '@/constants';
-import { getCookieData } from '@/utils';
+import { getCookie } from '@/utils';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const accessTokenCookie = await getCookieData(storageKeys.ACCESS_TOKEN);
-  const userKindCookie = await getCookieData(storageKeys.USER_KIND);
+  const accessTokenCookie = await getCookie(storageKeys.ACCESS_TOKEN);
+  const userKindCookie = await getCookie(storageKeys.USER_KIND);
 
   return NextResponse.json({
     result: true,
     data: {
-      accessToken: accessTokenCookie?.value || null,
-      userKind: userKindCookie?.value || null
+      accessToken: accessTokenCookie,
+      userKind: userKindCookie
     }
   });
 }

@@ -4,7 +4,7 @@ import { logger } from '@/logger';
 import { route } from '@/routes';
 import type { ApiConfig, Payload } from '@/types';
 import { useAuthStore } from '@/store';
-import { getData, getAccessTokenFromCookie } from '@/utils';
+import { getData, getCookie } from '@/utils';
 import axios, {
   AxiosError,
   HttpStatusCode,
@@ -14,7 +14,7 @@ import axios, {
 } from 'axios';
 import { redirect } from 'next/navigation';
 
-const isClient = () => typeof window !== 'undefined';
+const isClient = typeof window !== 'undefined';
 const axiosInstance = axios.create();
 // const TIME_OUT = 10000;
 
@@ -47,7 +47,7 @@ const refreshToken = async () => {
   if (data?.result && data?.data) {
     const newAccessToken = data.data.access_token;
     const userKind = data.data.user_kind;
-    if (isClient()) {
+    if (isClient) {
       useAuthStore.getState().setAccessToken(newAccessToken);
       useAuthStore.getState().setUserKind(String(userKind));
       return newAccessToken;
@@ -105,7 +105,7 @@ axiosInstance.interceptors.response.use(
           error?.response?.data?.message?.includes('Invalid refresh token')
         ) {
           await axiosInstance.post(apiConfig.api.auth.logout.baseUrl);
-          if (isClient()) {
+          if (isClient) {
             useAuthStore.getState().clearState();
             window.location.href = route.login.path;
           } else {
@@ -147,15 +147,15 @@ export const sendRequest = async <T>(
   let clientType: string | null | undefined = '';
 
   if (!ignoreAuth) {
-    if (isClient()) {
+    if (isClient) {
       accessToken = useAuthStore.getState().accessToken;
     } else {
-      accessToken = await getAccessTokenFromCookie();
+      accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
     }
   }
 
   if (isRequiredXClientType) {
-    if (isClient()) {
+    if (isClient) {
       clientType =
         getData(storageKeys.X_CLIENT_TYPE) || envConfig.NEXT_PUBLIC_CLIENT_TYPE;
     } else {
