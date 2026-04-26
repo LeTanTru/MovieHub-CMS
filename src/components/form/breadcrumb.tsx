@@ -14,40 +14,36 @@ import type { BreadcrumbProps } from '@/types';
 import { useIsMounted } from '@/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
 
-type BreadcrumbSkeletonProps = { count?: number };
-
-function BreadcrumbSkeleton({ count = 3 }: BreadcrumbSkeletonProps) {
-  return (
-    <OriginBreadcrumb>
-      <BreadcrumbList className='gap-1.5!'>
-        {Array.from({ length: count }).map((_, i) => {
-          const isLast = i === count - 1;
-          return (
-            <Fragment key={i}>
-              <BreadcrumbItem>
-                {!isLast ? (
-                  <Skeleton className='h-4 w-16 rounded bg-gray-200' />
-                ) : (
-                  <Skeleton className='h-4 w-20 rounded bg-gray-200' />
-                )}
-              </BreadcrumbItem>
-              {!isLast && <BreadcrumbSeparator />}
-            </Fragment>
-          );
-        })}
-      </BreadcrumbList>
-    </OriginBreadcrumb>
-  );
-}
-
 export default function Breadcrumb({
   items,
   separator = <BreadcrumbSeparator />
 }: BreadcrumbProps) {
   const isMounted = useIsMounted();
 
+  const length = items.length;
+
   if (!isMounted) {
-    return <BreadcrumbSkeleton count={items.length} />;
+    return (
+      <OriginBreadcrumb>
+        <BreadcrumbList className='gap-1.5!'>
+          {Array.from({ length }).map((_, i) => {
+            const isLast = i === length - 1;
+            return (
+              <Fragment key={i}>
+                <BreadcrumbItem>
+                  {!isLast ? (
+                    <Skeleton className='h-4 w-16 rounded bg-gray-200' />
+                  ) : (
+                    <Skeleton className='h-4 w-20 rounded bg-gray-200' />
+                  )}
+                </BreadcrumbItem>
+                {!isLast && <BreadcrumbSeparator />}
+              </Fragment>
+            );
+          })}
+        </BreadcrumbList>
+      </OriginBreadcrumb>
+    );
   }
 
   return (
