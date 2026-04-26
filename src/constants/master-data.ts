@@ -149,7 +149,8 @@ export const queryKeys = {
   SNS_CONFIG: 'sns-config',
   STYLE: 'style',
   USER: 'user',
-  VIDEO_LIBRARY: 'video-library'
+  VIDEO_LIBRARY: 'video-library',
+  SESSION: 'session'
 };
 
 export const userKindOptions = [

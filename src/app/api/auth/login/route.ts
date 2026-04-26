@@ -1,9 +1,14 @@
-import { apiConfig } from '@/constants';
+import envConfig from '@/config';
+import { apiConfig, storageKeys } from '@/constants';
 import { logger } from '@/logger';
 import { LoginResType } from '@/types';
-import { http, isAxiosError } from '@/utils';
+import { http, isAxiosError, setCookieData } from '@/utils';
 import { HttpStatusCode } from 'axios';
+import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { NextRequest, NextResponse } from 'next/server';
+
+const maxAgeAccessToken = 24 * 60 * 60; // 1 day
+const maxAgeRefreshToken = 60 * 60 * 24 * 7; // 7 days
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,6 +38,36 @@ export async function POST(request: NextRequest) {
         }
       }
     });
+
+    const accessToken = res.access_token;
+    const refreshToken = res.refresh_token;
+    const userKind = res.user_kind;
+
+    const makeCookieOption = (maxAge: number): Partial<ResponseCookie> => ({
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: envConfig.NEXT_PUBLIC_NODE_ENV === 'production',
+      maxAge: maxAge
+    });
+
+    await setCookieData(
+      storageKeys.ACCESS_TOKEN,
+      accessToken,
+      makeCookieOption(maxAgeAccessToken)
+    );
+
+    await setCookieData(
+      storageKeys.REFRESH_TOKEN,
+      refreshToken,
+      makeCookieOption(maxAgeRefreshToken)
+    );
+
+    await setCookieData(
+      storageKeys.USER_KIND,
+      String(userKind),
+      makeCookieOption(maxAgeAccessToken)
+    );
 
     return NextResponse.json({
       result: true,

@@ -4,8 +4,8 @@ import './video-play-modal.css';
 import { Modal } from '@/components/modal';
 import { VideoPlayer } from '@/components/video-player';
 import type { VideoLibraryResType } from '@/types';
+import { useAuthStore } from '@/store';
 import {
-  getAccessTokenFromLocalStorage,
   isMobileDevice,
   isTabletDevice,
   renderImageUrl,
@@ -29,6 +29,7 @@ export default function VideoPlayModal({
 }: VideoPlayModalProps) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const [bodyHeight, setBodyHeight] = useState<number>(0);
+  const accessToken = useAuthStore((s) => s.accessToken);
 
   useEffect(() => {
     if (!open || !bodyRef.current) return;
@@ -101,7 +102,7 @@ export default function VideoPlayModal({
               video.sourceType
             )}
             outroStart={video.outroStart}
-            token={getAccessTokenFromLocalStorage() || ''}
+            token={accessToken || ''}
             title={video.name}
             volume={
               envConfig.NEXT_PUBLIC_NODE_ENV === 'development'

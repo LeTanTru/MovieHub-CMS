@@ -22,15 +22,14 @@ import { useShallow } from 'zustand/react/shallow';
 export default function DropdownAvatar() {
   const navigate = useNavigate();
   const queryClient = getQueryClient();
-  const { opened: openedDropdown, toggle: toggleDropDown } = useDisclosure();
   const pathname = usePathname();
+  const { opened: openedDropdown, toggle: toggleDropDown } = useDisclosure();
 
   const { setLoading } = useAppContext();
-  const { profile, setProfile, setIsLoggedOut } = useAuthStore(
+  const { profile, clearState } = useAuthStore(
     useShallow((s) => ({
       profile: s.profile,
-      setProfile: s.setProfile,
-      setIsLoggedOut: s.setIsLoggedOut
+      clearState: s.clearState
     }))
   );
   const { queryString } = useQueryParams();
@@ -43,22 +42,14 @@ export default function DropdownAvatar() {
         if (res.result) {
           notify.success('Đăng xuất thành công');
 
-          removeData([
-            storageKeys.PATH_NO_LOGIN,
-            storageKeys.PREVIOUS_PATH,
-
-            storageKeys.ACCESS_TOKEN,
-            storageKeys.REFRESH_TOKEN,
-            storageKeys.USER_KIND
-          ]);
+          removeData([storageKeys.PATH_NO_LOGIN, storageKeys.PREVIOUS_PATH]);
 
           queryClient.removeQueries({ queryKey: [queryKeys.PROFILE] });
           queryClient.removeQueries({
             queryKey: [`${queryKeys.EMPLOYEE}-profile`]
           });
 
-          setProfile(null);
-          setIsLoggedOut(true);
+          clearState();
           setLoading(true);
           navigate.push(route.login.path);
         } else {

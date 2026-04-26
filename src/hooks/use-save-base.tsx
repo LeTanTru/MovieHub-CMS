@@ -13,7 +13,6 @@ import { isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Save } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
-
 type HandlerType<T> = {
   // additionParams: () => { [key: string]: any };
   handleSubmitSuccess: () => void;
@@ -40,9 +39,9 @@ type UseSaveBaseProps<R, T> = {
 const useSaveBase = <R extends FieldValues, T extends FieldValues>({
   apiConfig,
   options: {
-    queryKey = '',
     objectName = '',
     listPageUrl = '',
+    queryKey,
     pathParams,
     mode,
     showNotify = true

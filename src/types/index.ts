@@ -1,6 +1,5 @@
 export * from './account.type';
 export * from './api.type';
-export * from './app-loading.type';
 export * from './app-version.type';
 export * from './auth.type';
 export * from './base-table.type';

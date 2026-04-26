@@ -23,13 +23,13 @@ import {
   videoLibraryErrorMaps,
   videoLibrarySourceTypeOptions
 } from '@/constants';
+import { useAuthStore } from '@/store';
 import { useChunkUpload, useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
 import { videoLibrarySchema } from '@/schemaValidations';
 import type { VideoLibraryBodyType, VideoLibraryResType } from '@/types';
 import {
-  getAccessTokenFromLocalStorage,
   isMobileDevice,
   isTabletDevice,
   renderImageUrl,
@@ -46,6 +46,7 @@ import envConfig from '@/config';
 
 export default function VideoLibraryForm() {
   const { id } = useParams<{ id: string }>();
+  const accessToken = useAuthStore((s) => s.accessToken);
 
   const { mutateAsync: uploadLogoMutation, isPending: uploadLogoLoading } =
     useUploadLogoMutation();
@@ -462,7 +463,7 @@ export default function VideoLibraryForm() {
                           data.vttUrl,
                           data.sourceType
                         )}
-                        token={getAccessTokenFromLocalStorage() || ''}
+                        token={accessToken || ''}
                         skipOutro={true}
                         volume={
                           envConfig.NEXT_PUBLIC_NODE_ENV === 'development'

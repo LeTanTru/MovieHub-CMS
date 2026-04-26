@@ -5,9 +5,9 @@ import { Button, Col, InputField, PasswordField, Row } from '@/components/form';
 import { logger } from '@/logger';
 import { loginSchema } from '@/schemaValidations';
 import { logoWithText } from '@/assets';
-import { notify, setData } from '@/utils';
+import { notify } from '@/utils';
 import { route } from '@/routes';
-import { GROUP_KIND_ADMIN, storageKeys } from '@/constants';
+import { GROUP_KIND_ADMIN } from '@/constants';
 import { useAuthStore } from '@/store';
 import { useFirstActiveRoute, useNavigate } from '@/hooks';
 import {
@@ -18,6 +18,7 @@ import {
 import Image from 'next/image';
 import type { LoginBodyType } from '@/types';
 import { useAppContext } from '@/components/providers/app-provider';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -32,7 +33,16 @@ export default function LoginForm() {
     useEmployeeProfileQuery();
 
   const { setLoading } = useAppContext();
-  const setProfile = useAuthStore((s) => s.setProfile);
+
+  const { setAccessToken, setUserKind, setProfile } = useAuthStore(
+    useShallow((s) => {
+      return {
+        setAccessToken: s.setAccessToken,
+        setUserKind: s.setUserKind,
+        setProfile: s.setProfile
+      };
+    })
+  );
 
   const defaultValues: LoginBodyType = {
     username: '',
@@ -45,12 +55,10 @@ export default function LoginForm() {
       onSuccess: async (res) => {
         if (res.result) {
           const accessToken = res.data?.access_token;
-          const refreshToken = res.data?.refresh_token;
           const userKind = res.data?.user_kind;
 
-          setData(storageKeys.ACCESS_TOKEN, accessToken as string);
-          setData(storageKeys.REFRESH_TOKEN, refreshToken as string);
-          setData(storageKeys.USER_KIND, String(userKind));
+          setAccessToken(accessToken as string);
+          setUserKind(String(userKind));
 
           const profileQuery =
             userKind === GROUP_KIND_ADMIN ? getProfile : getEmployeeProfile;

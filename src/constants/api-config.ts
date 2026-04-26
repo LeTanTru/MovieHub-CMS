@@ -28,6 +28,12 @@ const apiConfig = defineApiConfig({
         method: 'POST',
         headers: baseHeader,
         isRequiredXClientType: true
+      },
+      session: {
+        baseUrl: `/api/auth/session`,
+        method: 'GET',
+        headers: baseHeader,
+        isRequiredXClientType: true
       }
     }
   },

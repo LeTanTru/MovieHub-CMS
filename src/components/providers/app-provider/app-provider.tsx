@@ -1,16 +1,14 @@
 'use client';
 
-import {
-  GROUP_KIND_ADMIN,
-  GROUP_KIND_EMPLOYEE,
-  mqttTopics,
-  storageKeys
-} from '@/constants';
+import { GROUP_KIND_ADMIN, GROUP_KIND_EMPLOYEE, mqttTopics } from '@/constants';
 import { getMqttClient } from '@/lib/mqtt';
 import { logger } from '@/logger';
-import { useEmployeeProfileQuery, useProfileQuery } from '@/queries';
+import {
+  useEmployeeProfileQuery,
+  useProfileQuery,
+  useSession
+} from '@/queries';
 import { useAuthStore } from '@/store';
-import { getData } from '@/utils';
 import { domAnimation, LazyMotion } from 'framer-motion';
 import {
   createContext,
@@ -19,6 +17,7 @@ import {
   useEffect,
   useState
 } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 type AppContextType = {
   loading: boolean;
@@ -41,20 +40,42 @@ export const useAppContext = () => {
 type AppProviderProps = { children: ReactNode };
 
 export default function AppProvider({ children }: AppProviderProps) {
-  const accessToken = getData(storageKeys.ACCESS_TOKEN);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const setProfile = useAuthStore((s) => s.setProfile);
-  const userKind = getData(storageKeys.USER_KIND);
+  const { accessToken, userKind, setAccessToken, setUserKind, setProfile } =
+    useAuthStore(
+      useShallow((s) => ({
+        accessToken: s.accessToken,
+        userKind: s.userKind,
+        setAccessToken: s.setAccessToken,
+        setUserKind: s.setUserKind,
+        setProfile: s.setProfile
+      }))
+    );
+
+  const { data: session, isLoading: sessionLoading } = useSession();
 
   const { data: profileData, isLoading: profileLoading } = useProfileQuery(
-    !!accessToken && !!userKind && parseInt(userKind) === GROUP_KIND_ADMIN
+    !loading &&
+      !!accessToken &&
+      !!userKind &&
+      parseInt(userKind) === GROUP_KIND_ADMIN
   );
 
   const { data: employeeProfileData, isLoading: employeeProfileLoading } =
     useEmployeeProfileQuery(
-      !!accessToken && !!userKind && parseInt(userKind) === GROUP_KIND_EMPLOYEE
+      !loading &&
+        !!accessToken &&
+        !!userKind &&
+        parseInt(userKind) === GROUP_KIND_EMPLOYEE
     );
+
+  useEffect(() => {
+    if (session?.result && session?.data) {
+      setAccessToken(session.data.accessToken);
+      setUserKind(session.data.userKind);
+    }
+  }, [session, setAccessToken, setUserKind]);
 
   const profile = profileData?.data || employeeProfileData?.data;
 
@@ -133,7 +154,8 @@ export default function AppProvider({ children }: AppProviderProps) {
   return (
     <AppContext.Provider
       value={{
-        loading: loading || profileLoading || employeeProfileLoading,
+        loading:
+          loading || profileLoading || employeeProfileLoading || sessionLoading,
         setLoading
       }}
     >
