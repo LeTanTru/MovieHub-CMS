@@ -29,7 +29,7 @@ const configProject = configSchema.safeParse({
 
 if (!configProject.success) {
   logger.error('Invalid environment variables:', configProject.error);
-  throw new Error('Các khai báo biến môi trường không hợp lệ');
+  throw new Error('Missing environment variables');
 }
 
 const envConfig = configProject.data;

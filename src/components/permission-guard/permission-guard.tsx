@@ -25,18 +25,17 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
   const pathname = usePathname();
   const { permissionCode: userPermissions, isAuthenticated } = useAuth();
 
-  const { loading } = useAppContext();
+  const { loading, setLoading } = useAppContext();
 
   const firstActiveRoute = useFirstActiveRoute();
   const matchedRoute: RouteItem = findRouteByPath(route, pathname);
   const isPublicRoute = matchedRoute?.auth === false;
 
   useEffect(() => {
-    // Loading -> skip
-    if (loading) return;
-
-    // Public route & not authenticated -> skip
-    if (isPublicRoute && !isAuthenticated) return;
+    if (loading || (isPublicRoute && !isAuthenticated)) {
+      setLoading(false);
+      return;
+    }
 
     // Not authenticated -> redirect to login with entered path
     if (!isAuthenticated) {
@@ -68,7 +67,8 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
     loading,
     navigate,
     pathname,
-    queryString
+    queryString,
+    setLoading
   ]);
 
   // get route permission
@@ -87,7 +87,7 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
       userKind: matchedRoute.userKind as number
     });
 
-  if (loading && !isAuthenticated) {
+  if (loading && !isAuthenticated && !isPublicRoute) {
     return (
       <AnimatePresence>
         <m.div

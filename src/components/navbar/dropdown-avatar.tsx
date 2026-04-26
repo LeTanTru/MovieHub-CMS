@@ -3,7 +3,6 @@
 import { AvatarField } from '@/components/form';
 import { List, ListItem } from '@/components/list';
 import { CircleLoading } from '@/components/loading';
-import { useAppContext } from '@/components/providers/app-provider';
 import { getQueryClient } from '@/components/providers/query-provider';
 import { queryKeys, storageKeys } from '@/constants';
 import { useDisclosure, useNavigate, useQueryParams } from '@/hooks';
@@ -25,7 +24,6 @@ export default function DropdownAvatar() {
   const pathname = usePathname();
   const { opened: openedDropdown, toggle: toggleDropDown } = useDisclosure();
 
-  const { setLoading } = useAppContext();
   const { profile, clearState } = useAuthStore(
     useShallow((s) => ({
       profile: s.profile,
@@ -50,7 +48,6 @@ export default function DropdownAvatar() {
           });
 
           clearState();
-          setLoading(true);
           navigate.push(route.login.path);
         } else {
           notify.error('Đăng xuất thất bại');
@@ -59,9 +56,6 @@ export default function DropdownAvatar() {
       onError: (error) => {
         logger.error('Error while logging out', error);
         notify.error('Có lỗi xảy ra khi đăng xuất');
-      },
-      onSettled: () => {
-        setLoading(false);
       }
     });
   };
