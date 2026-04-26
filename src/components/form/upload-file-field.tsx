@@ -115,7 +115,7 @@ export default function UploadFileField<T extends FieldValues>({
       fieldOnChange(url);
       onChange?.(url);
     } catch (error) {
-      logger.error('Upload file error:', error);
+      logger.error('[UPLOAD_FILE_ERROR]', error);
     } finally {
       setUploading(false);
     }
@@ -128,7 +128,7 @@ export default function UploadFileField<T extends FieldValues>({
         await deleteImageFn(value);
       }
     } catch (err) {
-      logger.error('Error while deleting file:', err);
+      logger.error('[DELETE_FILE_ERROR]', err);
     }
 
     fieldOnChange('');

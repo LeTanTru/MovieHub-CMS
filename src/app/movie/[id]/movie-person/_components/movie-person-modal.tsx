@@ -72,7 +72,7 @@ export default function MoviePersonModal({
         }
       },
       onError: (error) => {
-        logger.error(`Error while creating movie person: ${error}`);
+        logger.error('[CREATE_MOVIE_PERSON_ERROR]', error);
         notify.error('Có lỗi xảy ra');
       }
     });

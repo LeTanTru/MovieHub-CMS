@@ -12,7 +12,7 @@ export const getMqttClient = () => {
     });
 
     client.on('connect', (e) => logger.info('MQTT connected', e));
-    client.on('error', (err) => logger.error('MQTT error:', err));
+    client.on('error', (err) => logger.error('[MQTT_ERROR]', err));
   }
   return client;
 };

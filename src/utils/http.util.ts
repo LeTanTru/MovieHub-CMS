@@ -97,7 +97,7 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance.request(originalConfig);
       } catch (error) {
-        logger.error('Error while refreshing token', error);
+        logger.error('[REFRESH_TOKEN_ERROR]', error);
         if (
           error instanceof AxiosError &&
           error?.response?.status === HttpStatusCode.BadRequest &&

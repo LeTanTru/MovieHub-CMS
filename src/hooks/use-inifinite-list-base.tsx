@@ -282,7 +282,7 @@ const useInfiniteListBase = <
         }
       },
       onError: (error: Error) => {
-        logger.error(`Error while deleting ${queryKey}: `, error);
+        logger.error('[DELETE_ERROR]', queryKey, error);
         notify.error('Có lỗi xảy ra khi xóa');
       }
     });

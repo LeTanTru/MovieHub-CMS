@@ -16,9 +16,10 @@ const missingVars = Object.entries(requiredEnvVars)
 
 if (missingVars.length > 0) {
   logger.error(
-    `[S3 Config] Missing required environment variables: ${missingVars.join(', ')}`
+    '[S3_CONFIG_ERROR]',
+    `Missing required environment variables: ${missingVars.join(', ')}`
   );
-  logger.error('[S3 Config] Please check your .env file');
+  logger.error('[S3_CONFIG_ERROR]', 'Please check your .env file');
 }
 
 export const s3Client = new S3Client({

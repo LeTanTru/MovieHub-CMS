@@ -93,7 +93,8 @@ export default function AppProvider({ children }: AppProviderProps) {
         logger.info(`Subscribed to MQTT topic: ${mqttTopics.NOTIFICATION_CMS}`);
       else
         logger.error(
-          `Failed to subscribe to MQTT topic: ${mqttTopics.NOTIFICATION_CMS}`,
+          '[MQTT_SUBSCRIBE_ERROR]',
+          mqttTopics.NOTIFICATION_CMS,
           err
         );
     });
@@ -117,10 +118,8 @@ export default function AppProvider({ children }: AppProviderProps) {
             );
           else
             logger.error(
-              `Failed to subscribe to MQTT topic: ${mqttTopics.NOTIFICATION_ACCOUNT.replace(
-                ':accountId',
-                profile.id
-              )}`,
+              '[MQTT_SUBSCRIBE_ERROR]',
+              mqttTopics.NOTIFICATION_ACCOUNT.replace(':accountId', profile.id),
               err
             );
         }

@@ -173,7 +173,7 @@ export default function MovieItemSeasonDetailList() {
                   }
                 },
                 onError: (error) => {
-                  logger.error('Error while mark latest movie item', error);
+                  logger.error('[MARK_LATEST_MOVIE_ITEM_ERROR]', error);
                   notify.error(
                     `Đánh dấu phần "${record.label}" là phần mới nhất thất bại`
                   );

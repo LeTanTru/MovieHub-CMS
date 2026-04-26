@@ -173,7 +173,7 @@ export default function CollectionList() {
           }
         } catch (error: any) {
           colors = [value];
-          logger.error('Error while parsing color', error);
+          logger.error('[PARSE_COLOR_ERROR]', error);
         }
 
         if (!Array.isArray(colors)) {

@@ -70,7 +70,7 @@ export default function AdminList() {
                   }
                 },
                 onError: (error) => {
-                  logger.error('Error while changing status:', error);
+                  logger.error('[CHANGE_STATUS_ERROR]', error);
                   notify.error('Có lỗi xảy ra, vui lòng thử lại sau.');
                 }
               }

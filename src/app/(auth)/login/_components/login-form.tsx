@@ -77,7 +77,7 @@ export default function LoginForm() {
         }
       },
       onError: (error: Error) => {
-        logger.error('Error while logging in', error);
+        logger.error('[LOGIN_ERROR]', error);
         notify.error('Đăng nhập thất bại');
       }
     });

@@ -16,7 +16,7 @@ export const formatDate = (
 
     return formatFn(parsedDate, outputFormat);
   } catch (error) {
-    logger.error('Invalid date format', date, error);
+    logger.error('[INVALID_DATE_ERROR]', date, error);
     return '';
   }
 };
@@ -38,7 +38,7 @@ export const convertLocalToUTC = (
 
     return formatFn(utcDate, outputFormat);
   } catch (error) {
-    logger.error('convertLocalToUTC error', date, error);
+    logger.error('[CONVERT_LOCAL_TO_UTC_ERROR]', date, error);
     return '';
   }
 };
@@ -60,7 +60,7 @@ export const convertUTCToLocal = (
 
     return formatFn(localDate, outputFormat);
   } catch (error) {
-    logger.error('convertUTCToLocal error', date, error);
+    logger.error('[CONVERT_UTC_TO_LOCAL_ERROR]', date, error);
     return '';
   }
 };
