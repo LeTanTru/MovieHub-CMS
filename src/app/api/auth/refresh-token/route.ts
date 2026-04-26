@@ -1,22 +1,23 @@
-import { apiConfig } from '@/constants';
+import { apiConfig, storageKeys } from '@/constants';
 import { logger } from '@/logger';
 import { RefreshTokenResType } from '@/types';
-import { http, isAxiosError } from '@/utils';
+import {
+  getRefreshTokenFromCookie,
+  http,
+  isAxiosError,
+  setCookieData
+} from '@/utils';
 import { HttpStatusCode } from 'axios';
-import { NextRequest, NextResponse } from 'next/server';
+import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
+import { NextResponse } from 'next/server';
+import envConfig from '@/config';
 
-export async function POST(request: NextRequest) {
+const maxAgeAccessToken = 24 * 60 * 60; // 1 day
+const maxAgeRefreshToken = 60 * 60 * 24 * 7; // 7 days
+
+export async function POST() {
   try {
-    const body = await request.json();
-
-    if (!body) {
-      return NextResponse.json(
-        { result: false, message: 'Body is required' },
-        { status: HttpStatusCode.BadRequest }
-      );
-    }
-
-    const { refresh_token } = body;
+    const refresh_token = await getRefreshTokenFromCookie();
 
     if (!refresh_token) {
       return NextResponse.json(
@@ -40,10 +41,40 @@ export async function POST(request: NextRequest) {
       }
     );
 
+    const makeCookieOption = (maxAge: number): Partial<ResponseCookie> => ({
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: envConfig.NEXT_PUBLIC_NODE_ENV === 'production',
+      maxAge: maxAge
+    });
+
+    if (res.access_token) {
+      await setCookieData(
+        storageKeys.ACCESS_TOKEN,
+        res.access_token,
+        makeCookieOption(maxAgeAccessToken)
+      );
+    }
+    if (res.refresh_token) {
+      await setCookieData(
+        storageKeys.REFRESH_TOKEN,
+        res.refresh_token,
+        makeCookieOption(maxAgeRefreshToken)
+      );
+    }
+    if (res.user_kind !== undefined) {
+      await setCookieData(
+        storageKeys.USER_KIND,
+        String(res.user_kind),
+        makeCookieOption(maxAgeAccessToken)
+      );
+    }
+
     return NextResponse.json(
       {
         result: true,
-        ...res
+        data: res
       },
       { status: HttpStatusCode.Ok }
     );

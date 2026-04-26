@@ -8,7 +8,7 @@ import { PermissionGuard } from '@/components/permission-guard';
 import { QueryProvider } from '@/components/providers/query-provider';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { AppProvider } from '@/components/providers/app-provider';
-import { CircleLoading } from '@/components/loading';
+import { Loader } from 'lucide-react';
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['300', '400', '500', '600', '700', '800'],
@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               <Suspense
                 fallback={
                   <div className='flex h-screen items-center justify-center'>
-                    <CircleLoading className='stroke-main-color size-8' />
+                    <Loader className='size-8 animate-spin' />
                   </div>
                 }
               >

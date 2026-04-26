@@ -2,29 +2,9 @@ import envConfig from '@/config';
 import { apiConfig, storageKeys } from '@/constants';
 import { logger } from '@/logger';
 import { route } from '@/routes';
-import type {
-  ApiConfig,
-  ApiResponse,
-  Payload,
-  RefreshTokenResType
-} from '@/types';
-import {
-  getAccessTokenFromLocalStorage,
-  getData,
-  getRefreshTokenFromLocalStorage,
-  setAccessTokenToLocalStorage,
-  setRefreshTokenToLocalStorage,
-  getAccessTokenFromCookie,
-  getRefreshTokenFromCookie,
-  setAccessTokenToCookie,
-  setRefreshTokenToCookie,
-  removeAccessTokenFromLocalStorage,
-  removeRefreshTokenFromLocalStorage,
-  removeAccessTokenFromCookie,
-  removeRefreshTokenFromCookie,
-  removeData,
-  removeCookieData
-} from '@/utils';
+import type { ApiConfig, Payload } from '@/types';
+import { useAuthStore } from '@/store';
+import { getData, getAccessTokenFromCookie } from '@/utils';
 import axios, {
   AxiosError,
   HttpStatusCode,
@@ -61,33 +41,21 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 const refreshToken = async () => {
-  let token: string | null = null;
-  if (isClient()) {
-    token = getRefreshTokenFromLocalStorage();
-  } else {
-    token = await getRefreshTokenFromCookie();
-  }
-  const res: ApiResponse<RefreshTokenResType> = await axiosInstance.post(
-    apiConfig.api.auth.refreshToken.baseUrl,
-    {
-      refresh_token: token
-    }
-  );
-
+  const res = await axiosInstance.post(apiConfig.api.auth.refreshToken.baseUrl);
   const data = res.data;
 
-  if (data) {
-    const newAccessToken = data.access_token;
-    const newRefreshToken = data.refresh_token;
+  if (data?.result && data?.data) {
+    const newAccessToken = data.data.access_token;
+    const userKind = data.data.user_kind;
     if (isClient()) {
-      if (newAccessToken) setAccessTokenToLocalStorage(newAccessToken);
-      if (newRefreshToken) setRefreshTokenToLocalStorage(newRefreshToken);
-    } else {
-      if (newAccessToken) await setAccessTokenToCookie(newAccessToken);
-      if (newRefreshToken) await setRefreshTokenToCookie(newRefreshToken);
+      useAuthStore.getState().setAccessToken(newAccessToken);
+      useAuthStore.getState().setUserKind(String(userKind));
+      return newAccessToken;
     }
+    return newAccessToken;
   }
-  return res.data?.access_token;
+
+  return null;
 };
 
 axiosInstance.interceptors.response.use(
@@ -99,8 +67,6 @@ axiosInstance.interceptors.response.use(
       error.status === HttpStatusCode.Unauthorized &&
       !originalConfig._retry
     ) {
-      originalConfig._retry = true;
-
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -116,6 +82,7 @@ axiosInstance.interceptors.response.use(
           });
       }
 
+      originalConfig._retry = true;
       isRefreshing = true;
 
       try {
@@ -137,15 +104,11 @@ axiosInstance.interceptors.response.use(
           error?.response?.data?.message &&
           error?.response?.data?.message?.includes('Invalid refresh token')
         ) {
+          await axiosInstance.post(apiConfig.api.auth.logout.baseUrl);
           if (isClient()) {
-            removeAccessTokenFromLocalStorage();
-            removeRefreshTokenFromLocalStorage();
-            removeData(storageKeys.USER_KIND);
+            useAuthStore.getState().clearState();
             window.location.href = route.login.path;
           } else {
-            await removeAccessTokenFromCookie();
-            await removeRefreshTokenFromCookie();
-            await removeCookieData(storageKeys.USER_KIND);
             redirect(route.login.path);
           }
         }
@@ -185,7 +148,7 @@ export const sendRequest = async <T>(
 
   if (!ignoreAuth) {
     if (isClient()) {
-      accessToken = getAccessTokenFromLocalStorage();
+      accessToken = useAuthStore.getState().accessToken;
     } else {
       accessToken = await getAccessTokenFromCookie();
     }
