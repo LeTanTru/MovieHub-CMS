@@ -43,7 +43,7 @@ export const useDeletePermissionMutation = () => {
       }
     },
     onError: (error) => {
-      logger.error(`Error while deleting permission: `, error);
+      logger.error('[DELETE_PERMISSION_ERROR]', error);
       notify.error('Xóa quyền thất bại');
     }
   });

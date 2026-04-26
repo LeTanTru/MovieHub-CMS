@@ -25,7 +25,7 @@ const useMqtt = <T>({ topic, cmd, callback }: UseMqttType<T>) => {
           logger.warn(`Unexpected cmd: ${parsedMessage.cmd}, expected: ${cmd}`);
         }
       } catch (error) {
-        logger.error(`Error parsing MQTT message on topic: ${topic}`, error);
+        logger.error('[MQTT_PARSE_ERROR]', topic, error);
       }
     };
 

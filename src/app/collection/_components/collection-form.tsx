@@ -107,7 +107,7 @@ export default function CollectionForm() {
         }
       } catch (error) {
         parsedColors = [data.color as string];
-        logger.error('Error while parsing color', error);
+        logger.error('[PARSE_COLOR_ERROR]', error);
       }
     }
 
@@ -121,7 +121,7 @@ export default function CollectionForm() {
           filter = data.filter as CollectionBodyType['filter'];
         }
       } catch (error) {
-        logger.error('Error while parsing filter', error);
+        logger.error('[PARSE_FILTER_ERROR]', error);
         filter = {};
       }
     }

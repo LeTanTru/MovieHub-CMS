@@ -73,7 +73,7 @@ export default function GroupPermissionModal({
         if (errCode) applyFormErrors(form, errCode, groupPermissionErrorMaps);
       }
     } catch (error) {
-      logger.error('Error while creating/updating:', error);
+      logger.error('[SAVE_GROUP_PERMISSION_ERROR]', error);
     }
   };
 

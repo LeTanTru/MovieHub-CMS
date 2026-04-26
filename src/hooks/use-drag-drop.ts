@@ -78,7 +78,7 @@ const useDragDrop = <T extends Record<string, any>>({
           notify.success(`Cập nhật thứ tự ${objectName} thành công`);
         },
         onError: (error) => {
-          logger.error('Error while updating ordering:', error);
+          logger.error('[UPDATE_ORDERING_ERROR]', error);
           notify.error(`Cập nhật thứ tự ${objectName} thất bại`);
 
           setIsChanged(false);

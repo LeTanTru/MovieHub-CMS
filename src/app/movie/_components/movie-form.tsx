@@ -133,7 +133,7 @@ export default function MovieForm() {
       const metadataObj: MetadataType = JSON.parse(metadata);
       return metadataObj.duration || 0;
     } catch (error) {
-      logger.error('Error parsing metadata:', error);
+      logger.error('[METADATA_PARSE_ERROR]', error);
       return 0;
     }
   };

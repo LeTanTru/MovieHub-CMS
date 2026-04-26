@@ -28,7 +28,7 @@ const configProject = configSchema.safeParse({
 });
 
 if (!configProject.success) {
-  logger.error('Invalid environment variables:', configProject.error);
+  logger.error('[ENV_CONFIG_ERROR]', configProject.error);
   throw new Error('Missing environment variables');
 }
 

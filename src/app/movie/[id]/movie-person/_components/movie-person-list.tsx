@@ -199,7 +199,7 @@ export default function MoviePersonList({ kind }: MoviePersonListProps) {
           }
         },
         onError: (error) => {
-          logger.error(`Error while updating character name: ${error}`);
+          logger.error('[UPDATE_CHARACTER_NAME_ERROR]', error);
           notify.error('Có lỗi xảy ra');
           handlers.setData(data);
           setCharacterNames((prev) => ({

@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
   // Validate inputs
   if (!BUCKET_NAME) {
-    logger.error('[Presign] Missing BUCKET_NAME configuration');
+    logger.error('[PRESIGN_ERROR]', 'Missing BUCKET_NAME configuration');
     return NextResponse.json(
       { error: 'Server configuration error: Missing bucket name' },
       { status: HttpStatusCode.InternalServerError }
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!objectName || !uploadId || !partNumber) {
-    logger.error('[Presign] Missing required parameters:', {
+    logger.error('[PRESIGN_ERROR]', 'Missing required parameters:', {
       objectName,
       uploadId,
       partNumber

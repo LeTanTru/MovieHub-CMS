@@ -106,7 +106,7 @@ async function getCroppedImg(
       canvas.toBlob((blob) => resolve(blob), outputType || 'image/jpeg');
     });
   } catch (error) {
-    logger.error('getCroppedImg error:', error);
+    logger.error('[GET_CROPPED_IMAGE_ERROR]', error);
     return null;
   }
 }
@@ -229,7 +229,7 @@ export default function UploadImageField<T extends FieldValues>({
       fieldOnChange(uploadedUrl);
       setDialogOpen(false);
     } catch (error) {
-      logger.error('Error while uploading image:', error);
+      logger.error('[UPLOAD_IMAGE_ERROR]', error);
     } finally {
       setIsUploading(false);
     }
@@ -242,7 +242,7 @@ export default function UploadImageField<T extends FieldValues>({
         await deleteImageFn(fieldValue);
       }
     } catch (err) {
-      logger.error('Error while deleting image:', err);
+      logger.error('[DELETE_IMAGE_ERROR]', err);
     }
     onChange?.('');
     fieldOnChange('');

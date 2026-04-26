@@ -112,7 +112,7 @@ export default function UploadVideoField<T extends FieldValues>({
       fieldOnChange(url);
       onChange?.(url);
     } catch (error) {
-      logger.error('Upload video error:', error);
+      logger.error('[UPLOAD_VIDEO_ERROR]', error);
     } finally {
       setUploading(false);
     }
@@ -125,7 +125,7 @@ export default function UploadVideoField<T extends FieldValues>({
         await deleteImageFn(value);
       }
     } catch (err) {
-      logger.error('Error while deleting video:', err);
+      logger.error('[DELETE_VIDEO_ERROR]', err);
     }
     fieldOnChange('');
     onChange?.('');

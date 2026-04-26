@@ -7,7 +7,7 @@ export const decodeJwt = (
   try {
     return jwtDecode(token);
   } catch (error) {
-    logger.error('Failed to decode JWT:', error);
+    logger.error('[JWT_DECODE_ERROR]', error);
   }
   return null;
 };
