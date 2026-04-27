@@ -73,7 +73,9 @@ export default function MoviePersonModal({
       },
       onError: (error) => {
         logger.error('[CREATE_MOVIE_PERSON_ERROR]', error);
-        notify.error('Có lỗi xảy ra');
+        notify.error(
+          `Thêm ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'} thất bại`
+        );
       }
     });
   };

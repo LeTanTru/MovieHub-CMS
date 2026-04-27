@@ -70,7 +70,9 @@ export default function EmployeeList() {
                 },
                 onError: (error) => {
                   logger.error('[CHANGE_STATUS_ERROR]', error);
-                  notify.error('Có lỗi xảy ra, vui lòng thử lại sau.');
+                  notify.error(
+                    `${record.status === STATUS_ACTIVE ? 'Khóa' : 'Mở khóa'} tài khoản thất bại`
+                  );
                 }
               }
             );

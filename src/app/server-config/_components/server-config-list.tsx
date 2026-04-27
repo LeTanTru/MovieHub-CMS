@@ -60,13 +60,15 @@ export default function ServerConfigList() {
                     handlers.invalidateQueries();
                   } else {
                     notify.error(
-                      `${record.status === STATUS_ACTIVE ? 'Khóa' : 'Mở khóa'} máy chủ thất bại, vui lòng thử lại sau.`
+                      `${record.status === STATUS_ACTIVE ? 'Khóa' : 'Mở khóa'} máy chủ thất bại`
                     );
                   }
                 },
                 onError: (error) => {
                   logger.error('[CHANGE_STATUS_ERROR]', error);
-                  notify.error('Có lỗi xảy ra, vui lòng thử lại sau.');
+                  notify.error(
+                    `${record.status === STATUS_ACTIVE ? 'Khóa' : 'Mở khóa'} máy chủ thất bại`
+                  );
                 }
               }
             );

@@ -268,7 +268,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
       },
       onError: (error: Error) => {
         logger.error('[DELETE_ERROR]', queryKey, error);
-        notify.error('Có lỗi xảy ra khi xóa');
+        notify.error(`Xoá ${objectName} thất bại`);
       }
     });
   };

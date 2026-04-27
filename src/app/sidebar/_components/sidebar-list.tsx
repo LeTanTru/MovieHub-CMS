@@ -57,7 +57,7 @@ export default function SidebarList() {
                 },
                 onError: (error) => {
                   logger.error('[CHANGE_STATUS_ERROR]', error);
-                  notify.error('Có lỗi xảy ra, vui lòng thử lại sau.');
+                  notify.error(`${statusLabel} phim thất bại`);
                 }
               }
             );

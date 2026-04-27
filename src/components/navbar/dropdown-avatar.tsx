@@ -55,7 +55,7 @@ export default function DropdownAvatar() {
       },
       onError: (error) => {
         logger.error('[LOGOUT_ERROR]', error);
-        notify.error('Có lỗi xảy ra khi đăng xuất');
+        notify.error('Đăng xuất thất bại');
       }
     });
   };

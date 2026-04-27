@@ -3,9 +3,10 @@ import { decodeJwt } from '@/utils';
 import { useShallow } from 'zustand/react/shallow';
 
 const useAuth = () => {
-  const { accessToken, profile } = useAuthStore(
+  const { accessToken, userKind, profile } = useAuthStore(
     useShallow((s) => ({
       accessToken: s.accessToken,
+      userKind: s.userKind,
       profile: s.profile
     }))
   );
@@ -22,7 +23,7 @@ const useAuth = () => {
   }
 
   return {
-    isAuthenticated: !!profile,
+    isAuthenticated: Boolean(accessToken && userKind && profile),
     profile,
     kind: profile?.kind,
     permissionCode: permissionCode.map((pCode) => pCode)
