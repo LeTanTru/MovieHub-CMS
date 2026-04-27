@@ -14,6 +14,7 @@ import {
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
+import { logger } from '@/logger';
 import { useChangeUserStatusMutation } from '@/queries';
 import { userSearchSchema } from '@/schemaValidations';
 import type {
@@ -46,10 +47,6 @@ export default function UserList() {
           buttonProps?: Record<string, any>
         ) => {
           const handleChangeStatus = async (record: UserResType) => {
-            const message =
-              record.status === STATUS_ACTIVE
-                ? 'Khóa tài khoản thành công'
-                : 'Mở khóa tài khoản thành công';
             await changeStatusMutate(
               {
                 id: record.id,
@@ -60,8 +57,20 @@ export default function UserList() {
                 onSuccess: (res: ApiResponse<any>) => {
                   if (res.result) {
                     handlers.invalidateQueries();
-                    notify.success(message);
+                    notify.success(
+                      `Tài khoản của ${record.fullName} đã được ${record.status === STATUS_ACTIVE ? 'khóa' : 'mở khóa'}`
+                    );
+                  } else {
+                    notify.error(
+                      `Tài khoản của ${record.fullName} đã được ${record.status === STATUS_ACTIVE ? 'khóa' : 'mở khóa'}`
+                    );
                   }
+                },
+                onError: (error) => {
+                  logger.error('[CHANGE_STATUS_ERROR]', error);
+                  notify.error(
+                    `Tài khoản của ${record.fullName} đã được ${record.status === STATUS_ACTIVE ? 'khóa' : 'mở khóa'} thất bại`
+                  );
                 }
               }
             );

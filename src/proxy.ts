@@ -4,11 +4,22 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const authPaths = ['/login'];
 
-// const publicPaths = ['/privacy', '/contact'];
-
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const accessToken = request.cookies.get(storageKeys.ACCESS_TOKEN)?.value;
+  const userKind = request.cookies.get(storageKeys.USER_KIND)?.value;
+
+  // If session is incomplete, clear all auth cookies and redirect to login
+  if ((accessToken && !userKind) || (!accessToken && userKind)) {
+    const response = NextResponse.redirect(
+      new URL(route.login.path, request.nextUrl)
+    );
+    response.cookies.delete(storageKeys.ACCESS_TOKEN);
+    response.cookies.delete(storageKeys.REFRESH_TOKEN);
+    response.cookies.delete(storageKeys.USER_KIND);
+    return response;
+  }
+
   // If logged in
   if (accessToken) {
     // Access public page, redirect to home
@@ -23,6 +34,7 @@ export function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL(route.login.path, request.nextUrl));
     }
   }
+
   return NextResponse.next();
 }
 

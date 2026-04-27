@@ -16,6 +16,11 @@ export type LoginResType = {
   jti: string;
 };
 
+export type SessionResType = {
+  accessToken: string | null;
+  userKind: string | null;
+};
+
 type AuthStoreState = {
   profile: ProfileResType | null;
   isLoggedOut: boolean;

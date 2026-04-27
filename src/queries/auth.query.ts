@@ -1,5 +1,10 @@
 import { apiConfig, queryKeys } from '@/constants';
-import type { ApiResponse, LoginBodyType, LoginResType } from '@/types';
+import type {
+  ApiResponse,
+  LoginBodyType,
+  LoginResType,
+  SessionResType
+} from '@/types';
 import { http } from '@/utils';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -7,9 +12,7 @@ export const useSession = () => {
   return useQuery({
     queryKey: [queryKeys.SESSION],
     queryFn: () =>
-      http.get<ApiResponse<{ accessToken: string; userKind: string }>>(
-        apiConfig.api.auth.session
-      )
+      http.get<ApiResponse<SessionResType | null>>(apiConfig.api.auth.session)
   });
 };
 

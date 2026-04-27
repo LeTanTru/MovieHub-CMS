@@ -174,15 +174,19 @@ export default function MovieItemSeasonList() {
                 onSuccess: (res) => {
                   if (res.result) {
                     notify.success(
-                      `Đánh dấu phần "${record.label}" là phần mới nhất thành công`
+                      `Đánh dấu "${record.label}" là phần mới nhất thành công`
                     );
                     handlers.invalidateQueries();
+                  } else {
+                    notify.error(
+                      `Đánh dấu "${record.label}" là phần mới nhất thất bại`
+                    );
                   }
                 },
                 onError: (error) => {
                   logger.error('[MARK_LATEST_MOVIE_ITEM_ERROR]', error);
                   notify.error(
-                    `Đánh dấu phần "${record.label}" là phần mới nhất thất bại`
+                    `Đánh dấu "${record.label}" là phần mới nhất thất bại`
                   );
                 }
               });
@@ -190,7 +194,7 @@ export default function MovieItemSeasonList() {
 
             return (
               <ToolTip
-                title={`Đánh dấu phần ${record.label} là mới nhất`}
+                title={`Đánh dấu ${record.label} là mới nhất`}
                 sideOffset={0}
               >
                 <span>
