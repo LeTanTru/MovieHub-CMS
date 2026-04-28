@@ -95,8 +95,10 @@ export default function StyleForm() {
   );
 
   const handleCancel = async () => {
-    await imageMobileManager.handleCancel();
-    await imageWebManager.handleCancel();
+    await Promise.all([
+      imageMobileManager.handleCancel(),
+      imageWebManager.handleCancel()
+    ]);
   };
 
   const onSubmit = async (

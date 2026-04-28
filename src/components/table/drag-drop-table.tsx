@@ -169,10 +169,8 @@ export default function DragDropTable<T extends Record<any, any>>({
   );
 
   useEffect(() => {
-    if (JSON.stringify(dataSource) !== JSON.stringify(rows)) {
-      setRows(dataSource || []);
-    }
-  }, [dataSource, rows]);
+    setRows(dataSource || []);
+  }, [dataSource]);
 
   useEffect(() => {
     const el = scrollRef.current;
