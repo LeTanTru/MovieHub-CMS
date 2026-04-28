@@ -162,7 +162,7 @@ export default function Modal({
             >
               <m.div
                 className={cn(
-                  'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40',
+                  'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white shadow-black/40',
                   className
                 )}
                 initial={variants.initial}
@@ -190,14 +190,14 @@ function Header({ children, className }: HeaderProps) {
   return (
     <div
       className={cn(
-        'header-title flex h-10 items-center justify-between border-b border-none border-solid border-gray-200 py-2 pr-2 pl-4',
+        'header-title flex items-center justify-between border-b border-solid border-gray-200 py-2 pr-2 pl-4',
         className
       )}
     >
       {children}
 
       <Button
-        className='h-fit! p-0! text-gray-500 transition hover:bg-transparent hover:text-black'
+        className='h-fit! p-0! text-gray-500 transition hover:bg-transparent hover:text-rose-500'
         onClick={onClose}
         variant='ghost'
       >

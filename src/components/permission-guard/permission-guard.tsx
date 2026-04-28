@@ -40,22 +40,30 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
     // Not authenticated -> redirect to login with entered path
     if (!isAuthenticated) {
       if (pathname !== route.login.path) {
-        setData(
-          storageKeys.PATH_NO_LOGIN,
-          queryString ? `${pathname}?${queryString}` : pathname
-        );
+        if (pathname !== route.home.path) {
+          setData(
+            storageKeys.PATH_NO_LOGIN,
+            queryString ? `${pathname}?${queryString}` : pathname
+          );
+        }
         navigate.replace(route.login.path);
       }
     } else {
       // Login & go to home or login
       // -> redirect to first active route (or entered path)
       if (pathname === route.home.path || pathname === route.login.path) {
-        if (pathname !== firstActiveRoute) {
-          navigate.replace(
-            getData(storageKeys.PATH_NO_LOGIN) ||
-              firstActiveRoute ||
-              route.profile.savePage.path
-          );
+        const pathNoLogin = getData(storageKeys.PATH_NO_LOGIN);
+        let targetPath =
+          (pathNoLogin && pathNoLogin !== route.home.path
+            ? pathNoLogin
+            : firstActiveRoute) || route.profile.savePage.path;
+
+        if (targetPath === route.home.path) {
+          targetPath = route.profile.savePage.path;
+        }
+
+        if (pathname !== targetPath) {
+          navigate.replace(targetPath);
           removeData(storageKeys.PATH_NO_LOGIN);
         }
       }
