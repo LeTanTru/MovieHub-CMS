@@ -2,7 +2,12 @@
 
 import './video-play-modal.css';
 import { Modal } from '@/components/modal';
-import { VideoPlayer } from '@/components/video-player';
+import dynamic from 'next/dynamic';
+
+const VideoPlayer = dynamic(
+  () => import('@/components/video-player').then((mod) => mod.VideoPlayer),
+  { ssr: false }
+);
 import type { VideoLibraryResType } from '@/types';
 import { useAuthStore } from '@/store';
 import {

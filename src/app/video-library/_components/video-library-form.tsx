@@ -41,7 +41,12 @@ import {
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
-import { VideoPlayer } from '@/components/video-player';
+import dynamic from 'next/dynamic';
+
+const VideoPlayer = dynamic(
+  () => import('@/components/video-player').then((mod) => mod.VideoPlayer),
+  { ssr: false }
+);
 import envConfig from '@/config';
 
 export default function VideoLibraryForm() {
