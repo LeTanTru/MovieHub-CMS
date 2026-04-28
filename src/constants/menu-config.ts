@@ -109,7 +109,8 @@ const menuConfig: MenuItem[] = [
     icon: Settings,
     permissionCode: [
       apiConfig.group.getList.permissionCode,
-      apiConfig.appVersion.getList.permissionCode
+      apiConfig.appVersion.getList.permissionCode,
+      apiConfig.setting.getList.permissionCode
     ],
     children: [
       {
@@ -123,6 +124,12 @@ const menuConfig: MenuItem[] = [
         label: 'Cấu hình máy chủ',
         path: route.serverConfig.getList.path,
         permissionCode: [apiConfig.serverConfig.getList.permissionCode]
+      },
+      {
+        key: 'setting',
+        label: 'Cài đặt',
+        path: route.setting.getList.path,
+        permissionCode: [apiConfig.setting.getList.permissionCode]
       },
       {
         key: 'role',

@@ -286,6 +286,22 @@ const route = defineRoute({
       ],
       separate: true
     }
+  },
+  setting: {
+    getList: {
+      path: '/setting',
+      auth: true,
+      permissionCode: [apiConfig.setting.getList.permissionCode]
+    },
+    savePage: {
+      path: '/setting/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.setting.create.permissionCode,
+        apiConfig.setting.update.permissionCode
+      ],
+      separate: true
+    }
   }
 });
 

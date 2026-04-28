@@ -32,12 +32,19 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
   const isPublicRoute = matchedRoute?.auth === false;
 
   useEffect(() => {
+    // Non-existent route + done loading → show 404, no redirect
+    if (matchedRoute === null && !loading) {
+      setLoading(false);
+      return;
+    }
+
+    // loading or public route + not authenticated → show loading or login
     if (loading || (isPublicRoute && !isAuthenticated)) {
       setLoading(false);
       return;
     }
 
-    // Not authenticated -> redirect to login with entered path
+    // Not authenticated → redirect to login with entered path
     if (!isAuthenticated) {
       if (pathname !== route.login.path) {
         if (pathname !== route.home.path) {
@@ -49,8 +56,7 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
         navigate.replace(route.login.path);
       }
     } else {
-      // Login & go to home or login
-      // -> redirect to first active route (or entered path)
+      // Authenticated + on home/login → redirect to first active route
       if (pathname === route.home.path || pathname === route.login.path) {
         const pathNoLogin = getData(storageKeys.PATH_NO_LOGIN);
         let targetPath =
@@ -73,6 +79,7 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
     isAuthenticated,
     isPublicRoute,
     loading,
+    matchedRoute,
     navigate,
     pathname,
     queryString,

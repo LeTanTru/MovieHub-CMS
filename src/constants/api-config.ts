@@ -1000,6 +1000,67 @@ const apiConfig = defineApiConfig({
       permissionCode: 'NOTI_U',
       isRequiredXClientType: true
     }
+  },
+  setting: {
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/setting/auto-complete`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}/v1/setting/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'SET_V',
+      isRequiredXClientType: true
+    },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}/v1/setting/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'SET_L',
+      isRequiredXClientType: true
+    },
+    create: {
+      baseUrl: `${AppConstants.apiUrl}/v1/setting/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'SET_C',
+      isRequiredXClientType: true
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/setting/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'SET_D',
+      isRequiredXClientType: true
+    },
+    update: {
+      baseUrl: `${AppConstants.apiUrl}/v1/setting/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'SET_U',
+      isRequiredXClientType: true
+    },
+    findByGroup: {
+      baseUrl: `${AppConstants.apiUrl}/v1/setting/find-by-group`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    },
+    findByKey: {
+      baseUrl: `${AppConstants.apiUrl}/v1/setting/find-by-key`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    },
+    public: {
+      baseUrl: `${AppConstants.apiUrl}/v1/setting/public`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    }
   }
 });
 

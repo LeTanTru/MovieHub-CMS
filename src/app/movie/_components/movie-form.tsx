@@ -25,7 +25,7 @@ import {
   movieTypeOptions,
   queryKeys,
   SEND_NOTIFICATION_FOR_ALL_USERS,
-  SEND_NOTIFICATION_FOR_INTERESTED_USERS,
+  sendForOptions,
   STATUS_ACTIVE
 } from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
@@ -241,14 +241,6 @@ export default function MovieForm() {
       })
     ]);
   };
-
-  const sendForOptions = [
-    { value: SEND_NOTIFICATION_FOR_ALL_USERS, label: 'Tất cả người dùng' },
-    {
-      value: SEND_NOTIFICATION_FOR_INTERESTED_USERS,
-      label: 'Người dùng quan tâm'
-    }
-  ];
 
   const years = useMemo(() => {
     const currentYear = new Date().getFullYear();
