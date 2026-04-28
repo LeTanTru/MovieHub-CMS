@@ -312,7 +312,6 @@ export default function GroupForm() {
                                       title={`${permission.name} (${permission.permissionCode})`}
                                     >
                                       {permission.name}
-                                      gdfsg
                                     </label>
                                   </div>
                                   <span className='ml-6 inline-block text-xs'>

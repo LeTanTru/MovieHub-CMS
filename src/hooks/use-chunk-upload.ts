@@ -11,10 +11,10 @@ function getChunkConfig(fileSize: number) {
   return { chunkSize: 32 * MB, concurrency: 6 };
 }
 
-interface Part {
+type Part = {
   partNumber: number;
   etag: string;
-}
+};
 
 const useChunkUpload = () => {
   const [progress, setProgress] = useState(0);

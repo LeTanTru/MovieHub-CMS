@@ -23,6 +23,8 @@ import {
   MOVIE_TYPE_TRAILER,
   PERSON_KIND_ACTOR,
   PERSON_KIND_DIRECTOR,
+  SEND_NOTIFICATION_FOR_ALL_USERS,
+  SEND_NOTIFICATION_FOR_INTERESTED_USERS,
   STATUS_ACTIVE,
   STATUS_DELETED,
   STATUS_LOCK,
@@ -145,12 +147,13 @@ export const queryKeys = {
   REFRESH_TOKEN: 'refresh-token',
   REVIEW: 'review',
   SERVER_CONFIG: 'server-config',
+  SESSION: 'session',
+  SETTING: 'setting',
   SIDEBAR: 'sidebar',
   SNS_CONFIG: 'sns-config',
   STYLE: 'style',
   USER: 'user',
-  VIDEO_LIBRARY: 'video-library',
-  SESSION: 'session'
+  VIDEO_LIBRARY: 'video-library'
 };
 
 export const userKindOptions = [
@@ -1623,3 +1626,42 @@ export const mqttTopics = {
 export const mqttCMDs = {
   DONE_CONVERT_VIDEO: 'CMD_DONE_CONVERT_VIDEO'
 };
+
+export const settingDataTypes = [
+  {
+    label: 'Integer',
+    value: 'Integer'
+  },
+  {
+    label: 'String',
+    value: 'String'
+  },
+  {
+    label: 'Boolean',
+    value: 'Boolean'
+  },
+  {
+    label: 'Double',
+    value: 'Double'
+  },
+  {
+    label: 'RichText',
+    value: 'RichText'
+  },
+  {
+    label: 'Select',
+    value: 'Select'
+  },
+  {
+    label: 'Upload',
+    value: 'Upload'
+  }
+];
+
+export const sendForOptions = [
+  { value: SEND_NOTIFICATION_FOR_ALL_USERS, label: 'Tất cả người dùng' },
+  {
+    value: SEND_NOTIFICATION_FOR_INTERESTED_USERS,
+    label: 'Người dùng quan tâm'
+  }
+];
