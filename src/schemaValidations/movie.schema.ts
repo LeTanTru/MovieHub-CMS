@@ -1,6 +1,16 @@
 import { MOVIE_TYPE_SERIES } from '@/constants';
 import { z } from 'zod';
 
+const sendNotificationConfigSchema = z
+  .object({
+    isSendNotification: z.boolean(),
+    scheduleAt: z.string().optional().nullable(),
+    sendFor: z.number().optional().nullable(),
+    title: z.string().optional().nullable()
+  })
+  .optional()
+  .nullable();
+
 export const movieSchema = z
   .object({
     ageRating: z.number({ error: 'Bắt buộc' }).min(1, 'Bắt buộc'),
@@ -16,6 +26,7 @@ export const movieSchema = z
     originalTitle: z.string().nonempty('Bắt buộc'),
     posterUrl: z.string().nonempty('Bắt buộc'),
     releaseDate: z.string().nonempty('Bắt buộc'),
+    sendNotificationConfig: sendNotificationConfigSchema,
     status: z.number({ error: 'Bắt buộc' }),
     thumbnailUrl: z.string().nonempty('Bắt buộc'),
     title: z.string().nonempty('Bắt buộc'),

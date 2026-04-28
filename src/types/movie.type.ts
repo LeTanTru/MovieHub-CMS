@@ -3,6 +3,13 @@ import type { CategoryResType } from '@/types/category.type';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 
+export type SendNotificationConfigType = {
+  isSendNotification: boolean;
+  scheduleAt: string;
+  sendFor: number;
+  title: string;
+};
+
 export type MetadataType = {
   latestSeason: {
     id: string;
@@ -75,6 +82,7 @@ export type MovieResType = {
   type: number;
   viewCount: number;
   year: number;
+  sendNotificationConfig: SendNotificationConfigType | null;
 };
 
 export type MovieBodyType = z.infer<typeof movieSchema>;

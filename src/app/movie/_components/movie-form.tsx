@@ -24,6 +24,8 @@ import {
   MOVIE_TYPE_SERIES,
   movieTypeOptions,
   queryKeys,
+  SEND_NOTIFICATION_FOR_ALL_USERS,
+  SEND_NOTIFICATION_FOR_INTERESTED_USERS,
   STATUS_ACTIVE
 } from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
@@ -120,6 +122,12 @@ export default function MovieForm() {
     originalTitle: '',
     posterUrl: '',
     releaseDate: '',
+    sendNotificationConfig: {
+      isSendNotification: false,
+      scheduleAt: '',
+      sendFor: SEND_NOTIFICATION_FOR_ALL_USERS,
+      title: ''
+    },
     status: STATUS_ACTIVE,
     thumbnailUrl: '',
     title: '',
@@ -154,6 +162,24 @@ export default function MovieForm() {
       originalTitle: data?.originalTitle ?? '',
       posterUrl: data?.posterUrl ?? '',
       releaseDate: convertUTCToLocal(data?.releaseDate) ?? '',
+      sendNotificationConfig: data?.sendNotificationConfig
+        ? {
+            isSendNotification:
+              data.sendNotificationConfig.isSendNotification ?? false,
+            scheduleAt: data.sendNotificationConfig.scheduleAt
+              ? convertUTCToLocal(data.sendNotificationConfig.scheduleAt)
+              : '',
+            sendFor:
+              data.sendNotificationConfig.sendFor ??
+              SEND_NOTIFICATION_FOR_ALL_USERS,
+            title: data.sendNotificationConfig.title ?? ''
+          }
+        : {
+            isSendNotification: false,
+            scheduleAt: '',
+            sendFor: SEND_NOTIFICATION_FOR_ALL_USERS,
+            title: ''
+          },
       status: STATUS_ACTIVE,
       thumbnailUrl: data?.thumbnailUrl ?? '',
       title: data?.title ?? '',
@@ -172,6 +198,7 @@ export default function MovieForm() {
       data?.originalTitle,
       data?.posterUrl,
       data?.releaseDate,
+      data?.sendNotificationConfig,
       data?.thumbnailUrl,
       data?.title,
       data?.type,
@@ -188,6 +215,18 @@ export default function MovieForm() {
   };
 
   const onSubmit = async (values: MovieBodyType) => {
+    const sendNotificationConfig = values.sendNotificationConfig
+      ?.isSendNotification
+      ? {
+          isSendNotification: values.sendNotificationConfig.isSendNotification,
+          scheduleAt: convertLocalToUTC(
+            values.sendNotificationConfig.scheduleAt || ''
+          ),
+          sendFor: values.sendNotificationConfig.sendFor,
+          title: values.sendNotificationConfig.title
+        }
+      : null;
+
     await Promise.all([
       posterImageManager.handleSubmit(),
       thumbnailImageManager.handleSubmit(),
@@ -195,12 +234,21 @@ export default function MovieForm() {
       handleSubmit({
         ...values,
         releaseDate: convertLocalToUTC(values.releaseDate),
+        sendNotificationConfig,
         thumbnailUrl: thumbnailImageManager.currentUrl,
         posterUrl: posterImageManager.currentUrl,
         imageTitleUrl: imageTitleManager.currentUrl
       })
     ]);
   };
+
+  const sendForOptions = [
+    { value: SEND_NOTIFICATION_FOR_ALL_USERS, label: 'Tất cả người dùng' },
+    {
+      value: SEND_NOTIFICATION_FOR_INTERESTED_USERS,
+      label: 'Người dùng quan tâm'
+    }
+  ];
 
   const years = useMemo(() => {
     const currentYear = new Date().getFullYear();
@@ -430,7 +478,47 @@ export default function MovieForm() {
                   required
                 />
               </Col>
+              <Col className='grid-c-3'>
+                <BooleanField
+                  control={form.control}
+                  name='sendNotificationConfig.isSendNotification'
+                  label='Gửi thông báo'
+                />
+              </Col>
             </Row>
+            {form.watch('sendNotificationConfig.isSendNotification') && (
+              <>
+                <Row>
+                  <Col className='grid-c-6'>
+                    <DateTimePickerField
+                      control={form.control}
+                      name='sendNotificationConfig.scheduleAt'
+                      label='Thời gian gửi'
+                      placeholder='Thời gian gửi'
+                    />
+                  </Col>
+                  <Col className='grid-c-6'>
+                    <SelectField
+                      options={sendForOptions}
+                      control={form.control}
+                      name='sendNotificationConfig.sendFor'
+                      label='Gửi cho'
+                      placeholder='Gửi cho'
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className='grid-c-6'>
+                    <InputField
+                      control={form.control}
+                      name='sendNotificationConfig.title'
+                      label='Tiêu đề thông báo'
+                      placeholder='Tiêu đề thông báo'
+                    />
+                  </Col>
+                </Row>
+              </>
+            )}
             <Row>
               <Col className='grid-c-12'>
                 <RichTextField
