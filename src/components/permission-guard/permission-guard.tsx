@@ -14,8 +14,8 @@ import { AnimatePresence, m } from 'framer-motion';
 import { Loader } from 'lucide-react';
 import { route } from '@/routes';
 import { storageKeys } from '@/constants';
-import type { RouteItem } from '@/routes/route';
 import { useAppContext } from '@/components/providers/app-provider';
+import { RouteItem } from '@/types';
 
 type PermissionGuardProps = { children: ReactNode };
 
@@ -32,11 +32,8 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
   const isPublicRoute = matchedRoute?.auth === false;
 
   useEffect(() => {
-    // Non-existent route + done loading → show 404, no redirect
-    if (matchedRoute === null && !loading) {
-      setLoading(false);
-      return;
-    }
+    // non-existent route → show 404
+    if (matchedRoute === null) return;
 
     // loading or public route + not authenticated → show loading or login
     if (loading || (isPublicRoute && !isAuthenticated)) {

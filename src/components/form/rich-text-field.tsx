@@ -11,18 +11,6 @@ import {
   FormMessage
 } from '@/components/ui/form';
 
-type RichTextFieldProps<T extends FieldValues> = {
-  control: Control<T>;
-  name: FieldPath<T>;
-  label?: string;
-  placeholder?: string;
-  className?: string;
-  required?: boolean;
-  disabled?: boolean;
-  readOnly?: boolean;
-  height?: number;
-};
-
 import type { Editor as TinyMCEEditor } from 'tinymce';
 import envConfig from '@/config';
 import dynamic from 'next/dynamic';
@@ -39,6 +27,20 @@ const TinyEditor = dynamic(
   }
 );
 
+type RichTextFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: FieldPath<T>;
+  label?: string;
+  placeholder?: string;
+  className?: string;
+  required?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  height?: number;
+  labelClassName?: string;
+  formItemClassName?: string;
+};
+
 export default function RichTextField<T extends FieldValues>({
   control,
   name,
@@ -48,7 +50,9 @@ export default function RichTextField<T extends FieldValues>({
   required = false,
   disabled = false,
   readOnly = false,
-  height
+  height,
+  labelClassName,
+  formItemClassName
 }: RichTextFieldProps<T>) {
   return (
     <FormField
@@ -56,15 +60,32 @@ export default function RichTextField<T extends FieldValues>({
       name={name}
       rules={{ required }}
       render={({ field, fieldState }) => (
-        <FormItem className={cn('relative flex flex-col', className)}>
+        <FormItem className={cn('relative flex flex-col', formItemClassName)}>
           {label && (
-            <FormLabel className='ml-2'>
+            <FormLabel
+              className={cn(
+                'ml-2',
+                {
+                  'pointer-events-none opacity-50 select-none':
+                    disabled || readOnly
+                },
+                labelClassName
+              )}
+            >
               {label} {required && <span className='text-destructive'>*</span>}
             </FormLabel>
           )}
 
           <FormControl>
-            <div>
+            <div
+              className={cn(
+                {
+                  'pointer-events-none cursor-not-allowed opacity-50 select-none':
+                    disabled || readOnly
+                },
+                className
+              )}
+            >
               <TinyEditor
                 tinymceScriptSrc={envConfig.NEXT_PUBLIC_TINYMCE_URL}
                 licenseKey='gpl'

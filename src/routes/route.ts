@@ -1,13 +1,5 @@
 import apiConfig from '@/constants/api-config';
-
-export type RouteItem = {
-  path?: string;
-  auth?: boolean;
-  permissionCode?: string[];
-  [key: string]: RouteItem | string[] | boolean | string | number | undefined;
-};
-
-export type RouteConfig = Record<string, RouteItem>;
+import { RouteConfig } from '@/types';
 
 const defineRoute = <T extends RouteConfig>(routes: T): T => routes;
 

@@ -38,6 +38,7 @@ import {
   VIDEO_LIBRARY_STATE_COMPLETE,
   VIDEO_LIBRARY_STATE_PROCESSING
 } from '@/constants/constant';
+import { OptionType } from '@/types';
 
 export const uploadOptions = {
   LOGO: UPLOAD_LOGO,
@@ -110,14 +111,6 @@ export const FieldTypes = {
   BOOLEAN: 'BOOLEAN',
   MULTI_SELECT: 'MULTI_SELECT'
 } as const;
-
-export type FieldType = keyof typeof FieldTypes;
-
-export type OptionType = {
-  value: string | number;
-  label: string;
-  [key: string]: string | number;
-};
 
 export const genderOptions: OptionType[] = [
   { value: GENDER_MALE, label: 'Nam' },

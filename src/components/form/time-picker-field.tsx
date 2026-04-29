@@ -28,6 +28,7 @@ type TimePickerFieldProps<T extends FieldValues> = {
   format?: 'HH:mm:ss' | 'HH:mm' | 'mm:ss';
   placeholder?: string;
   className?: string;
+  formItemClassName?: string;
   labelClassName?: string;
   disabled?: boolean;
   clearable?: boolean;
@@ -43,6 +44,7 @@ export default function TimePickerField<T extends FieldValues>({
   format: timeFormat = 'HH:mm:ss',
   placeholder,
   className,
+  formItemClassName,
   labelClassName,
   disabled = false,
   clearable = true,
@@ -122,11 +124,7 @@ export default function TimePickerField<T extends FieldValues>({
         };
 
         return (
-          <FormItem
-            className={cn('relative', className, {
-              'cursor-not-allowed': disabled
-            })}
-          >
+          <FormItem className={cn('relative', formItemClassName)}>
             {label && (
               <FormLabel
                 className={cn('ml-2', labelClassName, {
@@ -161,13 +159,15 @@ export default function TimePickerField<T extends FieldValues>({
                           'text-gray-300 hover:text-gray-300': !field.value,
                           'border-red-500 hover:border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
                             fieldState.error
-                        }
+                        },
+                        className
                       )}
                     >
                       <span
                         suppressHydrationWarning
                         className={cn({
-                          'text-gray-300': !hasValue
+                          'text-gray-300': !hasValue,
+                          'opacity-50': disabled
                         })}
                       >
                         {field.value

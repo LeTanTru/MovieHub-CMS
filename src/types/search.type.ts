@@ -15,7 +15,7 @@ export type AutoCompleteOption = {
   prefix?: ReactNode;
 };
 
-export type OptionType<V = string | number> = {
+type OptionType<V = string | number> = {
   label: string;
   value: V;
   color?: string;

@@ -50,9 +50,13 @@ export default function BooleanField<T extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <FormItem className={cn(formItemClassName)}>
+        <FormItem className={cn('relative', formItemClassName)}>
           <FormControl>
-            <div className='flex gap-2'>
+            <div
+              className={cn('flex gap-2', {
+                'cursor-not-allowed opacity-50 select-none': disabled
+              })}
+            >
               <div className='relative inline-grid h-6 w-12.5 grid-cols-[1fr_1fr] items-center text-sm font-medium'>
                 <Switch
                   id={id}
@@ -85,9 +89,13 @@ export default function BooleanField<T extends FieldValues>({
               {label && (
                 <FormLabel
                   htmlFor={id}
-                  className={cn('cursor-pointer', labelClassName, {
-                    'opacity-50 select-none': disabled
-                  })}
+                  className={cn(
+                    'cursor-pointer',
+                    {
+                      'cursor-not-allowed': disabled
+                    },
+                    labelClassName
+                  )}
                 >
                   {label}
                   {required && <span className='text-destructive'>*</span>}

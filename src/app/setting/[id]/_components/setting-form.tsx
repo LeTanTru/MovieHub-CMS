@@ -14,15 +14,22 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { apiConfig, ErrorCode, queryKeys, settingDataTypes } from '@/constants';
+import {
+  apiConfig,
+  ErrorCode,
+  queryKeys,
+  settingDataTypes,
+  settingErrorMaps
+} from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadFileMutation } from '@/queries';
 import { route } from '@/routes';
 import { settingSchema } from '@/schemaValidations';
 import type { SettingBodyType, SettingResType } from '@/types';
-import { renderListPageUrl } from '@/utils';
+import { parseSelectOptions, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 
 export default function SettingForm() {
   const { id } = useParams<{ id: string }>();
@@ -75,7 +82,12 @@ export default function SettingForm() {
       groupName: data?.groupName ?? '',
       isSystem: data?.isSystem ?? false,
       keyName: data?.keyName ?? '',
-      options: data?.options ?? ''
+      options:
+        data?.dataType === 'Select'
+          ? parseSelectOptions(data?.options)
+              .map((option) => option.value)
+              .join(',')
+          : (data?.options ?? '')
     }),
     [
       data?.dataType,
@@ -92,15 +104,26 @@ export default function SettingForm() {
     await imageManager.handleCancel();
   };
 
-  const onSubmit = async (values: SettingBodyType) => {
+  const onSubmit = async (
+    values: SettingBodyType,
+    form: UseFormReturn<SettingBodyType>
+  ) => {
     await imageManager.handleSubmit();
-    await handleSubmit({
-      ...values,
-      valueData:
-        values.dataType === 'Upload'
-          ? imageManager.currentUrl
-          : values.valueData
-    });
+    await handleSubmit(
+      {
+        ...values,
+        options:
+          values.dataType === 'Select'
+            ? JSON.stringify(parseSelectOptions(values.options))
+            : values.options,
+        valueData:
+          values.dataType === 'Upload'
+            ? imageManager.currentUrl
+            : values.valueData
+      },
+      form,
+      settingErrorMaps
+    );
   };
 
   return (
@@ -128,12 +151,7 @@ export default function SettingForm() {
           const dataType = form.watch('dataType');
           const rawOptions = form.watch('options') ?? '';
 
-          // Parse comma-separated options string → [{label, value}]
-          const parsedSelectOptions = rawOptions
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean)
-            .map((s) => ({ label: s, value: s }));
+          const parsedSelectOptions = parseSelectOptions(rawOptions);
 
           const renderValueField = () => {
             switch (dataType) {
@@ -281,7 +299,8 @@ export default function SettingForm() {
                       control={form.control}
                       name='options'
                       label='Các tùy chọn (phân cách bằng dấu phẩy)'
-                      placeholder='vd: Tùy chọn 1, Tùy chọn 2, Tùy chọn 3'
+                      placeholder='1,2,3'
+                      required
                     />
                   </Col>
                 </Row>
