@@ -20,6 +20,7 @@ type ColorPickerFieldProps<T extends FieldValues> = {
   disabled?: boolean;
   required?: boolean;
   labelClassName?: string;
+  formItemClassName?: string;
 };
 
 export default function ColorPickerField<T extends FieldValues>({
@@ -30,7 +31,8 @@ export default function ColorPickerField<T extends FieldValues>({
   className,
   disabled,
   required,
-  labelClassName
+  labelClassName,
+  formItemClassName
 }: ColorPickerFieldProps<T>) {
   return (
     <FormField
@@ -38,9 +40,17 @@ export default function ColorPickerField<T extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => {
         return (
-          <FormItem className={className}>
+          <FormItem className={cn('relative', formItemClassName)}>
             {label && (
-              <FormLabel className={cn('ml-2', labelClassName)}>
+              <FormLabel
+                className={cn(
+                  'ml-2',
+                  {
+                    'cursor-not-allowed opacity-50 select-none': disabled
+                  },
+                  labelClassName
+                )}
+              >
                 {label}
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
@@ -52,7 +62,10 @@ export default function ColorPickerField<T extends FieldValues>({
                   value={field.value || '#000000'}
                   onChange={field.onChange}
                   disabled={disabled}
-                  className='border-input bg-background focus-visible:ring-main-color h-10 w-10 cursor-pointer rounded border p-0 transition-all duration-200 ease-linear focus-visible:ring-2'
+                  className={cn(
+                    'border-input bg-background focus-visible:ring-main-color h-10 w-10 cursor-pointer rounded border p-0 transition-all duration-200 ease-linear focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
+                    className
+                  )}
                 />
               </FormControl>
               <span className='bg-muted rounded border px-2 py-1 text-sm'>

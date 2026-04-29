@@ -10,23 +10,21 @@ import {
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib';
-
-export type Option = {
-  value: string;
-  label: string;
-};
+import { OptionType } from '@/types';
 
 type RadioGroupFieldProps<T extends FieldValues> = {
   name: FieldPath<T>;
   control: Control<T>;
   label?: string;
-  options: Option[];
+  options: OptionType[];
   direction?: 'row' | 'col';
   required?: boolean;
   className?: string;
   radioGroupClassName?: string;
   itemClassName?: string;
   labelClassName?: string;
+  formItemClassName?: string;
+  disabled?: boolean;
 };
 
 export default function RadioGroupField<T extends FieldValues>({
@@ -39,16 +37,22 @@ export default function RadioGroupField<T extends FieldValues>({
   className,
   radioGroupClassName,
   itemClassName,
-  labelClassName
+  labelClassName,
+  formItemClassName,
+  disabled
 }: RadioGroupFieldProps<T>) {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <FormItem className='relative space-y-3'>
+        <FormItem className={cn('relative space-y-3', formItemClassName)}>
           {label && (
-            <FormLabel className={cn('ml-2', labelClassName)}>
+            <FormLabel
+              className={cn('ml-2', labelClassName, {
+                'pointer-events-none opacity-50 select-none': disabled
+              })}
+            >
               {label}
               {required && <span className='text-destructive'>*</span>}
             </FormLabel>
@@ -71,9 +75,13 @@ export default function RadioGroupField<T extends FieldValues>({
                     <RadioGroupItem
                       className={cn(
                         'linear transition-all duration-200 data-[state=checked]:bg-blue-600!',
+                        {
+                          'pointer-events-none cursor-not-allowed opacity-50 select-none':
+                            disabled
+                        },
                         itemClassName
                       )}
-                      value={option.value}
+                      value={String(option.value)}
                     />
                   </FormControl>
                   <FormLabel className='cursor-pointer font-normal'>

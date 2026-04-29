@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  useState,
-  useEffect,
-  useRef,
-  type ReactNode,
-  type MouseEvent
-} from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { FileIcon, XIcon } from 'lucide-react';
 import {
   type Control,
@@ -23,6 +17,7 @@ import { CircleLoading } from '@/components/loading';
 import { logger } from '@/logger';
 import type { ApiResponse } from '@/types';
 import { formatBytes } from '@/hooks/use-file-upload';
+import { ConfirmModal } from '@/components/modal';
 
 type UploadFileFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -81,6 +76,7 @@ export default function UploadFileField<T extends FieldValues>({
   const [uploading, setUploading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [sizeError, setSizeError] = useState<string>('');
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
 
   const prevFileId = useRef<string | null>(null);
 
@@ -121,8 +117,7 @@ export default function UploadFileField<T extends FieldValues>({
     }
   };
 
-  const handleRemove = async (e: MouseEvent) => {
-    e.stopPropagation();
+  const handleRemove = async () => {
     try {
       if (deleteImageFn && value) {
         await deleteImageFn(value);
@@ -136,6 +131,7 @@ export default function UploadFileField<T extends FieldValues>({
     clearFiles();
     setProgress(0);
     setSizeError('');
+    setConfirmRemoveOpen(false);
   };
 
   return (
@@ -214,15 +210,22 @@ export default function UploadFileField<T extends FieldValues>({
         </div>
 
         {value && !uploading && (
-          <Button
-            onClick={handleRemove}
-            size='icon'
-            type='button'
-            className='border-background absolute -top-2 -right-2 size-5 rounded-full border'
-            aria-label='Remove image'
-          >
-            <XIcon className='size-3.5' />
-          </Button>
+          <ConfirmModal
+            message='Bạn có chắc chắn muốn xóa tệp này không?'
+            onConfirm={handleRemove}
+            open={confirmRemoveOpen}
+            onOpenChange={setConfirmRemoveOpen}
+            trigger={
+              <Button
+                size='icon'
+                type='button'
+                className='border-background absolute -top-2 -right-2 size-5 rounded-full border'
+                aria-label='Remove file'
+              >
+                <XIcon className='size-3.5' />
+              </Button>
+            }
+          />
         )}
       </div>
 

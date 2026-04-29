@@ -85,17 +85,14 @@ function NumberField<T extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <FormItem
-          className={cn(
-            { 'cursor-not-allowed select-none': disabled },
-            formItemClassName
-          )}
-        >
+        <FormItem className={cn('relative', formItemClassName)}>
           {label && (
             <FormLabel
-              className={cn('ml-2', labelClassName, {
-                'opacity-50 select-none': disabled
-              })}
+              className={cn(
+                'ml-2',
+                { 'cursor-not-allowed opacity-50': disabled },
+                labelClassName
+              )}
             >
               {label}
               {required && <span className='text-destructive'>*</span>}
@@ -119,12 +116,10 @@ function NumberField<T extends FieldValues>({
                 ref={ref}
                 className={cn(
                   className,
-                  'text-sm font-normal shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2',
+                  'text-sm font-normal shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
                   {
                     'pl-10': prefixIcon,
                     'pr-10': suffixIcon,
-                    'cursor-not-allowed border border-solid bg-gray-200/50 text-gray-500':
-                      disabled,
                     'border-red-500 focus-visible:ring-red-500':
                       !!fieldState.error,
                     'focus-visible:ring-main-color': !fieldState.error

@@ -13,6 +13,7 @@ import type {
   PersonBodyType,
   ProfileBodyType,
   ServerConfigBodyType,
+  SettingBodyType,
   StyleBodyType,
   VideoLibraryBodyType
 } from '@/types';
@@ -120,7 +121,8 @@ export const ErrorCode = {
   SERVER_CONFIG_ERROR_IP_PORT_EXISTED: 'ERROR-SERVER-CONFIG-0003',
 
   // === Setting error code ===
-  SETTING_ERROR_NOT_FOUND: 'ERROR-SETTING-0000'
+  SETTING_ERROR_NOT_FOUND: 'ERROR-SETTING-0000',
+  SETTING_ERROR_EXISTED_GROUP_NAME_AND_KEY_NAME: 'ERROR-SETTING-0001'
 };
 
 export const groupErrorMaps: ErrorMaps<GroupBodyType> = {
@@ -294,6 +296,25 @@ export const serverConfigErrorMaps: ErrorMaps<ServerConfigBodyType> = {
       {
         type: 'manual',
         message: 'Cổng đã tồn tại với IP này'
+      }
+    ]
+  ]
+};
+
+export const settingErrorMaps: ErrorMaps<SettingBodyType> = {
+  [ErrorCode.SETTING_ERROR_EXISTED_GROUP_NAME_AND_KEY_NAME]: [
+    [
+      'keyName',
+      {
+        type: 'manual',
+        message: 'Tên đã tồn tại'
+      }
+    ],
+    [
+      'groupName',
+      {
+        type: 'manual',
+        message: 'Nhóm đã tồn tại'
       }
     ]
   ]

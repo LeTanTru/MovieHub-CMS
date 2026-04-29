@@ -46,6 +46,7 @@ type SelectFieldProps<
   options: TOption[];
   description?: string;
   className?: string;
+  formItemClassName?: string;
   required?: boolean;
   getLabel?: (option: TOption) => string | number;
   getValue?: (option: TOption) => string | number;
@@ -87,6 +88,7 @@ export default function SelectField<
   options,
   description,
   className,
+  formItemClassName,
   required,
   allowClear,
   searchText,
@@ -136,15 +138,11 @@ export default function SelectField<
         };
 
         return (
-          <FormItem
-            className={cn('relative', className, {
-              'cursor-not-allowed select-none': disabled
-            })}
-          >
+          <FormItem className={cn('relative', formItemClassName)}>
             {label && (
               <FormLabel
                 className={cn('ml-2', labelClassName, {
-                  'opacity-50 select-none': disabled
+                  'cursor-not-allowed opacity-50 select-none': disabled
                 })}
               >
                 {label}
@@ -165,12 +163,13 @@ export default function SelectField<
                       aria-label='Select'
                       disabled={disabled}
                       className={cn(
-                        'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 disabled:opacity-50',
+                        'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
                         {
                           'ring-main-color border-transparent! ring-2': open,
                           '[&>div>span]:text-gray-300': fieldState.invalid,
                           'border-red-500 ring-red-500': !!fieldState.error
-                        }
+                        },
+                        className
                       )}
                     >
                       {selectedOption ? (

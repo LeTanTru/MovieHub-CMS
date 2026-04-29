@@ -11,23 +11,19 @@ import {
 } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
-
-export type Option = {
-  label: string;
-  value: string;
-};
+import { OptionType } from '@/types';
 
 type CheckboxGroupFieldProps<T extends FieldValues> = {
   control: Control<T>;
   name: FieldPath<T>;
   label?: string;
   description?: string;
-  options?: Option[];
+  options?: OptionType[];
   className?: string;
   disabled?: boolean;
   required?: boolean;
   labelClassName?: string;
-  itemClassName?: string;
+  formItemClassName?: string;
 };
 
 export default function CheckboxGroupField<T extends FieldValues>({
@@ -40,7 +36,7 @@ export default function CheckboxGroupField<T extends FieldValues>({
   disabled,
   required,
   labelClassName,
-  itemClassName
+  formItemClassName
 }: CheckboxGroupFieldProps<T>) {
   return (
     <FormField
@@ -48,7 +44,7 @@ export default function CheckboxGroupField<T extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => {
         return (
-          <FormItem className={cn('relative space-y-2', className)}>
+          <FormItem className={cn('relative space-y-2', formItemClassName)}>
             {label && (
               <FormLabel
                 className={cn('ml-2', labelClassName, {
@@ -69,7 +65,7 @@ export default function CheckboxGroupField<T extends FieldValues>({
                         key={option.value}
                         className={cn(
                           'flex items-center space-y-0 space-x-1',
-                          itemClassName
+                          className
                         )}
                       >
                         <FormControl>

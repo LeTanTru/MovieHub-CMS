@@ -15,7 +15,7 @@ import { cn } from '@/lib';
 import { Info } from 'lucide-react';
 import { useState } from 'react';
 
-interface ConfirmModalProps {
+type ConfirmModalProps = {
   message: string;
   onConfirm: () => void;
   onCancel?: () => void;
@@ -26,7 +26,7 @@ interface ConfirmModalProps {
   // Controlled mode
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-}
+};
 
 export default function ConfirmModal({
   message,

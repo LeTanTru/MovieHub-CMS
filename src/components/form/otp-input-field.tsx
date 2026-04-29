@@ -29,6 +29,7 @@ type OtpInputFieldProps<T extends FieldValues> = {
   groupClassName?: string;
   labelClassName?: string;
   description?: React.ReactNode;
+  disabled?: boolean;
 };
 
 export default function OtpInputField<T extends FieldValues>({
@@ -42,7 +43,8 @@ export default function OtpInputField<T extends FieldValues>({
   containerClassName,
   groupClassName,
   labelClassName,
-  description
+  description,
+  disabled
 }: OtpInputFieldProps<T>) {
   return (
     <FormField
@@ -56,7 +58,13 @@ export default function OtpInputField<T extends FieldValues>({
           )}
         >
           {label && (
-            <FormLabel className={cn('mb-2', labelClassName)}>
+            <FormLabel
+              className={cn(
+                'mb-2',
+                { 'pointer-events-none opacity-50 select-none': disabled },
+                labelClassName
+              )}
+            >
               {label}
               {required && <span className='text-destructive'>*</span>}
             </FormLabel>
@@ -66,6 +74,7 @@ export default function OtpInputField<T extends FieldValues>({
               <InputOTP
                 maxLength={length}
                 pattern={REGEXP_ONLY_DIGITS}
+                disabled={disabled}
                 {...field}
                 className={cn('flex justify-center', className)}
                 containerClassName={cn('w-full', containerClassName)}
@@ -79,7 +88,7 @@ export default function OtpInputField<T extends FieldValues>({
                   {Array.from({ length: length }).map((_, i) => (
                     <InputOTPSlot
                       className={cn(
-                        'data-[active=true]:ring-green-primary h-12 w-12 rounded-md border-l text-base duration-200 ease-linear data-[active=true]:border-none data-[active=true]:ring-2',
+                        'data-[active=true]:ring-green-primary h-12 w-12 rounded-md border-l text-base duration-200 ease-linear disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none data-[active=true]:border-none data-[active=true]:ring-2',
                         {
                           'border-red-500 data-[active=true]:ring-red-500':
                             !!fieldState.error

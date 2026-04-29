@@ -61,17 +61,12 @@ export default function SliderField<T extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => {
         return (
-          <FormItem
-            className={cn(
-              { 'cursor-not-allowed select-none': disabled },
-              formItemClassName
-            )}
-          >
+          <FormItem className={cn('relative', formItemClassName)}>
             <div className='flex items-center justify-between'>
               {label && (
                 <FormLabel
                   className={cn(labelClassName, {
-                    'opacity-50 select-none': disabled
+                    'cursor-not-allowed opacity-50 select-none': disabled
                   })}
                 >
                   {label}
@@ -95,6 +90,10 @@ export default function SliderField<T extends FieldValues>({
                   <Slider
                     className={cn(
                       'cursor-pointer transition-all duration-200 ease-linear',
+                      {
+                        'pointer-events-auto cursor-not-allowed opacity-50 select-none':
+                          disabled
+                      },
                       className
                     )}
                     step={step}

@@ -64,6 +64,7 @@ type AutoCompleteFieldProps<
   placeholder?: string;
   description?: string;
   className?: string;
+  formItemClassName?: string;
   required?: boolean;
   allowClear?: boolean;
   searchText?: string;
@@ -90,6 +91,7 @@ export default function AutoCompleteField<
   placeholder,
   description,
   className,
+  formItemClassName,
   required,
   allowClear,
   searchText,
@@ -240,11 +242,7 @@ export default function AutoCompleteField<
         };
 
         return (
-          <FormItem
-            className={cn('relative', className, {
-              'cursor-not-allowed': disabled
-            })}
-          >
+          <FormItem className={cn('relative', formItemClassName)}>
             {label && (
               <FormLabel
                 className={cn('ml-2', labelClassName, {
@@ -275,11 +273,19 @@ export default function AutoCompleteField<
                           'ring-main-color border-transparent! ring-2': open,
                           '[&>div>span]:text-gray-300': fieldState.invalid,
                           'border-red-500 ring-red-500': !!fieldState.error
-                        }
+                        },
+                        className
                       )}
                     >
                       {selectedOption ? (
-                        <div className='flex min-w-0 flex-1 items-center gap-2'>
+                        <div
+                          className={cn(
+                            'flex min-w-0 flex-1 items-center gap-2',
+                            {
+                              'opacity-50': disabled
+                            }
+                          )}
+                        >
                           {selectedOption.prefix}
                           <span className='truncate text-black'>
                             {selectedOption.label}

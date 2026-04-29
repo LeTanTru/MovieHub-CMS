@@ -45,6 +45,8 @@ type DateTimePickerFieldProps<T extends FieldValues> = {
   disabled?: boolean;
   placeholder?: string;
   clearable?: boolean;
+  className?: string;
+  formItemClassName?: string;
 };
 
 export default function DateTimePickerField<T extends FieldValues>({
@@ -57,6 +59,8 @@ export default function DateTimePickerField<T extends FieldValues>({
   labelClassName,
   disabled,
   placeholder,
+  className,
+  formItemClassName,
   clearable = true
 }: DateTimePickerFieldProps<T>) {
   const isMounted = useIsMounted();
@@ -138,7 +142,7 @@ export default function DateTimePickerField<T extends FieldValues>({
         const { hour, minute, second } = getSelectedTime();
 
         return (
-          <FormItem className='relative'>
+          <FormItem className={cn('relative', formItemClassName)}>
             {label && (
               <FormLabel
                 className={cn('ml-2', labelClassName, {
@@ -161,18 +165,20 @@ export default function DateTimePickerField<T extends FieldValues>({
                       aria-expanded={open}
                       aria-label='Select date and time'
                       className={cn(
-                        'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2',
+                        'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
                         {
                           'ring-main-color border-transparent! ring-2': open,
                           '[&>div>span]:text-gray-300': fieldState.invalid,
                           'border-red-500 ring-red-500': !!fieldState.error
-                        }
+                        },
+                        className
                       )}
                     >
                       <span
                         suppressHydrationWarning
                         className={cn({
-                          'text-gray-300': !hasValue
+                          'text-gray-300': !hasValue && !disabled,
+                          'opacity-50': disabled
                         })}
                       >
                         {(() => {
@@ -182,7 +188,11 @@ export default function DateTimePickerField<T extends FieldValues>({
                             : (placeholder ?? 'Chọn ngày');
                         })()}
                       </span>
-                      <span className='flex items-center gap-1'>
+                      <span
+                        className={cn('flex items-center gap-1', {
+                          'opacity-50': disabled
+                        })}
+                      >
                         {clearable && hasValue && !disabled && (
                           <span
                             role='button'
@@ -199,7 +209,11 @@ export default function DateTimePickerField<T extends FieldValues>({
                             <X className='h-3.5 w-3.5' />
                           </span>
                         )}
-                        <CalendarIcon className='h-4 w-4' />
+                        <CalendarIcon
+                          className={cn('h-4 w-4', {
+                            'opacity-50': disabled
+                          })}
+                        />
                       </span>
                     </Button>
                   </PopoverTrigger>

@@ -28,6 +28,7 @@ type DateRangePickerFieldProps<T extends FieldValues> = {
   description?: string;
   required?: boolean;
   className?: string;
+  formItemClassName?: string;
   format?: string;
   labelClassName?: string;
   disabled?: boolean;
@@ -40,6 +41,7 @@ export default function DateRangePickerField<T extends FieldValues>({
   description,
   required,
   className,
+  formItemClassName,
   format: dateFormat = 'dd/MM/yyyy',
   labelClassName,
   disabled
@@ -50,7 +52,7 @@ export default function DateRangePickerField<T extends FieldValues>({
       name={name}
       control={control}
       render={({ field, fieldState }) => (
-        <FormItem className={cn('relative flex flex-col', className)}>
+        <FormItem className={cn('relative flex flex-col', formItemClassName)}>
           {label && (
             <FormLabel
               className={cn('ml-2', labelClassName, {
@@ -79,7 +81,8 @@ export default function DateRangePickerField<T extends FieldValues>({
                       'text-gray-300 hover:text-gray-300': !field.value,
                       'border-red-500 hover:border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
                         fieldState.error
-                    }
+                    },
+                    className
                   )}
                 >
                   {field.value?.from ? (

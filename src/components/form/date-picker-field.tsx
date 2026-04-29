@@ -38,6 +38,7 @@ type DatePickerFieldProps<T extends FieldValues> = {
   label?: string;
   description?: string;
   className?: string;
+  formItemClassName?: string;
   format?: string;
   disabled?: boolean;
   required?: boolean;
@@ -52,6 +53,7 @@ export default function DatePickerField<T extends FieldValues>({
   label,
   description,
   className,
+  formItemClassName,
   format: dateFormat = DATE_FORMAT,
   disabled,
   required,
@@ -89,16 +91,14 @@ export default function DatePickerField<T extends FieldValues>({
         };
 
         return (
-          <FormItem
-            className={cn('relative', className, {
-              'cursor-not-allowed': disabled
-            })}
-          >
+          <FormItem className={cn('relative', formItemClassName)}>
             {label && (
               <FormLabel
-                className={cn('ml-2', labelClassName, {
-                  'opacity-50 select-none': disabled
-                })}
+                className={cn(
+                  'ml-2',
+                  { 'cursor-not-allowed opacity-50': disabled },
+                  labelClassName
+                )}
               >
                 {label}
                 {required && <span className='text-destructive'>*</span>}
@@ -117,18 +117,20 @@ export default function DatePickerField<T extends FieldValues>({
                       aria-expanded={field.value ? 'true' : 'false'}
                       aria-label='Select date'
                       className={cn(
-                        'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2',
+                        'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
                         {
                           'ring-main-color border-transparent! ring-2': open,
                           '[&>div>span]:text-gray-300': fieldState.invalid,
                           'border-red-500 ring-red-500': !!fieldState.error
-                        }
+                        },
+                        className
                       )}
                     >
                       <span
                         suppressHydrationWarning
                         className={cn({
-                          'text-gray-300': !hasValue
+                          'text-gray-300': !hasValue && !disabled,
+                          'opacity-50': disabled
                         })}
                       >
                         {(() => {
@@ -138,7 +140,7 @@ export default function DatePickerField<T extends FieldValues>({
                             : (placeholder ?? 'Chọn ngày');
                         })()}
                       </span>
-                      <span className='flex items-center gap-1'>
+                      <span className={cn('flex items-center gap-1')}>
                         {clearable && hasValue && !disabled && (
                           <span
                             role='button'
@@ -156,9 +158,7 @@ export default function DatePickerField<T extends FieldValues>({
                           </span>
                         )}
                         <CalendarIcon
-                          className={cn('h-4 w-4', {
-                            'text-gray-300': !hasValue
-                          })}
+                          className={cn('h-4 w-4', { 'opacity-50': disabled })}
                         />
                       </span>
                     </Button>

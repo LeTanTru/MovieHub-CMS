@@ -93,16 +93,11 @@ export default function PasswordField<T extends FieldValues>({
         const strengthScore = strength.filter((req) => req.met).length;
 
         return (
-          <FormItem
-            className={cn(
-              { 'cursor-not-allowed': disabled },
-              formItemClassName
-            )}
-          >
+          <FormItem className={cn('relative', formItemClassName)}>
             {label && (
               <FormLabel
                 className={cn('ml-2', labelClassName, {
-                  'opacity-50 select-none': disabled
+                  'pointer-events-none opacity-50 select-none': disabled
                 })}
               >
                 {label}
@@ -120,18 +115,16 @@ export default function PasswordField<T extends FieldValues>({
                   {...field}
                   value={value}
                   className={cn(
-                    className,
-                    'text-sm shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2',
+                    'text-sm shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
                     {
-                      'cursor-not-allowed border border-solid bg-gray-200/50 text-gray-500':
-                        disabled,
                       'border-red-500 focus-visible:ring-red-500':
                         !!fieldState.error,
                       'focus-visible:ring-main-color': !fieldState.error,
                       'pb-0.5': !isVisible && !!field.value, // not show and have value
                       'pb-1': (!isVisible && !field.value) || isVisible, // not show and no value
                       'pb-1.25': isVisible && !!field.value
-                    }
+                    },
+                    className
                   )}
                 />
                 <Button
@@ -143,6 +136,7 @@ export default function PasswordField<T extends FieldValues>({
                   aria-pressed={isVisible}
                   aria-controls='password'
                   tabIndex={-1}
+                  disabled={disabled || readOnly}
                 >
                   {isVisible ? (
                     <EyeOffIcon size={16} aria-hidden='true' />

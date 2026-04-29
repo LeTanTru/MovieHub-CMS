@@ -1,4 +1,4 @@
-export type DeviceType = 'mobile' | 'tablet' | 'desktop' | 'unknown';
+type DeviceType = 'mobile' | 'tablet' | 'desktop' | 'unknown';
 
 const MOBILE_REGEX = /mobile|iphone|ipod|android.*mobile|windows phone/i;
 const TABLET_REGEX = /ipad|tablet|playbook|silk|android(?!.*mobile)/i;

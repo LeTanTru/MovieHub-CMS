@@ -22,7 +22,7 @@ type CheckboxFieldProps<T extends FieldValues> = {
   disabled?: boolean;
   required?: boolean;
   labelClassName?: string;
-  checkboxClassName?: string;
+  formItemClassName?: string;
 };
 
 export default function CheckboxField<T extends FieldValues>({
@@ -34,14 +34,14 @@ export default function CheckboxField<T extends FieldValues>({
   disabled,
   required,
   labelClassName,
-  checkboxClassName
+  formItemClassName
 }: CheckboxFieldProps<T>) {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <FormItem className={cn(className)}>
+        <FormItem className={cn('relative', formItemClassName)}>
           <FormControl>
             <div>
               <div className='flex items-center gap-2'>
@@ -51,8 +51,8 @@ export default function CheckboxField<T extends FieldValues>({
                     'cursor-pointer transition-colors duration-300 ease-in-out focus-visible:ring-0',
                     'data-[state=checked]:bg-main-color data-[state=checked]:border-main-color',
                     'data-[state=unchecked]:bg-muted focus-visible:ring-main-color focus-visible:border-transparent focus-visible:ring-2',
-                    disabled && 'cursor-not-allowed',
-                    checkboxClassName
+                    disabled && 'cursor-not-allowed opacity-50 select-none',
+                    className
                   )}
                   checked={!!field.value}
                   onCheckedChange={field.onChange}
@@ -61,8 +61,10 @@ export default function CheckboxField<T extends FieldValues>({
                 <FormLabel
                   htmlFor={field.name}
                   className={cn(
-                    disabled && 'text-muted-foreground',
                     'cursor-pointer',
+                    {
+                      'pointer-events-none opacity-50 select-none': disabled
+                    },
                     labelClassName
                   )}
                 >
