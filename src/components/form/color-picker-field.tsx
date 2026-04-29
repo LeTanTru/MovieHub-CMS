@@ -40,7 +40,13 @@ export default function ColorPickerField<T extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => {
         return (
-          <FormItem className={cn('relative', formItemClassName)}>
+          <FormItem
+            className={cn(
+              'relative',
+              { 'cursor-not-allowed select-none': disabled },
+              formItemClassName
+            )}
+          >
             {label && (
               <FormLabel
                 className={cn(

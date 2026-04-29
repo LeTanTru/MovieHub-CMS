@@ -46,7 +46,15 @@ export default function RadioGroupField<T extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <FormItem className={cn('relative space-y-3', formItemClassName)}>
+        <FormItem
+          className={cn(
+            'relative space-y-3',
+            {
+              'cursor-not-allowed select-none': disabled
+            },
+            formItemClassName
+          )}
+        >
           {label && (
             <FormLabel
               className={cn('ml-2', labelClassName, {

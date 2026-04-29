@@ -41,7 +41,12 @@ export default function CheckboxField<T extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <FormItem className={cn('relative', formItemClassName)}>
+        <FormItem
+          className={cn(
+            { 'cursor-not-allowed select-none': disabled },
+            formItemClassName
+          )}
+        >
           <FormControl>
             <div>
               <div className='flex items-center gap-2'>

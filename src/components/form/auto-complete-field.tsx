@@ -242,7 +242,13 @@ export default function AutoCompleteField<
         };
 
         return (
-          <FormItem className={cn('relative', formItemClassName)}>
+          <FormItem
+            className={cn(
+              'relative',
+              { 'cursor-not-allowed select-none': disabled },
+              formItemClassName
+            )}
+          >
             {label && (
               <FormLabel
                 className={cn('ml-2', labelClassName, {
@@ -253,7 +259,6 @@ export default function AutoCompleteField<
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
             )}
-
             <FormControl>
               <div>
                 <Popover open={open} onOpenChange={setOpen}>

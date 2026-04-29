@@ -65,7 +65,13 @@ const TextAreaField = <T extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <FormItem className={cn('relative', formItemClassName)}>
+        <FormItem
+          className={cn(
+            'relative',
+            { 'cursor-not-allowed select-none': disabled },
+            formItemClassName
+          )}
+        >
           {label && (
             <FormLabel
               htmlFor={id}

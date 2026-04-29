@@ -60,7 +60,15 @@ export default function RichTextField<T extends FieldValues>({
       name={name}
       rules={{ required }}
       render={({ field, fieldState }) => (
-        <FormItem className={cn('relative flex flex-col', formItemClassName)}>
+        <FormItem
+          className={cn(
+            'relative flex flex-col',
+            {
+              'cursor-not-allowed select-none': disabled
+            },
+            formItemClassName
+          )}
+        >
           {label && (
             <FormLabel
               className={cn(

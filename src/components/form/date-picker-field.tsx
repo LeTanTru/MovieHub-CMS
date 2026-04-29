@@ -91,7 +91,13 @@ export default function DatePickerField<T extends FieldValues>({
         };
 
         return (
-          <FormItem className={cn('relative', formItemClassName)}>
+          <FormItem
+            className={cn(
+              'relative',
+              { 'cursor-not-allowed select-none': disabled },
+              formItemClassName
+            )}
+          >
             {label && (
               <FormLabel
                 className={cn(
