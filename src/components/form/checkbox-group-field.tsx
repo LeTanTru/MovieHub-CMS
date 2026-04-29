@@ -44,7 +44,13 @@ export default function CheckboxGroupField<T extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => {
         return (
-          <FormItem className={cn('relative space-y-2', formItemClassName)}>
+          <FormItem
+            className={cn(
+              'relative space-y-2',
+              { 'cursor-not-allowed select-none': disabled },
+              formItemClassName
+            )}
+          >
             {label && (
               <FormLabel
                 className={cn('ml-2', labelClassName, {

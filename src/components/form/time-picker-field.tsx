@@ -124,7 +124,13 @@ export default function TimePickerField<T extends FieldValues>({
         };
 
         return (
-          <FormItem className={cn('relative', formItemClassName)}>
+          <FormItem
+            className={cn(
+              'relative',
+              { 'cursor-not-allowed select-none': disabled },
+              formItemClassName
+            )}
+          >
             {label && (
               <FormLabel
                 className={cn('ml-2', labelClassName, {

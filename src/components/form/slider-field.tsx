@@ -61,7 +61,13 @@ export default function SliderField<T extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => {
         return (
-          <FormItem className={cn('relative', formItemClassName)}>
+          <FormItem
+            className={cn(
+              'relative',
+              { 'cursor-not-allowed select-none': disabled },
+              formItemClassName
+            )}
+          >
             <div className='flex items-center justify-between'>
               {label && (
                 <FormLabel

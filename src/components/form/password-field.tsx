@@ -93,7 +93,13 @@ export default function PasswordField<T extends FieldValues>({
         const strengthScore = strength.filter((req) => req.met).length;
 
         return (
-          <FormItem className={cn('relative', formItemClassName)}>
+          <FormItem
+            className={cn(
+              'relative',
+              { 'cursor-not-allowed select-none': disabled },
+              formItemClassName
+            )}
+          >
             {label && (
               <FormLabel
                 className={cn('ml-2', labelClassName, {

@@ -54,6 +54,7 @@ export default function OtpInputField<T extends FieldValues>({
         <FormItem
           className={cn(
             'relative flex flex-col items-center',
+            { 'cursor-not-allowed select-none': disabled },
             formItemClassName
           )}
         >
