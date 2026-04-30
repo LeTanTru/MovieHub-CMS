@@ -33,6 +33,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html suppressHydrationWarning lang='vi'>
       <body
+        suppressHydrationWarning
         className={`${beVietnamPro.variable} ${beVietnamPro.className} antialiased`}
       >
         <ThemeProvider

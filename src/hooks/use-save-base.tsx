@@ -2,13 +2,14 @@
 
 import { Button, Col, Row } from '@/components/form';
 import { ConfirmModal } from '@/components/modal';
+import { getQueryClient } from '@/components/providers/query-provider';
 import { storageKeys } from '@/constants';
 import useDisclosure from '@/hooks/use-disclosure';
 import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
 import type { ApiConfig, ApiResponse, ErrorMaps } from '@/types';
 import { applyFormErrors, http, notify, removeData, setData } from '@/utils';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Save } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -49,7 +50,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
   override
 }: UseSaveBaseProps<R, T>) => {
   const isCreate = mode === 'create';
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const navigate = useNavigate();
   const pendingHref = useRef<string | null>(null);
   const [isFormChanged, setIsFormChanged] = useState<boolean>(false);

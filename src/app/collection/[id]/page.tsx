@@ -1,5 +1,11 @@
 import { CollectionForm } from '@/app/collection/_components';
+import { FormSkeleton } from '@/components/loading';
+import { Suspense } from 'react';
 
 export default function CollectionSavePage() {
-  return <CollectionForm />;
+  return (
+    <Suspense fallback={<FormSkeleton />}>
+      <CollectionForm />
+    </Suspense>
+  );
 }

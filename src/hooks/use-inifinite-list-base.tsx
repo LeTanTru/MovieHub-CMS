@@ -30,8 +30,7 @@ import { convertUTCToLocal, http, notify } from '@/utils';
 import {
   keepPreviousData,
   useMutation,
-  useInfiniteQuery,
-  useQueryClient
+  useInfiniteQuery
 } from '@tanstack/react-query';
 import { PlusIcon, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
@@ -44,6 +43,7 @@ import {
   useState
 } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import { getQueryClient } from '@/components/providers/query-provider';
 
 type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   changePagination: (page: number) => void;
@@ -147,7 +147,7 @@ const useInfiniteListBase = <
   } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const [data, setData] = useState<T[]>([]);
   const hasPermission = useValidatePermission();
 

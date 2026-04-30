@@ -1,3 +1,4 @@
+import { getQueryClient } from '@/components/providers/query-provider';
 import { apiConfig, queryKeys } from '@/constants';
 import { logger } from '@/logger';
 import type {
@@ -7,7 +8,7 @@ import type {
   PermissionSearchType
 } from '@/types';
 import { http, notify } from '@/utils';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const usePermissionListQuery = (params?: PermissionSearchType) => {
   return useQuery({
@@ -23,7 +24,7 @@ export const usePermissionListQuery = (params?: PermissionSearchType) => {
 };
 
 export const useDeletePermissionMutation = () => {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   return useMutation({
     mutationKey: [`${queryKeys.PERMISSION}-delete`],
     mutationFn: (id: string) =>

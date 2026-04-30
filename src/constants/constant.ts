@@ -94,3 +94,6 @@ export const VIDEO_QUALITY_MAX = 4;
 
 export const SEND_NOTIFICATION_FOR_ALL_USERS = 1;
 export const SEND_NOTIFICATION_FOR_INTERESTED_USERS = 2;
+
+export const TAB_SETTING_GENERAL = 'general';
+export const TAB_SETTING_LIVE_ROOM = 'live_room';

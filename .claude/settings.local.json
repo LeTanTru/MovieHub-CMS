@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yarn build *)",
+      "Bash(yarn lint *)",
+      "Bash(npx tsc *)",
+      "Bash(yarn clean-dev *)",
+      "Bash(taskkill /F /IM node.exe)"
+    ]
+  }
+}

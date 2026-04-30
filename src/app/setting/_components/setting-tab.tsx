@@ -1,48 +1,41 @@
 'use client';
 
-import PersonList from './person-list';
 import { PageWrapper } from '@/components/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  PERSON_KIND_ACTOR,
-  PERSON_KIND_DIRECTOR,
   storageKeys,
-  TAB_PERSON_KIND_ACTOR,
-  TAB_PERSON_KIND_DIRECTOR
+  TAB_SETTING_GENERAL,
+  TAB_SETTING_LIVE_ROOM
 } from '@/constants';
 import { useIsMounted } from '@/hooks';
 import { getData, setData } from '@/utils';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import SettingList from './setting-list';
 
-export default function PersonTab() {
+export default function SettingTab() {
   const defaultTab =
-    getData(storageKeys.ACTIVE_TAB_PERSON_KIND) || TAB_PERSON_KIND_ACTOR;
+    getData(storageKeys.ACTIVE_SETTING_TAB) || TAB_SETTING_GENERAL;
+
   const [activeTab, setActiveTab] = useState(defaultTab);
   const isMounted = useIsMounted();
 
   const tabs = [
     {
-      value: TAB_PERSON_KIND_ACTOR,
-      label: 'Diễn viên',
-      component: <PersonList kind={PERSON_KIND_ACTOR} />
+      value: TAB_SETTING_GENERAL,
+      label: 'general',
+      component: <SettingList groupName={TAB_SETTING_GENERAL} />
     },
     {
-      value: TAB_PERSON_KIND_DIRECTOR,
-      label: 'Đạo diễn',
-      component: <PersonList kind={PERSON_KIND_DIRECTOR} />
+      value: TAB_SETTING_LIVE_ROOM,
+      label: 'live_room',
+      component: <SettingList groupName={TAB_SETTING_LIVE_ROOM} />
     }
   ];
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
-    setData(storageKeys.ACTIVE_TAB_PERSON_KIND, tab);
+    setData(storageKeys.ACTIVE_SETTING_TAB, tab);
   };
-
-  useEffect(() => {
-    if (!getData(storageKeys.ACTIVE_TAB_PERSON_KIND)) {
-      setData(storageKeys.ACTIVE_TAB_PERSON_KIND, TAB_PERSON_KIND_ACTOR);
-    }
-  }, []);
 
   if (!isMounted) return null;
 
@@ -50,7 +43,7 @@ export default function PersonTab() {
     <PageWrapper
       breadcrumbs={[
         {
-          label: activeTab === TAB_PERSON_KIND_ACTOR ? 'Diễn viên' : 'Đạo diễn'
+          label: tabs.find((tab) => tab.value === activeTab)?.label || ''
         }
       ]}
     >

@@ -1,6 +1,7 @@
 const storageKeys = {
   ACCESS_TOKEN: 'access_token',
   ACTIVE_GROUP_TAB: 'active_group_tab',
+  ACTIVE_SETTING_TAB: 'active_setting_tab',
   ACTIVE_TAB_MOVIE_PERSON_KIND: 'active_tab_movie_person_kind',
   ACTIVE_TAB_PERSON_KIND: 'active_tab_person_kind',
   PATH_NO_LOGIN: 'path_no_login',

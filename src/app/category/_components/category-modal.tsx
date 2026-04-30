@@ -78,7 +78,7 @@ export default function CategoryModal({
     );
   };
 
-  const handleClose = () => {
+  const handleCancel = () => {
     onClose();
     onFormChange(false);
   };
@@ -86,7 +86,7 @@ export default function CategoryModal({
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={handleCancel}
       className='top-1/3 w-200 overflow-hidden max-[1537px]:w-175 max-[1367px]:w-150'
       aria-labelledby='category-modal-title'
       confirmOnClose={isFormChanged}
@@ -119,7 +119,7 @@ export default function CategoryModal({
 
               <>
                 {renderActions(form, {
-                  onCancel: handleClose
+                  onCancel: handleCancel
                 })}
               </>
               {loading && (

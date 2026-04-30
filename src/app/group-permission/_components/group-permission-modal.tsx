@@ -58,6 +58,11 @@ export default function GroupPermissionModal({
     [selectedRow?.name]
   );
 
+  const handleCancel = () => {
+    onFormChange(false);
+    onClose();
+  };
+
   const onSubmit = async (
     values: GroupPermissionBodyType,
     form: UseFormReturn<GroupPermissionBodyType>
@@ -67,7 +72,7 @@ export default function GroupPermissionModal({
         !isEditing ? values : { ...values, id: selectedRow?.id }
       );
       if (res.result) {
-        handleClose();
+        handleCancel();
       } else {
         const errCode = res.code;
         if (errCode) applyFormErrors(form, errCode, groupPermissionErrorMaps);
@@ -77,15 +82,10 @@ export default function GroupPermissionModal({
     }
   };
 
-  const handleClose = () => {
-    onFormChange(false);
-    onClose();
-  };
-
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={handleCancel}
       className='top-1/3 w-200 overflow-hidden max-[1537px]:w-175 max-[1367px]:w-150'
       confirmOnClose={isFormChanged}
     >
@@ -116,7 +116,7 @@ export default function GroupPermissionModal({
               </Row>
               <>
                 {renderActions(form, {
-                  onCancel: handleClose
+                  onCancel: handleCancel
                 })}
               </>
               {loading && (
