@@ -319,7 +319,7 @@ export default function AutoCompleteField<
 
                   <PopoverContent
                     sideOffset={8}
-                    className='scroll-bar max-h-[60vh] w-(--radix-popover-trigger-width) overflow-auto p-0'
+                    className='scrollbar-none max-h-[60vh] w-(--radix-popover-trigger-width) overflow-auto p-0'
                   >
                     <Command
                       shouldFilter={false}

@@ -114,8 +114,8 @@ export default function PermissionModal({
     <Modal
       open={open}
       onClose={handleCancel}
-      className='w-200 overflow-hidden'
       confirmOnClose={isFormChanged}
+      className='max-[1537px]:top-10'
     >
       <Modal.Header>{`${!isEditing ? 'Thêm' : 'Cập nhật'} quyền`}</Modal.Header>
       <Modal.Body>
@@ -125,7 +125,6 @@ export default function PermissionModal({
           onSubmit={onSubmit}
           schema={permissionSchema}
           onFormChange={onFormChange}
-          className='rounded-none'
         >
           {(form) => (
             <>

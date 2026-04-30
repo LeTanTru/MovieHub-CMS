@@ -89,14 +89,14 @@ export default function MoviePersonModal({
     <Modal
       open={open}
       onClose={handleClose}
-      className='top-50 w-200 overflow-hidden max-[1537px]:w-175 max-[1367px]:w-150'
+      className='overflow-hidden'
       aria-labelledby='video-modal-title'
       confirmOnClose={isFormChanged}
     >
       <Modal.Header>
         {`Thêm ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'}`}
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className='overflow-hidden'>
         <BaseForm
           defaultValues={defaultValues}
           schema={moviePersonSchema}

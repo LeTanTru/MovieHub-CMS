@@ -73,7 +73,7 @@ export default function CollectionItemModal({
     await handleSubmit(values, form, collectionItemErrorMaps);
   };
 
-  const handleClose = () => {
+  const handleCancel = () => {
     onClose();
     onFormChange(false);
   };
@@ -81,8 +81,7 @@ export default function CollectionItemModal({
   return (
     <Modal
       open={open}
-      onClose={handleClose}
-      className='top-1/3 w-200 overflow-hidden max-[1537px]:w-175 max-[1367px]:w-150'
+      onClose={handleCancel}
       aria-labelledby='collection-item-modal-title'
       confirmOnClose={isFormChanged}
     >
@@ -95,7 +94,6 @@ export default function CollectionItemModal({
           defaultValues={defaultValues}
           schema={collectionItemSchema}
           onFormChange={onFormChange}
-          className='rounded-none'
         >
           {(form) => {
             return (
@@ -127,7 +125,7 @@ export default function CollectionItemModal({
 
                 <>
                   {renderActions(form, {
-                    onCancel: handleClose
+                    onCancel: handleCancel
                   })}
                 </>
                 {loading && (

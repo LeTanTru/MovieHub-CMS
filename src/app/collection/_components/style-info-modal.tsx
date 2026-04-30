@@ -17,7 +17,11 @@ export default function StyleInfoModal({
   style
 }: StyleInfoModalProps) {
   return (
-    <Modal open={opened} onClose={onClose} className='min-h-150 w-200'>
+    <Modal
+      open={opened}
+      onClose={onClose}
+      className='top-25 w-175 max-[1537px]:top-10'
+    >
       <Modal.Header>Thông tin thiết kế</Modal.Header>
       <Modal.Body className='p-4'>
         <Row className='mb-0'>

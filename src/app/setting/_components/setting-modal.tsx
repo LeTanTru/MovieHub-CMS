@@ -141,9 +141,9 @@ export default function SettingModal({
     <Modal
       open={open}
       onClose={handleCancel}
-      className='w-175'
       aria-labelledby='setting-modal-title'
       confirmOnClose={isFormChanged}
+      className='w-200 max-[1537px]:top-10'
     >
       <Modal.Header>
         {`${isEditing ? 'Cập nhật' : 'Thêm'} cài đặt`}

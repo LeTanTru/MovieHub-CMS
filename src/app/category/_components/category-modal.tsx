@@ -87,7 +87,6 @@ export default function CategoryModal({
     <Modal
       open={open}
       onClose={handleCancel}
-      className='top-1/3 w-200 overflow-hidden max-[1537px]:w-175 max-[1367px]:w-150'
       aria-labelledby='category-modal-title'
       confirmOnClose={isFormChanged}
     >
@@ -101,7 +100,6 @@ export default function CategoryModal({
           schema={categorySchema}
           initialValues={initialValues}
           onFormChange={onFormChange}
-          className='rounded-none'
         >
           {(form) => (
             <>
