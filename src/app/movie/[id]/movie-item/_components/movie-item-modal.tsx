@@ -241,14 +241,14 @@ export default function MovieItemModal({
     <Modal
       open={open}
       onClose={handleCancel}
-      className='h-[80vh] w-270 max-[1537px]:w-225 max-[1367px]:w-200'
+      className='w-200 max-[1537px]:top-10'
       aria-labelledby='movie-item-modal-title'
       confirmOnClose={isFormChanged}
     >
       <Modal.Header>
         {`${isEditing ? 'Cập nhật' : 'Thêm'} ${objectName}`}
       </Modal.Header>
-      <Modal.Body scrollable>
+      <Modal.Body className='max-h-[80vh]' scrollable>
         <BaseForm
           onSubmit={onSubmit}
           defaultValues={defaultValues}

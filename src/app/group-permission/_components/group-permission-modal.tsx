@@ -83,12 +83,7 @@ export default function GroupPermissionModal({
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={handleCancel}
-      className='top-1/3 w-200 overflow-hidden max-[1537px]:w-175 max-[1367px]:w-150'
-      confirmOnClose={isFormChanged}
-    >
+    <Modal open={open} onClose={handleCancel} confirmOnClose={isFormChanged}>
       <Modal.Header>
         {`${!isEditing ? 'Thêm' : 'Cập nhật'} nhóm quyền`}
       </Modal.Header>
@@ -99,7 +94,6 @@ export default function GroupPermissionModal({
           onSubmit={onSubmit}
           schema={groupPermissionSchema}
           onFormChange={onFormChange}
-          className='rounded-none'
         >
           {(form) => (
             <>
