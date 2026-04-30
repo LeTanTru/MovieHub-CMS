@@ -28,7 +28,6 @@ import {
   renderImageUrl,
   timeAgo
 } from '@/utils';
-import { useQueryClient } from '@tanstack/react-query';
 import { Ellipsis, Mars, Venus } from 'lucide-react';
 import {
   AiOutlineDelete,
@@ -36,6 +35,7 @@ import {
   AiOutlineEyeInvisible
 } from 'react-icons/ai';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
+import { getQueryClient } from '@/components/providers/query-provider';
 
 type ReviewItemProps = {
   review: ReviewResType;
@@ -44,7 +44,7 @@ type ReviewItemProps = {
 
 export default function ReviewItem({ review, onDelete }: ReviewItemProps) {
   const hasPermission = useValidatePermission();
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const {
     mutateAsync: changeReviewStatusMutate,
     isPending: changeReviewStatusLoading

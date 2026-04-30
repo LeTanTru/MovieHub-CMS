@@ -8,9 +8,8 @@ import {
 } from '@/hooks';
 import { usePathname } from 'next/navigation';
 import { getData, removeData, setData, validatePermission } from '@/utils';
-import { type ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect, useMemo } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
-import { AnimatePresence, m } from 'framer-motion';
 import { Loader } from 'lucide-react';
 import { route } from '@/routes';
 import { storageKeys } from '@/constants';
@@ -18,6 +17,39 @@ import { useAppContext } from '@/components/providers/app-provider';
 import { RouteItem } from '@/types';
 
 type PermissionGuardProps = { children: ReactNode };
+
+// Precompiled flat route map — built once at module load
+const routeMatcherCache: Array<{ pattern: RegExp; item: RouteItem }> = [];
+
+function buildRouteCache(obj: Record<string, any>) {
+  for (const key in obj) {
+    const item = obj[key];
+    if (item?.path) {
+      const regexString = item.path
+        .replace(/:[^/]+/g, '[^/]+')
+        .replace(/\//g, '\\/');
+      routeMatcherCache.push({
+        pattern: new RegExp(`^${regexString}$`),
+        item
+      });
+    }
+    if (item?.children) {
+      buildRouteCache(item.children);
+    }
+    if (typeof item === 'object' && item !== obj) {
+      buildRouteCache(item);
+    }
+  }
+}
+
+buildRouteCache(route);
+
+function findRouteByPath(pathname: string): RouteItem | null {
+  for (const { pattern, item } of routeMatcherCache) {
+    if (pattern.test(pathname)) return item;
+  }
+  return null;
+}
 
 export default function PermissionGuard({ children }: PermissionGuardProps) {
   const { queryString } = useQueryParams();
@@ -28,7 +60,10 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
   const { loading, setLoading } = useAppContext();
 
   const firstActiveRoute = useFirstActiveRoute();
-  const matchedRoute: RouteItem = findRouteByPath(route, pathname);
+
+  // Memoize matched route — only recomputes when pathname changes
+  const matchedRoute = useMemo(() => findRouteByPath(pathname), [pathname]);
+
   const isPublicRoute = matchedRoute?.auth === false;
 
   useEffect(() => {
@@ -89,36 +124,22 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
   // check permission
   const hasPermission =
     requiredPermissions.length === 0 ||
-    validatePermission({
-      requiredPermissions,
-      path: pathname.split('/')?.pop(),
-      userPermissions,
-      separate: matchedRoute.separate as boolean,
-      excludeKind: matchedRoute.excludeKind as string[],
-      requiredKind: matchedRoute.requiredKind as number,
-      userKind: matchedRoute.userKind as number
-    });
+    (!!matchedRoute &&
+      validatePermission({
+        requiredPermissions,
+        path: pathname.split('/')?.pop(),
+        userPermissions,
+        separate: matchedRoute.separate as boolean,
+        excludeKind: matchedRoute.excludeKind as string[],
+        requiredKind: matchedRoute.requiredKind as number,
+        userKind: matchedRoute.userKind as number
+      }));
 
   if (loading && !isAuthenticated && !isPublicRoute) {
     return (
-      <AnimatePresence>
-        <m.div
-          key='loading'
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: 1,
-            zIndex: 9999,
-            display: 'flex'
-          }}
-          exit={{
-            opacity: 0,
-            zIndex: -9999
-          }}
-          className='fixed inset-0 z-50 flex h-dvh w-full items-center justify-center bg-white'
-        >
-          <Loader className='size-8 animate-spin' />
-        </m.div>
-      </AnimatePresence>
+      <div className='fixed inset-0 z-50 flex h-dvh w-full items-center justify-center bg-white'>
+        <Loader className='size-8 animate-spin' />
+      </div>
     );
   }
 
@@ -128,29 +149,4 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
   }
 
   return <>{children}</>;
-}
-
-function pathToRegex(path: string): RegExp {
-  const regexString = path.replace(/:[^/]+/g, '[^/]+').replace(/\//g, '\\/');
-  return new RegExp(`^${regexString}$`);
-}
-
-// find current path in route
-function findRouteByPath(obj: Record<string, any>, pathname: string): any {
-  for (const key in obj) {
-    const item = obj[key];
-    if (item?.path) {
-      const regex = pathToRegex(item.path);
-      if (regex.test(pathname)) return item;
-    }
-    if (item?.children) {
-      const result = findRouteByPath(item.children, pathname);
-      if (result) return result;
-    }
-    if (typeof item === 'object') {
-      const result = findRouteByPath(item, pathname);
-      if (result) return result;
-    }
-  }
-  return null;
 }

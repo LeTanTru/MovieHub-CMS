@@ -105,7 +105,7 @@ export default function PermissionModal({
     await handleSubmit(values, form, permissionErrorMaps);
   };
 
-  const handleClose = () => {
+  const handleCancel = () => {
     onFormChange(false);
     onClose();
   };
@@ -113,7 +113,7 @@ export default function PermissionModal({
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={handleCancel}
       className='w-200 overflow-hidden'
       confirmOnClose={isFormChanged}
     >
@@ -208,7 +208,7 @@ export default function PermissionModal({
                   />
                 </Col>
               </Row>
-              <>{renderActions(form, { onCancel: handleClose })}</>
+              <>{renderActions(form, { onCancel: handleCancel })}</>
               {loading && (
                 <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
                   <CircleLoading className='stroke-main-color mt-10' />

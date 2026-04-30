@@ -42,10 +42,10 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useChangeCommenStatusMutation } from '@/queries';
-import { useQueryClient } from '@tanstack/react-query';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
 import { Badge } from '@/components/ui/badge';
+import { getQueryClient } from '@/components/providers/query-provider';
 
 type CommentItemProps = {
   comment: CommentResType & { children?: CommentResType[] };
@@ -74,7 +74,7 @@ export default function CommentItem({
   renderChildren,
   onReplySuccess
 }: CommentItemProps) {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const hasPermission = useValidatePermission();
 
   const {

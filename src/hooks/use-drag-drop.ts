@@ -1,11 +1,12 @@
 'use client';
 
+import { getQueryClient } from '@/components/providers/query-provider';
 import { logger } from '@/logger';
 import type { ApiConfig, ApiResponse, Column } from '@/types';
 import { http, notify } from '@/utils';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 
 const sortColumn: Column<any> = {
@@ -34,7 +35,7 @@ const useDragDrop = <T extends Record<string, any>>({
   updateOnDragEnd,
   mappingData
 }: UseDragDropType<T>) => {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const [sortedData, setSortedData] = useState<T[]>(
     (data.length > 0 && data.sort((a, b) => a?.[sortField] - b?.[sortField])) ||

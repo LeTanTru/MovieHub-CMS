@@ -1,18 +1,23 @@
 'use client';
 
-import { ListPageWrapper, PageWrapper } from '@/components/layout';
+import SettingModal from './setting-modal';
+import { Button, ToolTip } from '@/components/form';
+import { HasPermission } from '@/components/has-permission';
+import { ListPageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { apiConfig, queryKeys } from '@/constants';
-import { useListBase } from '@/hooks';
-import { settingSearchSchema } from '@/schemaValidations';
-import type {
-  Column,
-  SearchFormProps,
-  SettingResType,
-  SettingSearchType
-} from '@/types';
+import { useDisclosure, useListBase } from '@/hooks';
+import type { Column, SettingResType, SettingSearchType } from '@/types';
+import { PlusIcon } from 'lucide-react';
+import { useState } from 'react';
+import { AiOutlineEdit } from 'react-icons/ai';
 
-export default function SettingList() {
+export default function SettingList({ groupName }: { groupName: string }) {
+  const { opened, open, close } = useDisclosure();
+  const [selectedSetting, setSelectedSetting] = useState<SettingResType | null>(
+    null
+  );
+
   const { data, pagination, loading, handlers } = useListBase<
     SettingResType,
     SettingSearchType
@@ -20,7 +25,55 @@ export default function SettingList() {
     apiConfig: apiConfig.setting,
     options: {
       queryKey: queryKeys.SETTING,
-      objectName: 'cài đặt'
+      objectName: 'cài đặt',
+      defaultFilters: {
+        groupName
+      },
+      notShowFromSearchParams: ['groupName']
+    },
+    override: (handlers) => {
+      handlers.renderAddButton = () => {
+        const handleAddSetting = () => {
+          setSelectedSetting(null);
+          open();
+        };
+
+        return (
+          <HasPermission
+            requiredPermissions={[apiConfig.setting.create.permissionCode]}
+          >
+            <Button variant='primary' onClick={handleAddSetting}>
+              <PlusIcon />
+              Thêm mới
+            </Button>
+          </HasPermission>
+        );
+      };
+      handlers.additionalColumns = () => ({
+        edit: (record: SettingResType, buttonProps?: Record<string, any>) => {
+          const handleUpdateSetting = (record: SettingResType) => {
+            setSelectedSetting(record);
+            open();
+          };
+
+          return (
+            <ToolTip title='Cập nhật cài đặt' sideOffset={0}>
+              <span>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpdateSetting(record);
+                  }}
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  {...buttonProps}
+                >
+                  <AiOutlineEdit className='text-main-color size-4' />
+                </Button>
+              </span>
+            </ToolTip>
+          );
+        }
+      });
     }
   });
 
@@ -71,27 +124,18 @@ export default function SettingList() {
         edit: handlers.hasPermission({
           requiredPermissions: [apiConfig.setting.update.permissionCode]
         }),
-        delete: handlers.hasPermission({
-          requiredPermissions: [apiConfig.setting.delete.permissionCode]
-        })
+        delete: (record) =>
+          !record.isSystem &&
+          handlers.hasPermission({
+            requiredPermissions: [apiConfig.setting.delete.permissionCode]
+          })
       }
     })
   ];
 
-  const searchFields: SearchFormProps<SettingSearchType>['searchFields'] = [
-    { key: 'keyName', placeholder: 'Tên' },
-    { key: 'groupName', placeholder: 'Nhóm' },
-    { key: 'dataType', placeholder: 'Kiểu dữ liệu' },
-    { key: 'valueData', placeholder: 'Giá trị' }
-  ];
-
   return (
-    <PageWrapper breadcrumbs={[{ label: 'Cài đặt' }]}>
+    <>
       <ListPageWrapper
-        searchForm={handlers.renderSearchForm({
-          searchFields,
-          schema: settingSearchSchema
-        })}
         addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}
       >
@@ -103,6 +147,7 @@ export default function SettingList() {
           changePagination={handlers.changePagination}
         />
       </ListPageWrapper>
-    </PageWrapper>
+      <SettingModal open={opened} onClose={close} setting={selectedSetting} />
+    </>
   );
 }

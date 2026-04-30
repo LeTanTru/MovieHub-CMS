@@ -192,11 +192,6 @@ export default function MovieItemModal({
     ]
   );
 
-  const handleCancel = async () => {
-    await imageManager.handleCancel();
-    onClose();
-  };
-
   const onSubmit = async (
     values: MovieItemBodyType,
     form: UseFormReturn<MovieItemBodyType>
@@ -236,15 +231,16 @@ export default function MovieItemModal({
     ]);
   };
 
-  const handleClose = () => {
+  const handleCancel = async () => {
     onClose();
     onFormChange(false);
+    await imageManager.handleCancel();
   };
 
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={handleCancel}
       className='h-[80vh] w-270 max-[1537px]:w-225 max-[1367px]:w-200'
       aria-labelledby='movie-item-modal-title'
       confirmOnClose={isFormChanged}

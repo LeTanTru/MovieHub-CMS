@@ -22,12 +22,12 @@ import { useParams } from 'next/navigation';
 import CommentItem from './comment-item';
 import { DotLoading } from '@/components/loading';
 import { Button } from '@/components/form';
-import { useQueryClient } from '@tanstack/react-query';
+import { getQueryClient } from '@/components/providers/query-provider';
 
 export default function CommentList() {
   const { id: movieId } = useParams<{ id: string }>();
   const isMounted = useIsMounted();
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const { searchParams } = useQueryParams<{ movieTitle: string }>();
 
   const { data: voteListData, refetch: getVoteList } = useVoteListCommentQuery({

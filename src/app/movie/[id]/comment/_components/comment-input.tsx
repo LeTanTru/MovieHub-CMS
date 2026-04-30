@@ -1,16 +1,16 @@
 'use client';
 
-import { emojiIcon } from '@/assets';
-import { Button, Col, Row, TextAreaField } from '@/components/form';
-import { BaseForm } from '@/components/form/base-form';
 import { apiConfig, queryKeys } from '@/constants';
-import { useClickOutside, useSaveBase } from '@/hooks';
+import { BaseForm } from '@/components/form/base-form';
+import { Button, Col, Row, TextAreaField } from '@/components/form';
 import { commentSchema } from '@/schemaValidations';
-import type { CommentBodyType, CommentResType } from '@/types';
-import { useQueryClient } from '@tanstack/react-query';
+import { emojiIcon } from '@/assets';
+import { getQueryClient } from '@/components/providers/query-provider';
 import { Send } from 'lucide-react';
-import Image from 'next/image';
+import { useClickOutside, useSaveBase } from '@/hooks';
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import type { CommentBodyType, CommentResType } from '@/types';
 import type { UseFormReturn } from 'react-hook-form';
 
 type CommentInputProps = { movieId: string };
@@ -19,7 +19,7 @@ export default function CommentInput({ movieId }: CommentInputProps) {
   const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
 
   const [showPicker, setShowPicker] = useState(false);
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
 
   const wrapperRef = useClickOutside<HTMLDivElement>(() =>
     setShowPicker(false)
