@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  BooleanField,
+  CheckboxField,
   Col,
   InputField,
   Row,
@@ -188,7 +188,7 @@ export default function PermissionModal({
               </Row>
               <Row>
                 <Col className='grid-c-6'>
-                  <BooleanField
+                  <CheckboxField
                     control={form.control}
                     name='showMenu'
                     label='Hiển thị trên menu'
