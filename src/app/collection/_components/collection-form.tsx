@@ -2,7 +2,6 @@
 
 import {
   AutoCompleteField,
-  BooleanField,
   Button,
   CheckboxField,
   Col,
@@ -341,7 +340,7 @@ export default function CollectionForm() {
               {!isEditing && (
                 <Row>
                   <Col className='grid-c-6'>
-                    <BooleanField
+                    <CheckboxField
                       control={form.control}
                       name='fillData'
                       label='Tự động điền dữ liệu'
@@ -419,20 +418,22 @@ export default function CollectionForm() {
                           control={form.control}
                           name='filter.noLimit'
                           label='Không giới hạn'
-                          className='mb-3'
+                          formItemClassName='mb-3'
                         />
                       </Col>
                     </Row>
                   </Col>
                 </Row>
                 <Row className='mb-0'>
-                  <Col className='grid-c-6 flex-row gap-8'>
-                    <BooleanField
+                  <Col className='grid-c-3'>
+                    <CheckboxField
                       name='filter.isFeatured'
                       control={form.control}
                       label='Hot'
                     />
-                    <BooleanField
+                  </Col>
+                  <Col className='grid-c-3'>
+                    <CheckboxField
                       name='filter.comingSoon'
                       control={form.control}
                       label='Sắp ra mắt'

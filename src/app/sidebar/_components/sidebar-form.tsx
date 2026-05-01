@@ -2,7 +2,7 @@
 
 import {
   AutoCompleteField,
-  BooleanField,
+  CheckboxField,
   Col,
   ColorPickerField,
   RichTextField,
@@ -218,7 +218,7 @@ export default function SidebarForm() {
               </Row>
               <Row>
                 <Col className='grid-c-6'>
-                  <BooleanField
+                  <CheckboxField
                     control={form.control}
                     name='active'
                     label='Hiện'

@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  BooleanField,
+  CheckboxField,
   Col,
   InputField,
   NumberField,
@@ -208,7 +208,7 @@ export default function StyleForm() {
             </Row>
             <Row>
               <Col className='grid-c-6'>
-                <BooleanField
+                <CheckboxField
                   control={form.control}
                   name='isDefault'
                   label='Mặc định'

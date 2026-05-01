@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  BooleanField,
+  CheckboxField,
   Col,
   InputField,
   NumberField,
@@ -195,19 +195,25 @@ export default function AppVersionForm() {
                   required
                 />
               </Col>
-              <Col className='grid-c-6 mb-2 flex-row items-end gap-8'>
-                <BooleanField
-                  control={form.control}
-                  name='forceUpdate'
-                  label='Bắt buộc cập nhật'
-                  required
-                />
-                <BooleanField
-                  control={form.control}
-                  name='isLatest'
-                  label='Phiên bản mới nhất'
-                  required
-                />
+              <Col className='grid-c-6 justify-end'>
+                <Row className='mb-3'>
+                  <Col className='grid-c-6'>
+                    <CheckboxField
+                      control={form.control}
+                      name='forceUpdate'
+                      label='Bắt buộc cập nhật'
+                      required
+                    />
+                  </Col>
+                  <Col className='grid-c-6'>
+                    <CheckboxField
+                      control={form.control}
+                      name='isLatest'
+                      label='Phiên bản mới nhất'
+                      required
+                    />
+                  </Col>
+                </Row>
               </Col>
             </Row>
             <>

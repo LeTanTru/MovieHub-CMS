@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  BooleanField,
+  CheckboxField,
   Col,
   DateTimePickerField,
   InputField,
@@ -162,24 +162,6 @@ export default function MovieForm() {
       originalTitle: data?.originalTitle ?? '',
       posterUrl: data?.posterUrl ?? '',
       releaseDate: convertUTCToLocal(data?.releaseDate) ?? '',
-      sendNotificationConfig: data?.sendNotificationConfig
-        ? {
-            isSendNotification:
-              data.sendNotificationConfig.isSendNotification ?? false,
-            scheduleAt: data.sendNotificationConfig.scheduleAt
-              ? convertUTCToLocal(data.sendNotificationConfig.scheduleAt)
-              : '',
-            sendFor:
-              data.sendNotificationConfig.sendFor ??
-              SEND_NOTIFICATION_FOR_ALL_USERS,
-            title: data.sendNotificationConfig.title ?? ''
-          }
-        : {
-            isSendNotification: false,
-            scheduleAt: '',
-            sendFor: SEND_NOTIFICATION_FOR_ALL_USERS,
-            title: ''
-          },
       status: STATUS_ACTIVE,
       thumbnailUrl: data?.thumbnailUrl ?? '',
       title: data?.title ?? '',
@@ -198,7 +180,6 @@ export default function MovieForm() {
       data?.originalTitle,
       data?.posterUrl,
       data?.releaseDate,
-      data?.sendNotificationConfig,
       data?.thumbnailUrl,
       data?.title,
       data?.type,
@@ -462,8 +443,8 @@ export default function MovieForm() {
               </Col>
             </Row>
             <Row>
-              <Col className='grid-c-6'>
-                <BooleanField
+              <Col className='grid-c-3'>
+                <CheckboxField
                   control={form.control}
                   name='isFeatured'
                   label='Hot'
@@ -471,7 +452,7 @@ export default function MovieForm() {
                 />
               </Col>
               <Col className='grid-c-3'>
-                <BooleanField
+                <CheckboxField
                   control={form.control}
                   name='sendNotificationConfig.isSendNotification'
                   label='Gửi thông báo'

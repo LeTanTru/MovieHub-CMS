@@ -27,6 +27,8 @@ import {
   movieItemSeriesKindOptions,
   movieItemSingleKindOptions,
   queryKeys,
+  SEND_NOTIFICATION_FOR_ALL_USERS,
+  sendForOptions,
   STATUS_ACTIVE
 } from '@/constants';
 import { useFileUploadManager, useQueryParams, useSaveBase } from '@/hooks';
@@ -153,6 +155,12 @@ export default function MovieItemModal({
     label: '',
     movieId: movieId,
     releaseDate: '',
+    sendNotificationConfig: {
+      isSendNotification: false,
+      scheduleAt: '',
+      sendFor: SEND_NOTIFICATION_FOR_ALL_USERS,
+      title: ''
+    },
     status: STATUS_ACTIVE,
     title: '',
     parentId: '',
@@ -205,11 +213,24 @@ export default function MovieItemModal({
       }
     }
 
+    const sendNotificationConfig = values.sendNotificationConfig
+      ?.isSendNotification
+      ? {
+          isSendNotification: values.sendNotificationConfig.isSendNotification,
+          scheduleAt: convertLocalToUTC(
+            values.sendNotificationConfig.scheduleAt || ''
+          ),
+          sendFor: values.sendNotificationConfig.sendFor,
+          title: values.sendNotificationConfig.title
+        }
+      : null;
+
     await Promise.all([
       imageManager.handleSubmit(),
       handleSubmit(
         {
           ...values,
+          sendNotificationConfig,
           totalEpisode:
             !!type &&
             +type === MOVIE_TYPE_SERIES &&
@@ -358,8 +379,19 @@ export default function MovieItemModal({
                       />
                     </Col>
                   )}
+                </Row>
+                <Row>
+                  {!isEditing && (
+                    <Col className='grid-c-6'>
+                      <CheckboxField
+                        control={form.control}
+                        name='sendNotificationConfig.isSendNotification'
+                        label='Gửi thông báo'
+                      />
+                    </Col>
+                  )}
                   {kind !== MOVIE_TYPE_TRAILER && !isEditing && (
-                    <Col className='grid-c-6 mb-3 justify-end'>
+                    <Col className='grid-c-6'>
                       <CheckboxField
                         control={form.control}
                         name='isLatest'
@@ -369,6 +401,40 @@ export default function MovieItemModal({
                     </Col>
                   )}
                 </Row>
+                {!isEditing &&
+                  form.watch('sendNotificationConfig.isSendNotification') && (
+                    <>
+                      <Row>
+                        <Col className='grid-c-6'>
+                          <DateTimePickerField
+                            control={form.control}
+                            name='sendNotificationConfig.scheduleAt'
+                            label='Thời gian gửi'
+                            placeholder='Thời gian gửi'
+                          />
+                        </Col>
+                        <Col className='grid-c-6'>
+                          <SelectField
+                            options={sendForOptions}
+                            control={form.control}
+                            name='sendNotificationConfig.sendFor'
+                            label='Gửi cho'
+                            placeholder='Gửi cho'
+                          />
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col className='grid-c-12'>
+                          <InputField
+                            control={form.control}
+                            name='sendNotificationConfig.title'
+                            label='Tiêu đề thông báo'
+                            placeholder='Tiêu đề thông báo'
+                          />
+                        </Col>
+                      </Row>
+                    </>
+                  )}
                 <Row>
                   <Col className='grid-c-12'>
                     <RichTextField
