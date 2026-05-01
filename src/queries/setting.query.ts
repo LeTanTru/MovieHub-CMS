@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useSettingListQuery = () => {
   return useQuery({
-    queryKey: [`${queryKeys.SETTING}-auto-complete`],
+    queryKey: [queryKeys.SETTING_AUTO_COMPLETE],
     queryFn: () =>
       http.get<ApiResponseList<SettingResType>>(
         apiConfig.setting.autoComplete,

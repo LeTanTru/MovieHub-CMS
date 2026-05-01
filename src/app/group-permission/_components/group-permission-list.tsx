@@ -90,7 +90,7 @@ export default function GroupPermissionList() {
     sortedData,
     onDragEnd
   } = useDragDrop<GroupPermissionResType>({
-    key: `${queryKeys.GROUP_PERMISSION}-list`,
+    key: queryKeys.GROUP_PERMISSION_LIST,
     objectName: 'nhóm quyền',
     data: groupPermissionList,
     apiConfig: apiConfig.groupPermission.updateOrdering,

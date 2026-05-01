@@ -233,7 +233,7 @@ export default function CommentItem({
       });
     else
       await queryClient.invalidateQueries({
-        queryKey: [`${queryKeys.COMMENT}-infinite`]
+        queryKey: [queryKeys.COMMENT_INFINITE]
       });
   };
 
@@ -245,7 +245,7 @@ export default function CommentItem({
         });
       else
         await queryClient.invalidateQueries({
-          queryKey: [`${queryKeys.COMMENT}-infinite`]
+          queryKey: [queryKeys.COMMENT_INFINITE]
         });
     });
   };

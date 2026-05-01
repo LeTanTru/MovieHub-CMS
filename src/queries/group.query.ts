@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useGroupListQuery = (params?: GroupSearchType) => {
   return useQuery({
-    queryKey: [`${queryKeys.GROUP}-list`, params],
+    queryKey: [queryKeys.GROUP_LIST, params],
     queryFn: () =>
       http.get<ApiResponseList<GroupAutoCompleteResType>>(
         apiConfig.group.autoComplete,

@@ -97,7 +97,7 @@ export default function SidebarList() {
     sortedData,
     onDragEnd
   } = useDragDrop<MovieSidebarResType>({
-    key: `${queryKeys.SIDEBAR}-list`,
+    key: queryKeys.SIDEBAR_LIST,
     objectName: 'phim',
     data,
     apiConfig: apiConfig.sidebar.updateOrdering,

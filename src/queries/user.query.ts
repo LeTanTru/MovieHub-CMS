@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 
 export const useChangeUserStatusMutation = () => {
   return useMutation({
-    mutationKey: [`change-${queryKeys.USER}-status`],
+    mutationKey: [queryKeys.CHANGE_USER_STATUS],
     mutationFn: (body: { id: string; status: number }) =>
       http.put<ApiResponse<any>>(apiConfig.user.changeStatus, {
         body

@@ -137,7 +137,7 @@ export default function CollectionList() {
     sortedData,
     onDragEnd
   } = useDragDrop<CollectionResType>({
-    key: `${queryKeys.COLLECTION}-list`,
+    key: queryKeys.COLLECTION_LIST,
     objectName: 'bộ sưu tập',
     data,
     apiConfig: apiConfig.collection.updateOrdering,

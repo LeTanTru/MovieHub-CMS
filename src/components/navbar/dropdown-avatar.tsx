@@ -44,7 +44,7 @@ export default function DropdownAvatar() {
 
           queryClient.removeQueries({ queryKey: [queryKeys.PROFILE] });
           queryClient.removeQueries({
-            queryKey: [`${queryKeys.EMPLOYEE}-profile`]
+            queryKey: [queryKeys.EMPLOYEE_PROFILE]
           });
 
           clearState();

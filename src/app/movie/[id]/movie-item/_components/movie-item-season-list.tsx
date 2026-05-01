@@ -223,7 +223,7 @@ export default function MovieItemSeasonList() {
     sortedData,
     onDragEnd
   } = useDragDrop<MovieItemResType>({
-    key: `${queryKeys.MOVIE_ITEM}-list`,
+    key: queryKeys.MOVIE_ITEM_LIST,
     objectName: 'phần',
     data,
     apiConfig: apiConfig.movieItem.updateOrdering,

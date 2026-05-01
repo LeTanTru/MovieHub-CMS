@@ -12,7 +12,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const usePermissionListQuery = (params?: PermissionSearchType) => {
   return useQuery({
-    queryKey: [`${queryKeys.PERMISSION}-list`, params],
+    queryKey: [queryKeys.PERMISSION_LIST, params],
     queryFn: () =>
       http.get<ApiResponseList<PermissionResType>>(
         apiConfig.permission.getList,
@@ -26,7 +26,7 @@ export const usePermissionListQuery = (params?: PermissionSearchType) => {
 export const useDeletePermissionMutation = () => {
   const queryClient = getQueryClient();
   return useMutation({
-    mutationKey: [`${queryKeys.PERMISSION}-delete`],
+    mutationKey: [queryKeys.PERMISSION_DELETE],
     mutationFn: (id: string) =>
       http.delete<ApiResponse<any>>(apiConfig.permission.delete, {
         pathParams: {
@@ -36,7 +36,7 @@ export const useDeletePermissionMutation = () => {
     onSuccess: async (res) => {
       if (res.result) {
         await queryClient.invalidateQueries({
-          queryKey: [`${queryKeys.PERMISSION}-list`]
+          queryKey: [queryKeys.PERMISSION_LIST]
         });
         notify.success('Xóa quyền thành công');
       } else {
