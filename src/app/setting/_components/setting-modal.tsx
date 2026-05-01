@@ -30,14 +30,16 @@ import { UseFormReturn } from 'react-hook-form';
 
 type SettingModalProps = {
   open: boolean;
-  onClose: () => void;
   setting?: SettingResType | null;
+  groupName: string;
+  onClose: () => void;
 };
 
 export default function SettingModal({
   open,
-  onClose,
-  setting
+  setting,
+  groupName,
+  onClose
 }: SettingModalProps) {
   const { mutateAsync: uploadFileMutate } = useUploadFileMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
@@ -77,7 +79,7 @@ export default function SettingModal({
     valueData: '',
     dataType: '',
     description: '',
-    groupName: '',
+    groupName,
     isSystem: false,
     keyName: '',
     options: ''
@@ -88,7 +90,7 @@ export default function SettingModal({
       valueData: setting?.valueData ?? '',
       dataType: setting?.dataType ?? '',
       description: setting?.description ?? '',
-      groupName: setting?.groupName ?? '',
+      groupName,
       isSystem: setting?.isSystem ?? false,
       keyName: setting?.keyName ?? '',
       options:
@@ -99,9 +101,9 @@ export default function SettingModal({
           : (setting?.options ?? '')
     }),
     [
+      groupName,
       setting?.dataType,
       setting?.description,
-      setting?.groupName,
       setting?.isSystem,
       setting?.keyName,
       setting?.options,
@@ -280,6 +282,7 @@ export default function SettingModal({
                       placeholder='Nhóm'
                       label='Nhóm'
                       required
+                      disabled
                     />
                   </Col>
                 </Row>

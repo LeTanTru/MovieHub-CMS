@@ -136,7 +136,7 @@ export default function Modal({
         <>
           {backdrop && (
             <m.div
-              className='backdrop fixed inset-0 z-30 bg-black/50 backdrop-blur-xs'
+              className='backdrop fixed inset-0 z-50 bg-black/50 backdrop-blur-xs'
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
