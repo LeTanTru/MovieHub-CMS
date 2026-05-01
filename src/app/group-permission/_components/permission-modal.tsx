@@ -158,8 +158,8 @@ export default function PermissionModal({
                       'Change status',
                       'Create',
                       'Delete',
+                      'Get list',
                       'Get',
-                      'List',
                       'Update ordering',
                       'Update'
                     ]}
