@@ -1,6 +1,16 @@
 import { MOVIE_ITEM_KIND_SEASON } from '@/constants';
 import { z } from 'zod';
 
+const sendNotificationConfigSchema = z
+  .object({
+    isSendNotification: z.boolean(),
+    scheduleAt: z.string().optional().nullable(),
+    sendFor: z.number().optional().nullable(),
+    title: z.string().optional().nullable()
+  })
+  .optional()
+  .nullable();
+
 export const movieItemSchema = z
   .object({
     description: z.string().nonempty('Bắt buộc'),
@@ -10,6 +20,7 @@ export const movieItemSchema = z
     movieId: z.string().optional().nullable(),
     parentId: z.string().optional().nullable(),
     releaseDate: z.string().nonempty('Bắt buộc'),
+    sendNotificationConfig: sendNotificationConfigSchema,
     status: z.number({ error: 'Bắt buộc' }),
     thumbnailUrl: z.string().optional().nullable(),
     title: z.string().nonempty('Bắt buộc'),

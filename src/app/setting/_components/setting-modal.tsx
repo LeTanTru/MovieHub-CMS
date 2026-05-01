@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  BooleanField,
+  CheckboxField,
   Col,
   InputField,
   NumberField,
@@ -191,7 +191,7 @@ export default function SettingModal({
 
                 case 'Boolean':
                   return (
-                    <BooleanField
+                    <CheckboxField
                       control={form.control}
                       name='valueData'
                       label='Giá trị'
@@ -326,7 +326,7 @@ export default function SettingModal({
 
                 <Row>
                   <Col className='grid-c-6'>
-                    <BooleanField
+                    <CheckboxField
                       control={form.control}
                       name='isSystem'
                       label='Đánh dấu hệ thống'

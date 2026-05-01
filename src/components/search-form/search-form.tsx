@@ -2,8 +2,8 @@
 
 import {
   AutoCompleteField,
-  BooleanField,
   Button,
+  CheckboxField,
   Col,
   DateTimePickerField,
   InputField,
@@ -157,7 +157,7 @@ export default function SearchForm<S extends FieldValues>({
                       key={sf.key as string}
                       className='grid-col-no-gutters items-center justify-center'
                     >
-                      <BooleanField
+                      <CheckboxField
                         control={form.control}
                         name={sf.key as string}
                         label={sf.placeholder}
