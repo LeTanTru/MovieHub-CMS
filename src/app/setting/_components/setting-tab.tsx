@@ -22,12 +22,12 @@ export default function SettingTab() {
   const tabs = [
     {
       value: TAB_SETTING_GENERAL,
-      label: 'general',
+      label: 'Cài đặt chung',
       component: <SettingList groupName={TAB_SETTING_GENERAL} />
     },
     {
       value: TAB_SETTING_LIVE_ROOM,
-      label: 'live_room',
+      label: 'Xem chung',
       component: <SettingList groupName={TAB_SETTING_LIVE_ROOM} />
     }
   ];

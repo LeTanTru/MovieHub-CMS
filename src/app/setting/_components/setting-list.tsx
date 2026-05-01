@@ -147,7 +147,12 @@ export default function SettingList({ groupName }: { groupName: string }) {
           changePagination={handlers.changePagination}
         />
       </ListPageWrapper>
-      <SettingModal open={opened} onClose={close} setting={selectedSetting} />
+      <SettingModal
+        open={opened}
+        setting={selectedSetting}
+        groupName={groupName}
+        onClose={close}
+      />
     </>
   );
 }
