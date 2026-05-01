@@ -54,7 +54,7 @@ export default function CommentInput({ movieId }: CommentInputProps) {
   ) => {
     await handleSubmit(values);
     await queryClient.invalidateQueries({
-      queryKey: [`${queryKeys.COMMENT}-infinite`]
+      queryKey: [queryKeys.COMMENT_INFINITE]
     });
     form.reset();
   };

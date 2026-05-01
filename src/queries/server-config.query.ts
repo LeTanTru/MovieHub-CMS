@@ -11,7 +11,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useServerConfigListQuery = (params?: ServerConfigSearchType) => {
   return useQuery({
-    queryKey: [`${queryKeys.SERVER_CONFIG}-list`],
+    queryKey: [queryKeys.SERVER_CONFIG_LIST],
     queryFn: () =>
       http.get<ApiResponseList<ServerConfigResType>>(
         apiConfig.serverConfig.autoComplete,
@@ -24,7 +24,7 @@ export const useServerConfigListQuery = (params?: ServerConfigSearchType) => {
 
 export const useChangeServerConfigStatusMutation = () => {
   return useMutation({
-    mutationKey: [`${queryKeys.SERVER_CONFIG}-change-status`],
+    mutationKey: [queryKeys.SERVER_CONFIG_CHANGE_STATUS],
     mutationFn: (body: ServerConfigChangeStatusBodyType) =>
       http.post<ApiResponse<any>>(apiConfig.serverConfig.changeStatus, {
         body

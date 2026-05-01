@@ -8,7 +8,12 @@ import {
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { apiConfig, profileErrorMaps, storageKeys } from '@/constants';
+import {
+  apiConfig,
+  profileErrorMaps,
+  queryKeys,
+  storageKeys
+} from '@/constants';
 import { useFileUploadManager, useNavigate, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
@@ -35,7 +40,7 @@ export default function ProfileForm() {
       update: apiConfig.account.updateProfile
     },
     options: {
-      queryKey: 'profile',
+      queryKey: queryKeys.PROFILE,
       objectName: 'hồ sơ',
       pathParams: {},
       mode: 'edit',

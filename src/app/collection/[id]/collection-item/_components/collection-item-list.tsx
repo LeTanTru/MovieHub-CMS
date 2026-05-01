@@ -81,7 +81,7 @@ export default function CollectionItemList() {
     sortedData,
     onDragEnd
   } = useDragDrop<CollectionItemResType>({
-    key: `${queryKeys.COLLECTION_ITEM}-list`,
+    key: queryKeys.COLLECTION_ITEM_LIST,
     objectName: 'phim',
     data,
     apiConfig: apiConfig.collectionItem.updateOrdering,

@@ -65,7 +65,7 @@ export default function ReviewItem({ review, onDelete }: ReviewItemProps) {
         status === REVIEW_STATUS_SHOW ? REVIEW_STATUS_HIDE : REVIEW_STATUS_SHOW
     });
     await queryClient.invalidateQueries({
-      queryKey: [`${queryKeys.REVIEW}-infinite`]
+      queryKey: [queryKeys.REVIEW_INFINITE]
     });
   };
 

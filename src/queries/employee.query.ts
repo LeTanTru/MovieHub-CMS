@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useChangeEmployeeStatusMutation = () => {
   return useMutation({
-    mutationKey: [`change-${queryKeys.EMPLOYEE}-status`],
+    mutationKey: [queryKeys.CHANGE_EMPLOYEE_STATUS],
     mutationFn: (body: { id: string; status: number }) =>
       http.put<ApiResponse<any>>(apiConfig.employee.changeStatus, {
         body
@@ -15,7 +15,7 @@ export const useChangeEmployeeStatusMutation = () => {
 
 export const useEmployeeProfileQuery = (enabled: boolean = false) => {
   return useQuery({
-    queryKey: [`${queryKeys.EMPLOYEE}-profile`],
+    queryKey: [queryKeys.EMPLOYEE_PROFILE],
     queryFn: () =>
       http.get<ApiResponse<ProfileResType>>(apiConfig.employee.getProfile),
     enabled

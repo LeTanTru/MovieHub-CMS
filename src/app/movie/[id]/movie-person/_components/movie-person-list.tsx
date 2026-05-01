@@ -130,7 +130,7 @@ export default function MoviePersonList({ kind }: MoviePersonListProps) {
     sortedData,
     onDragEnd
   } = useDragDrop<MoviePersonResType>({
-    key: `${queryKeys.MOVIE_PERSON}-list`,
+    key: queryKeys.MOVIE_PERSON_LIST,
     objectName: kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
     data,
     apiConfig: apiConfig.moviePerson.updateOrdering,
@@ -141,11 +141,12 @@ export default function MoviePersonList({ kind }: MoviePersonListProps) {
   useEffect(() => {
     if (selectedRow && inputRefs.current[selectedRow]) {
       const input = inputRefs.current[selectedRow];
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         input?.focus();
         const val = input.value;
         input.setSelectionRange(val.length, val.length);
       }, 0);
+      return () => clearTimeout(timer);
     }
   }, [selectedRow]);
 

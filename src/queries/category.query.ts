@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useCategoryListQuery = () => {
   return useQuery({
-    queryKey: [`${queryKeys.CATEGORY}-list`],
+    queryKey: [queryKeys.CATEGORY_LIST],
     queryFn: () =>
       http.get<ApiResponseList<CategoryResType>>(
         apiConfig.category.autoComplete,

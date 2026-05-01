@@ -143,11 +143,12 @@ export default function ImageField({
   useEffect(() => {
     if (!open) return;
 
-    if (isMobileDevice()) document.body.classList.add('body-lock', 'mobile');
+    const isMobile = isMobileDevice();
+    if (isMobile) document.body.classList.add('body-lock', 'mobile');
     else document.body.classList.add('body-lock');
     return () => {
       document.body.classList.remove('body-lock');
-      document.body.classList.remove('body-lock', 'mobile');
+      if (isMobile) document.body.classList.remove('mobile');
     };
   }, [open]);
 

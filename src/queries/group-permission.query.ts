@@ -11,7 +11,7 @@ export const useGroupPermissionListQuery = (
   params?: GroupPermissionSearchType
 ) => {
   return useQuery({
-    queryKey: [`${queryKeys.GROUP_PERMISSION}-list`, params],
+    queryKey: [queryKeys.GROUP_PERMISSION_LIST, params],
     queryFn: () =>
       http.get<ApiResponseList<GroupPermissionResType>>(
         apiConfig.groupPermission.getList,

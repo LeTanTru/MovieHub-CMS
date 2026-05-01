@@ -62,13 +62,14 @@ export default function BaseTable<T extends Record<any, any>>({
       setScrollAtEnd((div?.scrollLeft ?? 0) >= maxScrollLeft);
     };
 
-    el.querySelector('div')?.addEventListener('scroll', handleScroll, {
+    const scrollDiv = el.querySelector('div');
+    scrollDiv?.addEventListener('scroll', handleScroll, {
       passive: true
     });
     handleScroll();
 
     return () => {
-      el.removeEventListener('scroll', handleScroll);
+      scrollDiv?.removeEventListener('scroll', handleScroll);
     };
   }, []);
 

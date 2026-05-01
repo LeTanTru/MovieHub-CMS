@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 
 export const useChangeReviewStatusMutation = () => {
   return useMutation({
-    mutationKey: [`change-status-${queryKeys.COMMENT}`],
+    mutationKey: [queryKeys.CHANGE_REVIEW_STATUS],
     mutationFn: (body: ChangeReviewStatusBodyType) =>
       http.put(apiConfig.review.changeStatus, {
         body

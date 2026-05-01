@@ -357,6 +357,76 @@ return { data, ... };
 
 ---
 
+### 17b. Zustand Selector Creates New Object Reference Every Render
+
+**Finding:** `useCommentStore(useShallow(...))` creates a new object on every render, breaking shallow equality checks and causing all subscribed components to re-render on any store change.
+
+**Evidence:**
+
+- `src/app/movie/[id]/comment/_components/comment-item.tsx:88-98` — `useCommentStore(useShallow((s) => ({ ... })))` selector returns new object reference each call
+- `src/store/comment.store.ts:4-20` — store has 4 fields; any field change triggers re-render for all subscribers
+
+**Impact:** Every `CommentItem` re-renders when `replyingComment`, `editingComment`, or `openParentIds` changes — even when the specific fields they subscribe to haven't changed. Compounds with the per-item `useInfiniteListBase` issue.
+
+**Fix:** Use individual field selectors instead of a combined object:
+
+```tsx
+// Instead of:
+const { openParentIds, replyingComment, ... } = useCommentStore(useShallow(s => ({ ... })));
+
+// Use individual selectors:
+const openParentIds = useCommentStore(s => s.openParentIds);
+const replyingComment = useCommentStore(s => s.replyingComment);
+```
+
+**React Compiler note:** RC cannot optimize external store selectors. Manual individual selectors are required.
+
+---
+
+### 17c. useInfiniteListBase Instantiated Per CommentItem
+
+**Finding:** Every `CommentItem` calls `useInfiniteListBase` on mount, regardless of whether it has children to display. This creates O(n) query instances for n comments.
+
+**Evidence:**
+
+- `src/app/movie/[id]/comment/_components/comment-item.tsx:109-124` — `useInfiniteListBase` called for every item, not just parents
+- `options.enabled: isActiveParent` only gates fetching, not hook instantiation — the hook itself runs on every mount
+
+**Impact:** With hundreds of comments, hundreds of `useInfiniteListBase` instances are created and managed. Only items where `isActiveParent === true` need the query; all others are wasted.
+
+**Fix:** Move nested comment fetching into a separate component that conditionally mounts only when `isActiveParent === true`:
+
+```tsx
+// Wrap child list fetch in a separate component
+function CommentChildren({ parentId, rootId }) {
+  const { data, handlers } = useInfiniteListBase({ ... });
+  if (!data?.length) return null;
+  return renderChildren(data, level + 1, rootId);
+}
+
+// In CommentItem:
+{isActiveParent && (
+  <CommentChildren parentId={comment.id} rootId={rootId} />
+)}
+```
+
+---
+
+### 17d. Comment Item Visual Indentation Broken
+
+**Finding:** `marginLeft: level * 0` at `comment-item.tsx:254` always evaluates to 0 regardless of nesting level, so nested replies have no indentation.
+
+**Evidence:**
+
+- `src/app/movie/[id]/comment/_components/comment-item.tsx:254` — `style={{ marginLeft: level * 0 }}`
+- `src/app/movie/[id]/comment/_components/comment-item.tsx:537,547` — same pattern correctly uses `level * 40`
+
+**Impact:** Visual hierarchy broken; replies at any depth appear at the same indentation as root comments.
+
+**Fix:** Change `level * 0` to `level * 40` on line 254.
+
+---
+
 ### 18. Comment Page Defers All Rendering Until Mounted
 
 **Finding:** CONFIRMED — `isMounted` gate at top of render.
@@ -437,6 +507,8 @@ These patterns create new objects/functions on every render and bypass compiler 
 2. **Inline function definitions in closures** — `handleClick = () => {}` inside a component
 3. **Array/Object spread in render** — `{...obj}` creates new reference every time
 4. **Module-level singleton side effects** — `getMqttClient()` called in render body
+5. **External store selectors** — Zustand `useShallow` returns new object reference; individual field selectors required
+6. **Non-RC-compatible third-party components** — Radix UI, Framer Motion `m.div`, other wrapped components
 
 ### Redundant Memoization (Remove These)
 
@@ -483,3 +555,6 @@ Since React Compiler handles these automatically, these manual optimizations are
 16. **Remove mount gate** in comment page
 17. **Audit and remove redundant `useMemo`/`useCallback`** now that React Compiler is enabled
 18. **Fix DragDropTable state initialization**
+19. **Fix Zustand selector in CommentItem** — replace `useShallow` object selector with individual field selectors
+20. **Fix useInfiniteListBase per CommentItem** — conditionally mount only when `isActiveParent === true`
+21. **Fix `marginLeft: level * 0`** to `marginLeft: level * 40` for proper visual indentation

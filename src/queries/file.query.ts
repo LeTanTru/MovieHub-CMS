@@ -11,7 +11,7 @@ import type { AxiosRequestConfig } from 'axios';
 
 export const useUploadAvatarMutation = () => {
   return useMutation({
-    mutationKey: [`upload-avatar-${queryKeys.FILE}`],
+    mutationKey: [queryKeys.UPLOAD_AVATAR_FILE],
     mutationFn: ({
       file,
       options
@@ -31,7 +31,7 @@ export const useUploadAvatarMutation = () => {
 
 export const useUploadLogoMutation = () => {
   return useMutation({
-    mutationKey: [`upload-logo-${queryKeys.FILE}`],
+    mutationKey: [queryKeys.UPLOAD_LOGO_FILE],
     mutationFn: ({
       file,
       options
@@ -51,7 +51,7 @@ export const useUploadLogoMutation = () => {
 
 export const useUploadVideoMutation = () => {
   return useMutation({
-    mutationKey: [`upload-video-${queryKeys.FILE}`],
+    mutationKey: [queryKeys.UPLOAD_VIDEO_FILE],
     mutationFn: ({
       file,
       options
@@ -71,7 +71,7 @@ export const useUploadVideoMutation = () => {
 
 export const useUploadFileMutation = () => {
   return useMutation({
-    mutationKey: [`upload-${queryKeys.FILE}`],
+    mutationKey: [queryKeys.UPLOAD_FILE],
     mutationFn: ({
       file,
       options
@@ -91,7 +91,7 @@ export const useUploadFileMutation = () => {
 
 export const useDeleteFileMutation = () => {
   return useMutation({
-    mutationKey: [`delete-${queryKeys.FILE}`],
+    mutationKey: [queryKeys.DELETE_FILE],
     mutationFn: (body: { filePath: string }) =>
       http.post<ApiResponse<any>>(apiConfig.file.delete, {
         body

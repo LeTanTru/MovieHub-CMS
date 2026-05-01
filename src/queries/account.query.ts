@@ -14,7 +14,7 @@ export const useProfileQuery = (enabled: boolean = false) => {
 
 export const useChangeAccountStatusMutation = () => {
   return useMutation({
-    mutationKey: [`change-${queryKeys.ADMIN}-status`],
+    mutationKey: [queryKeys.CHANGE_ADMIN_STATUS],
     mutationFn: (body: { id: string; status: number }) =>
       http.put<ApiResponse<any>>(apiConfig.account.changeStatus, { body })
   });

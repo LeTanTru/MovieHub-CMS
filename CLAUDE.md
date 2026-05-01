@@ -60,6 +60,10 @@ Use `useShallow` for multi-field selectors to avoid unnecessary re-renders. Alwa
 - **`useListBase`**: List query state, query-param sync, pagination, delete flow. Keep required hidden filters in `defaultFilters` + `notShowFromSearchParams`.
 - **`useSaveBase`**: Create/edit submit flow, dirty-leave guard, cache invalidation for both `[queryKey]` and ``[`${queryKey}-list`]``.
 
+### Query Key Convention (`src/constants/master-data.ts`)
+
+All `queryKey` strings for TanStack Query mutations/queries are centralized in `queryKeys`. Base keys (e.g., `ADMIN: 'admin'`) define entity names; mutation keys (e.g., `CHANGE_ADMIN_STATUS: 'change-admin-status'`) are explicit strings. Always import and use `queryKeys` instead of hardcoding strings.
+
 ### Environment Variables
 
 Validated through Zod in `src/config.ts`. Add new env vars there (and update `.env.example`). Key variables:

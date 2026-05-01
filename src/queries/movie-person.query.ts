@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 
 export const useUpdateMoviePersonMutation = () => {
   return useMutation({
-    mutationKey: [`update-${queryKeys.MOVIE_PERSON}`],
+    mutationKey: [queryKeys.UPDATE_MOVIE_PERSON],
     mutationFn: (
       body: Omit<MoviePersonBodyType, 'movieId' | 'ordering' | 'personId'>
     ) =>
@@ -17,7 +17,7 @@ export const useUpdateMoviePersonMutation = () => {
 
 export const useCreateMoviePersonMutation = () => {
   return useMutation({
-    mutationKey: [`create-${queryKeys.MOVIE_PERSON}`],
+    mutationKey: [queryKeys.CREATE_MOVIE_PERSON],
     mutationFn: (body: MoviePersonBodyType) =>
       http.put<ApiResponse<any>>(apiConfig.moviePerson.create, {
         body

@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 
 export const useMarkLatestMovieItemMutation = () => {
   return useMutation({
-    mutationKey: [`mark-latest-${queryKeys.MOVIE_ITEM}`],
+    mutationKey: [queryKeys.MARK_LATEST_MOVIE_ITEM],
     mutationFn: (id: string) =>
       http.put<ApiResponse<any>>(apiConfig.movieItem.markLatest, {
         pathParams: { id }
