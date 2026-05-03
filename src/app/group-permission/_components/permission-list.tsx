@@ -6,7 +6,11 @@ import { CircleLoading } from '@/components/loading';
 import { NoData } from '@/components/no-data';
 import { ConfirmModal } from '@/components/modal';
 import { Separator } from '@/components/ui/separator';
-import { DEFAULT_TABLE_PAGE_START, MAX_PAGE_SIZE } from '@/constants';
+import {
+  DEFAULT_TABLE_PAGE_START,
+  MAX_PAGE_SIZE,
+  queryKeys
+} from '@/constants';
 import { useDisclosure } from '@/hooks';
 import { cn } from '@/lib';
 import {
@@ -20,6 +24,8 @@ import { useMemo, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import MediaQuery from 'react-responsive';
 import PermissionModal from './permission-modal';
+import { invalidateQueries, notify } from '@/utils';
+import { logger } from '@/logger';
 
 export default function PermissionList() {
   const { opened, open, close } = useDisclosure();
@@ -44,9 +50,9 @@ export default function PermissionList() {
   const { mutateAsync: deletePermissionMutate } = useDeletePermissionMutation();
 
   const groupPermissions = useMemo(() => {
-    return groupPermissionListData?.data?.content || [];
-  }, [groupPermissionListData?.data?.content]);
-  const permissions = permissionListData?.data?.content || [];
+    return groupPermissionListData?.content || [];
+  }, [groupPermissionListData?.content]);
+  const permissions = permissionListData?.content || [];
 
   const loading = permissionListLoading || groupPermissionLoading;
 
@@ -84,7 +90,20 @@ export default function PermissionList() {
   };
 
   const handleDelete = async (record: PermissionResType) => {
-    deletePermissionMutate(record.id);
+    deletePermissionMutate(record.id, {
+      onSuccess: async (res) => {
+        if (res.result) {
+          invalidateQueries([queryKeys.PERMISSION_LIST]);
+          notify.success('Xóa quyền thành công');
+        } else {
+          notify.error('Xóa quyền thất bại');
+        }
+      },
+      onError: (error) => {
+        logger.error('[DELETE_PERMISSION_ERROR]', error);
+        notify.error('Xóa quyền thất bại');
+      }
+    });
   };
 
   const handleClose = () => {

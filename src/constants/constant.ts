@@ -1,6 +1,7 @@
 export const DEFAULT_TABLE_PAGE_SIZE = 10;
 export const DEFAULT_TABLE_PAGE_START = 0;
 export const MAX_PAGE_SIZE = 1_000_000;
+export const NOTIFICATION_PAGE_SIZE = 20;
 
 export const UPLOAD_LOGO = 'LOGO';
 export const UPLOAD_AVATAR = 'AVATAR';

@@ -18,7 +18,8 @@ export const useVoteListCommentQuery = ({ movieId }: { movieId: string }) => {
           movieId
         }
       }),
-    enabled: !!movieId
+    enabled: !!movieId,
+    select: (data) => data.data
   });
 };
 

@@ -7,6 +7,7 @@ import { Modal } from '@/components/modal';
 import {
   apiConfig,
   categoryErrorMaps,
+  objectNames,
   queryKeys,
   STATUS_ACTIVE
 } from '@/constants';
@@ -39,7 +40,7 @@ export default function CategoryModal({
     apiConfig: apiConfig.category,
     options: {
       queryKey: queryKeys.CATEGORY,
-      objectName: 'thể loại',
+      objectName: objectNames.CATEGORY,
       pathParams: {
         id: category?.id
       },

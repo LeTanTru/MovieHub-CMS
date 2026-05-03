@@ -12,7 +12,13 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { apiConfig, ErrorCode, queryKeys, styleErrorMaps } from '@/constants';
+import {
+  apiConfig,
+  ErrorCode,
+  objectNames,
+  queryKeys,
+  styleErrorMaps
+} from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
@@ -43,7 +49,7 @@ export default function StyleForm() {
     apiConfig: apiConfig.style,
     options: {
       queryKey: queryKeys.STYLE,
-      objectName: 'thiết kế',
+      objectName: objectNames.STYLE,
       listPageUrl: route.style.getList.path,
       pathParams: {
         id

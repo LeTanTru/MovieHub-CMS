@@ -16,6 +16,7 @@ export const useGroupListQuery = (params?: GroupSearchType) => {
         {
           params
         }
-      )
+      ),
+    select: (data) => data.data
   });
 };

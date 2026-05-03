@@ -15,10 +15,9 @@ import {
   queryKeys,
   MAX_PAGE_SIZE,
   DEFAULT_TABLE_PAGE_START,
-  mqttTopics,
-  mqttCMDs
+  objectNames
 } from '@/constants';
-import { useDisclosure, useListBase, useMqtt } from '@/hooks';
+import { useDisclosure, useListBase } from '@/hooks';
 import { useServerConfigListQuery } from '@/queries';
 import { videoLibrarySearchSchema } from '@/schemaValidations';
 import type {
@@ -28,10 +27,10 @@ import type {
   VideoLibrarySearchType
 } from '@/types';
 import { formatSecondsToHMS, notify, renderImageUrl } from '@/utils';
-import { PlayCircle } from 'lucide-react';
+import { LucideLoader, PlayCircle } from 'lucide-react';
 import { useState } from 'react';
-import { AiFillWarning } from 'react-icons/ai';
-import { RiCheckboxCircleFill, RiLoader2Fill } from 'react-icons/ri';
+import { FaExclamationTriangle } from 'react-icons/fa';
+import { FaCircleCheck } from 'react-icons/fa6';
 
 export default function VideoLibraryList() {
   const {
@@ -47,7 +46,7 @@ export default function VideoLibraryList() {
   });
 
   const serverConfigOptions =
-    serverConfigListData?.data?.content?.map((sc) => ({
+    serverConfigListData?.content?.map((sc) => ({
       label: sc.name,
       value: sc.id
     })) || [];
@@ -59,7 +58,7 @@ export default function VideoLibraryList() {
     apiConfig: apiConfig.videoLibrary,
     options: {
       queryKey: queryKeys.VIDEO_LIBRARY,
-      objectName: 'video'
+      objectName: objectNames.VIDEO
     },
     override: (handlers) => {
       handlers.handleDeleteError = (code) => {
@@ -140,19 +139,19 @@ export default function VideoLibraryList() {
         value === VIDEO_LIBRARY_STATE_PROCESSING ? (
           <ToolTip title='Đang xử lý'>
             <div>
-              <RiLoader2Fill className='mx-auto size-5 animate-spin' />
+              <LucideLoader className='mx-auto size-5 animate-spin' />
             </div>
           </ToolTip>
         ) : value === VIDEO_LIBRARY_STATE_COMPLETE ? (
           <ToolTip title='Đã hoàn thành'>
             <div>
-              <RiCheckboxCircleFill className='mx-auto size-5 text-green-600' />
+              <FaCircleCheck className='mx-auto size-5 text-emerald-500' />
             </div>
           </ToolTip>
         ) : (
           <ToolTip title='Lỗi'>
             <div>
-              <AiFillWarning className='text-destructive mx-auto size-5' />
+              <FaExclamationTriangle className='mx-auto size-5 text-rose-500' />
             </div>
           </ToolTip>
         ),
@@ -194,14 +193,6 @@ export default function VideoLibraryList() {
         options: serverConfigOptions
       }
     ];
-
-  useMqtt({
-    topic: mqttTopics.NOTIFICATION_CMS,
-    cmd: mqttCMDs.DONE_CONVERT_VIDEO,
-    callback: () => {
-      handlers.invalidateQueries();
-    }
-  });
 
   return (
     <PageWrapper breadcrumbs={[{ label: 'Video' }]}>

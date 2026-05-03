@@ -1,8 +1,6 @@
 'use client';
 
-import { GROUP_KIND_ADMIN, GROUP_KIND_EMPLOYEE, mqttTopics } from '@/constants';
-import { getMqttClient } from '@/lib/mqtt';
-import { logger } from '@/logger';
+import { GROUP_KIND_ADMIN, GROUP_KIND_EMPLOYEE } from '@/constants';
 import {
   useEmployeeProfileQuery,
   useProfileQuery,
@@ -77,78 +75,13 @@ export default function AppProvider({ children }: AppProviderProps) {
     }
   }, [session, setAccessToken, setUserKind]);
 
-  const profile = profileData?.data || employeeProfileData?.data;
+  const profile = profileData || employeeProfileData;
 
   useEffect(() => {
     if (profile) {
       setProfile(profile);
     }
   }, [profile, setProfile]);
-
-  const client = getMqttClient();
-
-  useEffect(() => {
-    client.subscribe(mqttTopics.NOTIFICATION_CMS, (err) => {
-      if (!err)
-        logger.info(`Subscribed to MQTT topic: ${mqttTopics.NOTIFICATION_CMS}`);
-      else
-        logger.error(
-          '[MQTT_SUBSCRIBE_ERROR]',
-          mqttTopics.NOTIFICATION_CMS,
-          err
-        );
-    });
-
-    return () => {
-      client.unsubscribe(mqttTopics.NOTIFICATION_CMS);
-    };
-  }, [client]);
-
-  useEffect(() => {
-    if (profile?.id) {
-      client.subscribe(
-        mqttTopics.NOTIFICATION_ACCOUNT.replace(':accountId', profile.id),
-        (err) => {
-          if (!err)
-            logger.info(
-              `Subscribed to MQTT topic: ${mqttTopics.NOTIFICATION_ACCOUNT.replace(
-                ':accountId',
-                profile.id
-              )}`
-            );
-          else
-            logger.error(
-              '[MQTT_SUBSCRIBE_ERROR]',
-              mqttTopics.NOTIFICATION_ACCOUNT.replace(':accountId', profile.id),
-              err
-            );
-        }
-      );
-    }
-
-    return () => {
-      if (profile?.id) {
-        client.unsubscribe(
-          mqttTopics.NOTIFICATION_ACCOUNT.replace(':accountId', profile.id)
-        );
-      }
-    };
-  }, [profile?.id, client]);
-
-  useEffect(() => {
-    const onMessage = (topic: string, message: Buffer) => {
-      logger.info(
-        `Received MQTT message on topic: ${topic}`,
-        message.toString()
-      );
-    };
-
-    client.on('message', onMessage);
-
-    return () => {
-      client.off('message', onMessage);
-    };
-  }, [client]);
 
   return (
     <AppContext.Provider

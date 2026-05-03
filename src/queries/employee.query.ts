@@ -18,6 +18,7 @@ export const useEmployeeProfileQuery = (enabled: boolean = false) => {
     queryKey: [queryKeys.EMPLOYEE_PROFILE],
     queryFn: () =>
       http.get<ApiResponse<ProfileResType>>(apiConfig.employee.getProfile),
-    enabled
+    enabled,
+    select: (data) => data.data
   });
 };

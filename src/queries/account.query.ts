@@ -8,7 +8,8 @@ export const useProfileQuery = (enabled: boolean = false) => {
     queryKey: [queryKeys.PROFILE],
     queryFn: () =>
       http.get<ApiResponse<ProfileResType>>(apiConfig.account.getProfile),
-    enabled: enabled
+    enabled: enabled,
+    select: (data) => data.data
   });
 };
 

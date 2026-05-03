@@ -6,11 +6,12 @@ import { BaseTable } from '@/components/table';
 import {
   apiConfig,
   FieldTypes,
-  queryKeys,
   STATUS_ACTIVE,
   STATUS_LOCK,
   employeeStatusOptions,
-  userKindOptions
+  objectNames,
+  userKindOptions,
+  queryKeys
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
@@ -21,8 +22,7 @@ import type {
   UserResType,
   UserSearchType,
   Column,
-  SearchFormProps,
-  ApiResponse
+  SearchFormProps
 } from '@/types';
 import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
@@ -38,7 +38,7 @@ export default function UserList() {
     apiConfig: apiConfig.user,
     options: {
       queryKey: queryKeys.USER,
-      objectName: 'người dùng'
+      objectName: objectNames.USER
     },
     override: (handlers) => {
       handlers.additionalColumns = () => ({
@@ -54,7 +54,7 @@ export default function UserList() {
                   record.status === STATUS_ACTIVE ? STATUS_LOCK : STATUS_ACTIVE
               },
               {
-                onSuccess: (res: ApiResponse<any>) => {
+                onSuccess: (res) => {
                   if (res.result) {
                     handlers.invalidateQueries();
                     notify.success(

@@ -4,7 +4,12 @@ import { Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
-import { apiConfig, groupPermissionErrorMaps, queryKeys } from '@/constants';
+import {
+  apiConfig,
+  groupPermissionErrorMaps,
+  objectNames,
+  queryKeys
+} from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import { groupPermissionSchema } from '@/schemaValidations';
@@ -39,7 +44,7 @@ export default function GroupPermissionModal({
     apiConfig: apiConfig.groupPermission,
     options: {
       queryKey: queryKeys.GROUP_PERMISSION,
-      objectName: 'nhóm quyền',
+      objectName: objectNames.GROUP_PERMISSION,
       pathParams: {
         id: selectedRow?.id
       },

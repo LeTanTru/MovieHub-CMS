@@ -1,17 +1,17 @@
 'use client';
 
-import { apiConfig, queryKeys } from '@/constants';
+import { apiConfig, objectNames, queryKeys } from '@/constants';
 import { BaseForm } from '@/components/form/base-form';
 import { Button, Col, Row, TextAreaField } from '@/components/form';
 import { commentSchema } from '@/schemaValidations';
 import { emojiIcon } from '@/assets';
-import { getQueryClient } from '@/components/providers/query-provider';
 import { Send } from 'lucide-react';
 import { useClickOutside, useSaveBase } from '@/hooks';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import type { CommentBodyType, CommentResType } from '@/types';
 import type { UseFormReturn } from 'react-hook-form';
+import { invalidateQueries } from '@/utils';
 
 type CommentInputProps = { movieId: string };
 
@@ -19,7 +19,6 @@ export default function CommentInput({ movieId }: CommentInputProps) {
   const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
 
   const [showPicker, setShowPicker] = useState(false);
-  const queryClient = getQueryClient();
 
   const wrapperRef = useClickOutside<HTMLDivElement>(() =>
     setShowPicker(false)
@@ -34,7 +33,7 @@ export default function CommentInput({ movieId }: CommentInputProps) {
     apiConfig: apiConfig.comment,
     options: {
       queryKey: queryKeys.COMMENT,
-      objectName: 'bình luận',
+      objectName: objectNames.COMMENT,
       pathParams: {},
       mode: 'create',
       showNotify: false
@@ -53,9 +52,7 @@ export default function CommentInput({ movieId }: CommentInputProps) {
     form: UseFormReturn<CommentBodyType>
   ) => {
     await handleSubmit(values);
-    await queryClient.invalidateQueries({
-      queryKey: [queryKeys.COMMENT_INFINITE]
-    });
+    invalidateQueries([queryKeys.COMMENT_INFINITE]);
     form.reset();
   };
 

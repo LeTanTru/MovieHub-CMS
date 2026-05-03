@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import {
   apiConfig,
   MAX_PAGE_SIZE,
+  objectNames,
   PERSON_KIND_ACTOR,
   queryKeys
 } from '@/constants';
@@ -56,7 +57,10 @@ export default function MoviePersonList({ kind }: MoviePersonListProps) {
     apiConfig: apiConfig.moviePerson,
     options: {
       queryKey: queryKeys.MOVIE_PERSON,
-      objectName: kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
+      objectName:
+        kind === PERSON_KIND_ACTOR
+          ? objectNames.PERSON_ACTOR
+          : objectNames.PERSON_DIRECTOR,
       defaultFilters: { kind, movieId },
       notShowFromSearchParams: ['kind', 'movieId'],
       excludeFromQueryFilter: ['movieTitle']
@@ -131,7 +135,10 @@ export default function MoviePersonList({ kind }: MoviePersonListProps) {
     onDragEnd
   } = useDragDrop<MoviePersonResType>({
     key: queryKeys.MOVIE_PERSON_LIST,
-    objectName: kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
+    objectName:
+      kind === PERSON_KIND_ACTOR
+        ? objectNames.PERSON_ACTOR
+        : objectNames.PERSON_DIRECTOR,
     data,
     apiConfig: apiConfig.moviePerson.updateOrdering,
     sortField: 'ordering',

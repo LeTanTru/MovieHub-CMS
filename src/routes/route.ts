@@ -294,6 +294,13 @@ const route = defineRoute({
       ],
       separate: true
     }
+  },
+  notification: {
+    getList: {
+      path: '/notification',
+      auth: true,
+      permissionCode: [apiConfig.notification.getList.permissionCode]
+    }
   }
 });
 

@@ -5,6 +5,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import {
   apiConfig,
+  objectNames,
   queryKeys,
   serverConfigStatusOptions,
   STATUS_ACTIVE,
@@ -36,7 +37,7 @@ export default function ServerConfigList() {
     apiConfig: apiConfig.serverConfig,
     options: {
       queryKey: queryKeys.SERVER_CONFIG,
-      objectName: 'máy chủ'
+      objectName: objectNames.SERVER_CONFIG
     },
     override: (handlers) => {
       handlers.additionalColumns = () => ({

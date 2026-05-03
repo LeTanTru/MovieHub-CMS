@@ -15,6 +15,7 @@ import {
   apiConfig,
   DEFAULT_TABLE_PAGE_START,
   MAX_PAGE_SIZE,
+  objectNames,
   permissionErrorMaps,
   queryKeys
 } from '@/constants';
@@ -53,7 +54,7 @@ export default function PermissionModal({
     apiConfig: apiConfig.permission,
     options: {
       queryKey: queryKeys.PERMISSION,
-      objectName: 'quyền',
+      objectName: objectNames.PERMISSION,
       pathParams: {
         id: selectedRow?.id
       },
@@ -72,8 +73,8 @@ export default function PermissionModal({
   });
 
   const groupPermissions: GroupPermissionResType[] = useMemo(() => {
-    return groupPermissionListData?.data?.content || [];
-  }, [groupPermissionListData?.data?.content]);
+    return groupPermissionListData?.content || [];
+  }, [groupPermissionListData?.content]);
 
   const defaultValues: PermissionBodyType = {
     name: '',

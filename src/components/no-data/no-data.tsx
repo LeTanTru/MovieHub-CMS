@@ -5,11 +5,15 @@ import Image from 'next/image';
 type NoDataProps = {
   className?: string;
   content?: string;
+  width?: number;
+  height?: number;
 };
 
 export default function NoData({
   className,
-  content = 'Không có dữ liệu'
+  content = 'Không có dữ liệu',
+  width = 200,
+  height = 80
 }: NoDataProps) {
   return (
     <div
@@ -18,7 +22,7 @@ export default function NoData({
         className
       )}
     >
-      <Image src={emptyData.src} width={200} height={80} alt={content} />
+      <Image src={emptyData.src} width={width} height={height} alt={content} />
       <p>{content}</p>
     </div>
   );

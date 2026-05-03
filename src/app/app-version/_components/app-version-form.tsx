@@ -15,6 +15,7 @@ import {
   apiConfig,
   appVersionErrorMaps,
   ErrorCode,
+  objectNames,
   queryKeys
 } from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
@@ -48,7 +49,7 @@ export default function AppVersionForm() {
     apiConfig: apiConfig.appVersion,
     options: {
       queryKey: queryKeys.APP_VERSION,
-      objectName: 'phiên bản ứng dụng',
+      objectName: objectNames.APP_VERSION,
       listPageUrl: route.appVersion.getList.path,
       pathParams: {
         id

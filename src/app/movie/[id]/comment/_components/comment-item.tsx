@@ -8,6 +8,7 @@ import { cn } from '@/lib';
 import {
   convertUTCToLocal,
   getLastWord,
+  invalidateQueries,
   renderImageUrl,
   timeAgo
 } from '@/utils';
@@ -19,6 +20,7 @@ import {
   DEFAULT_TABLE_PAGE_SIZE,
   GENDER_FEMALE,
   GENDER_MALE,
+  objectNames,
   queryKeys,
   REACTION_TYPE_DISLIKE,
   REACTION_TYPE_LIKE
@@ -45,7 +47,6 @@ import { useChangeCommenStatusMutation } from '@/queries';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { useShallow } from 'zustand/react/shallow';
 import { Badge } from '@/components/ui/badge';
-import { getQueryClient } from '@/components/providers/query-provider';
 
 type CommentItemProps = {
   comment: CommentResType & { children?: CommentResType[] };
@@ -74,7 +75,6 @@ export default function CommentItem({
   renderChildren,
   onReplySuccess
 }: CommentItemProps) {
-  const queryClient = getQueryClient();
   const hasPermission = useValidatePermission();
 
   const {
@@ -101,10 +101,10 @@ export default function CommentItem({
   const totalChildren = comment.totalChildren || 0;
 
   const {
-    data: commentList,
-    loading: isLoading,
-    hasMore: hasNextPage,
-    isFetchingMore: isFetchingNextPage,
+    data: comments,
+    loading,
+    hasMore,
+    isFetchingMore,
     handlers
   } = useInfiniteListBase<CommentResType, CommentSearchType>({
     apiConfig: {
@@ -112,7 +112,7 @@ export default function CommentItem({
     },
     options: {
       queryKey: `${queryKeys.COMMENT}-${comment.id}`,
-      objectName: 'bình luận',
+      objectName: objectNames.COMMENT,
       pageSize: DEFAULT_TABLE_PAGE_SIZE,
       enabled: isActiveParent,
       defaultFilters: {
@@ -155,7 +155,7 @@ export default function CommentItem({
     requiredPermissions: [apiConfig.comment.vote.permissionCode]
   });
 
-  const commentListSize = commentList.length;
+  const commentListSize = comments.length;
   const isOpen = isActiveParent;
 
   const {
@@ -169,9 +169,9 @@ export default function CommentItem({
 
     const parentIdToInvalidate = level === 0 ? comment.id : rootId;
 
-    await queryClient.invalidateQueries({
-      queryKey: [`${queryKeys.COMMENT}-${parentIdToInvalidate}-infinite`]
-    });
+    invalidateQueries([
+      `${queryKeys.COMMENT}-${parentIdToInvalidate}-infinite`
+    ]);
 
     setOpenParentIds((prev) => [...prev, comment.id]);
   };
@@ -228,25 +228,17 @@ export default function CommentItem({
           : COMMENT_STATUS_SHOW
     });
     if (comment.parent)
-      await queryClient.invalidateQueries({
-        queryKey: [`${queryKeys.COMMENT}-${comment.parent.id}-infinite`]
-      });
-    else
-      await queryClient.invalidateQueries({
-        queryKey: [queryKeys.COMMENT_INFINITE]
-      });
+      invalidateQueries([`${queryKeys.COMMENT}-${comment.parent.id}-infinite`]);
+    else invalidateQueries([queryKeys.COMMENT_INFINITE]);
   };
 
   const handleVote = (id: string, type: number) => {
     onVote(id, type, async () => {
       if (comment.parent)
-        await queryClient.invalidateQueries({
-          queryKey: [`${queryKeys.COMMENT}-${comment.parent.id}-infinite`]
-        });
-      else
-        await queryClient.invalidateQueries({
-          queryKey: [queryKeys.COMMENT_INFINITE]
-        });
+        invalidateQueries([
+          `${queryKeys.COMMENT}-${comment.parent.id}-infinite`
+        ]);
+      else invalidateQueries([queryKeys.COMMENT_INFINITE]);
     });
   };
 
@@ -521,8 +513,8 @@ export default function CommentItem({
 
           {isActiveParent && commentListSize > 0 && (
             <>
-              {renderChildren(commentList, level + 1, rootId)}
-              {isFetchingNextPage && (
+              {renderChildren(comments, level + 1, rootId)}
+              {isFetchingMore && (
                 <DotLoading className='mt-4 justify-start bg-transparent' />
               )}
             </>
@@ -539,18 +531,18 @@ export default function CommentItem({
                 >
                   Xem tất cả ({totalChildren}) trả lời
                 </Button>
-              ) : isLoading ? (
+              ) : loading ? (
                 <DotLoading className='mt-4 justify-start bg-transparent' />
               ) : (
                 <div
                   className='mt-4 flex items-center gap-x-4'
                   style={{ marginLeft: level * 40 }}
                 >
-                  {hasNextPage && (
+                  {hasMore && (
                     <Button
                       variant='ghost'
                       className='h-5! p-0! font-medium hover:bg-transparent hover:opacity-70'
-                      onClick={() => handleFetchNextPage()}
+                      onClick={handleFetchNextPage}
                     >
                       Xem thêm ({totalChildren - commentListSize})
                     </Button>

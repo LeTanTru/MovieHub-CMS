@@ -19,6 +19,7 @@ export * from './movie-item.type';
 export * from './movie-person.type';
 export * from './movie-sidebar.type';
 export * from './movie.type';
+export * from './notification.type';
 export * from './permission.type';
 export * from './person.type';
 export * from './review.type';

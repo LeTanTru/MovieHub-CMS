@@ -2,13 +2,19 @@
 
 import { Button, Col, Row } from '@/components/form';
 import { ConfirmModal } from '@/components/modal';
-import { getQueryClient } from '@/components/providers/query-provider';
 import { storageKeys } from '@/constants';
 import useDisclosure from '@/hooks/use-disclosure';
 import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
 import type { ApiConfig, ApiResponse, ErrorMaps } from '@/types';
-import { applyFormErrors, http, notify, removeData, setData } from '@/utils';
+import {
+  applyFormErrors,
+  http,
+  invalidateQueries,
+  notify,
+  removeData,
+  setData
+} from '@/utils';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Save } from 'lucide-react';
@@ -50,7 +56,6 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
   override
 }: UseSaveBaseProps<R, T>) => {
   const isCreate = mode === 'create';
-  const queryClient = getQueryClient();
   const navigate = useNavigate();
   const pendingHref = useRef<string | null>(null);
   const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
@@ -124,14 +129,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
             if (listPageUrl) {
               navigate.push(getBackPath());
             }
-            await Promise.all([
-              queryClient.invalidateQueries({
-                queryKey: [queryKey]
-              }),
-              queryClient.invalidateQueries({
-                queryKey: [`${queryKey}-list`]
-              })
-            ]);
+            invalidateQueries([queryKey, `${queryKey}-list`]);
           } else {
             const code = res.code;
             if (code && errorMaps?.[code] && form) {

@@ -14,6 +14,7 @@ export const useCategoryListQuery = () => {
             size: MAX_PAGE_SIZE
           }
         }
-      )
+      ),
+    select: (data) => data.data
   });
 };

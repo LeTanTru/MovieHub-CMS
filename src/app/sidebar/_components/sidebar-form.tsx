@@ -12,7 +12,7 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { apiConfig, ErrorCode, queryKeys } from '@/constants';
+import { apiConfig, ErrorCode, objectNames, queryKeys } from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
@@ -48,7 +48,7 @@ export default function SidebarForm() {
     apiConfig: apiConfig.sidebar,
     options: {
       queryKey: queryKeys.SIDEBAR,
-      objectName: 'phim',
+      objectName: objectNames.SIDEBAR,
       listPageUrl: route.sidebar.getList.path,
       pathParams: {
         id

@@ -8,7 +8,7 @@ import { Send } from 'lucide-react';
 import Image from 'next/image';
 import { useClickOutside, useSaveBase } from '@/hooks';
 import { commentSchema } from '@/schemaValidations';
-import { apiConfig, queryKeys } from '@/constants';
+import { apiConfig, objectNames, queryKeys } from '@/constants';
 import type { CommentBodyType, CommentResType } from '@/types';
 import { emojiIcon } from '@/assets';
 import { useCommentStore } from '@/store';
@@ -53,7 +53,7 @@ export default function CommentForm({
     apiConfig: apiConfig.comment,
     options: {
       queryKey: queryKeys.COMMENT,
-      objectName: 'bình luận',
+      objectName: objectNames.COMMENT,
       pathParams: { id: editingComment?.id },
       mode: editingComment === null ? 'create' : 'edit',
       showNotify: false

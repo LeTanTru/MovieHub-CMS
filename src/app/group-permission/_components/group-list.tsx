@@ -9,6 +9,7 @@ import {
   ErrorCode,
   FieldTypes,
   groupKinds,
+  objectNames,
   queryKeys
 } from '@/constants';
 import { useListBase } from '@/hooks';
@@ -29,7 +30,7 @@ export default function GroupList() {
     apiConfig: apiConfig.group,
     options: {
       queryKey: queryKeys.GROUP,
-      objectName: 'vai trò'
+      objectName: objectNames.GROUP
     },
     override: (handlers) => {
       handlers.handleDeleteError = (code) => {

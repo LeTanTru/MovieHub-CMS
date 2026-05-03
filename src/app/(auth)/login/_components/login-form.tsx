@@ -63,7 +63,7 @@ export default function LoginForm() {
           const profileQuery =
             userKind === GROUP_KIND_ADMIN ? getProfile : getEmployeeProfile;
           const profileData = await profileQuery();
-          const profile = profileData?.data?.data;
+          const profile = profileData?.data;
 
           setLoading(profileLoading || employeeProfileLoading);
 

@@ -18,7 +18,8 @@ export const useServerConfigListQuery = (params?: ServerConfigSearchType) => {
         {
           params
         }
-      )
+      ),
+    select: (data) => data.data
   });
 };
 

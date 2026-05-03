@@ -27,7 +27,8 @@ import {
   queryKeys,
   storageKeys,
   TAB_PERSON_KIND_ACTOR,
-  TAB_PERSON_KIND_DIRECTOR
+  TAB_PERSON_KIND_DIRECTOR,
+  objectNames
 } from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadAvatarMutation } from '@/queries';
@@ -64,7 +65,10 @@ export default function PersonForm() {
     apiConfig: apiConfig.person,
     options: {
       queryKey: queryKeys.PERSON,
-      objectName: kind === TAB_PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
+      objectName:
+        kind === TAB_PERSON_KIND_ACTOR
+          ? objectNames.PERSON_ACTOR
+          : objectNames.PERSON_DIRECTOR,
       listPageUrl: route.person.getList.path,
       pathParams: {
         id

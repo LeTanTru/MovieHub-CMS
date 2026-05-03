@@ -12,6 +12,7 @@ export * from './movie-item.schema';
 export * from './movie-person.schema';
 export * from './movie-sidebar.schema';
 export * from './movie.schema';
+export * from './notification.schema';
 export * from './permission.schema';
 export * from './person.schema';
 export * from './review.schema';

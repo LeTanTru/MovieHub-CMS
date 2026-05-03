@@ -18,6 +18,7 @@ export const useGroupPermissionListQuery = (
         {
           params
         }
-      )
+      ),
+    select: (data) => data.data
   });
 };

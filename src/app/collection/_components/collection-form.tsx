@@ -26,6 +26,7 @@ import {
   ErrorCode,
   languageOptions,
   movieTypeOptions,
+  objectNames,
   queryKeys
 } from '@/constants';
 import { useQueryParams, useSaveBase } from '@/hooks';
@@ -53,7 +54,7 @@ export default function CollectionForm() {
   const { data: categoryListData } = useCategoryListQuery();
 
   const categoryList =
-    categoryListData?.data?.content
+    categoryListData?.content
       ?.map((category) => ({
         value: category.id.toString(),
         label: category.name
@@ -73,7 +74,7 @@ export default function CollectionForm() {
     apiConfig: apiConfig.collection,
     options: {
       queryKey: queryKeys.COLLECTION,
-      objectName: 'bộ sưu tập',
+      objectName: objectNames.COLLECTION,
       listPageUrl: route.collection.getList.path,
       pathParams: {
         id

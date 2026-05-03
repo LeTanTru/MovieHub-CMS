@@ -12,6 +12,7 @@ import {
   DATE_FORMAT,
   languageOptions,
   movieTypeOptions,
+  objectNames,
   queryKeys
 } from '@/constants';
 import {
@@ -48,7 +49,7 @@ export default function CollectionItemList() {
     apiConfig: apiConfig.collectionItem,
     options: {
       queryKey: queryKeys.COLLECTION_ITEM,
-      objectName: 'phim',
+      objectName: objectNames.MOVIE,
       excludeFromQueryFilter: ['type', 'collectionTitle'],
       defaultFilters: { collectionId },
       notShowFromSearchParams: ['collectionId']
@@ -82,7 +83,7 @@ export default function CollectionItemList() {
     onDragEnd
   } = useDragDrop<CollectionItemResType>({
     key: queryKeys.COLLECTION_ITEM_LIST,
-    objectName: 'phim',
+    objectName: objectNames.MOVIE,
     data,
     apiConfig: apiConfig.collectionItem.updateOrdering,
     sortField: 'ordering',

@@ -32,3 +32,11 @@ export const parseSelectOptions = (options?: null | string): OptionType[] => {
       .map((option) => ({ label: option, value: option }));
   }
 };
+
+export const parseJSON = <T>(json: string): T | null => {
+  try {
+    return JSON.parse(json) as T;
+  } catch (_e) {
+    return null;
+  }
+};
