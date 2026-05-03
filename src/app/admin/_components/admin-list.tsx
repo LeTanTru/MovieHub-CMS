@@ -9,6 +9,7 @@ import {
   apiConfig,
   FieldTypes,
   GROUP_KIND_ADMIN,
+  objectNames,
   queryKeys,
   STATUS_ACTIVE,
   STATUS_LOCK,
@@ -39,7 +40,7 @@ export default function AdminList() {
     apiConfig: apiConfig.account,
     options: {
       queryKey: queryKeys.ADMIN,
-      objectName: 'tài khoản',
+      objectName: objectNames.ACCOUNT,
       defaultFilters: { kind: GROUP_KIND_ADMIN },
       notShowFromSearchParams: ['kind']
     },

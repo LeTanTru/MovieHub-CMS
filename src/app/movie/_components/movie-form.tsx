@@ -23,6 +23,7 @@ import {
   languageOptions,
   MOVIE_TYPE_SERIES,
   movieTypeOptions,
+  objectNames,
   queryKeys,
   SEND_NOTIFICATION_FOR_ALL_USERS,
   sendForOptions,
@@ -50,11 +51,11 @@ import { useMemo, useState } from 'react';
 export default function MovieForm() {
   const { id } = useParams<{ id: string }>();
 
-  const { data: categoryListData, isLoading: categoryLoading } =
+  const { data: categories, isLoading: categoryLoading } =
     useCategoryListQuery();
 
   const categoryList =
-    categoryListData?.data?.content
+    categories?.content
       ?.map((category) => ({
         value: category.id.toString(),
         label: category.name
@@ -81,7 +82,7 @@ export default function MovieForm() {
     apiConfig: apiConfig.movie,
     options: {
       queryKey: queryKeys.MOVIE,
-      objectName: 'phim',
+      objectName: objectNames.MOVIE,
       listPageUrl: route.movie.getList.path,
       pathParams: {
         id

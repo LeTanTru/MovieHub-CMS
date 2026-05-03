@@ -3,14 +3,24 @@
 import { AvatarField } from '@/components/form';
 import { List, ListItem } from '@/components/list';
 import { CircleLoading } from '@/components/loading';
-import { getQueryClient } from '@/components/providers/query-provider';
 import { queryKeys, storageKeys } from '@/constants';
-import { useDisclosure, useNavigate, useQueryParams } from '@/hooks';
+import {
+  useDisclosure,
+  useNavigate,
+  useQueryParams,
+  useClickOutside
+} from '@/hooks';
 import { logger } from '@/logger';
 import { useLogoutMutation } from '@/queries';
 import { route } from '@/routes';
 import { useAuthStore } from '@/store';
-import { getLastWord, notify, removeData, renderImageUrl } from '@/utils';
+import {
+  getLastWord,
+  notify,
+  removeData,
+  removeQueries,
+  renderImageUrl
+} from '@/utils';
 import { m, AnimatePresence } from 'framer-motion';
 import { ChevronDown, LogOut, User } from 'lucide-react';
 import Link from 'next/link';
@@ -20,9 +30,15 @@ import { useShallow } from 'zustand/react/shallow';
 
 export default function DropdownAvatar() {
   const navigate = useNavigate();
-  const queryClient = getQueryClient();
   const pathname = usePathname();
-  const { opened: openedDropdown, toggle: toggleDropDown } = useDisclosure();
+
+  const {
+    opened: openedDropdown,
+    toggle: toggleDropDown,
+    close: closeDropDown
+  } = useDisclosure();
+
+  const dropdownRef = useClickOutside<HTMLDivElement>(() => closeDropDown());
 
   const { profile, clearState } = useAuthStore(
     useShallow((s) => ({
@@ -34,7 +50,12 @@ export default function DropdownAvatar() {
   const { mutateAsync: logoutMutate, isPending: logoutLoading } =
     useLogoutMutation();
 
+  const handleAvatarClick = () => {
+    toggleDropDown();
+  };
+
   const handleLogout = async () => {
+    closeDropDown();
     await logoutMutate(undefined, {
       onSuccess: (res) => {
         if (res.result) {
@@ -42,10 +63,7 @@ export default function DropdownAvatar() {
 
           removeData([storageKeys.PATH_NO_LOGIN, storageKeys.PREVIOUS_PATH]);
 
-          queryClient.removeQueries({ queryKey: [queryKeys.PROFILE] });
-          queryClient.removeQueries({
-            queryKey: [queryKeys.EMPLOYEE_PROFILE]
-          });
+          removeQueries([queryKeys.PROFILE, queryKeys.EMPLOYEE_PROFILE]);
 
           clearState();
           navigate.push(route.login.path);
@@ -61,7 +79,7 @@ export default function DropdownAvatar() {
   };
 
   const handleProfileClick = () => {
-    toggleDropDown();
+    closeDropDown();
   };
 
   useEffect(() => {
@@ -71,9 +89,9 @@ export default function DropdownAvatar() {
 
   return (
     <div
+      ref={dropdownRef}
       className='relative z-1 flex items-center gap-4'
-      onMouseEnter={toggleDropDown}
-      onMouseLeave={toggleDropDown}
+      onClick={handleAvatarClick}
     >
       <div className='flex cursor-pointer items-center gap-2'>
         <AvatarField
@@ -91,7 +109,7 @@ export default function DropdownAvatar() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.1, ease: 'linear' }}
-            className='absolute top-full right-0 mt-4 w-45 rounded-md bg-white shadow-[0px_0px_10px_8px] shadow-gray-200'
+            className='absolute top-full right-0 mt-4 w-45 rounded bg-white shadow-[0px_0px_10px_8px] shadow-gray-200'
           >
             <div className='z-2 before:absolute before:-top-4 before:left-0 before:h-4 before:w-full before:bg-transparent'></div>
             <div className='absolute -top-2 right-10 border-r-8 border-b-8 border-l-8 border-r-transparent border-b-white border-l-transparent'></div>
@@ -103,13 +121,13 @@ export default function DropdownAvatar() {
                     queryString ? `${pathname}?${queryString}` : pathname
                   }
                   href={route.profile.savePage.path}
-                  className='flex w-full cursor-pointer items-center gap-2 rounded-md bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
+                  className='flex w-full cursor-pointer items-center gap-2 rounded bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
                 >
                   <User className='size-5' /> Hồ sơ
                 </Link>
               </ListItem>
               <ListItem
-                className='flex w-full cursor-pointer items-center gap-2 rounded-md bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
+                className='flex w-full cursor-pointer items-center gap-2 rounded bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
                 onClick={handleLogout}
               >
                 {logoutLoading ? (

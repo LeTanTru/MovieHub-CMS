@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 type UseMqttType<T> = {
   topic: string;
   cmd: string;
-  callback: (message: { cmd: string; data: T }) => void;
+  callback: (data: T) => void;
 };
 
 const useMqtt = <T>({ topic, cmd, callback }: UseMqttType<T>) => {
@@ -18,14 +18,18 @@ const useMqtt = <T>({ topic, cmd, callback }: UseMqttType<T>) => {
       if (incomingTopic !== topic) return;
 
       try {
-        const parsedMessage = JSON.parse(message.toString());
-        if (parsedMessage.cmd === cmd) {
-          callbackRef.current(parsedMessage);
+        const parsedData: { cmd: string; data: T } = JSON.parse(
+          message.toString()
+        );
+        if (parsedData.cmd === cmd) {
+          callbackRef.current(parsedData.data);
         } else {
-          logger.warn(`Unexpected cmd: ${parsedMessage.cmd}, expected: ${cmd}`);
+          logger.warn(
+            `[MQTT_WARNING] Received ${parsedData.cmd}, expected: ${cmd}, message: ${message}`
+          );
         }
       } catch (error) {
-        logger.error('[MQTT_PARSE_ERROR]', topic, error);
+        logger.error(`[MQTT_PARSE_ERROR] ${topic}: ${error}`);
       }
     };
 

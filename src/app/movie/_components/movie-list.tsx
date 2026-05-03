@@ -11,6 +11,7 @@ import {
   FieldTypes,
   languageOptions,
   movieTypeOptions,
+  objectNames,
   queryKeys
 } from '@/constants';
 import { useListBase, useNavigate, useQueryParams } from '@/hooks';
@@ -41,7 +42,7 @@ export default function MovieList() {
   const { data: categoryListData } = useCategoryListQuery();
 
   const categoryList =
-    categoryListData?.data?.content
+    categoryListData?.content
       ?.map((category) => ({
         value: category.id.toString(),
         label: category.name
@@ -56,7 +57,7 @@ export default function MovieList() {
     apiConfig: apiConfig.movie,
     options: {
       queryKey: queryKeys.MOVIE,
-      objectName: 'phim'
+      objectName: objectNames.MOVIE
     },
     override: (handlers) => {
       handlers.handleDeleteError = (code) => {

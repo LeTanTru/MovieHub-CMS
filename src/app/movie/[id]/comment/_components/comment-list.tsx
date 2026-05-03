@@ -4,7 +4,7 @@ import './comment.css';
 import CommentInput from './comment-input';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { NoData } from '@/components/no-data';
-import { apiConfig, queryKeys } from '@/constants';
+import { apiConfig, objectNames, queryKeys } from '@/constants';
 import {
   useInfiniteListBase,
   useIsMounted,
@@ -22,12 +22,11 @@ import { useParams } from 'next/navigation';
 import CommentItem from './comment-item';
 import { DotLoading } from '@/components/loading';
 import { Button } from '@/components/form';
-import { getQueryClient } from '@/components/providers/query-provider';
+import { invalidateQueries } from '@/utils';
 
 export default function CommentList() {
   const { id: movieId } = useParams<{ id: string }>();
   const isMounted = useIsMounted();
-  const queryClient = getQueryClient();
   const { searchParams } = useQueryParams<{ movieTitle: string }>();
 
   const { data: voteListData, refetch: getVoteList } = useVoteListCommentQuery({
@@ -50,7 +49,7 @@ export default function CommentList() {
   } = useInfiniteListBase<CommentResType, CommentSearchType>({
     apiConfig: apiConfig.comment,
     options: {
-      objectName: 'bình luận',
+      objectName: objectNames.COMMENT,
       queryKey: queryKeys.COMMENT,
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId'],
@@ -61,7 +60,7 @@ export default function CommentList() {
 
   const voteMap = (() => {
     const map: Record<string, number> = {};
-    voteListData?.data?.forEach((v) => (map[v.id] = v.type));
+    voteListData?.forEach((v) => (map[v.id] = v.type));
     return map;
   })();
   const handleVote = async (
@@ -75,19 +74,25 @@ export default function CommentList() {
   };
 
   const handlePinComment = async (id: string, isPinned: boolean) => {
-    await pinCommentMutate({ id, isPinned });
-    handlers.invalidateQueries();
+    await pinCommentMutate(
+      { id, isPinned },
+      {
+        onSuccess: (res) => {
+          if (res.result) {
+            handlers.invalidateQueries();
+          }
+        }
+      }
+    );
   };
 
-  const handleDeleteComment = async (commentToDelete: CommentResType) => {
+  const handleDeleteComment = (commentToDelete: CommentResType) => {
     handlers.handleDeleteClick(commentToDelete.id, {
-      onSuccess: async () => {
+      onSuccess: () => {
         if (commentToDelete.parent) {
-          await queryClient.invalidateQueries({
-            queryKey: [
-              `${queryKeys.COMMENT}-${commentToDelete.parent.id}-infinite`
-            ]
-          });
+          invalidateQueries([
+            `${queryKeys.COMMENT}-${commentToDelete.parent.id}-infinite`
+          ]);
         }
       }
     });

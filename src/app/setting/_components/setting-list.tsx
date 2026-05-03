@@ -5,7 +5,7 @@ import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
-import { apiConfig, queryKeys } from '@/constants';
+import { apiConfig, objectNames, queryKeys } from '@/constants';
 import { useDisclosure, useListBase } from '@/hooks';
 import type { Column, SettingResType, SettingSearchType } from '@/types';
 import { PlusIcon } from 'lucide-react';
@@ -25,7 +25,7 @@ export default function SettingList({ groupName }: { groupName: string }) {
     apiConfig: apiConfig.setting,
     options: {
       queryKey: queryKeys.SETTING,
-      objectName: 'cài đặt',
+      objectName: objectNames.SETTING,
       defaultFilters: {
         groupName
       },

@@ -10,6 +10,7 @@ import {
   collectionTypeOptions,
   FieldTypes,
   MAX_PAGE_SIZE,
+  objectNames,
   queryKeys
 } from '@/constants';
 import {
@@ -52,7 +53,7 @@ export default function CollectionList() {
     apiConfig: apiConfig.collection,
     options: {
       queryKey: queryKeys.COLLECTION,
-      objectName: 'bộ sưu tập',
+      objectName: objectNames.COLLECTION,
       defaultFilters: {
         type: COLLECTION_TYPE_TOPIC
       }
@@ -138,7 +139,7 @@ export default function CollectionList() {
     onDragEnd
   } = useDragDrop<CollectionResType>({
     key: queryKeys.COLLECTION_LIST,
-    objectName: 'bộ sưu tập',
+    objectName: objectNames.COLLECTION,
     data,
     apiConfig: apiConfig.collection.updateOrdering,
     sortField: 'ordering',

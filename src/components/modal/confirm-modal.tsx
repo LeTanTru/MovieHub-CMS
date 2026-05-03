@@ -5,6 +5,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -14,6 +15,7 @@ import { Button } from '@/components/form';
 import { cn } from '@/lib';
 import { Info } from 'lucide-react';
 import { useState } from 'react';
+import { CircleLoading } from '@/components/loading';
 
 type ConfirmModalProps = {
   message: string;
@@ -26,6 +28,7 @@ type ConfirmModalProps = {
   // Controlled mode
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  loading?: boolean;
 };
 
 export default function ConfirmModal({
@@ -37,7 +40,8 @@ export default function ConfirmModal({
   trigger,
   className,
   open: controlledOpen,
-  onOpenChange
+  onOpenChange,
+  loading
 }: ConfirmModalProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
@@ -76,21 +80,26 @@ export default function ConfirmModal({
             <Info className='size-6 fill-orange-500 stroke-white' />
             {message}
           </AlertDialogTitle>
+          <AlertDialogDescription></AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className='mt-2'>
           <AlertDialogCancel asChild onClick={handleCancel}>
             <Button
               variant='outline'
-              className='h-8 cursor-pointer border-red-500 font-normal text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
+              className='h-8 cursor-pointer border-rose-500 font-normal text-rose-500 transition-all duration-200 ease-linear hover:border-rose-500/80 hover:bg-transparent hover:text-rose-500/80 focus-visible:border-rose-500 focus-visible:ring-0 focus-visible:ring-rose-500'
             >
               {cancelText}
             </Button>
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
-            className='bg-main-color hover:bg-main-color/80 h-8 cursor-pointer font-normal transition-all duration-200 ease-linear'
+            className='bg-main-color hover:bg-main-color/80 focus-visible:ring-main-color h-8 cursor-pointer font-normal transition-all duration-200 ease-linear focus-visible:ring-0'
           >
-            {confirmText}
+            {loading ? (
+              <CircleLoading className='size-4 stroke-white' />
+            ) : (
+              confirmText
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

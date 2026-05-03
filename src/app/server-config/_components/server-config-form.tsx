@@ -13,6 +13,7 @@ import { CircleLoading } from '@/components/loading';
 import {
   apiConfig,
   ErrorCode,
+  objectNames,
   queryKeys,
   serverConfigErrorMaps,
   serverConfigStatusOptions,
@@ -44,7 +45,7 @@ export default function ServerConfigForm() {
     apiConfig: apiConfig.serverConfig,
     options: {
       queryKey: queryKeys.SERVER_CONFIG,
-      objectName: 'máy chủ',
+      objectName: objectNames.SERVER_CONFIG,
       listPageUrl: route.serverConfig.getList.path,
       pathParams: {
         id

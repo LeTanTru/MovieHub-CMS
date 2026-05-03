@@ -25,6 +25,7 @@ import type { ReviewResType } from '@/types';
 import {
   convertUTCToLocal,
   getLastWord,
+  invalidateQueries,
   renderImageUrl,
   timeAgo
 } from '@/utils';
@@ -35,7 +36,6 @@ import {
   AiOutlineEyeInvisible
 } from 'react-icons/ai';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
-import { getQueryClient } from '@/components/providers/query-provider';
 
 type ReviewItemProps = {
   review: ReviewResType;
@@ -44,7 +44,6 @@ type ReviewItemProps = {
 
 export default function ReviewItem({ review, onDelete }: ReviewItemProps) {
   const hasPermission = useValidatePermission();
-  const queryClient = getQueryClient();
   const {
     mutateAsync: changeReviewStatusMutate,
     isPending: changeReviewStatusLoading
@@ -59,14 +58,20 @@ export default function ReviewItem({ review, onDelete }: ReviewItemProps) {
   });
 
   const handleChangeCommentStatus = async (id: string, status: number) => {
-    await changeReviewStatusMutate({
-      id,
-      status:
-        status === REVIEW_STATUS_SHOW ? REVIEW_STATUS_HIDE : REVIEW_STATUS_SHOW
-    });
-    await queryClient.invalidateQueries({
-      queryKey: [queryKeys.REVIEW_INFINITE]
-    });
+    await changeReviewStatusMutate(
+      {
+        id,
+        status:
+          status === REVIEW_STATUS_SHOW
+            ? REVIEW_STATUS_HIDE
+            : REVIEW_STATUS_SHOW
+      },
+      {
+        onSuccess: (res) => {
+          if (res.result) invalidateQueries([queryKeys.REVIEW_INFINITE]);
+        }
+      }
+    );
   };
 
   return (

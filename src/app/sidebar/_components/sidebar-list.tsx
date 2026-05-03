@@ -4,7 +4,7 @@ import { Button, ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
-import { apiConfig, FieldTypes, queryKeys } from '@/constants';
+import { apiConfig, FieldTypes, objectNames, queryKeys } from '@/constants';
 import { useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
@@ -30,7 +30,7 @@ export default function SidebarList() {
     apiConfig: apiConfig.sidebar,
     options: {
       queryKey: queryKeys.SIDEBAR,
-      objectName: 'phim'
+      objectName: objectNames.SIDEBAR
     },
     override: (handlers) => {
       handlers.additionalColumns = () => ({
@@ -98,7 +98,7 @@ export default function SidebarList() {
     onDragEnd
   } = useDragDrop<MovieSidebarResType>({
     key: queryKeys.SIDEBAR_LIST,
-    objectName: 'phim',
+    objectName: objectNames.SIDEBAR,
     data,
     apiConfig: apiConfig.sidebar.updateOrdering,
     sortField: 'ordering',

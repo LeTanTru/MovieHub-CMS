@@ -3,7 +3,7 @@
 import { ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
-import { apiConfig, ErrorCode, queryKeys } from '@/constants';
+import { apiConfig, ErrorCode, objectNames, queryKeys } from '@/constants';
 import { useListBase } from '@/hooks';
 import type { Column, StyleResType, StyleSearchType } from '@/types';
 import { notify, renderImageUrl } from '@/utils';
@@ -17,7 +17,7 @@ export default function StyleList() {
     apiConfig: apiConfig.style,
     options: {
       queryKey: queryKeys.STYLE,
-      objectName: 'thiết kế'
+      objectName: objectNames.STYLE
     },
     override: (handlers) => {
       handlers.handleDeleteError = (code) => {

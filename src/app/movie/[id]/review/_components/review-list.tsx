@@ -4,7 +4,7 @@ import { Button } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DotLoading } from '@/components/loading';
 import { NoData } from '@/components/no-data';
-import { apiConfig, queryKeys } from '@/constants';
+import { apiConfig, objectNames, queryKeys } from '@/constants';
 import { useInfiniteListBase, useQueryParams } from '@/hooks';
 import { route } from '@/routes';
 import type { ReviewResType, ReviewSearchType } from '@/types';
@@ -27,7 +27,7 @@ export default function ReviewList() {
   } = useInfiniteListBase<ReviewResType, ReviewSearchType>({
     apiConfig: apiConfig.review,
     options: {
-      objectName: 'đánh giá',
+      objectName: objectNames.REVIEW,
       queryKey: queryKeys.REVIEW,
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId'],

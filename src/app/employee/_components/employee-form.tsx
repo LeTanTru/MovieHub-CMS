@@ -17,6 +17,7 @@ import {
   employeeStatusOptions,
   ErrorCode,
   MAX_PAGE_SIZE,
+  objectNames,
   queryKeys,
   STATUS_ACTIVE
 } from '@/constants';
@@ -39,7 +40,7 @@ export default function EmployeeForm() {
 
   const { data: groupListData } = useGroupListQuery({ size: MAX_PAGE_SIZE });
 
-  const groupOptions = groupListData?.data?.content.map((item) => ({
+  const groupOptions = groupListData?.content.map((item) => ({
     label: item.name,
     value: item.id.toString()
   }));
@@ -61,7 +62,7 @@ export default function EmployeeForm() {
     apiConfig: apiConfig.employee,
     options: {
       queryKey: queryKeys.EMPLOYEE,
-      objectName: 'nhân viên',
+      objectName: objectNames.EMPLOYEE,
       listPageUrl: route.employee.getList.path,
       pathParams: {
         id

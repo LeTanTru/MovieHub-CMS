@@ -5,7 +5,7 @@ import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
-import { apiConfig, ErrorCode, queryKeys } from '@/constants';
+import { apiConfig, ErrorCode, objectNames, queryKeys } from '@/constants';
 import { useDisclosure, useListBase } from '@/hooks';
 import { categorySearchSchema } from '@/schemaValidations';
 import type {
@@ -31,7 +31,7 @@ export default function CategoryList() {
     apiConfig: apiConfig.category,
     options: {
       queryKey: queryKeys.CATEGORY,
-      objectName: 'thể loại'
+      objectName: objectNames.CATEGORY
     },
     override: (handlers) => {
       handlers.handleDeleteError = (code) => {

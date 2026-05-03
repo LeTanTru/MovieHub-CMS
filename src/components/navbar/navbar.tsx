@@ -1,15 +1,17 @@
 'use client';
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import DropdownAvatar from '@/components/navbar/dropdown-avatar';
-import { useSidebarStore } from '@/store';
 import { ToolTip } from '@/components/form';
 import { useShallow } from 'zustand/react/shallow';
+import { useSidebarStore } from '@/store';
+import DropdownAvatar from './dropdown-avatar';
+import DropdownNotification from './dropdown-notification';
 
 const Navbar = () => {
   const { state, setSidebarState } = useSidebarStore(
     useShallow((s) => ({ state: s.state, setSidebarState: s.setSidebarState }))
   );
+
   return (
     <nav className='bg-background relative z-10 flex h-16 items-center justify-between p-3 shadow-[0px_0px_10px_5px] shadow-gray-200'>
       {/* LEFT */}
@@ -33,8 +35,9 @@ const Navbar = () => {
         />
       </ToolTip>
       {/* RIGHT */}
-      <div className='flex items-center gap-x-8'>
+      <div className='flex items-center gap-8'>
         {/* <DarkModeToggle /> */}
+        <DropdownNotification />
         <DropdownAvatar />
       </div>
     </nav>

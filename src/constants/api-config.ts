@@ -986,18 +986,44 @@ const apiConfig = defineApiConfig({
     }
   },
   notification: {
+    countUnread: {
+      baseUrl: `${AppConstants.apiUrl}/v1/notification/count-unread`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    },
     getList: {
       baseUrl: `${AppConstants.apiUrl}/v1/notification/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'NOTI_L',
+      isRequiredXClientType: true,
+      permissionCode: 'NOTI_L'
+    },
+    readAll: {
+      baseUrl: `${AppConstants.apiUrl}/v1/notification/read-all`,
+      method: 'PUT',
+      headers: baseHeader,
       isRequiredXClientType: true
     },
     updateRead: {
       baseUrl: `${AppConstants.apiUrl}/v1/notification/update-read`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'NOTI_U',
+      isRequiredXClientType: true,
+      permissionCode: 'NOTI_U'
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/notification/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'NOTI_D',
+      isRequiredXClientType: true
+    },
+    deleteAll: {
+      baseUrl: `${AppConstants.apiUrl}/v1/notification/delete-all`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'NOTI_D',
       isRequiredXClientType: true
     }
   },

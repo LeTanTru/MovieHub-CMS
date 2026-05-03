@@ -10,6 +10,7 @@ import {
   ErrorCode,
   FieldTypes,
   genderOptions,
+  objectNames,
   PERSON_KIND_ACTOR,
   queryKeys
 } from '@/constants';
@@ -33,7 +34,10 @@ export default function PersonList({ kind }: PersonListProps) {
     apiConfig: apiConfig.person,
     options: {
       queryKey: queryKeys.PERSON,
-      objectName: kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn',
+      objectName:
+        kind === PERSON_KIND_ACTOR
+          ? objectNames.PERSON_ACTOR
+          : objectNames.PERSON_DIRECTOR,
       defaultFilters: { kind },
       notShowFromSearchParams: ['kind', 'page', 'size']
     },

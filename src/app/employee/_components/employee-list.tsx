@@ -9,6 +9,7 @@ import {
   employeeStatusOptions,
   FieldTypes,
   MAX_PAGE_SIZE,
+  objectNames,
   queryKeys,
   STATUS_ACTIVE,
   STATUS_LOCK
@@ -40,7 +41,7 @@ export default function EmployeeList() {
     apiConfig: apiConfig.employee,
     options: {
       queryKey: queryKeys.EMPLOYEE,
-      objectName: 'nhân viên'
+      objectName: objectNames.EMPLOYEE
     },
     override: (handlers) => {
       handlers.additionalColumns = () => ({
@@ -204,7 +205,7 @@ export default function EmployeeList() {
       key: 'kind',
       placeholder: 'Vai trò',
       type: FieldTypes.SELECT,
-      options: groupListData?.data?.content.map((group) => ({
+      options: groupListData?.content.map((group) => ({
         label: group.name,
         value: group.kind
       }))

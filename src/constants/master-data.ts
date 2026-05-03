@@ -151,12 +151,15 @@ export const queryKeys = {
   MOVIE_PERSON_LIST: 'movie-person-list',
   MOVIE_PERSON: 'movie-person',
   MOVIE: 'movie',
+  NOTIFICATION_INFINITE: 'notification-infinite',
+  NOTIFICATION: 'notification',
   PERMISSION_DELETE: 'permission-delete',
   PERMISSION_LIST: 'permission-list',
   PERMISSION: 'permission',
   PERSON: 'person',
   PIN_COMMENT: 'pin-comment',
   PROFILE: 'profile',
+  READ_ALL_NOTIFICATION: 'read-all-notification',
   REFRESH_TOKEN: 'refresh-token',
   REVIEW_INFINITE: 'review-infinite',
   REVIEW: 'review',
@@ -170,14 +173,18 @@ export const queryKeys = {
   SIDEBAR: 'sidebar',
   SNS_CONFIG: 'sns-config',
   STYLE: 'style',
+  UNREAD_NOTIFICATION_COUNT: 'unread-notification-count',
   UPDATE_MOVIE_PERSON: 'update-movie-person',
+  UPDATE_READ_NOTIFICATION: 'update-read-notification',
   UPLOAD_AVATAR_FILE: 'upload-avatar-file',
   UPLOAD_FILE: 'upload-file',
   UPLOAD_LOGO_FILE: 'upload-logo-file',
   UPLOAD_VIDEO_FILE: 'upload-video-file',
   USER: 'user',
+  VIDEO_LIBRARY_LIST: 'video-library-list',
   VIDEO_LIBRARY: 'video-library',
-  VOTE_COMMENT: 'vote-comment'
+  VOTE_COMMENT: 'vote-comment',
+  DELETE_ALL_NOTIFICATION: 'delete-all-notification'
 };
 
 export const userKindOptions = [
@@ -1643,12 +1650,16 @@ export const serverConfigStatusOptions = [
 ];
 
 export const mqttTopics = {
-  NOTIFICATION_CMS: 'notification/cms',
-  NOTIFICATION_ACCOUNT: 'notification/:accountId'
+  CMS: 'notification/cms',
+  ACCOUNT: 'notification/:accountId'
 };
 
 export const mqttCMDs = {
-  DONE_CONVERT_VIDEO: 'CMD_DONE_CONVERT_VIDEO'
+  DONE_CONVERT_VIDEO: 'CMD_DONE_CONVERT_VIDEO',
+  REPLY_COMMENT: 'CMD_REPLY_COMMENT',
+  SEND_NOTIFICATION: 'CMD_SEND_NOTIFICATION',
+  VOTE_COMMENT: 'CMD_VOTE_COMMENT',
+  VOTE_REVIEW: 'CMD_VOTE_REVIEW'
 };
 
 export const settingDataTypes = [
@@ -1689,3 +1700,31 @@ export const sendForOptions = [
     label: 'Người dùng quan tâm'
   }
 ];
+
+export const objectNames = {
+  ACCOUNT: 'tài khoản',
+  ADMIN: 'quản trị viên',
+  APP_VERSION: 'phiên bản ứng dụng',
+  CATEGORY: 'thể loại',
+  COLLECTION: 'bộ sưu tập',
+  COMMENT: 'bình luận',
+  EMPLOYEE: 'nhân viên',
+  GROUP: 'vai trò',
+  GROUP_PERMISSION: 'nhóm quyền',
+  MOVIE: 'phim',
+  MOVIE_ITEM: 'phần',
+  NOTIFICATION: 'thông báo',
+  PERSON_ACTOR: 'diễn viên',
+  PERSON_DIRECTOR: 'đạo diễn',
+  PERMISSION: 'quyền',
+  PROFILE: 'hồ sơ',
+  REVIEW: 'đánh giá',
+  SERVER_CONFIG: 'máy chủ',
+  SETTING: 'cài đặt',
+  SIDEBAR: 'phim',
+  STYLE: 'thiết kế',
+  USER: 'người dùng',
+  VIDEO: 'video'
+} as const;
+
+export type ObjectNameKey = keyof typeof objectNames;

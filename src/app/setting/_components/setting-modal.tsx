@@ -16,6 +16,7 @@ import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
 import {
   apiConfig,
+  objectNames,
   queryKeys,
   settingDataTypes,
   settingErrorMaps
@@ -55,7 +56,7 @@ export default function SettingModal({
     apiConfig: apiConfig.setting,
     options: {
       queryKey: queryKeys.SETTING,
-      objectName: 'cài đặt',
+      objectName: objectNames.SETTING,
       pathParams: {
         id: setting?.id
       },

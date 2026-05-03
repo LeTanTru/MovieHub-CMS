@@ -3,7 +3,13 @@
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
-import { apiConfig, ErrorCode, FieldTypes, queryKeys } from '@/constants';
+import {
+  apiConfig,
+  ErrorCode,
+  FieldTypes,
+  objectNames,
+  queryKeys
+} from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { appVersionSearchSchema } from '@/schemaValidations';
@@ -23,7 +29,7 @@ export default function AppVersionList() {
     apiConfig: apiConfig.appVersion,
     options: {
       queryKey: queryKeys.APP_VERSION,
-      objectName: 'phiên bản ứng dụng'
+      objectName: objectNames.APP_VERSION
     },
     override: (handlers) => {
       handlers.handleDeleteError = (code) => {

@@ -16,6 +16,7 @@ import { CircleLoading } from '@/components/loading';
 import {
   apiConfig,
   ErrorCode,
+  objectNames,
   queryKeys,
   STATUS_ACTIVE,
   VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL,
@@ -70,7 +71,7 @@ export default function VideoLibraryForm() {
     apiConfig: apiConfig.videoLibrary,
     options: {
       queryKey: queryKeys.VIDEO_LIBRARY,
-      objectName: 'video',
+      objectName: objectNames.VIDEO,
       listPageUrl: route.videoLibrary.getList.path,
       pathParams: {
         id

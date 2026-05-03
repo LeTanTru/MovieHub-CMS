@@ -21,6 +21,7 @@ import {
   groupErrorMaps,
   groupKinds,
   MAX_PAGE_SIZE,
+  objectNames,
   queryKeys,
   GROUP_KIND_ADMIN
 } from '@/constants';
@@ -55,7 +56,7 @@ export default function GroupForm() {
     },
     options: {
       queryKey: queryKeys.GROUP,
-      objectName: 'vai trò',
+      objectName: objectNames.GROUP,
       listPageUrl: route.group.getList.path,
       pathParams: {
         id
@@ -75,9 +76,9 @@ export default function GroupForm() {
   });
 
   const groupPermissions = useMemo(() => {
-    return groupPermissionListData?.data?.content || [];
-  }, [groupPermissionListData?.data?.content]);
-  const permissions = permissionListData?.data.content;
+    return groupPermissionListData?.content || [];
+  }, [groupPermissionListData?.content]);
+  const permissions = permissionListData?.content;
 
   const groupedPermissions = (permissions || []).reduce((acc, permission) => {
     const group = permission.groupPermission.name || 'Unknown';

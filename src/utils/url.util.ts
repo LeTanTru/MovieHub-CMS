@@ -1,6 +1,6 @@
 import { AppConstants, VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL } from '@/constants';
 
-export const renderListPageUrl = (path: string, queryString: string) => {
+export const renderListPageUrl = (path: string, queryString?: string) => {
   if (queryString) {
     return `${path}?${queryString}`;
   }

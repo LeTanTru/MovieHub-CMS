@@ -12,6 +12,7 @@ import {
   MOVIE_ITEM_KIND_SEASON,
   MOVIE_TYPE_SINGLE,
   movieItemKindOptions,
+  objectNames,
   queryKeys
 } from '@/constants';
 import {
@@ -82,7 +83,7 @@ export default function MovieItemSeasonList() {
     apiConfig: apiConfig.movieItem,
     options: {
       queryKey: queryKeys.MOVIE_ITEM,
-      objectName: 'phần',
+      objectName: objectNames.MOVIE_ITEM,
       excludeFromQueryFilter: ['type', 'movieTitle'],
       defaultFilters: {
         movieId,
@@ -224,7 +225,7 @@ export default function MovieItemSeasonList() {
     onDragEnd
   } = useDragDrop<MovieItemResType>({
     key: queryKeys.MOVIE_ITEM_LIST,
-    objectName: 'phần',
+    objectName: objectNames.MOVIE_ITEM,
     data,
     apiConfig: apiConfig.movieItem.updateOrdering,
     sortField: 'ordering',

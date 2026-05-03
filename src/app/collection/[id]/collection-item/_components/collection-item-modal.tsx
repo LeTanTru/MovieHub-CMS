@@ -8,6 +8,7 @@ import {
   apiConfig,
   collectionItemErrorMaps,
   ErrorCode,
+  objectNames,
   queryKeys
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
@@ -45,7 +46,7 @@ export default function CollectionItemModal({
     apiConfig: apiConfig.collectionItem,
     options: {
       queryKey: queryKeys.COLLECTION_ITEM,
-      objectName: 'phim',
+      objectName: objectNames.MOVIE,
       pathParams: {},
       mode: 'create'
     },

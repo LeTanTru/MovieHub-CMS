@@ -10,6 +10,7 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import {
   apiConfig,
+  objectNames,
   profileErrorMaps,
   queryKeys,
   storageKeys
@@ -41,7 +42,7 @@ export default function ProfileForm() {
     },
     options: {
       queryKey: queryKeys.PROFILE,
-      objectName: 'hồ sơ',
+      objectName: objectNames.PROFILE,
       pathParams: {},
       mode: 'edit',
       showNotify: true

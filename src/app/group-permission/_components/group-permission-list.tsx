@@ -5,7 +5,7 @@ import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper } from '@/components/layout';
 import { DragDropTable } from '@/components/table';
-import { apiConfig, MAX_PAGE_SIZE, queryKeys } from '@/constants';
+import { apiConfig, MAX_PAGE_SIZE, objectNames, queryKeys } from '@/constants';
 import { useDisclosure, useDragDrop, useListBase } from '@/hooks';
 import type {
   Column,
@@ -30,7 +30,7 @@ export default function GroupPermissionList() {
     apiConfig: apiConfig.groupPermission,
     options: {
       queryKey: queryKeys.GROUP_PERMISSION,
-      objectName: 'nhóm quyền'
+      objectName: objectNames.GROUP_PERMISSION
     },
     override: (handlers) => {
       handlers.renderAddButton = () => {
@@ -91,7 +91,7 @@ export default function GroupPermissionList() {
     onDragEnd
   } = useDragDrop<GroupPermissionResType>({
     key: queryKeys.GROUP_PERMISSION_LIST,
-    objectName: 'nhóm quyền',
+    objectName: objectNames.GROUP_PERMISSION,
     data: groupPermissionList,
     apiConfig: apiConfig.groupPermission.updateOrdering,
     sortField: 'ordering',

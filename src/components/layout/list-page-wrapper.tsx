@@ -7,6 +7,7 @@ type ListPageWrapperProps = {
   searchForm?: ReactNode;
   addButton?: ReactNode;
   reloadButton?: ReactNode;
+  additionButtons?: ReactNode[];
 };
 
 export default function ListPageWrapper({
@@ -14,8 +15,11 @@ export default function ListPageWrapper({
   children,
   searchForm,
   addButton,
-  reloadButton
+  reloadButton,
+  additionButtons
 }: ListPageWrapperProps) {
+  const hasAddtionalButtons = !!additionButtons && additionButtons.length > 0;
+
   return (
     <div
       tabIndex={-1}
@@ -39,6 +43,10 @@ export default function ListPageWrapper({
             'ml-2': !!searchForm
           })}
         >
+          {hasAddtionalButtons &&
+            additionButtons
+              ?.filter(Boolean)
+              ?.map((button, index) => <div key={index}>{button}</div>)}
           {reloadButton}
           {addButton}
         </div>

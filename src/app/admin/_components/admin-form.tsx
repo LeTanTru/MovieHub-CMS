@@ -16,6 +16,7 @@ import {
   apiConfig,
   ErrorCode,
   GROUP_KIND_ADMIN,
+  objectNames,
   queryKeys,
   STATUS_ACTIVE,
   statusOptions
@@ -38,13 +39,13 @@ export default function AdminForm() {
   const { id } = useParams<{ id: string }>();
 
   const { data: groupData } = useGroupListQuery({ kind: GROUP_KIND_ADMIN });
-  const groupList = groupData?.data.content || [];
+  const groupList = groupData?.content || [];
   const groupOptions = groupList.map((item) => ({
     label: item.name,
     value: item.id.toString()
   }));
 
-  const { mutateAsync: uploadImageMutate, isPending: uploadImageLoading } =
+  const { mutateAsync: uploadAvatarMutate, isPending: uploadImageLoading } =
     useUploadAvatarMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
@@ -65,7 +66,7 @@ export default function AdminForm() {
     },
     options: {
       queryKey: queryKeys.ADMIN,
-      objectName: 'quản trị viên',
+      objectName: objectNames.ADMIN,
       listPageUrl: route.admin.getList.path,
       pathParams: {
         id
@@ -170,7 +171,7 @@ export default function AdminForm() {
                   onChange={imageManager.trackUpload}
                   size={120}
                   uploadImageFn={async (file) => {
-                    const res = await uploadImageMutate({ file });
+                    const res = await uploadAvatarMutate({ file });
                     return res.data?.filePath ?? '';
                   }}
                   label='Ảnh đại diện'
