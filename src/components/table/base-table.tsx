@@ -46,7 +46,8 @@ export default function BaseTable<T extends Record<any, any>>({
   rowKey = 'id',
   pagination,
   changePagination,
-  loading
+  loading,
+  rowClassName
 }: BaseTableProps<T>) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollAtEnd, setScrollAtEnd] = useState(false);
@@ -115,7 +116,10 @@ export default function BaseTable<T extends Record<any, any>>({
                   {dataSource.map((row, rowIndex) => (
                     <TableRow
                       key={String(row[rowKey])}
-                      className='border-b-[0.2px] transition-colors duration-200 ease-linear hover:bg-zinc-50'
+                      className={cn(
+                        'border-b-[0.2px] transition-colors duration-200 ease-linear hover:bg-zinc-50',
+                        rowClassName?.(row, rowIndex)
+                      )}
                     >
                       {columns.map((col, colIndex) => {
                         return (

@@ -37,12 +37,13 @@ ThemeProvider → QueryProvider → AppProvider → PermissionGuard → children
 
 Permissions and API endpoints are centralized:
 
-| File                                                   | Purpose                                                                  |
-| ------------------------------------------------------ | ------------------------------------------------------------------------ |
-| `src/constants/api-config.ts`                          | Endpoint URLs, HTTP methods, and permission codes                        |
-| `src/routes/route.ts`                                  | Route metadata: `auth`, `permissionCode`, `separate` (create/edit split) |
-| `src/components/permission-guard/permission-guard.tsx` | Route-level auth enforcement and redirect logic                          |
-| `src/utils/validate-permission.util.ts`                | Permission resolution including the create/edit `separate` split         |
+| File                                                   | Purpose                                                                                                          |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `src/constants/api-config.ts`                          | Endpoint URLs, HTTP methods, and permission codes                                                                |
+| `src/constants/app.ts`                                 | API base URLs (`authApiUrl`, `apiUrl`, `mediaUrl`)                                                               |
+| `src/routes/route.ts`                                  | Route metadata: `auth`, `permissionCode`, `separate` (create/edit split)                                         |
+| `src/components/permission-guard/permission-guard.tsx` | Route-level auth enforcement and redirect logic                                                                  |
+| `src/utils/validate-permission.util.ts`                | Permission resolution — when `separate: true`, uses `path` ('create'/'edit') to pick the correct permission code |
 
 ### HTTP Layer (`src/utils/http.util.ts`)
 
@@ -57,12 +58,17 @@ Use `useShallow` for multi-field selectors to avoid unnecessary re-renders. Alwa
 
 ### CRUD Hooks
 
-- **`useListBase`**: List query state, query-param sync, pagination, delete flow. Keep required hidden filters in `defaultFilters` + `notShowFromSearchParams`.
+- **`useListBase`**: List query state, query-param sync, pagination, delete flow. Keep required hidden filters in `defaultFilters` + `notShowFromSearchParams`. Preserve query key shape: ``[`${queryKey}-list`, queryFilter]``.
 - **`useSaveBase`**: Create/edit submit flow, dirty-leave guard, cache invalidation for both `[queryKey]` and ``[`${queryKey}-list`]``.
+- Prefer `apiConfig.*.autoComplete` endpoints for autocomplete fields when available.
 
 ### Query Key Convention (`src/constants/master-data.ts`)
 
 All `queryKey` strings for TanStack Query mutations/queries are centralized in `queryKeys`. Base keys (e.g., `ADMIN: 'admin'`) define entity names; mutation keys (e.g., `CHANGE_ADMIN_STATUS: 'change-admin-status'`) are explicit strings. Always import and use `queryKeys` instead of hardcoding strings.
+
+### API Base URLs — `AppConstants` (`src/constants/app.ts`)
+
+API base URLs use `AppConstants.authApiUrl`, `AppConstants.apiUrl`, and `AppConstants.mediaUrl` rather than raw env vars. Do not hardcode `process.env.NEXT_PUBLIC_*` in `src/constants/api-config.ts`.
 
 ### Environment Variables
 

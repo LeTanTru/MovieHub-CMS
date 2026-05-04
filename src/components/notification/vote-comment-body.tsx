@@ -1,5 +1,7 @@
 import { AvatarField, ImageField } from '@/components/form';
+import { useQueryParams } from '@/hooks';
 import { route } from '@/routes';
+import { useCommentStore } from '@/store';
 import { NotificationResType, VoteCommentNotificationType } from '@/types';
 import {
   convertUTCToLocal,
@@ -10,22 +12,43 @@ import {
   timeAgo
 } from '@/utils';
 import Link from 'next/link';
+import { useMemo } from 'react';
 
 export default function VoteCommentBody({
   notification
 }: {
   notification: NotificationResType;
 }) {
-  const body = parseJSON<VoteCommentNotificationType>(notification.body);
+  const body = useMemo(
+    () => parseJSON<VoteCommentNotificationType>(notification.body),
+    [notification.body]
+  );
+  const { serializeParams } = useQueryParams();
+  const setOpenParentIds = useCommentStore((s) => s.setOpenParentIds);
+  const setScrollTarget = useCommentStore((s) => s.setScrollTarget);
+
+  const handleClick = () => {
+    const parentId = body?.parentId;
+
+    if (parentId) {
+      setOpenParentIds((prev) =>
+        prev.includes(parentId) ? prev : [...prev, parentId]
+      );
+    }
+    setScrollTarget({ commentId: body?.id, parentId });
+  };
 
   return (
     <Link
+      onClick={handleClick}
       className='flex flex-1 items-center justify-between'
       href={renderListPageUrl(
         generatePath(route.comment.getList.path, {
           id: body?.movieId || ''
         }),
-        `title=${body?.movieTitle}`
+        serializeParams({
+          movieTitle: body?.movieTitle
+        })
       )}
     >
       <div className='flex flex-1 items-center gap-2'>

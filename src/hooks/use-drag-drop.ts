@@ -1,5 +1,3 @@
-'use client';
-
 import { logger } from '@/logger';
 import type { ApiConfig, ApiResponse, Column } from '@/types';
 import { http, invalidateQueries, notify } from '@/utils';

@@ -1,5 +1,3 @@
-'use client';
-
 import { Button, Col, Row } from '@/components/form';
 import { ConfirmModal } from '@/components/modal';
 import { storageKeys } from '@/constants';

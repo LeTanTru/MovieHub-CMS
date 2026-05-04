@@ -23,11 +23,23 @@ import CommentItem from './comment-item';
 import { DotLoading } from '@/components/loading';
 import { Button } from '@/components/form';
 import { invalidateQueries } from '@/utils';
+import { useCommentStore } from '@/store';
+import { useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function CommentList() {
   const { id: movieId } = useParams<{ id: string }>();
   const isMounted = useIsMounted();
   const { searchParams } = useQueryParams<{ movieTitle: string }>();
+  const { openParentIds, targetCommentId, targetParentId, setOpenParentIds } =
+    useCommentStore(
+      useShallow((s) => ({
+        openParentIds: s.openParentIds,
+        targetCommentId: s.targetCommentId,
+        targetParentId: s.targetParentId,
+        setOpenParentIds: s.setOpenParentIds
+      }))
+    );
 
   const { data: voteListData, refetch: getVoteList } = useVoteListCommentQuery({
     movieId
@@ -57,6 +69,23 @@ export default function CommentList() {
       showNotify: false
     }
   });
+
+  const targetRootId = targetParentId || targetCommentId;
+
+  useEffect(() => {
+    if (!targetParentId) return;
+    if (openParentIds.includes(targetParentId)) return;
+
+    setOpenParentIds((prev) =>
+      prev.includes(targetParentId) ? prev : [...prev, targetParentId]
+    );
+  }, [openParentIds, setOpenParentIds, targetParentId]);
+
+  useEffect(() => {
+    if (!targetRootId || loading || isFetchingMore || !hasMore) return;
+    if (data.some((comment) => comment.id === targetRootId)) return;
+    handlers.loadMore();
+  }, [data, handlers, hasMore, isFetchingMore, loading, targetRootId]);
 
   const voteMap = (() => {
     const map: Record<string, number> = {};
@@ -116,6 +145,8 @@ export default function CommentList() {
         onPin={handlePinComment}
         onDelete={() => handleDeleteComment(c)}
         onReplySuccess={handleReplySuccess}
+        targetCommentId={targetCommentId}
+        targetParentId={targetParentId}
         renderChildren={renderChildren}
       />
     ));

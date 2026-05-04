@@ -1,5 +1,3 @@
-'use client';
-
 import useNavigate from '@/hooks/use-navigate';
 import { usePathname, useSearchParams } from 'next/navigation';
 

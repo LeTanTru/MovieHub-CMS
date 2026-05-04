@@ -17,7 +17,7 @@ export default function ReviewList() {
   const { searchParams } = useQueryParams<{ movieTitle: string }>();
 
   const {
-    data,
+    data: reviews,
     loading,
     handlers,
     isFetchingMore,
@@ -36,7 +36,7 @@ export default function ReviewList() {
     }
   });
 
-  const totalStars = data.reduce((acc, item) => {
+  const totalStars = reviews.reduce((acc, item) => {
     return acc + item.rate;
   }, 0);
 
@@ -63,14 +63,14 @@ export default function ReviewList() {
               <ReviewItem.Skeleton key={index} />
             ))}
           </div>
-        ) : data.length === 0 ? (
+        ) : reviews.length === 0 ? (
           <NoData content='Chưa có đánh giá nào' />
         ) : (
           <div className='mt-4 p-4'>
             <h4 className='-mb-2 ml-2 font-semibold text-black'>
               Đánh giá ({totalElements}) ({((totalStars * 2) / 3)?.toFixed(2)})
             </h4>
-            {data.map((item) => (
+            {reviews.map((item) => (
               <ReviewItem
                 key={item.id}
                 review={item}

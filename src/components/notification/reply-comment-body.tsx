@@ -1,5 +1,7 @@
 import { AvatarField, ImageField } from '@/components/form';
+import { useQueryParams } from '@/hooks';
 import { route } from '@/routes';
+import { useCommentStore } from '@/store';
 import { NotificationResType, ReplyCommentNotificationType } from '@/types';
 import {
   convertUTCToLocal,
@@ -10,21 +12,41 @@ import {
   timeAgo
 } from '@/utils';
 import Link from 'next/link';
+import { useMemo } from 'react';
 
 export default function ReplyCommentBody({
   notification
 }: {
   notification: NotificationResType;
 }) {
-  const body = parseJSON<ReplyCommentNotificationType>(notification.body);
+  const body = useMemo(
+    () => parseJSON<ReplyCommentNotificationType>(notification.body),
+    [notification.body]
+  );
+  const { serializeParams } = useQueryParams();
+  const setOpenParentIds = useCommentStore((s) => s.setOpenParentIds);
+  const setScrollTarget = useCommentStore((s) => s.setScrollTarget);
+
+  const handleClick = () => {
+    if (body?.parentId) {
+      setOpenParentIds((prev) =>
+        prev.includes(body.parentId) ? prev : [...prev, body.parentId]
+      );
+    }
+    setScrollTarget({ commentId: body?.id, parentId: body?.parentId });
+  };
+
   return (
     <Link
+      onClick={handleClick}
       className='flex flex-1 items-center justify-between gap-2'
       href={renderListPageUrl(
         generatePath(route.comment.getList.path, {
           id: body?.movieId || ''
         }),
-        `title=${body?.movieTitle}`
+        serializeParams({
+          movieTitle: body?.movieTitle
+        })
       )}
     >
       <div className='flex w-20 shrink-0 justify-center'>

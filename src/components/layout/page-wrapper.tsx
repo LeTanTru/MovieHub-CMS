@@ -24,6 +24,7 @@ export default function PageWrapper({
   notFoundContent,
   ...props
 }: PageWrapperProps) {
+  const scrollContainerId = props.id || 'page-wrapper-scroll-container';
   const firstRoutePath = useFirstActiveRoute();
   const fullBreadcrumbs: BreadcrumbType[] = [
     { label: 'Trang chủ', href: firstRoutePath },
@@ -31,6 +32,7 @@ export default function PageWrapper({
   ];
   return (
     <main
+      id={scrollContainerId}
       className={cn('bg-page-wrapper h-[calc(100vh-64px)]', {
         'overflow-y-auto': !loading
       })}

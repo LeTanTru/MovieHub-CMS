@@ -7,16 +7,19 @@ import { NoData } from '@/components/no-data';
 import { invalidateQueries } from '@/utils';
 import { queryKeys } from '@/constants';
 import { NotificationItem } from '@/components/notification';
+import { CircleLoading } from '@/components/loading';
 
 type Props = {
   notifications: NotificationResType[];
   canDelete: boolean;
+  loading?: boolean;
   handleDelete: (id: string) => void;
 };
 
 export default function NotificationList({
   notifications,
   canDelete,
+  loading,
   handleDelete
 }: Props) {
   const { mutateAsync: updateReadMutate } = useUpdateReadNotificationMutation();
@@ -35,6 +38,14 @@ export default function NotificationList({
       }
     );
   };
+
+  if (loading) {
+    return (
+      <div className='flex min-h-[50vh] items-center justify-center'>
+        <CircleLoading className='stroke-main-color' />
+      </div>
+    );
+  }
 
   if (!notifications.length) {
     return <NoData width={150} content='Không có thông báo nào' />;

@@ -25,6 +25,7 @@ export type BaseTableProps<T> = {
   pagination: PaginationType;
   loading: boolean;
   changePagination: (page: number) => void;
+  rowClassName?: (record: T, index: number) => string;
 };
 
 export type DragDropTableProps<T extends Record<any, any>> = {

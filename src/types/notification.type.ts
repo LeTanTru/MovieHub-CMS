@@ -1,4 +1,7 @@
-import { updateReadNotificationSchema } from '@/schemaValidations';
+import {
+  notificationSearchSchema,
+  updateReadNotificationSchema
+} from '@/schemaValidations';
 import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
@@ -22,7 +25,8 @@ export type UpdateReadNotificationBodyType = z.infer<
   typeof updateReadNotificationSchema
 >;
 
-export type NotificationSearchType = BaseSearchType;
+export type NotificationSearchType = z.infer<typeof notificationSearchSchema> &
+  BaseSearchType;
 
 export type ConvertVideoNotificationType = {
   id: string;
@@ -50,6 +54,7 @@ export type ReplyCommentNotificationType = {
 
 export type VoteCommentNotificationType = {
   id: string;
+  parentId?: string;
   movieId: string;
   movieTitle: string;
   movieThumbnail: string;
