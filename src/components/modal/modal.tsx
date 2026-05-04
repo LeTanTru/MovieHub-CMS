@@ -305,7 +305,7 @@ function Confirm({ message, className }: ConfirmProps) {
               <Button
                 variant='outline'
                 size='sm'
-                className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:border-red-500/80 hover:bg-transparent hover:text-red-500/80'
+                className='border-rose-500 text-rose-500 transition-all duration-200 ease-linear hover:border-rose-500/80 hover:bg-transparent hover:text-rose-500/80'
                 onClick={onConfirmNo}
               >
                 Không

@@ -189,8 +189,8 @@ export default function SidebarList() {
         <Badge
           variant='outline'
           className={cn('text-sm font-normal', {
-            'border-green-400 bg-green-100 text-green-600': record.active,
-            'border-red-400 bg-red-100 text-red-600': !record.active
+            'border-emerald-400 bg-emerald-100 text-emerald-600': record.active,
+            'border-rose-400 bg-rose-100 text-rose-600': !record.active
           })}
         >
           {record.active ? 'Hiện' : 'Ẩn'}

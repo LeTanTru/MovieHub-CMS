@@ -291,7 +291,7 @@ export default function UploadImageField<T extends FieldValues>({
                   !value,
                 'rounded-full': avatar,
                 'border-gray-300 bg-gray-100': isDragging,
-                'border-red-500': !!error
+                'border-rose-500': !!error
               }
             )}
             style={{
@@ -496,7 +496,7 @@ export default function UploadImageField<T extends FieldValues>({
                   >
                     <Checkbox
                       id='crop-image'
-                      className='mb-0! cursor-pointer border-gray-200 border-transparent transition-colors duration-200 ease-linear focus-visible:ring-0 data-[state=checked]:border-transparent data-[state=checked]:bg-blue-700! data-[state=checked]:text-white'
+                      className='mb-0! cursor-pointer border-gray-200 border-transparent transition-colors duration-200 ease-linear focus-visible:ring-0 data-[state=checked]:border-transparent data-[state=checked]:bg-sky-700! data-[state=checked]:text-white'
                       checked={shouldCrop}
                       onCheckedChange={(checked) => {
                         setShouldCrop(!!checked);
@@ -517,7 +517,7 @@ export default function UploadImageField<T extends FieldValues>({
                     >
                       <Checkbox
                         id='keep-original-size'
-                        className='mb-0! cursor-pointer border-gray-200 border-transparent transition-colors duration-200 ease-linear focus-visible:ring-0 data-[state=checked]:border-transparent data-[state=checked]:bg-blue-700! data-[state=checked]:text-white'
+                        className='mb-0! cursor-pointer border-gray-200 border-transparent transition-colors duration-200 ease-linear focus-visible:ring-0 data-[state=checked]:border-transparent data-[state=checked]:bg-sky-700! data-[state=checked]:text-white'
                         checked={keepOriginalSize}
                         onCheckedChange={(checked) => {
                           setKeepOriginalSize(!!checked);

@@ -163,7 +163,7 @@ export default function TimePickerField<T extends FieldValues>({
                         'data-[state=open]:border-main-color data-[state=open]:ring-main-color hover:border-input px-3! shadow-none hover:text-black data-[state=open]:ring-1',
                         {
                           'text-gray-300 hover:text-gray-300': !field.value,
-                          'border-red-500 hover:border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500 data-[state=open]:border-red-500 data-[state=open]:ring-1 data-[state=open]:ring-red-500':
+                          'border-rose-500 hover:border-rose-500 focus-visible:border-rose-500 focus-visible:ring-[1px] focus-visible:ring-rose-500 data-[state=open]:border-rose-500 data-[state=open]:ring-1 data-[state=open]:ring-rose-500':
                             fieldState.error
                         },
                         className

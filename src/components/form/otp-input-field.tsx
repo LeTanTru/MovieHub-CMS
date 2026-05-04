@@ -89,9 +89,9 @@ export default function OtpInputField<T extends FieldValues>({
                   {Array.from({ length: length }).map((_, i) => (
                     <InputOTPSlot
                       className={cn(
-                        'data-[active=true]:ring-green-primary h-12 w-12 rounded-md border-l text-base duration-200 ease-linear disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none data-[active=true]:border-none data-[active=true]:ring-2',
+                        'data-[active=true]:ring-emerald-primary h-12 w-12 rounded-md border-l text-base duration-200 ease-linear disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none data-[active=true]:border-none data-[active=true]:ring-2',
                         {
-                          'border-red-500 data-[active=true]:ring-red-500':
+                          'border-rose-500 data-[active=true]:ring-rose-500':
                             !!fieldState.error
                         }
                       )}

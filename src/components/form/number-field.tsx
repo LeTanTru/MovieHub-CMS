@@ -126,7 +126,7 @@ function NumberField<T extends FieldValues>({
                   {
                     'pl-10': prefixIcon,
                     'pr-10': suffixIcon,
-                    'border-red-500 focus-visible:ring-red-500':
+                    'border-rose-500 focus-visible:ring-rose-500':
                       !!fieldState.error,
                     'focus-visible:ring-main-color': !fieldState.error
                   }

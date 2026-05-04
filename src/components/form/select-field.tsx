@@ -173,7 +173,7 @@ export default function SelectField<
                         {
                           'ring-main-color border-transparent! ring-2': open,
                           '[&>div>span]:text-gray-300': fieldState.invalid,
-                          'border-red-500 ring-red-500': !!fieldState.error
+                          'border-rose-500 ring-rose-500': !!fieldState.error
                         },
                         className
                       )}

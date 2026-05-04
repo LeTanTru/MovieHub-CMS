@@ -82,7 +82,7 @@ export default function RadioGroupField<T extends FieldValues>({
                   <FormControl>
                     <RadioGroupItem
                       className={cn(
-                        'linear transition-all duration-200 data-[state=checked]:bg-blue-600!',
+                        'linear transition-all duration-200 data-[state=checked]:bg-sky-600!',
                         {
                           'pointer-events-none cursor-not-allowed opacity-50 select-none':
                             disabled
