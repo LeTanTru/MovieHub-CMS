@@ -27,7 +27,7 @@ export default function ConvertVideoBody({
   return (
     <Link
       onClick={handleClick}
-      className='flex flex-1 items-center justify-between gap-2'
+      className='flex flex-1 items-center justify-between gap-2 pl-2'
       href={route.videoLibrary.getList.path}
     >
       <div className='relative w-20 shrink-0'>

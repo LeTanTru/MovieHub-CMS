@@ -32,20 +32,21 @@ export default function NotificationItem({
     <div
       onClick={onClickItem && (() => onClickItem(notification))}
       className={cn(
-        'flex cursor-pointer items-center justify-between rounded p-2 transition-colors duration-200 ease-linear hover:bg-gray-200',
+        'flex cursor-pointer items-center justify-between rounded py-2 transition-colors duration-200 ease-linear hover:bg-gray-200',
         {
           'bg-gray-100': !notification.isRead
         }
       )}
     >
       <NotificationBody notification={notification} />
+
       {canDelete && (
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger
             className='border-none bg-transparent shadow-none'
             asChild
           >
-            <Button variant='outline'>
+            <Button variant='outline' className='px-2!'>
               <EllipsisVertical />
             </Button>
           </DropdownMenuTrigger>

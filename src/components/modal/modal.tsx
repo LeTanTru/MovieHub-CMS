@@ -14,7 +14,6 @@ import { createPortal } from 'react-dom';
 import { useIsMounted } from '@/hooks';
 import { X, ChevronDown, Info } from 'lucide-react';
 import { Button } from '@/components/form';
-import { isMobileDevice } from '@/utils';
 
 type ModalContextType = {
   open: boolean;
@@ -85,12 +84,27 @@ export default function Modal({
   useEffect(() => {
     if (!open) return;
 
-    const isMobile = isMobileDevice();
-    if (isMobile) document.body.classList.add('body-lock', 'mobile');
-    else document.body.classList.add('body-lock');
+    const hasVerticalScroll =
+      document.documentElement.scrollHeight > window.innerHeight;
+
+    document.body.classList.add('body-lock');
+    document.body.style.overflow = 'hidden';
+    if (hasVerticalScroll) {
+      document.body.style.marginRight = '15px';
+      const header = document.querySelector('.header');
+      if (header && getComputedStyle(header).position === 'fixed') {
+        header.setAttribute('style', 'padding-right: 15px');
+      }
+    }
+
     return () => {
       document.body.classList.remove('body-lock');
-      if (isMobile) document.body.classList.remove('mobile');
+      document.body.style.overflow = '';
+      document.body.style.marginRight = '';
+      const header = document.querySelector('.header');
+      if (header && getComputedStyle(header).position === 'fixed') {
+        (header as HTMLElement).style.paddingRight = '';
+      }
     };
   }, [open]);
 
@@ -273,11 +287,11 @@ function Body({ children, className, ref, scrollable }: BodyProps) {
 
 function Confirm({ message, className }: ConfirmProps) {
   const { showConfirm, onConfirmYes, onConfirmNo } = useModal();
-  return (
+  return createPortal(
     <AnimatePresence>
       {showConfirm && (
         <m.div
-          className='absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-black/40'
+          className='fixed inset-0 z-9999 flex items-center justify-center rounded-lg bg-black/40'
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -321,7 +335,8 @@ function Confirm({ message, className }: ConfirmProps) {
           </m.div>
         </m.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 
