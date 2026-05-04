@@ -45,7 +45,9 @@ export default function DropdownNotification() {
     isPending: deleteAllNotificationLoading
   } = useDeleteAllNotificationMutation();
 
-  const totalUnread = totalUnreadData?.totalUnread || 0;
+  const totalUnread = totalUnreadData?.totalUnread
+    ? Number(totalUnreadData.totalUnread)
+    : 0;
 
   const {
     data: notifications,
@@ -139,14 +141,12 @@ export default function DropdownNotification() {
               <h3 className='font-medium'>Thông báo</h3>
               {notifications.length > 0 && !loading && (
                 <div className='flex items-center gap-4'>
-                  {canReadAll && (
+                  {canReadAll && totalUnread > 0 && (
                     <Button
                       type='button'
                       variant='ghost'
                       onClick={handleReadAll}
-                      disabled={
-                        readAllNotificationLoading || Number(totalUnread) === 0
-                      }
+                      disabled={readAllNotificationLoading}
                       className='hover:text-main-color flex h-fit cursor-pointer items-center gap-1 p-0! transition-all duration-200 ease-linear hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50'
                     >
                       {readAllNotificationLoading ? (
@@ -157,7 +157,7 @@ export default function DropdownNotification() {
                       Đọc tất cả
                     </Button>
                   )}
-                  {canDelete && (
+                  {canDelete && totalElements > 0 && (
                     <ConfirmModal
                       message='Bạn có chắc chắn muốn xóa tất cả không báo không?'
                       onConfirm={handleDeleteAll}
@@ -165,9 +165,7 @@ export default function DropdownNotification() {
                         <Button
                           type='button'
                           variant='ghost'
-                          disabled={
-                            deleteAllNotificationLoading || totalElements === 0
-                          }
+                          disabled={deleteAllNotificationLoading}
                           className='flex h-fit cursor-pointer items-center gap-1 p-0! transition-all duration-200 ease-linear hover:bg-transparent hover:text-rose-500 disabled:cursor-not-allowed disabled:opacity-50'
                         >
                           {deleteAllNotificationLoading ? (

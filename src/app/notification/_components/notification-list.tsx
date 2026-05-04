@@ -181,13 +181,13 @@ export default function NotificationList() {
               <NotificationItem
                 key={notification.id}
                 notification={notification}
-                onUpdateRead={handleUpdateRead}
                 canDelete={handlers.hasPermission({
                   requiredPermissions: [
                     apiConfig.notification.delete.permissionCode
                   ]
                 })}
                 onDelete={handleDelete}
+                onClickItem={handleUpdateRead}
               />
             ))}
           </List>

@@ -19,7 +19,7 @@ type NotificationItemProps = {
   notification: NotificationResType;
   canDelete?: boolean;
   onDelete: (id: string) => void;
-  onClickItem: (notification: NotificationResType) => void;
+  onClickItem?: (notification: NotificationResType) => void;
 };
 
 export default function NotificationItem({
