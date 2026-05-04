@@ -91,7 +91,7 @@ export default function ReviewItem({ review, onDelete }: ReviewItemProps) {
                 <span className='font-semibold'>{review.author.fullName}</span>
                 <span>
                   {review.author.gender === GENDER_MALE ? (
-                    <Mars className='size-4 text-blue-500' />
+                    <Mars className='size-4 text-sky-500' />
                   ) : review.author.gender === GENDER_FEMALE ? (
                     <Venus className='size-4 text-pink-500' />
                   ) : (
@@ -136,7 +136,10 @@ export default function ReviewItem({ review, onDelete }: ReviewItemProps) {
                 </span>
               )}
               {review.status === REVIEW_STATUS_SHOW && (
-                <span title='Đánh giá đang hiển thị' className='text-green-500'>
+                <span
+                  title='Đánh giá đang hiển thị'
+                  className='text-emerald-500'
+                >
                   <AiOutlineEye className='size-4' />
                 </span>
               )}

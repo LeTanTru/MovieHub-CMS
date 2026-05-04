@@ -175,7 +175,7 @@ export default function CommentForm({
                 placeholder='Viết phản hồi...'
                 className='min-h-30'
                 label={
-                  <span className='rounded bg-blue-50 px-1.5 py-1 font-semibold text-blue-600'>
+                  <span className='rounded bg-sky-50 px-1.5 py-1 font-semibold text-sky-600'>
                     {defaultMention}
                   </span>
                 }

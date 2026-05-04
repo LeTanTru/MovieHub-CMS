@@ -58,10 +58,13 @@ type CommentStoreState = {
 
 type CommentStoreActions = {
   openReply: (replyingComment: CommentResType | null) => void;
+
   closeReply: () => void;
 
   setEditingComment: (c: CommentResType | null) => void;
+
   setOpenParentIds: (ids: string[] | ((prev: string[]) => string[])) => void;
+
   setScrollTarget: (target: {
     commentId?: string | null;
     parentId?: string | null;

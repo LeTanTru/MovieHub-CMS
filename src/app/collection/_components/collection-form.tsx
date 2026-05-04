@@ -272,7 +272,7 @@ export default function CollectionForm() {
                   <div className='space-y-2'>
                     <label htmlFor='color' className='ml-2 text-sm font-medium'>
                       Màu (chọn ít nhất 2)
-                      <span className='text-red-500'>*</span>
+                      <span className='text-rose-500'>*</span>
                     </label>
                     <div className='mt-1 space-y-2'>
                       {colors.map((color: string, index: number) => (
@@ -300,7 +300,7 @@ export default function CollectionForm() {
                               type='button'
                               variant='outline'
                               onClick={() => removeColor(index)}
-                              className='border-red-500 text-red-500 hover:border-red-500/80 hover:text-red-500/80'
+                              className='border-rose-500 text-rose-500 hover:border-rose-500/80 hover:text-rose-500/80'
                             >
                               <X className='size-4' />
                             </Button>

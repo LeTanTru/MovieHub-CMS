@@ -18,19 +18,19 @@ import { AiOutlineDelete } from 'react-icons/ai';
 type NotificationItemProps = {
   notification: NotificationResType;
   canDelete?: boolean;
-  onUpdateRead: (notification: NotificationResType) => Promise<void>;
   onDelete: (id: string) => void;
+  onClickItem: (notification: NotificationResType) => void;
 };
 
 export default function NotificationItem({
   notification,
   canDelete = false,
-  onUpdateRead,
-  onDelete
+  onDelete,
+  onClickItem
 }: NotificationItemProps) {
   return (
     <div
-      onClick={() => onUpdateRead(notification)}
+      onClick={onClickItem && (() => onClickItem(notification))}
       className={cn(
         'flex cursor-pointer items-center justify-between rounded p-2 transition-colors duration-200 ease-linear hover:bg-gray-200',
         {
@@ -59,7 +59,7 @@ export default function NotificationItem({
                     trigger={
                       <Button
                         variant='ghost'
-                        className='text-destructive hover:text-destructive/50 h-fit w-full justify-start border-none bg-transparent p-2! shadow-none hover:bg-transparent'
+                        className='h-fit w-full justify-start border-none bg-transparent p-2! text-rose-500 shadow-none hover:bg-transparent hover:text-rose-500/50'
                       >
                         <AiOutlineDelete className='size-5' />
                         Xóa

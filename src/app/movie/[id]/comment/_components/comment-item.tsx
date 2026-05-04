@@ -211,7 +211,7 @@ export default function CommentItem({
     const mention = `@${replyToInfo?.fullName}`;
 
     return (
-      <span className='rounded bg-blue-50 px-1.5 py-0.5 font-semibold text-blue-600'>
+      <span className='rounded bg-sky-50 px-1.5 py-0.5 font-semibold text-sky-600'>
         {mention}
       </span>
     );
@@ -334,7 +334,7 @@ export default function CommentItem({
                   <span className='font-semibold'>{authorInfo.fullName}</span>
                   <span>
                     {authorInfo.gender === GENDER_MALE ? (
-                      <Mars className='size-4 text-blue-500' />
+                      <Mars className='size-4 text-sky-500' />
                     ) : authorInfo.gender === GENDER_FEMALE ? (
                       <Venus className='size-4 text-pink-500' />
                     ) : (
@@ -382,7 +382,7 @@ export default function CommentItem({
                 {comment.status === COMMENT_STATUS_SHOW && (
                   <span
                     title='Bình luận đang hiển thị'
-                    className='text-green-500'
+                    className='text-emerald-500'
                   >
                     <AiOutlineEye className='size-4' />
                   </span>
@@ -416,7 +416,7 @@ export default function CommentItem({
                 <Button
                   variant='ghost'
                   className={cn('mr-2 size-5! p-0!', {
-                    '[&_svg]:fill-blue-600 [&_svg]:text-blue-600':
+                    '[&_svg]:fill-sky-600 [&_svg]:text-sky-600':
                       comment.isPinned
                   })}
                   onClick={() => onPin(comment.id, !comment.isPinned)}
@@ -444,8 +444,8 @@ export default function CommentItem({
                     <ToolTip title='Thích'>
                       <Button
                         variant='ghost'
-                        className={cn('size-5! p-0! hover:text-blue-500', {
-                          'like-pop [&_svg]:fill-blue-500 [&_svg]:stroke-blue-500':
+                        className={cn('size-5! p-0! hover:text-sky-500', {
+                          'like-pop [&_svg]:fill-sky-500 [&_svg]:stroke-sky-500':
                             isLiked
                         })}
                         onClick={() =>
@@ -462,8 +462,8 @@ export default function CommentItem({
                     <ToolTip title='Không thích'>
                       <Button
                         variant='ghost'
-                        className={cn('size-5! p-0! hover:text-red-500', {
-                          'dislike-pop [&_svg]:fill-red-500 [&_svg]:stroke-red-500':
+                        className={cn('size-5! p-0! hover:text-rose-500', {
+                          'dislike-pop [&_svg]:fill-rose-500 [&_svg]:stroke-rose-500':
                             isDisliked
                         })}
                         onClick={() =>
@@ -626,7 +626,7 @@ export default function CommentItem({
 
                     <Button
                       variant='ghost'
-                      className='h-5! p-0! font-medium text-red-500 hover:bg-transparent hover:opacity-70'
+                      className='h-5! p-0! font-medium text-rose-500 hover:bg-transparent hover:opacity-70'
                       onClick={() => handleHideReplies(comment.id)}
                     >
                       Ẩn trả lời

@@ -34,7 +34,7 @@ type PasswordFieldProps<T extends FieldValues> = {
 
 const getStrengthColor = (score: number): string => {
   if (score === 0) return 'bg-gray-200';
-  if (score <= 1) return 'bg-red-500';
+  if (score <= 1) return 'bg-rose-500';
   if (score <= 2) return 'bg-orange-500';
   if (score <= 3) return 'bg-yellow-500';
   return 'bg-emerald-500';
@@ -123,7 +123,7 @@ export default function PasswordField<T extends FieldValues>({
                   className={cn(
                     'text-sm shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
                     {
-                      'border-red-500 focus-visible:ring-red-500':
+                      'border-rose-500 focus-visible:ring-rose-500':
                         !!fieldState.error,
                       'focus-visible:ring-main-color': !fieldState.error,
                       'pb-0.5': !isVisible && !!field.value, // not show and have value

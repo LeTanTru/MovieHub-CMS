@@ -14,19 +14,22 @@ type Props = {
   canDelete: boolean;
   loading?: boolean;
   handleDelete: (id: string) => void;
+  onClickItem?: () => void;
 };
 
 export default function NotificationList({
   notifications,
   canDelete,
   loading,
-  handleDelete
+  handleDelete,
+  onClickItem
 }: Props) {
   const { mutateAsync: updateReadMutate } = useUpdateReadNotificationMutation();
 
-  const handleUpdateRead = async (notification: NotificationResType) => {
+  const handleItemClick = (notification: NotificationResType) => {
     if (notification.isRead) return;
-    await updateReadMutate(
+
+    updateReadMutate(
       { ids: [notification.id] },
       {
         onSuccess: () => {
@@ -37,6 +40,8 @@ export default function NotificationList({
         }
       }
     );
+
+    onClickItem?.();
   };
 
   if (loading) {
@@ -57,9 +62,9 @@ export default function NotificationList({
         <NotificationItem
           key={notification.id}
           notification={notification}
-          onUpdateRead={handleUpdateRead}
           canDelete={canDelete}
           onDelete={handleDelete}
+          onClickItem={handleItemClick}
         />
       ))}
     </List>

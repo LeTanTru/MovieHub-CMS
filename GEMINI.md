@@ -31,9 +31,10 @@ Access control is enforced at multiple levels using unique permission codes (e.g
 
 ### 3. Standardized CRUD Hooks
 
-To minimize boilerplate, most pages use one of two base hooks:
+To minimize boilerplate, most pages use one of three base hooks:
 
 - **`useListBase` (`src/hooks/use-list-base.tsx`):** Handles filtering, pagination, query-string syncing, and deletion for list pages.
+- **`useInfiniteListBase` (`src/hooks/use-inifinite-list-base.tsx`):** Handles infinite scrolling and data mapping for large lists.
 - **`useSaveBase` (`src/hooks/use-save-base.tsx`):** Manages form submission, create vs. edit detection, data fetching for edits, and automatic query invalidation.
 
 ### 4. Authentication Flow
@@ -59,6 +60,7 @@ To minimize boilerplate, most pages use one of two base hooks:
 - **Animations:** Use `m` from `framer-motion` (with `LazyMotion` in layout) instead of `motion` to reduce bundle size.
 - **Styling:** Use Tailwind CSS 4 with the `cn()` utility for conditional classes. Refer to `src/styles/grid.css` for standardized form layouts.
 - **State Subscription:** Always use `useShallow` when selecting multiple fields from a Zustand store.
+- **Radix UI Patterns:** When nesting interactive components (like `DropdownMenu` or `Popover`) inside containers that use `useClickOutside`, always set `modal={false}` on the Radix component. This prevents global pointer-event interception and ensures that clicks inside the parent container are correctly identified, preventing the parent from closing unexpectedly.
 
 ## 📁 Critical File Map
 

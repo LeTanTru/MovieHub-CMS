@@ -9,9 +9,11 @@ const useCommentStore = create<CommentStoreType>((set) => ({
   targetParentId: null,
 
   openReply: (replyingComment) => set({ replyingComment }),
+
   closeReply: () => set({ replyingComment: null }),
 
   setEditingComment: (editingComment) => set({ editingComment }),
+
   setOpenParentIds: (openParentIds) =>
     set((state) => ({
       openParentIds:
@@ -19,11 +21,13 @@ const useCommentStore = create<CommentStoreType>((set) => ({
           ? openParentIds(state.openParentIds)
           : openParentIds
     })),
+
   setScrollTarget: (target) =>
     set({
       targetCommentId: target.commentId ?? null,
       targetParentId: target.parentId ?? null
     }),
+
   clearScrollTarget: () => set({ targetCommentId: null, targetParentId: null })
 }));
 

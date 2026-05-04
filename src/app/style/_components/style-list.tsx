@@ -67,7 +67,7 @@ export default function StyleList() {
           </span>
           {record.isDefault && (
             <ToolTip title='Mặc định'>
-              <RiCheckboxCircleFill className='size-5 text-green-500' />
+              <RiCheckboxCircleFill className='size-5 text-emerald-500' />
             </ToolTip>
           )}
         </div>
