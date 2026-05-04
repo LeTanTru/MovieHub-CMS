@@ -15,6 +15,7 @@ import {
   queryKeys,
   MAX_PAGE_SIZE,
   DEFAULT_TABLE_PAGE_START,
+  DEFAULT_TABLE_PAGE_SIZE,
   objectNames
 } from '@/constants';
 import { useDisclosure, useListBase } from '@/hooks';
@@ -28,9 +29,10 @@ import type {
 } from '@/types';
 import { formatSecondsToHMS, notify, renderImageUrl } from '@/utils';
 import { LucideLoader, PlayCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import { FaCircleCheck } from 'react-icons/fa6';
+import useVideoLibraryStore from '@/store/video-library.store';
 
 export default function VideoLibraryList() {
   const {
@@ -38,7 +40,10 @@ export default function VideoLibraryList() {
     open: openPlayModal,
     close: closePlayModal
   } = useDisclosure();
+
   const [selectedVideo, setSelectedVideo] = useState<VideoLibraryResType>();
+  const targetVideoId = useVideoLibraryStore((s) => s.targetVideoId);
+  const setTargetVideoId = useVideoLibraryStore((s) => s.setTargetVideoId);
 
   const { data: serverConfigListData } = useServerConfigListQuery({
     page: DEFAULT_TABLE_PAGE_START,
@@ -194,6 +199,25 @@ export default function VideoLibraryList() {
       }
     ];
 
+  // navigate to the page containing targetVideoId, then clear highlight after delay
+  useEffect(() => {
+    if (!targetVideoId || !data) return;
+
+    const index = data.findIndex((v) => v.id === targetVideoId);
+    if (index === -1) return;
+
+    const currentPage = pagination.current;
+    const pageSize = pagination.pageSize || DEFAULT_TABLE_PAGE_SIZE;
+    const targetPage = Math.floor(index / pageSize) + 1;
+
+    if (currentPage !== targetPage) {
+      handlers.changePagination(targetPage);
+    }
+
+    const timer = setTimeout(() => setTargetVideoId(null), 2500);
+    return () => clearTimeout(timer);
+  }, [setTargetVideoId, data, handlers, pagination, targetVideoId]);
+
   return (
     <PageWrapper breadcrumbs={[{ label: 'Video' }]}>
       <ListPageWrapper
@@ -210,6 +234,9 @@ export default function VideoLibraryList() {
           pagination={pagination}
           loading={loading}
           changePagination={handlers.changePagination}
+          rowClassName={(record) =>
+            record.id === targetVideoId ? 'bg-main-color/10' : ''
+          }
         />
       </ListPageWrapper>
       {selectedVideo && (

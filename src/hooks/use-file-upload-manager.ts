@@ -1,5 +1,3 @@
-'use client';
-
 import { useCallback, useEffect, useState } from 'react';
 import { logger } from '@/logger';
 import { UseMutateAsyncFunction } from '@tanstack/react-query';

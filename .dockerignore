@@ -19,7 +19,6 @@
 *.md
 *.pem
 *.tsbuildinfo
-AGENTS.md
 commitlint.config.js
 coverage
 Dockerfile

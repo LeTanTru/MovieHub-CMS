@@ -80,49 +80,46 @@ export default function MqttProvider() {
     };
   }, [client]);
 
-  // Subscribe to video library notification
+  // Subscribe to notifications (single hook, one parse, routes by data.cmd)
   useMqtt<NotificationResType>({
     topic: mqttTopics.CMS,
     cmd: mqttCMDs.SEND_NOTIFICATION,
     callback: (data) => {
-      if (data.cmd === mqttCMDs.DONE_CONVERT_VIDEO) {
-        invalidateQueries([
-          queryKeys.UNREAD_NOTIFICATION_COUNT,
-          queryKeys.NOTIFICATION_INFINITE,
-          queryKeys.VIDEO_LIBRARY_LIST
-        ]);
-        notify.success(data.title);
+      switch (data.cmd) {
+        case mqttCMDs.DONE_CONVERT_VIDEO:
+          invalidateQueries([
+            queryKeys.UNREAD_NOTIFICATION_COUNT,
+            queryKeys.NOTIFICATION_INFINITE,
+            queryKeys.VIDEO_LIBRARY_LIST
+          ]);
+          notify.success(data.title);
+          break;
+        case mqttCMDs.REPLY_COMMENT:
+        case mqttCMDs.VOTE_COMMENT:
+          invalidateQueries([
+            queryKeys.UNREAD_NOTIFICATION_COUNT,
+            queryKeys.NOTIFICATION_INFINITE
+          ]);
+          break;
       }
     }
   });
 
-  // Subscribe to reply comment notification
+  // Subscribe to per-account notifications
   useMqtt<NotificationResType>({
     topic: generateMqttTopic(mqttTopics.ACCOUNT, {
       accountId: profile?.id || ''
     }),
     cmd: mqttCMDs.SEND_NOTIFICATION,
     callback: (data) => {
-      if (data.cmd === mqttCMDs.REPLY_COMMENT) {
-        invalidateQueries([
-          queryKeys.UNREAD_NOTIFICATION_COUNT,
-          queryKeys.NOTIFICATION_INFINITE
-        ]);
-      }
-    }
-  });
-
-  useMqtt<NotificationResType>({
-    topic: generateMqttTopic(mqttTopics.ACCOUNT, {
-      accountId: profile?.id || ''
-    }),
-    cmd: mqttCMDs.SEND_NOTIFICATION,
-    callback: (data) => {
-      if (data.cmd === mqttCMDs.VOTE_COMMENT) {
-        invalidateQueries([
-          queryKeys.UNREAD_NOTIFICATION_COUNT,
-          queryKeys.NOTIFICATION_INFINITE
-        ]);
+      switch (data.cmd) {
+        case mqttCMDs.REPLY_COMMENT:
+        case mqttCMDs.VOTE_COMMENT:
+          invalidateQueries([
+            queryKeys.UNREAD_NOTIFICATION_COUNT,
+            queryKeys.NOTIFICATION_INFINITE
+          ]);
+          break;
       }
     }
   });

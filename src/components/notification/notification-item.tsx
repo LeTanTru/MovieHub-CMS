@@ -40,7 +40,7 @@ export default function NotificationItem({
     >
       <NotificationBody notification={notification} />
       {canDelete && (
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger
             className='border-none bg-transparent shadow-none'
             asChild

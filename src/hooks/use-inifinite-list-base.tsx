@@ -1,5 +1,3 @@
-'use client';
-
 import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { SearchForm } from '@/components/search-form';
@@ -641,10 +639,9 @@ const useInfiniteListBase = <
   return {
     data,
     pagination,
-    loading:
-      infiniteQuery.isLoading ||
-      infiniteQuery.isFetching ||
-      deleteMutation.isPending,
+    loading: infiniteQuery.isLoading,
+    deleting: deleteMutation.isPending,
+    fetching: infiniteQuery.isFetching,
     handlers,
     queryFilter,
     listQuery: infiniteQuery,

@@ -33,7 +33,7 @@ export default function DropdownNotification() {
 
   const dropdownRef = useClickOutside<HTMLDivElement>(() => closeDropDown());
 
-  const { data } = useCountUnreadNotificationQuery();
+  const { data: totalUnreadData } = useCountUnreadNotificationQuery();
 
   const {
     mutateAsync: readAllNotifyMutate,
@@ -45,10 +45,11 @@ export default function DropdownNotification() {
     isPending: deleteAllNotificationLoading
   } = useDeleteAllNotificationMutation();
 
-  const totalUnread = data?.totalUnread || 0;
+  const totalUnread = totalUnreadData?.totalUnread || 0;
 
   const {
     data: notifications,
+    loading,
     handlers,
     totalElements
   } = useInfiniteListBase<NotificationResType, NotificationSearchType>({
@@ -56,7 +57,8 @@ export default function DropdownNotification() {
     options: {
       objectName: objectNames.NOTIFICATION,
       queryKey: queryKeys.NOTIFICATION,
-      pageSize: NOTIFICATION_PAGE_SIZE
+      pageSize: NOTIFICATION_PAGE_SIZE,
+      enabled: openedDropdown
     }
   });
 
@@ -135,7 +137,7 @@ export default function DropdownNotification() {
             <div className='absolute -top-2 right-10 border-r-8 border-b-8 border-l-8 border-r-transparent border-b-white border-l-transparent'></div>
             <div className='flex items-center justify-between border-b border-gray-200 px-2 py-1'>
               <h3 className='font-medium'>Thông báo</h3>
-              {notifications.length > 0 && (
+              {notifications.length > 0 && !loading && (
                 <div className='flex items-center gap-4'>
                   {canReadAll && (
                     <Button
@@ -185,6 +187,7 @@ export default function DropdownNotification() {
               notifications={notifications}
               canDelete={canDelete}
               handleDelete={handleDelete}
+              loading={loading}
             />
             {notifications.length > 0 && (
               <div className='border-t border-t-gray-200 p-2 text-center'>
@@ -192,7 +195,7 @@ export default function DropdownNotification() {
                   className='hover:text-main-color inline-block transition-colors duration-200 ease-linear'
                   href={route.notification.getList.path}
                 >
-                  Xem tất cả ({totalUnread})
+                  Xem tất cả
                 </Link>
               </div>
             )}

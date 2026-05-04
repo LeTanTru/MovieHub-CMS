@@ -1,5 +1,3 @@
-'use client';
-
 import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { SearchForm } from '@/components/search-form';
@@ -596,8 +594,9 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
   return {
     data,
     pagination,
-    loading:
-      listQuery.isLoading || listQuery.isFetching || deleteMutation.isPending,
+    loading: listQuery.isLoading,
+    deleting: deleteMutation.isPending,
+    fetching: listQuery.isFetching,
     handlers,
     queryFilter,
     listQuery,
