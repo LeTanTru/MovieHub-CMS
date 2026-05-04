@@ -256,7 +256,7 @@ export default function CommentItem({
   useEffect(() => {
     if (targetCommentId !== comment.id) return; // only scroll if this comment is the target
 
-    let clearHighlightTimeout: ReturnType<typeof setTimeout> | null = null;
+    let clearHighlightTimeout: NodeJS.Timeout | null = null;
 
     // delay scrolling to ensure the target element is rendered and in place
     const scrollTimeout = setTimeout(() => {
