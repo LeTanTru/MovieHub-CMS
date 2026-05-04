@@ -60,7 +60,8 @@ export default function DropdownNotification() {
       objectName: objectNames.NOTIFICATION,
       queryKey: queryKeys.NOTIFICATION,
       pageSize: NOTIFICATION_PAGE_SIZE,
-      enabled: openedDropdown
+      enabled: openedDropdown,
+      excludeFromQueryFilter: ['type']
     }
   });
 
