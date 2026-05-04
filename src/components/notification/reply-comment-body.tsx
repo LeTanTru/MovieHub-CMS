@@ -39,7 +39,7 @@ export default function ReplyCommentBody({
   return (
     <Link
       onClick={handleClick}
-      className='flex flex-1 items-center justify-between gap-2'
+      className='flex flex-1 items-center justify-between gap-2 pl-2'
       href={renderListPageUrl(
         generatePath(route.comment.getList.path, {
           id: body?.movieId || ''
@@ -49,7 +49,7 @@ export default function ReplyCommentBody({
         })
       )}
     >
-      <div className='flex w-20 shrink-0 justify-center'>
+      <div className='flex shrink-0 justify-center'>
         <AvatarField
           size={40}
           src={renderImageUrl(body?.author?.avatarPath)}
@@ -64,7 +64,7 @@ export default function ReplyCommentBody({
           &quot;
         </h3>
         <div
-          className='text-muted-foreground shrink-0 text-xs'
+          className='text-muted-foreground mt-2 shrink-0 text-xs'
           title={convertUTCToLocal(notification.createdDate)}
         >
           {timeAgo(notification.createdDate)}
