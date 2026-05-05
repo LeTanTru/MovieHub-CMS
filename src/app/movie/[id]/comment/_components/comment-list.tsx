@@ -36,15 +36,13 @@ export default function CommentList() {
     searchParams: { movieTitle }
   } = useQueryParams<{ movieTitle: string }>();
 
-  const { openParentIds, targetCommentId, targetParentId, setOpenParentIds } =
-    useCommentStore(
-      useShallow((s) => ({
-        openParentIds: s.openParentIds,
-        targetCommentId: s.targetCommentId,
-        targetParentId: s.targetParentId,
-        setOpenParentIds: s.setOpenParentIds
-      }))
-    );
+  const { targetCommentId, targetParentId, setOpenParentIds } = useCommentStore(
+    useShallow((s) => ({
+      targetCommentId: s.targetCommentId,
+      targetParentId: s.targetParentId,
+      setOpenParentIds: s.setOpenParentIds
+    }))
+  );
 
   const targetRootId = targetParentId || targetCommentId;
 
@@ -123,12 +121,10 @@ export default function CommentList() {
   useEffect(() => {
     if (!targetParentId) return;
 
-    if (openParentIds.includes(targetParentId)) return;
-
     setOpenParentIds((prev) =>
       prev.includes(targetParentId) ? prev : [...prev, targetParentId]
     );
-  }, [openParentIds, setOpenParentIds, targetParentId]);
+  }, [setOpenParentIds, targetParentId]);
 
   useEffect(() => {
     if (!targetRootId || loading || isFetchingMore || !hasMore) return;
