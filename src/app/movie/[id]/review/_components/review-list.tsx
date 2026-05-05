@@ -14,7 +14,9 @@ import { useCallback } from 'react';
 
 export default function ReviewList() {
   const { id: movieId } = useParams<{ id: string }>();
-  const { searchParams } = useQueryParams<{ movieTitle: string }>();
+  const {
+    searchParams: { movieTitle }
+  } = useQueryParams<{ movieTitle: string }>();
 
   const {
     data: reviews,
@@ -51,7 +53,7 @@ export default function ReviewList() {
     <PageWrapper
       breadcrumbs={[
         { label: 'Phim', href: route.movie.getList.path },
-        { label: searchParams.movieTitle || 'Chi tiết' },
+        { label: movieTitle || 'Chi tiết' },
         { label: 'Đánh giá' }
       ]}
     >

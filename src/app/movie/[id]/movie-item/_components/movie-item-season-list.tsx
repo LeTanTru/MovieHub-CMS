@@ -51,13 +51,15 @@ import { logger } from '@/logger';
 export default function MovieItemSeasonList() {
   const navigate = useNavigate();
   const { id: movieId } = useParams<{ id: string }>();
-  const { searchParams, serializeParams } = useQueryParams<{
+  const {
+    searchParams: { type, movieTitle },
+    serializeParams
+  } = useQueryParams<{
     type: string;
     movieTitle: string;
   }>();
 
-  const type = searchParams.type;
-  const movieTitle = searchParams.movieTitle;
+  const movieType = Number(type || 0);
 
   const {
     opened: openedMovieItemModal,
@@ -301,11 +303,10 @@ export default function MovieItemSeasonList() {
     handlers.renderActionColumn({
       actions: {
         watchVideo: (record) =>
-          !!record.video && !!type && +type === MOVIE_TYPE_SINGLE,
+          !!record.video && movieType === MOVIE_TYPE_SINGLE,
         markLatest: (record) =>
           !record.isLatest &&
-          !!type &&
-          +type === MOVIE_TYPE_SINGLE &&
+          movieType === MOVIE_TYPE_SINGLE &&
           handlers.hasPermission({
             requiredPermissions: [apiConfig.movieItem.markLatest.permissionCode]
           }),
@@ -346,7 +347,7 @@ export default function MovieItemSeasonList() {
     <PageWrapper
       breadcrumbs={[
         { label: 'Phim', href: route.movie.getList.path },
-        { label: searchParams.movieTitle || 'Phần' }
+        { label: movieTitle || 'Phần' }
       ]}
     >
       <ListPageWrapper

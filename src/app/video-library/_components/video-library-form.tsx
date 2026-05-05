@@ -260,7 +260,7 @@ export default function VideoLibraryForm() {
                     label='Ảnh nền (16:9)'
                     aspect={16 / 9}
                     required
-                    defaultCrop={false}
+                    originalSize
                   />
                 </Col>
               </Row>

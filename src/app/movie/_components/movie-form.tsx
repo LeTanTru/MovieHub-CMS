@@ -281,7 +281,7 @@ export default function MovieForm() {
                   label='Ảnh bìa (2:3 - Poster)'
                   aspect={2 / 3}
                   required
-                  defaultCrop={false}
+                  originalSize
                 />
               </Col>
               <Col className='grid-c-4'>
@@ -305,7 +305,7 @@ export default function MovieForm() {
                   label='Ảnh xem trước (16:9 - Thumbnail)'
                   aspect={16 / 9}
                   required
-                  defaultCrop={false}
+                  originalSize
                 />
               </Col>
               <Col className='grid-c-4'>
@@ -329,7 +329,6 @@ export default function MovieForm() {
                   label='Ảnh tiêu đề (Image title)'
                   allowCustomAspect
                   originalSize
-                  defaultCrop={false}
                 />
               </Col>
             </Row>
@@ -452,13 +451,15 @@ export default function MovieForm() {
                   required
                 />
               </Col>
-              <Col className='grid-c-3'>
-                <CheckboxField
-                  control={form.control}
-                  name='sendNotificationConfig.isSendNotification'
-                  label='Gửi thông báo'
-                />
-              </Col>
+              {!isEditing && (
+                <Col className='grid-c-3'>
+                  <CheckboxField
+                    control={form.control}
+                    name='sendNotificationConfig.isSendNotification'
+                    label='Gửi thông báo'
+                  />
+                </Col>
+              )}
             </Row>
             {form.watch('sendNotificationConfig.isSendNotification') && (
               <>

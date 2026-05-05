@@ -20,8 +20,12 @@ export default function PersonTab() {
     getData(storageKeys.ACTIVE_TAB_MOVIE_PERSON_KIND) ||
     TAB_MOVIE_PERSON_KIND_ACTOR;
   const [activeTab, setActiveTab] = useState(defaultTab);
+
   const isMounted = useIsMounted();
-  const { searchParams } = useQueryParams<{ movieTitle: string }>();
+
+  const {
+    searchParams: { movieTitle }
+  } = useQueryParams<{ movieTitle: string }>();
 
   const tabs = [
     {
@@ -60,7 +64,7 @@ export default function PersonTab() {
           href: route.movie.getList.path
         },
         {
-          label: searchParams.movieTitle ?? 'Chi tiết'
+          label: movieTitle ?? 'Chi tiết'
         },
         {
           label:

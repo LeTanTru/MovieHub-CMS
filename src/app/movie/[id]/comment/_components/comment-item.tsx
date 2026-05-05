@@ -58,8 +58,6 @@ type CommentItemProps = {
   onPin: (id: string, isPinned: boolean) => void;
   onDelete: () => void;
   onReplySuccess: () => void;
-  targetCommentId?: string | null;
-  targetParentId?: string | null;
   renderChildren: (
     list: CommentResType[],
     level: number,
@@ -76,9 +74,7 @@ export default function CommentItem({
   onPin,
   onDelete,
   renderChildren,
-  onReplySuccess,
-  targetCommentId,
-  targetParentId
+  onReplySuccess
 }: CommentItemProps) {
   const hasPermission = useValidatePermission();
 
@@ -86,6 +82,8 @@ export default function CommentItem({
     openParentIds,
     replyingComment,
     editingComment,
+    targetCommentId,
+    targetParentId,
     setOpenParentIds,
     clearScrollTarget,
     openReply,
@@ -96,6 +94,8 @@ export default function CommentItem({
       openParentIds: s.openParentIds,
       replyingComment: s.replyingComment,
       editingComment: s.editingComment,
+      targetCommentId: s.targetCommentId,
+      targetParentId: s.targetParentId,
       setOpenParentIds: s.setOpenParentIds,
       clearScrollTarget: s.clearScrollTarget,
       openReply: s.openReply,
@@ -103,6 +103,7 @@ export default function CommentItem({
       setEditingComment: s.setEditingComment
     }))
   );
+
   const isActiveParent = openParentIds.includes(comment.id);
 
   const totalChildren = comment.totalChildren || 0;

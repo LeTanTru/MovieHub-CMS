@@ -160,9 +160,7 @@ export default function SidebarForm() {
                     deleteImageFn={webImageManager.handleDeleteOnClick}
                     label='Thumbnail web (Thumnail - 16:9)'
                     aspect={16 / 9}
-                    allowCustomAspect
                     originalSize
-                    defaultCrop={false}
                     required
                   />
                 </Col>
@@ -184,9 +182,7 @@ export default function SidebarForm() {
                     label='Thumbnail mobile (2:3)'
                     aspect={2 / 3}
                     required
-                    allowCustomAspect
                     originalSize
-                    defaultCrop={false}
                   />
                 </Col>
               </Row>

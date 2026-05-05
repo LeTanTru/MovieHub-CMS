@@ -41,11 +41,12 @@ export default function CollectionList() {
   const [selectedCollection, setSelectedCollection] =
     useState<CollectionResType | null>(null);
 
-  const { searchParams, serializeParams } =
-    useQueryParams<CollectionSearchType>();
+  const {
+    searchParams: { type },
+    serializeParams
+  } = useQueryParams<CollectionSearchType>();
 
-  const type = searchParams.type;
-
+  const collectionType = Number(type);
   const { data, loading, handlers } = useListBase<
     CollectionResType,
     CollectionSearchType
@@ -71,7 +72,7 @@ export default function CollectionList() {
                   id: record.id
                 }),
                 serializeParams({
-                  type: searchParams.type,
+                  type: collectionType,
                   collectionTitle: record.name
                 })
               )
@@ -99,13 +100,7 @@ export default function CollectionList() {
           record: CollectionResType,
           buttonProps: Record<string, any>
         ) => {
-          if (
-            !(
-              searchParams.type &&
-              +searchParams.type === COLLECTION_TYPE_SECTION
-            )
-          )
-            return null;
+          if (!(+collectionType === COLLECTION_TYPE_SECTION)) return null;
 
           return (
             <ToolTip title='Xem thiết kế' sideOffset={0}>
