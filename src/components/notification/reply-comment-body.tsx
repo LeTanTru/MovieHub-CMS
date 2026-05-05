@@ -64,7 +64,8 @@ export default function ReplyCommentBody({
         <h3 className='line-clamp-2 font-medium' title={notification.title}>
           {notification.title}:&nbsp;&quot;
           <span className='font-normal'>{body?.content}</span>
-          &quot;
+          &quot;&nbsp;trong phim&nbsp;
+          <span className='font-semibold'>{body?.movieTitle}</span>
         </h3>
         <div
           className='text-muted-foreground mt-2 shrink-0 text-xs'

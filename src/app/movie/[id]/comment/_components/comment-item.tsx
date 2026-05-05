@@ -273,7 +273,7 @@ export default function CommentItem({
         setIsScrollTarget(false);
         clearScrollTarget();
       }, 2000);
-    }, 120);
+    }, 100);
 
     return () => {
       setIsScrollTarget(false); // Clear highlight if component unmounts or targetCommentId changes
@@ -314,9 +314,10 @@ export default function CommentItem({
       <div style={{ marginLeft: level * 0 }} className='pt-4'>
         <div
           className={cn(
-            'flex items-start space-x-3 rounded-md border p-3 transition hover:bg-gray-50',
+            'flex items-start space-x-3 rounded-md border p-3 hover:bg-gray-50',
             {
-              'ring-main-color ring-2': isScrollTarget
+              'ring-main-color ring-2 transition-all duration-200 ease-linear':
+                isScrollTarget
             }
           )}
         >

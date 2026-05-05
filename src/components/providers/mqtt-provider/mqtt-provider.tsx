@@ -94,13 +94,6 @@ export default function MqttProvider() {
           ]);
           notify.success(data.title);
           break;
-        case mqttCMDs.REPLY_COMMENT:
-        case mqttCMDs.VOTE_COMMENT:
-          invalidateQueries([
-            queryKeys.UNREAD_NOTIFICATION_COUNT,
-            queryKeys.NOTIFICATION_INFINITE
-          ]);
-          break;
       }
     }
   });
