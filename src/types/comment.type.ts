@@ -69,6 +69,7 @@ type CommentStoreActions = {
     commentId?: string | null;
     parentId?: string | null;
   }) => void;
+
   clearScrollTarget: () => void;
 };
 

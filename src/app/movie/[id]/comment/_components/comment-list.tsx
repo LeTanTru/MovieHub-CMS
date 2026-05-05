@@ -82,6 +82,7 @@ export default function CommentList() {
     voteListData?.forEach((v) => (map[v.id] = v.type));
     return map;
   })();
+
   const handleVote = async (
     id: string,
     type: number,
@@ -121,6 +122,7 @@ export default function CommentList() {
 
   useEffect(() => {
     if (!targetParentId) return;
+
     if (openParentIds.includes(targetParentId)) return;
 
     setOpenParentIds((prev) =>
