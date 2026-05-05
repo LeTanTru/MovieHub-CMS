@@ -28,12 +28,15 @@ export default function ReplyCommentBody({
   const setScrollTarget = useCommentStore((s) => s.setScrollTarget);
 
   const handleClick = () => {
-    if (body?.parentId) {
+    const parentId = body?.parentId;
+
+    if (parentId) {
       setOpenParentIds((prev) =>
-        prev.includes(body.parentId) ? prev : [...prev, body.parentId]
+        prev.includes(parentId) ? prev : [...prev, parentId]
       );
     }
-    setScrollTarget({ commentId: body?.id, parentId: body?.parentId });
+
+    setScrollTarget({ commentId: body?.id, parentId });
   };
 
   return (

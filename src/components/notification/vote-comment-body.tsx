@@ -35,6 +35,7 @@ export default function VoteCommentBody({
         prev.includes(parentId) ? prev : [...prev, parentId]
       );
     }
+
     setScrollTarget({ commentId: body?.id, parentId });
   };
 

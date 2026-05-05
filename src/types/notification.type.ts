@@ -42,7 +42,7 @@ export type ReplyCommentNotificationType = {
   movieTitle: string;
   movieThumbnail: string;
   content: string;
-  parentId: string;
+  parentId?: string;
   author: {
     id: string;
     username: string;
