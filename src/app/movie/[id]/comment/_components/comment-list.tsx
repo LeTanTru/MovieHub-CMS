@@ -29,8 +29,13 @@ import { useShallow } from 'zustand/react/shallow';
 
 export default function CommentList() {
   const { id: movieId } = useParams<{ id: string }>();
+
   const isMounted = useIsMounted();
-  const { searchParams } = useQueryParams<{ movieTitle: string }>();
+
+  const {
+    searchParams: { movieTitle }
+  } = useQueryParams<{ movieTitle: string }>();
+
   const { openParentIds, targetCommentId, targetParentId, setOpenParentIds } =
     useCommentStore(
       useShallow((s) => ({
@@ -40,6 +45,8 @@ export default function CommentList() {
         setOpenParentIds: s.setOpenParentIds
       }))
     );
+
+  const targetRootId = targetParentId || targetCommentId;
 
   const { data: voteListData, refetch: getVoteList } = useVoteListCommentQuery({
     movieId
@@ -69,23 +76,6 @@ export default function CommentList() {
       showNotify: false
     }
   });
-
-  const targetRootId = targetParentId || targetCommentId;
-
-  useEffect(() => {
-    if (!targetParentId) return;
-    if (openParentIds.includes(targetParentId)) return;
-
-    setOpenParentIds((prev) =>
-      prev.includes(targetParentId) ? prev : [...prev, targetParentId]
-    );
-  }, [openParentIds, setOpenParentIds, targetParentId]);
-
-  useEffect(() => {
-    if (!targetRootId || loading || isFetchingMore || !hasMore) return;
-    if (data.some((comment) => comment.id === targetRootId)) return;
-    handlers.loadMore();
-  }, [data, handlers, hasMore, isFetchingMore, loading, targetRootId]);
 
   const voteMap = (() => {
     const map: Record<string, number> = {};
@@ -129,6 +119,23 @@ export default function CommentList() {
 
   const handleReplySuccess = () => handlers.invalidateQueries();
 
+  useEffect(() => {
+    if (!targetParentId) return;
+    if (openParentIds.includes(targetParentId)) return;
+
+    setOpenParentIds((prev) =>
+      prev.includes(targetParentId) ? prev : [...prev, targetParentId]
+    );
+  }, [openParentIds, setOpenParentIds, targetParentId]);
+
+  useEffect(() => {
+    if (!targetRootId || loading || isFetchingMore || !hasMore) return;
+
+    if (data.some((comment) => comment.id === targetRootId)) return;
+
+    handlers.loadMore();
+  }, [data, handlers, hasMore, isFetchingMore, loading, targetRootId]);
+
   const renderChildren = (
     list: CommentResType[],
     level: number,
@@ -145,8 +152,6 @@ export default function CommentList() {
         onPin={handlePinComment}
         onDelete={() => handleDeleteComment(c)}
         onReplySuccess={handleReplySuccess}
-        targetCommentId={targetCommentId}
-        targetParentId={targetParentId}
         renderChildren={renderChildren}
       />
     ));
@@ -157,7 +162,7 @@ export default function CommentList() {
     <PageWrapper
       breadcrumbs={[
         { label: 'Phim', href: route.movie.getList.path },
-        { label: searchParams.movieTitle || 'Chi tiết' },
+        { label: movieTitle || 'Chi tiết' },
         { label: 'Bình luận' }
       ]}
     >

@@ -58,15 +58,17 @@ export default function MovieItemSeasonDetailList() {
     id: string;
     movieItemId: string;
   }>();
-  const { searchParams, serializeParams } = useQueryParams<{
+
+  const {
+    searchParams: { type, season, movieTitle },
+    serializeParams
+  } = useQueryParams<{
     type: string;
     season: string;
     movieTitle: string;
   }>();
 
-  const {
-    searchParams: { type }
-  } = useQueryParams<{ type: string }>();
+  const movieType = Number(type || 0);
 
   const {
     opened: openedMovieItemModal,
@@ -323,7 +325,7 @@ export default function MovieItemSeasonDetailList() {
     handlers.renderActionColumn({
       actions: {
         watchVideo: (record) =>
-          (!!type && +type !== MOVIE_TYPE_SERIES) ||
+          movieType !== MOVIE_TYPE_SERIES ||
           record.kind !== MOVIE_ITEM_KIND_SEASON,
         markLatest: (record) =>
           record.kind === MOVIE_ITEM_KIND_EPISODE &&
@@ -345,7 +347,7 @@ export default function MovieItemSeasonDetailList() {
   ];
 
   const kindOptions =
-    !!type && +type === MOVIE_TYPE_SINGLE
+    movieType === MOVIE_TYPE_SINGLE
       ? movieItemSingleKindOptions.filter(
           (item) =>
             !movieItemId ||
@@ -376,19 +378,19 @@ export default function MovieItemSeasonDetailList() {
       breadcrumbs={[
         { label: 'Phim', href: route.movie.getList.path },
         {
-          label: searchParams.movieTitle || 'Phần',
+          label: movieTitle || 'Phần',
           href: renderListPageUrl(
             generatePath(route.movieItem.getList.path, {
               id: movieId
             }),
             serializeParams({
-              type: searchParams.type,
-              movieTitle: searchParams.movieTitle
+              type: type,
+              movieTitle: movieTitle
             })
           )
         },
         {
-          label: searchParams.season || 'Chi tiết'
+          label: season || 'Chi tiết'
         }
       ]}
     >

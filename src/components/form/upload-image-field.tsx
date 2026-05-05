@@ -346,7 +346,7 @@ export default function UploadImageField<T extends FieldValues>({
                         type='button'
                         title='Xóa ảnh'
                         className={cn(
-                          'border-background absolute size-6 rounded-full border-none'
+                          'border-background absolute size-6 rounded-full border-none text-white hover:text-rose-500'
                         )}
                         style={{
                           top: avatar ? (6 * size) / 100 : -8,
@@ -404,7 +404,7 @@ export default function UploadImageField<T extends FieldValues>({
         >
           <DialogContent
             className='gap-0 overflow-hidden rounded-tl-sm rounded-tr-sm border-none p-0 sm:max-w-85 md:max-w-90 lg:max-w-95 xl:max-w-100 2xl:max-w-115'
-            showCloseButton={!isUploading}
+            showCloseButton={false}
           >
             <DialogHeader className='text-left'>
               <DialogTitle className='border-none p-0 outline-none'></DialogTitle>

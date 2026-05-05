@@ -63,6 +63,9 @@ export default function MovieItemModal({
   const {
     searchParams: { type }
   } = useQueryParams<{ type: string }>();
+
+  const movieType = Number(type || 0);
+
   const { id: movieId, movieItemId } = useParams<{
     id: string;
     movieItemId: string;
@@ -73,7 +76,7 @@ export default function MovieItemModal({
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const kindOptions =
-    !!type && +type === MOVIE_TYPE_SINGLE
+    movieType === MOVIE_TYPE_SINGLE
       ? movieItemSingleKindOptions.filter(
           (item) =>
             !movieItemId ||
@@ -87,20 +90,17 @@ export default function MovieItemModal({
 
   let objectName = '';
 
-  if (!!type) {
-    const _type = +type;
-    if (_type === MOVIE_TYPE_SINGLE) {
-      if (movieItemId) {
-        objectName = 'trailer';
-      } else {
-        objectName = 'phần';
-      }
-    } else if (_type === MOVIE_TYPE_SERIES) {
-      if (movieItemId) {
-        objectName = 'tập, trailer';
-      } else {
-        objectName = 'phần';
-      }
+  if (movieType === MOVIE_TYPE_SINGLE) {
+    if (movieItemId) {
+      objectName = 'trailer';
+    } else {
+      objectName = 'phần';
+    }
+  } else if (movieType === MOVIE_TYPE_SERIES) {
+    if (movieItemId) {
+      objectName = 'tập, trailer';
+    } else {
+      objectName = 'phần';
     }
   }
 
@@ -204,7 +204,7 @@ export default function MovieItemModal({
     values: MovieItemBodyType,
     form: UseFormReturn<MovieItemBodyType>
   ) => {
-    if (!!type && +type === MOVIE_TYPE_SERIES) {
+    if (movieType === MOVIE_TYPE_SERIES) {
       if (values.kind === MOVIE_ITEM_KIND_SEASON && !values.totalEpisode) {
         form.setError('totalEpisode', {
           message: 'Tổng số tập là bắt buộc'
@@ -232,8 +232,7 @@ export default function MovieItemModal({
           ...values,
           sendNotificationConfig,
           totalEpisode:
-            !!type &&
-            +type === MOVIE_TYPE_SERIES &&
+            movieType === MOVIE_TYPE_SERIES &&
             values.kind === MOVIE_ITEM_KIND_SEASON
               ? values.totalEpisode
               : null,
@@ -299,7 +298,7 @@ export default function MovieItemModal({
                       deleteImageFn={imageManager.handleDeleteOnClick}
                       label='Ảnh xem trước (16:9)'
                       aspect={16 / 9}
-                      defaultCrop={false}
+                      originalSize
                     />
                   </Col>
                 </Row>
@@ -348,8 +347,8 @@ export default function MovieItemModal({
                   </Col>
                 </Row>
                 <Row>
-                  {!!type &&
-                    +type === MOVIE_TYPE_SERIES &&
+                  {/* Only show for movie type series and kind season */}
+                  {movieType === MOVIE_TYPE_SERIES &&
                     kind === MOVIE_ITEM_KIND_SEASON && (
                       <Col className='grid-c-6'>
                         <NumberField
@@ -362,8 +361,9 @@ export default function MovieItemModal({
                         />
                       </Col>
                     )}
+                  {/* Only show for kind not season or movie type single */}
                   {(kind !== MOVIE_ITEM_KIND_SEASON ||
-                    (!!type && +type === MOVIE_TYPE_SINGLE)) && (
+                    movieType === MOVIE_TYPE_SINGLE) && (
                     <Col className='grid-c-6'>
                       <AutoCompleteField
                         apiConfig={apiConfig.videoLibrary.autoComplete}
@@ -390,7 +390,7 @@ export default function MovieItemModal({
                       />
                     </Col>
                   )}
-                  {kind !== MOVIE_TYPE_TRAILER && !isEditing && (
+                  {kind !== MOVIE_TYPE_TRAILER && (
                     <Col className='grid-c-6'>
                       <CheckboxField
                         control={form.control}

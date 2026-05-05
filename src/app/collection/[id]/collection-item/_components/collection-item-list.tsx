@@ -36,10 +36,15 @@ import { useParams } from 'next/navigation';
 
 export default function CollectionItemList() {
   const { id: collectionId } = useParams<{ id: string }>();
-  const { searchParams, serializeParams } = useQueryParams<{
+
+  const {
+    searchParams: { type, collectionTitle },
+    serializeParams
+  } = useQueryParams<{
     type: number;
     collectionTitle: string;
   }>();
+
   const { opened, open, close } = useDisclosure();
 
   const { data, loading, handlers } = useListBase<
@@ -251,11 +256,11 @@ export default function CollectionItemList() {
           label: 'Bộ sưu tập',
           href: renderListPageUrl(
             route.collection.getList.path,
-            serializeParams({ type: searchParams.type })
+            serializeParams({ type })
           )
         },
         {
-          label: searchParams.collectionTitle || 'Phim'
+          label: collectionTitle || 'Phim'
         }
       ]}
     >

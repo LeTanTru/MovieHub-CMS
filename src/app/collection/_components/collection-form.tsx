@@ -48,8 +48,10 @@ import { logger } from '@/logger';
 
 export default function CollectionForm() {
   const { id } = useParams<{ id: string }>();
-  const { searchParams } = useQueryParams<CollectionSearchType>();
-  const type = searchParams.type;
+
+  const {
+    searchParams: { type }
+  } = useQueryParams<CollectionSearchType>();
 
   const { data: categoryListData } = useCategoryListQuery();
 

@@ -163,9 +163,7 @@ export default function StyleForm() {
                   deleteImageFn={imageMobileManager.handleDeleteOnClick}
                   label='Ảnh mobile (2:3)'
                   required
-                  allowCustomAspect
                   originalSize
-                  defaultCrop={false}
                   aspect={2 / 3}
                 />
               </Col>
@@ -184,9 +182,7 @@ export default function StyleForm() {
                   deleteImageFn={imageWebManager.handleDeleteOnClick}
                   label='Ảnh web (16:9)'
                   required
-                  allowCustomAspect
                   originalSize
-                  defaultCrop={false}
                   aspect={16 / 9}
                 />
               </Col>
