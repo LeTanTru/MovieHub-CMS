@@ -63,7 +63,8 @@ export default function VoteCommentBody({
         </div>
         <div className='flex flex-1 flex-col justify-between'>
           <h3 className='line-clamp-2 font-medium' title={notification.title}>
-            {notification.title}
+            {notification.title}&nbsp;trong phim&nbsp;
+            <span className='font-semibold'>{body?.movieTitle}</span>
           </h3>
           <div
             className='text-muted-foreground mt-2 shrink-0 text-xs'
