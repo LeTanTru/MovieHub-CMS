@@ -21,7 +21,6 @@ import {
 } from 'react';
 import { Check } from 'lucide-react';
 import { AnimatePresence, m } from 'framer-motion';
-import { EMPTY_ARRAY } from '@/constants';
 
 type InputFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -60,7 +59,7 @@ export default function InputField<T extends FieldValues>({
   readOnly = false,
   prefixIcon,
   suffixIcon,
-  options = EMPTY_ARRAY,
+  options = [],
   onOptionSelect,
   ref,
   ...inputProps

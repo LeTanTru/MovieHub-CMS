@@ -35,7 +35,6 @@ import { useQuery } from '@tanstack/react-query';
 import { http } from '@/utils';
 import {
   DEFAULT_TABLE_PAGE_START,
-  EMPTY_OBJECT,
   INITIAL_AUTO_COMPLETE_SIZE,
   MAX_PAGE_SIZE
 } from '@/constants';
@@ -87,7 +86,7 @@ export default function AutoCompleteField<
   name,
   label,
   searchParams,
-  initialParams = EMPTY_OBJECT,
+  initialParams = {},
   placeholder,
   description,
   className,
