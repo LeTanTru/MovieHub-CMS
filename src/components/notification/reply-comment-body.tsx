@@ -42,7 +42,7 @@ export default function ReplyCommentBody({
   return (
     <Link
       onClick={handleClick}
-      className='flex flex-1 items-center justify-between gap-2 pl-2'
+      className='flex flex-1 items-center justify-between gap-2 pl-1'
       href={renderListPageUrl(
         generatePath(route.comment.getList.path, {
           id: body?.movieId || ''
