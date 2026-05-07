@@ -45,7 +45,7 @@ export default function DisclaimerModal() {
   return (
     <Dialog open={opened} onOpenChange={(open) => !open && close()}>
       <DialogContent
-        className='max-w-md border-none'
+        className='max-w-md border-none p-4'
         showCloseButton={false}
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
@@ -55,7 +55,7 @@ export default function DisclaimerModal() {
             <AlertTriangle className='size-7 text-rose-500' />
           </div>
           <DialogTitle className='text-xl'>{DISCLAIMER_TEXT.title}</DialogTitle>
-          <DialogDescription className='text-justify text-base'>
+          <DialogDescription className='text-justify'>
             {DISCLAIMER_TEXT.description}
           </DialogDescription>
         </DialogHeader>
