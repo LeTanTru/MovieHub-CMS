@@ -204,36 +204,11 @@ export default function MovieItemModal({
     values: MovieItemBodyType,
     form: UseFormReturn<MovieItemBodyType>
   ) => {
-    if (movieType === MOVIE_TYPE_SERIES) {
-      if (values.kind === MOVIE_ITEM_KIND_SEASON && !values.totalEpisode) {
-        form.setError('totalEpisode', {
-          message: 'Tổng số tập là bắt buộc'
-        });
-        return;
-      }
-    }
-
-    const sendNotificationConfig =
-      values.sendNotificationConfig &&
-      typeof values.sendNotificationConfig === 'object' &&
-      values.sendNotificationConfig.isSendNotification
-        ? {
-            isSendNotification:
-              values.sendNotificationConfig.isSendNotification,
-            scheduleAt: convertLocalToUTC(
-              values.sendNotificationConfig.scheduleAt || ''
-            ),
-            sendFor: values.sendNotificationConfig.sendFor,
-            title: values.sendNotificationConfig.title
-          }
-        : false;
-
     await Promise.all([
       imageManager.handleSubmit(),
       handleSubmit(
         {
           ...values,
-          sendNotificationConfig,
           totalEpisode:
             movieType === MOVIE_TYPE_SERIES &&
             values.kind === MOVIE_ITEM_KIND_SEASON
