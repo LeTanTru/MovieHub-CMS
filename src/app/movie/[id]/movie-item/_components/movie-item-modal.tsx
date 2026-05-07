@@ -368,7 +368,7 @@ export default function MovieItemModal({
                       />
                     </Col>
                   )}
-                  {kind !== MOVIE_TYPE_TRAILER && (
+                  {kind !== MOVIE_TYPE_TRAILER && !isEditing && (
                     <Col className='grid-c-6'>
                       <CheckboxField
                         control={form.control}
