@@ -99,6 +99,19 @@ export const employeeStatusOptions = [
   }
 ];
 
+export const movieStatusOptions = [
+  {
+    label: 'Hoạt động',
+    value: STATUS_ACTIVE,
+    color: '#00c950'
+  },
+  {
+    label: 'Đang chờ',
+    value: STATUS_PENDING,
+    color: '#ffc107'
+  }
+];
+
 export const FieldTypes = {
   STRING: 'STRING_TYPE',
   NUMBER: 'NUMBER_TYPE',

@@ -22,6 +22,7 @@ import {
   ErrorCode,
   languageOptions,
   MOVIE_TYPE_SERIES,
+  movieStatusOptions,
   movieTypeOptions,
   objectNames,
   queryKeys,
@@ -445,8 +446,20 @@ export default function MovieForm() {
                 />
               </Col>
             </Row>
-            {form.watch('type') === MOVIE_TYPE_SERIES && (
-              <Row>
+            <Row>
+              <Col className='grid-c-6'>
+                <SelectField
+                  getLabel={(opt) => opt.label}
+                  getValue={(opt) => opt.value}
+                  options={movieStatusOptions || []}
+                  control={form.control}
+                  name='status'
+                  label='Trạng thái'
+                  placeholder='Trạng thái'
+                  required
+                />
+              </Col>
+              {form.watch('type') === MOVIE_TYPE_SERIES && (
                 <Col className='grid-c-6'>
                   <TimePickerField
                     control={form.control}
@@ -456,8 +469,8 @@ export default function MovieForm() {
                     required
                   />
                 </Col>
-              </Row>
-            )}
+              )}
+            </Row>
             <Row>
               <Col className='grid-c-3'>
                 <CheckboxField

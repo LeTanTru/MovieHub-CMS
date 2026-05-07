@@ -430,7 +430,7 @@ const useInfiniteListBase = <
               backgroundColor: `${status?.color}10`
             }}
           >
-            {status?.label}
+            {status?.label || 'N/A'}
           </Badge>
         );
       }
