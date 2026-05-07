@@ -1,88 +1,81 @@
 'use client';
 
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from '@/components/ui/alert-dialog';
-import { useEffect, useState } from 'react';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog';
 import { AlertTriangle } from 'lucide-react';
-import { cn } from '@/lib';
+import { Button } from '@/components/form';
+import { useEffect } from 'react';
+import { storageKeys } from '@/constants';
+import { useDisclosure } from '@/hooks';
+import { getData, removeData, setData } from '@/utils';
 
-const DISCLAIMER_STORAGE_KEY = 'moviehub_disclaimer_accepted';
+const DISCLAIMER_TEXT = {
+  title: 'Cảnh báo quan trọng',
+  description:
+    'Trang web này chỉ được sử dụng cho mục đích học tập và phát triển kỹ năng lập trình web. Tất cả nội dung phim trên website này được thu thập từ các nguồn công khai và không nhằm mục đích thương mại.',
+  warning:
+    'Theo quy định của pháp luật Việt Nam, việc sử dụng và phân phối nội dung vi phạm bản quyền có thể bị xử lý hình sự và dân sự. Để tránh rủi ro pháp lý, hãy sử dụng các nền tảng phát trực tuyến có giấy phép hợp lệ như Netflix, Disney+, VietFilm,...',
+  agree: 'Tôi đã hiểu và đồng ý'
+};
 
 export default function DisclaimerModal() {
-  const [open, setOpen] = useState(false);
+  const { opened, close } = useDisclosure(
+    getData(storageKeys.DISCLAIMER_SHOWN) !== 'true'
+  );
 
-  useEffect(() => {
-    const accepted = localStorage.getItem(DISCLAIMER_STORAGE_KEY);
-    if (!accepted) {
-      setOpen(true);
-    }
-  }, []);
-
-  const handleAccept = () => {
-    localStorage.setItem(DISCLAIMER_STORAGE_KEY, 'true');
-    setOpen(false);
+  const handleAgree = () => {
+    setData(storageKeys.DISCLAIMER_SHOWN, 'true');
+    close();
   };
 
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      removeData(storageKeys.DISCLAIMER_SHOWN);
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
   return (
-    <AlertDialog open={open} onOpenChange={handleAccept}>
-      <AlertDialogContent
-        className={cn(
-          'max-w-md gap-0 p-0',
-          'data-[state=open]:animate-in data-[state=closed]:animate-out',
-          'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-          'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95'
-        )}
-        overlayProps={{
-          onClick: (e) => e.stopPropagation()
-        }}
+    <Dialog open={opened} onOpenChange={(open) => !open && close()}>
+      <DialogContent
+        className='max-w-md border-none'
+        showCloseButton={false}
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
       >
-        <AlertDialogHeader className='border-b border-gray-200 p-6 pb-4'>
-          <AlertDialogTitle className='flex items-center gap-3 text-lg font-semibold text-amber-600'>
-            <AlertTriangle className='size-6' />
-            Thông báo quan trọng
-          </AlertDialogTitle>
-        </AlertDialogHeader>
-
-        <AlertDialogDescription asChild>
-          <div className='space-y-4 p-6 text-sm leading-relaxed text-gray-700'>
-            <p>
-              <strong>Trang web này chỉ phục vụ mục đích học tập.</strong>
-            </p>
-            <p>
-              Website được xây dựng nhằm mục đích nghiên cứu, học tập và phát
-              triển k� năng lập trình, không sử dụng cho mục đích thương mại.
-            </p>
-            <p>
-              Chúng tôi không khai thác kinh doanh, không thu phí và không chịu
-              trách nhiệm về nội dung bên thứ ba.
-            </p>
-            <div className='rounded-lg bg-amber-50 p-4 text-amber-800'>
-              <p className='font-medium'>⚠️ Lưu ý:</p>
-              <p className='mt-1'>
-                Hiện nay, cơ quan chức năng Việt Nam đang tăng cường xử lý các
-                trang web vi phạm bản quyền phim ảnh. Trang web này hoạt động
-                với tinh thần tôn trọng bản quyền và chỉ phục vụ mục đích học
-                tập.
-              </p>
-            </div>
+        <DialogHeader className='flex flex-col items-center gap-3 text-center'>
+          <div className='flex size-14 shrink-0 items-center justify-center rounded-full bg-rose-500/10'>
+            <AlertTriangle className='size-7 text-rose-500' />
           </div>
-        </AlertDialogDescription>
+          <DialogTitle className='text-xl'>{DISCLAIMER_TEXT.title}</DialogTitle>
+          <DialogDescription className='text-justify text-base'>
+            {DISCLAIMER_TEXT.description}
+          </DialogDescription>
+        </DialogHeader>
 
-        <div className='border-t border-gray-200 p-4 pt-3'>
-          <AlertDialogAction
-            onClick={handleAccept}
-            className='bg-main-color hover:bg-main-color/90 w-full cursor-pointer rounded-md px-4 py-2.5 font-medium text-white transition-colors'
-          >
-            Tôi đã hiểu
-          </AlertDialogAction>
+        <div className='rounded-lg bg-rose-500/10 p-4'>
+          <p className='text-justify text-sm text-rose-600'>
+            {DISCLAIMER_TEXT.warning}
+          </p>
         </div>
-      </AlertDialogContent>
-    </AlertDialog>
+
+        <div className='flex flex-col gap-3'>
+          <Button
+            variant='primary'
+            onClick={handleAgree}
+            className='w-full cursor-pointer transition-all duration-200 ease-linear'
+          >
+            {DISCLAIMER_TEXT.agree}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

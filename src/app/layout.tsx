@@ -10,7 +10,7 @@ import { ToastContainer } from 'react-toastify';
 import { type ReactNode, Suspense } from 'react';
 import NextTopLoader from 'nextjs-toploader';
 import type { Metadata } from 'next';
-import DisclaimerModal from '@/components/modal/disclaimer-modal';
+import { DisclaimerModal } from '@/components/modal';
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['300', '400', '500', '600', '700', '800'],

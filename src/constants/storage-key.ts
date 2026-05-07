@@ -9,7 +9,8 @@ const storageKeys = {
   REFRESH_TOKEN: 'refresh_token',
   SELECTED_MOVIE_ITEM: 'selected_movie_item',
   USER_KIND: 'user_kind',
-  X_CLIENT_TYPE: 'X-Client-Type'
+  X_CLIENT_TYPE: 'X-Client-Type',
+  DISCLAIMER_SHOWN: 'disclaimer_shown'
 };
 
 export default storageKeys;
