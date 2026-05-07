@@ -229,7 +229,7 @@ export default function MovieList() {
       dataIndex: 'releaseDate',
       render: (value) => convertUTCToLocal(value) || 'N/A',
       align: 'center',
-      width: 250
+      width: 200
     },
     {
       title: 'Độ tuổi',
@@ -276,12 +276,12 @@ export default function MovieList() {
         )?.label;
         return (
           <span className='line-clamp-1 block truncate' title={label}>
-            {label || 'N/A'}
+            {value || 'N/A'}
           </span>
         );
       },
       align: 'center',
-      width: 120
+      width: 100
     },
     handlers.renderActionColumn({
       actions: {

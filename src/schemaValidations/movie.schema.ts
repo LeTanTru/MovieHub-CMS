@@ -2,12 +2,15 @@ import { MOVIE_TYPE_SERIES } from '@/constants';
 import { z } from 'zod';
 
 const sendNotificationConfigSchema = z
-  .object({
-    isSendNotification: z.boolean(),
-    scheduleAt: z.string().optional().nullable(),
-    sendFor: z.number().optional().nullable(),
-    title: z.string().optional().nullable()
-  })
+  .union([
+    z.boolean(),
+    z.object({
+      isSendNotification: z.boolean(),
+      scheduleAt: z.string().optional().nullable(),
+      sendFor: z.number().optional().nullable(),
+      title: z.string().optional().nullable()
+    })
+  ])
   .optional()
   .nullable();
 
@@ -24,6 +27,7 @@ export const movieSchema = z
     isFeatured: z.boolean(),
     language: z.string().nonempty('Bắt buộc'),
     originalTitle: z.string().nonempty('Bắt buộc'),
+    imdbId: z.string().optional().nullable(),
     posterUrl: z.string().nonempty('Bắt buộc'),
     releaseDate: z.string().nonempty('Bắt buộc'),
     sendNotificationConfig: sendNotificationConfigSchema,

@@ -121,6 +121,7 @@ export default function MovieForm() {
     isFeatured: false,
     language: '',
     originalTitle: '',
+    imdbId: '',
     posterUrl: '',
     releaseDate: '',
     sendNotificationConfig: {
@@ -161,6 +162,7 @@ export default function MovieForm() {
       isFeatured: data?.isFeatured ?? false,
       language: data?.language ?? '',
       originalTitle: data?.originalTitle ?? '',
+      imdbId: data?.imdbId ?? '',
       posterUrl: data?.posterUrl ?? '',
       releaseDate: convertUTCToLocal(data?.releaseDate) ?? '',
       status: STATUS_ACTIVE,
@@ -179,6 +181,7 @@ export default function MovieForm() {
       data?.language,
       data?.metadata,
       data?.originalTitle,
+      data?.imdbId,
       data?.posterUrl,
       data?.releaseDate,
       data?.thumbnailUrl,
@@ -197,17 +200,20 @@ export default function MovieForm() {
   };
 
   const onSubmit = async (values: MovieBodyType) => {
-    const sendNotificationConfig = values.sendNotificationConfig
-      ?.isSendNotification
-      ? {
-          isSendNotification: values.sendNotificationConfig.isSendNotification,
-          scheduleAt: convertLocalToUTC(
-            values.sendNotificationConfig.scheduleAt || ''
-          ),
-          sendFor: values.sendNotificationConfig.sendFor,
-          title: values.sendNotificationConfig.title
-        }
-      : null;
+    const sendNotificationConfig =
+      values.sendNotificationConfig &&
+      typeof values.sendNotificationConfig === 'object' &&
+      values.sendNotificationConfig.isSendNotification
+        ? {
+            isSendNotification:
+              values.sendNotificationConfig.isSendNotification,
+            scheduleAt: convertLocalToUTC(
+              values.sendNotificationConfig.scheduleAt || ''
+            ),
+            sendFor: values.sendNotificationConfig.sendFor,
+            title: values.sendNotificationConfig.title
+          }
+        : false;
 
     await Promise.all([
       posterImageManager.handleSubmit(),
@@ -431,7 +437,17 @@ export default function MovieForm() {
                 />
               </Col>
               <Col className='grid-c-6'>
-                {form.watch('type') === MOVIE_TYPE_SERIES && (
+                <InputField
+                  control={form.control}
+                  name='imdbId'
+                  label='IMDB ID'
+                  placeholder='tt1234567'
+                />
+              </Col>
+            </Row>
+            {form.watch('type') === MOVIE_TYPE_SERIES && (
+              <Row>
+                <Col className='grid-c-6'>
                   <TimePickerField
                     control={form.control}
                     name='duration'
@@ -439,9 +455,9 @@ export default function MovieForm() {
                     placeholder='Thời lượng trung bình mỗi tập'
                     required
                   />
-                )}
-              </Col>
-            </Row>
+                </Col>
+              </Row>
+            )}
             <Row>
               <Col className='grid-c-3'>
                 <CheckboxField
