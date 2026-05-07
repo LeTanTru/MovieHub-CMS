@@ -411,7 +411,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
               backgroundColor: `${status?.color}10`
             }}
           >
-            {status?.label}
+            {status?.label || 'N/A'}
           </Badge>
         );
       }

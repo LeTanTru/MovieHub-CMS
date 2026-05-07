@@ -10,6 +10,7 @@ import {
   ErrorCode,
   FieldTypes,
   languageOptions,
+  movieStatusOptions,
   movieTypeOptions,
   objectNames,
   queryKeys
@@ -283,6 +284,9 @@ export default function MovieList() {
       align: 'center',
       width: 100
     },
+    handlers.renderStatusColumn({
+      statusOptions: movieStatusOptions
+    }),
     handlers.renderActionColumn({
       actions: {
         person: handlers.hasPermission({
