@@ -1,8 +1,38 @@
 import { CategoryList } from '@/app/category/_components';
+import envConfig from '@/config';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Thể loại'
+  title: 'Thể loại',
+  description: 'Quản lý thể loại phim MovieHub CMS',
+  metadataBase: new URL(envConfig.NEXT_PUBLIC_URL),
+  keywords: ['MovieHub', 'CMS', 'thể loại', 'category', 'phim'],
+  alternates: {
+    canonical: '/category'
+  },
+  openGraph: {
+    title: 'Thể loại | MovieHub CMS',
+    description: 'Quản lý thể loại phim MovieHub CMS',
+    url: '/category',
+    siteName: 'MovieHub',
+    type: 'website',
+    locale: 'vi_VN',
+    images: [
+      {
+        url: '/logo.webp',
+        width: 1200,
+        height: 630,
+        alt: 'MovieHub CMS'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Thể loại | MovieHub CMS',
+    description: 'Quản lý thể loại phim MovieHub CMS',
+    images: ['/logo.webp']
+  },
+  robots: { index: false, follow: false }
 };
 
 export default function CategoryListPage() {

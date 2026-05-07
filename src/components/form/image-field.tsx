@@ -201,7 +201,6 @@ export default function ImageField({
                 'h-auto w-auto max-w-full',
                 imageClassName
               )}
-              unoptimized
             />
           ) : freeAspect ? (
             // freeAspect: no AspectRatio wrapper, image sizes to its natural dimensions
@@ -215,7 +214,6 @@ export default function ImageField({
                 'h-auto w-full rounded object-contain',
                 imageClassName
               )}
-              unoptimized
             />
           ) : aspect ? (
             <AspectRatio
@@ -229,7 +227,6 @@ export default function ImageField({
                 fill
                 className={cn('rounded object-cover', imageClassName)}
                 sizes='(max-width: 768px) 100vw, 50vw'
-                unoptimized
               />
             </AspectRatio>
           ) : (
@@ -246,7 +243,6 @@ export default function ImageField({
                 },
                 imageClassName
               )}
-              unoptimized
             />
           )
         ) : (
@@ -319,7 +315,6 @@ export default function ImageField({
                         transform: `scale(${scale})`,
                         transformOrigin: 'center center'
                       }}
-                      unoptimized
                     />
                   ) : (
                     <div
@@ -343,7 +338,6 @@ export default function ImageField({
                           transformOrigin: 'center center'
                         }}
                         sizes='(max-width: 768px) 100vw, 50vw'
-                        unoptimized
                       />
                     </div>
                   ))}
