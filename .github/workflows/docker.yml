@@ -39,6 +39,7 @@ jobs:
             NEXT_PUBLIC_MQTT_BROKER=${{ secrets.NEXT_PUBLIC_MQTT_BROKER }}
             NEXT_PUBLIC_MQTT_USERNAME=${{ secrets.NEXT_PUBLIC_MQTT_USERNAME }}
             NEXT_PUBLIC_MQTT_PASSWORD=${{ secrets.NEXT_PUBLIC_MQTT_PASSWORD }}
+            NEXT_PUBLIC_URL=${{ secrets.NEXT_PUBLIC_URL }}
 
       - name: Show Image Size
         run: docker images ${{ secrets.DOCKER_USERNAME }}/cms-moviehub:latest
