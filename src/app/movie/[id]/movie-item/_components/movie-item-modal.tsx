@@ -213,17 +213,20 @@ export default function MovieItemModal({
       }
     }
 
-    const sendNotificationConfig = values.sendNotificationConfig
-      ?.isSendNotification
-      ? {
-          isSendNotification: values.sendNotificationConfig.isSendNotification,
-          scheduleAt: convertLocalToUTC(
-            values.sendNotificationConfig.scheduleAt || ''
-          ),
-          sendFor: values.sendNotificationConfig.sendFor,
-          title: values.sendNotificationConfig.title
-        }
-      : null;
+    const sendNotificationConfig =
+      values.sendNotificationConfig &&
+      typeof values.sendNotificationConfig === 'object' &&
+      values.sendNotificationConfig.isSendNotification
+        ? {
+            isSendNotification:
+              values.sendNotificationConfig.isSendNotification,
+            scheduleAt: convertLocalToUTC(
+              values.sendNotificationConfig.scheduleAt || ''
+            ),
+            sendFor: values.sendNotificationConfig.sendFor,
+            title: values.sendNotificationConfig.title
+          }
+        : false;
 
     await Promise.all([
       imageManager.handleSubmit(),

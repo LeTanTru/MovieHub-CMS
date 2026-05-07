@@ -32,6 +32,7 @@ export type MovieResType = {
   language: string;
   modifiedDate: string;
   originalTitle: string;
+  imdbId?: string;
   posterUrl: string;
   releaseDate: string;
   metadata: string;
