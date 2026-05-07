@@ -2,15 +2,12 @@ import { MOVIE_TYPE_SERIES } from '@/constants';
 import { z } from 'zod';
 
 const sendNotificationConfigSchema = z
-  .union([
-    z.boolean(),
-    z.object({
-      isSendNotification: z.boolean(),
-      scheduleAt: z.string().optional().nullable(),
-      sendFor: z.number().optional().nullable(),
-      title: z.string().optional().nullable()
-    })
-  ])
+  .object({
+    isSendNotification: z.boolean().default(false),
+    scheduleAt: z.string().optional().nullable(),
+    sendFor: z.number().optional().nullable(),
+    title: z.string().optional().nullable()
+  })
   .optional()
   .nullable();
 

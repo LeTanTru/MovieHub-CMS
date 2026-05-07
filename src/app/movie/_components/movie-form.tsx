@@ -201,21 +201,6 @@ export default function MovieForm() {
   };
 
   const onSubmit = async (values: MovieBodyType) => {
-    const sendNotificationConfig =
-      values.sendNotificationConfig &&
-      typeof values.sendNotificationConfig === 'object' &&
-      values.sendNotificationConfig.isSendNotification
-        ? {
-            isSendNotification:
-              values.sendNotificationConfig.isSendNotification,
-            scheduleAt: convertLocalToUTC(
-              values.sendNotificationConfig.scheduleAt || ''
-            ),
-            sendFor: values.sendNotificationConfig.sendFor,
-            title: values.sendNotificationConfig.title
-          }
-        : false;
-
     await Promise.all([
       posterImageManager.handleSubmit(),
       thumbnailImageManager.handleSubmit(),
@@ -223,7 +208,6 @@ export default function MovieForm() {
       handleSubmit({
         ...values,
         releaseDate: convertLocalToUTC(values.releaseDate),
-        sendNotificationConfig,
         thumbnailUrl: thumbnailImageManager.currentUrl,
         posterUrl: posterImageManager.currentUrl,
         imageTitleUrl: imageTitleManager.currentUrl
