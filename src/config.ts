@@ -11,7 +11,8 @@ const configSchema = z.object({
   NEXT_PUBLIC_CLIENT_TYPE: z.string(),
   NEXT_PUBLIC_MQTT_BROKER: z.url(),
   NEXT_PUBLIC_MQTT_USERNAME: z.string(),
-  NEXT_PUBLIC_MQTT_PASSWORD: z.string()
+  NEXT_PUBLIC_MQTT_PASSWORD: z.string(),
+  NEXT_PUBLIC_URL: z.url()
 });
 
 const configProject = configSchema.safeParse({
@@ -24,7 +25,8 @@ const configProject = configSchema.safeParse({
   NEXT_PUBLIC_CLIENT_TYPE: process.env.NEXT_PUBLIC_CLIENT_TYPE,
   NEXT_PUBLIC_MQTT_BROKER: process.env.NEXT_PUBLIC_MQTT_BROKER,
   NEXT_PUBLIC_MQTT_USERNAME: process.env.NEXT_PUBLIC_MQTT_USERNAME,
-  NEXT_PUBLIC_MQTT_PASSWORD: process.env.NEXT_PUBLIC_MQTT_PASSWORD
+  NEXT_PUBLIC_MQTT_PASSWORD: process.env.NEXT_PUBLIC_MQTT_PASSWORD,
+  NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL
 });
 
 if (!configProject.success) {

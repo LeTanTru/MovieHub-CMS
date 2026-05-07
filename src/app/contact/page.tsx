@@ -1,16 +1,51 @@
-'use client';
-
+import envConfig from '@/config';
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Liên hệ',
+  description:
+    'Liên hệ MovieHub để được hỗ trợ về tài khoản, kỹ thuật, góp ý dịch vụ. Email: lienhe@moviehub.biz',
+  metadataBase: new URL(envConfig.NEXT_PUBLIC_URL),
+  keywords: ['MovieHub', 'liên hệ', 'hỗ trợ', 'tài khoản', 'kỹ thuật'],
+  alternates: {
+    canonical: '/contact'
+  },
+  openGraph: {
+    title: 'Liên hệ | MovieHub',
+    description:
+      'Liên hệ MovieHub để được hỗ trợ về tài khoản, kỹ thuật, góp ý dịch vụ.',
+    url: '/contact',
+    siteName: 'MovieHub',
+    type: 'website',
+    locale: 'vi_VN',
+    images: [
+      {
+        url: '/logo.webp',
+        width: 1200,
+        height: 630,
+        alt: 'MovieHub'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Liên hệ | MovieHub',
+    description:
+      'Liên hệ MovieHub để được hỗ trợ về tài khoản, kỹ thuật, góp ý dịch vụ.',
+    images: ['/logo.webp']
+  }
+};
 
 export default function ContactPage() {
   return (
     <div className='flex min-h-screen flex-col gap-12.5 bg-[#191B24] py-10 max-lg:py-5'>
       <div className='relative mx-auto w-full max-w-200 px-12.5 max-lg:px-5'>
         <div className='relative mb-5 flex min-h-11 items-center justify-center gap-4 max-lg:hidden'>
-          <h3 className='m-0 text-[28px] leading-[1.4] font-semibold text-white'>
+          <h1 className='m-0 text-[28px] leading-[1.4] font-semibold text-white'>
             Liên hệ
-          </h3>
+          </h1>
         </div>
         <div>
           <p className='mb-4 text-justify leading-[1.6] text-neutral-400'>

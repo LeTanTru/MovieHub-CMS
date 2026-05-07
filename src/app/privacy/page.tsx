@@ -1,11 +1,54 @@
+import envConfig from '@/config';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Chính sách bảo mật',
+  description:
+    'Chính sách bảo mật và quyền riêng tư của MovieHub. Tìm hiểu cách chúng tôi thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn.',
+  metadataBase: new URL(envConfig.NEXT_PUBLIC_URL),
+  keywords: [
+    'MovieHub',
+    'chính sách bảo mật',
+    'quyền riêng tư',
+    'bảo vệ thông tin'
+  ],
+  alternates: {
+    canonical: '/privacy'
+  },
+  openGraph: {
+    title: 'Chính sách bảo mật | MovieHub',
+    description:
+      'Chính sách bảo mật và quyền riêng tư của MovieHub. Tìm hiểu cách chúng tôi thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn.',
+    url: '/privacy',
+    siteName: 'MovieHub',
+    type: 'website',
+    locale: 'vi_VN',
+    images: [
+      {
+        url: '/logo.webp',
+        width: 1200,
+        height: 630,
+        alt: 'MovieHub'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Chính sách bảo mật | MovieHub',
+    description:
+      'Chính sách bảo mật và quyền riêng tư của MovieHub. Tìm hiểu cách chúng tôi thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn.',
+    images: ['/logo.webp']
+  }
+};
+
 export default function PrivacyPage() {
   return (
     <div className='flex min-h-screen flex-col gap-12.5 bg-[#191B24] py-10 max-lg:py-5'>
       <div className='relative mx-auto w-full max-w-200 px-12.5 max-lg:px-5'>
         <div className='relative mb-5 flex min-h-11 items-center justify-start gap-4 max-lg:hidden'>
-          <h2 className='m-0 text-[28px] leading-[1.4] font-semibold text-white'>
+          <h1 className='m-0 text-[28px] leading-[1.4] font-semibold text-white'>
             Bảo Mật - Chính Sách Riêng Tư của MovieHub
-          </h2>
+          </h1>
         </div>
         <div>
           <div className='text-justify leading-[1.8] text-neutral-400 max-lg:leading-[1.6]'>

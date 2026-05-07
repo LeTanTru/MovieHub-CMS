@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 import { storageKeys } from '@/constants';
 import { useDisclosure, useIsMounted } from '@/hooks';
 import { getData, removeData, setData } from '@/utils';
+import envConfig from '@/config';
 
 const DISCLAIMER_TEXT = {
   title: 'Cảnh báo quan trọng',
@@ -45,6 +46,8 @@ export default function DisclaimerModal() {
   }, []);
 
   if (!isMounted) return null;
+
+  if (envConfig.NEXT_PUBLIC_NODE_ENV === 'development') return null;
 
   return (
     <Dialog open={opened} onOpenChange={(open) => !open && close()}>
