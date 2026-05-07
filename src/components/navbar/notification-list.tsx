@@ -24,12 +24,13 @@ export default function NotificationList({
   onDelete,
   onItemClick
 }: Props) {
-  const { mutateAsync: updateReadMutate } = useUpdateReadNotificationMutation();
+  const { mutateAsync: updateReadNotificationMutate } =
+    useUpdateReadNotificationMutation();
 
   const handleItemClick = (notification: NotificationResType) => {
     if (notification.isRead) return;
 
-    updateReadMutate(
+    updateReadNotificationMutate(
       { ids: [notification.id] },
       {
         onSuccess: () => {
