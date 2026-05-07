@@ -109,7 +109,7 @@ export default function CommentItem({
   const totalChildren = comment.totalChildren || 0;
 
   const {
-    data: comments,
+    data: commentList,
     loading,
     hasMore,
     isFetchingMore,
@@ -163,7 +163,7 @@ export default function CommentItem({
     requiredPermissions: [apiConfig.comment.vote.permissionCode]
   });
 
-  const commentCount = comments.length;
+  const commentCount = commentList.length;
   const isOpen = isActiveParent;
 
   const scrollTargetName = useMemo(() => `comment-${comment.id}`, [comment.id]); // unique name for scroll target
@@ -294,12 +294,12 @@ export default function CommentItem({
 
     if (!isActiveParent || loading || isFetchingMore || !hasMore) return; // only load more if this comment is the active parent and not already loading or fetching more
 
-    if (comments.some((item) => item.id === targetCommentId)) return; // if the target comment is already in the currently loaded comments, no need to load more
+    if (commentList.some((item) => item.id === targetCommentId)) return; // if the target comment is already in the currently loaded comments, no need to load more
 
     loadMoreReplies();
   }, [
     comment.id,
-    comments,
+    commentList,
     hasMore,
     isActiveParent,
     isFetchingMore,
@@ -591,7 +591,7 @@ export default function CommentItem({
 
             {isActiveParent && commentCount > 0 && (
               <>
-                {renderChildren(comments, level + 1, rootId)}
+                {renderChildren(commentList, level + 1, rootId)}
                 {isFetchingMore && (
                   <DotLoading className='mt-4 justify-start bg-transparent' />
                 )}

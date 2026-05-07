@@ -73,7 +73,7 @@ export default function ConfirmModal({
           className
         )}
         onClick={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
+        overlayProps={{ onClick: (e) => e.stopPropagation() }}
       >
         <AlertDialogHeader>
           <AlertDialogTitle className='flex items-center gap-2 text-sm font-normal'>

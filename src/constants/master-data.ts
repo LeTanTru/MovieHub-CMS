@@ -32,7 +32,6 @@ import {
   UPLOAD_AVATAR,
   UPLOAD_LOGO,
   UPLOAD_SYSTEM,
-  UPLOAD_VIDEO,
   VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL,
   VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
   VIDEO_LIBRARY_STATE_COMPLETE,
@@ -43,7 +42,6 @@ import { OptionType } from '@/types';
 export const uploadOptions = {
   LOGO: UPLOAD_LOGO,
   AVATAR: UPLOAD_AVATAR,
-  VIDEO: UPLOAD_VIDEO,
   SYSTEM: UPLOAD_SYSTEM
 };
 
@@ -179,7 +177,6 @@ export const queryKeys = {
   UPLOAD_AVATAR_FILE: 'upload-avatar-file',
   UPLOAD_FILE: 'upload-file',
   UPLOAD_LOGO_FILE: 'upload-logo-file',
-  UPLOAD_VIDEO_FILE: 'upload-video-file',
   USER: 'user',
   VIDEO_LIBRARY_LIST: 'video-library-list',
   VIDEO_LIBRARY: 'video-library',

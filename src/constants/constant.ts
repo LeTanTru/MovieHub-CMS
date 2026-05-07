@@ -5,7 +5,6 @@ export const NOTIFICATION_PAGE_SIZE = 20;
 
 export const UPLOAD_LOGO = 'LOGO';
 export const UPLOAD_AVATAR = 'AVATAR';
-export const UPLOAD_VIDEO = 'VIDEO';
 export const UPLOAD_SYSTEM = 'SYSTEM';
 
 export const GROUP_KIND_ADMIN = 1;

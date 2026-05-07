@@ -3,8 +3,7 @@ import { logger } from '@/logger';
 import type {
   ApiResponse,
   UploadFileResType,
-  UploadImageResType,
-  UploadVideoResType
+  UploadImageResType
 } from '@/types';
 import { http, notify } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
@@ -68,37 +67,6 @@ export const useUploadLogoMutation = () => {
     onError: (error) => {
       logger.error('[UPLOAD_LOGO_ERROR]', error);
       notify.error('Tải lên logo thất bại');
-    }
-  });
-};
-
-export const useUploadVideoMutation = () => {
-  return useMutation({
-    mutationKey: [queryKeys.UPLOAD_VIDEO_FILE],
-    mutationFn: ({
-      file,
-      options
-    }: {
-      file: File;
-      options?: AxiosRequestConfig;
-    }) =>
-      http.post<ApiResponse<UploadVideoResType>>(apiConfig.file.uploadVideo, {
-        body: {
-          file: file,
-          type: uploadOptions.VIDEO
-        },
-        options
-      }),
-    onSuccess: (res) => {
-      if (res.result) {
-        notify.success('Tải lên video thành công');
-      } else {
-        notify.error('Tải lên video thất bại');
-      }
-    },
-    onError: (error) => {
-      logger.error('[UPLOAD_VIDEO_ERROR]', error);
-      notify.error('Tải lên video thất bại');
     }
   });
 };
