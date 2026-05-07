@@ -239,7 +239,7 @@ export default function MovieItemModal({
     <Modal
       open={open}
       onClose={handleCancel}
-      className='w-200 max-[1537px]:top-10'
+      className='top-20 w-200 max-[1537px]:top-10'
       aria-labelledby='movie-item-modal-title'
       confirmOnClose={isFormChanged}
     >
