@@ -137,7 +137,10 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
 
   if (loading && !isAuthenticated && !isPublicRoute) {
     return (
-      <div className='fixed inset-0 z-50 flex h-dvh w-full items-center justify-center bg-white'>
+      <div
+        suppressHydrationWarning
+        className='fixed inset-0 z-50 flex h-dvh w-full items-center justify-center bg-white'
+      >
         <Loader className='size-8 animate-spin' />
       </div>
     );
