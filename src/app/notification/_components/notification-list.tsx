@@ -28,7 +28,7 @@ import { CheckCheck, Trash } from 'lucide-react';
 
 export default function NotificationList() {
   const {
-    data: notifications,
+    data: notificationList,
     loading,
     handlers,
     isFetchingMore,
@@ -175,9 +175,9 @@ export default function NotificationList() {
           <ButtonDeleteAll key='delete-all' />
         ]}
       >
-        {notifications.length ? (
+        {notificationList.length ? (
           <List className='scrollbar-none flex flex-col overflow-y-auto rounded bg-white'>
-            {notifications.map((notification) => (
+            {notificationList.map((notification) => (
               <NotificationItem
                 key={notification.id}
                 notification={notification}
@@ -187,7 +187,7 @@ export default function NotificationList() {
                   ]
                 })}
                 onDelete={handleDelete}
-                onClickItem={handleUpdateRead}
+                onItemClick={handleUpdateRead}
               />
             ))}
           </List>

@@ -19,18 +19,18 @@ type NotificationItemProps = {
   notification: NotificationResType;
   canDelete?: boolean;
   onDelete: (id: string) => void;
-  onClickItem?: (notification: NotificationResType) => void;
+  onItemClick?: (notification: NotificationResType) => void;
 };
 
 export default function NotificationItem({
   notification,
   canDelete = false,
   onDelete,
-  onClickItem
+  onItemClick
 }: NotificationItemProps) {
   return (
     <div
-      onClick={onClickItem && (() => onClickItem(notification))}
+      onClick={onItemClick && (() => onItemClick(notification))}
       className={cn(
         'flex cursor-pointer items-center justify-between rounded py-2 transition-colors duration-200 ease-linear hover:bg-gray-200',
         {

@@ -50,7 +50,7 @@ export default function DropdownNotification() {
     : 0;
 
   const {
-    data: notifications,
+    data: notificationList,
     loading,
     handlers,
     totalElements
@@ -107,6 +107,10 @@ export default function DropdownNotification() {
     });
   };
 
+  const handleItemClick = () => {
+    closeDropDown();
+  };
+
   if (
     !handlers.hasPermission({
       requiredPermissions: [apiConfig.notification.getList.permissionCode]
@@ -140,7 +144,7 @@ export default function DropdownNotification() {
             <div className='absolute -top-2 right-10 border-r-8 border-b-8 border-l-8 border-r-transparent border-b-white border-l-transparent'></div>
             <div className='flex items-center justify-between border-b border-gray-200 px-2 py-1'>
               <h3 className='font-medium'>Thông báo</h3>
-              {notifications.length > 0 && !loading && (
+              {notificationList.length > 0 && !loading && (
                 <div className='flex items-center gap-4'>
                   {canReadAll && totalUnread > 0 && (
                     <Button
@@ -183,13 +187,13 @@ export default function DropdownNotification() {
               )}
             </div>
             <NotificationList
-              notifications={notifications}
+              notifications={notificationList}
               canDelete={canDelete}
-              handleDelete={handleDelete}
+              onDelete={handleDelete}
               loading={loading}
-              onClickItem={closeDropDown}
+              onItemClick={handleItemClick}
             />
-            {notifications.length > 0 && (
+            {notificationList.length > 0 && (
               <div className='border-t border-t-gray-200 p-2 text-center'>
                 <Link
                   className='hover:text-main-color inline-block transition-colors duration-200 ease-linear'

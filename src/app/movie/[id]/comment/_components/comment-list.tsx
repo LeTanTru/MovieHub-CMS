@@ -56,7 +56,7 @@ export default function CommentList() {
   const hasPermission = useValidatePermission();
 
   const {
-    data,
+    data: commentList,
     loading,
     handlers,
     isFetchingMore,
@@ -129,10 +129,10 @@ export default function CommentList() {
   useEffect(() => {
     if (!targetRootId || loading || isFetchingMore || !hasMore) return;
 
-    if (data.some((comment) => comment.id === targetRootId)) return;
+    if (commentList.some((comment) => comment.id === targetRootId)) return;
 
     handlers.loadMore();
-  }, [data, handlers, hasMore, isFetchingMore, loading, targetRootId]);
+  }, [commentList, handlers, hasMore, isFetchingMore, loading, targetRootId]);
 
   const renderChildren = (
     list: CommentResType[],
@@ -176,14 +176,14 @@ export default function CommentList() {
               <CommentItem.Skeleton key={index} />
             ))}
           </div>
-        ) : data.length === 0 ? (
+        ) : commentList.length === 0 ? (
           <NoData content='Chưa có bình luận nào' />
         ) : (
           <div className='px-4 pb-4'>
             <h4 className='-mb-2 ml-2 font-semibold text-black'>
               Bình luận ({totalElements})
             </h4>
-            {renderChildren(data, 0)}
+            {renderChildren(commentList, 0)}
             {isFetchingMore && <DotLoading className='mt-4' />}
             {hasMore && (
               <Button
