@@ -11,7 +11,7 @@ import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/form';
 import { useEffect } from 'react';
 import { storageKeys } from '@/constants';
-import { useDisclosure } from '@/hooks';
+import { useDisclosure, useIsMounted } from '@/hooks';
 import { getData, removeData, setData } from '@/utils';
 
 const DISCLAIMER_TEXT = {
@@ -24,6 +24,8 @@ const DISCLAIMER_TEXT = {
 };
 
 export default function DisclaimerModal() {
+  const isMounted = useIsMounted();
+
   const { opened, close } = useDisclosure(
     getData(storageKeys.DISCLAIMER_SHOWN) !== 'true'
   );
@@ -41,6 +43,8 @@ export default function DisclaimerModal() {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, []);
+
+  if (!isMounted) return null;
 
   return (
     <Dialog open={opened} onOpenChange={(open) => !open && close()}>
