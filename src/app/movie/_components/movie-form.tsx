@@ -272,6 +272,7 @@ export default function MovieForm() {
                   label='Ảnh bìa (2:3 - Poster)'
                   aspect={2 / 3}
                   required
+                  defaultCrop
                   originalSize
                 />
               </Col>
@@ -296,6 +297,7 @@ export default function MovieForm() {
                   label='Ảnh xem trước (16:9 - Thumbnail)'
                   aspect={16 / 9}
                   required
+                  defaultCrop
                   originalSize
                 />
               </Col>

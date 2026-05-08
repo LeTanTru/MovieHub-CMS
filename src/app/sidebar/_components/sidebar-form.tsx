@@ -161,6 +161,7 @@ export default function SidebarForm() {
                     label='Thumbnail web (Thumnail - 16:9)'
                     aspect={16 / 9}
                     originalSize
+                    defaultCrop
                     required
                   />
                 </Col>
@@ -183,6 +184,7 @@ export default function SidebarForm() {
                     aspect={2 / 3}
                     required
                     originalSize
+                    defaultCrop
                   />
                 </Col>
               </Row>

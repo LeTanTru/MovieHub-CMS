@@ -16,10 +16,15 @@ import {
   MAX_PAGE_SIZE,
   DEFAULT_TABLE_PAGE_START,
   DEFAULT_TABLE_PAGE_SIZE,
-  objectNames
+  objectNames,
+  VIDEO_LIBRARY_STATE_ERROR,
+  videoLibraryErrorReasons
 } from '@/constants';
 import { useDisclosure, useListBase } from '@/hooks';
-import { useServerConfigListQuery } from '@/queries';
+import {
+  useRetryProcessVideoLibraryMutation,
+  useServerConfigListQuery
+} from '@/queries';
 import { videoLibrarySearchSchema } from '@/schemaValidations';
 import type {
   Column,
@@ -31,8 +36,9 @@ import { formatSecondsToHMS, notify, renderImageUrl } from '@/utils';
 import { LucideLoader, PlayCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
-import { FaCircleCheck } from 'react-icons/fa6';
+import { FaCircleCheck, FaRotateRight } from 'react-icons/fa6';
 import useVideoLibraryStore from '@/store/video-library.store';
+import { logger } from '@/logger';
 
 export default function VideoLibraryList() {
   const {
@@ -55,6 +61,9 @@ export default function VideoLibraryList() {
       label: sc.name,
       value: sc.id
     })) || [];
+
+  const { mutateAsync: retryProcessMutate, isPending: retryProcessLoading } =
+    useRetryProcessVideoLibraryMutation();
 
   const { data, pagination, loading, handlers } = useListBase<
     VideoLibraryResType,
@@ -97,8 +106,57 @@ export default function VideoLibraryList() {
               </span>
             </ToolTip>
           );
+        },
+        retryProcess: (
+          record: VideoLibraryResType,
+          buttonProps?: Record<string, any>
+        ) => {
+          const handleRetryProcess = async (record: VideoLibraryResType) => {
+            await retryProcessMutate(
+              {
+                id: record.id,
+                content: record.content
+              },
+              {
+                onSuccess: (res) => {
+                  if (res.result) {
+                    notify.success('Đã gửi yêu cầu xử lý lại video');
+                    handlers.invalidateQueries();
+                  }
+                },
+                onError: (error) => {
+                  logger.error('[RETRY_PROCESS_VIDEO_LIBRARY]', error);
+                  notify.error('Gửi yêu cầu xử lý lại video thất bại');
+                }
+              }
+            );
+          };
+
+          return (
+            <ToolTip title='Xem video' sideOffset={0}>
+              <span>
+                <Button
+                  disabled={retryProcessLoading}
+                  onClick={() => handleRetryProcess(record)}
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  variant='ghost'
+                  {...buttonProps}
+                >
+                  <FaRotateRight className='text-main-color size-4' />
+                </Button>
+              </span>
+            </ToolTip>
+          );
         }
       });
+
+      handlers.handleDeleteError = (code) => {
+        if (code === ErrorCode.VIDEO_LIBRARY_ERROR_NO_SERVER_CONFIG) {
+          notify.error(
+            'Không thể xóa video không có liên kết với bất kỳ máy chủ nào'
+          );
+        }
+      };
     }
   });
 
@@ -140,8 +198,11 @@ export default function VideoLibraryList() {
     {
       title: 'Tình trạng',
       dataIndex: 'state',
-      render: (value) =>
-        value === VIDEO_LIBRARY_STATE_PROCESSING ? (
+      render: (value) => {
+        const reasonLabel = videoLibraryErrorReasons.find(
+          (reason) => reason.value === value
+        )?.label;
+        return value === VIDEO_LIBRARY_STATE_PROCESSING ? (
           <ToolTip title='Đang xử lý'>
             <div>
               <LucideLoader className='mx-auto size-5 animate-spin' />
@@ -154,24 +215,35 @@ export default function VideoLibraryList() {
             </div>
           </ToolTip>
         ) : (
-          <ToolTip title='Lỗi'>
+          <ToolTip title={`Lỗi: ${reasonLabel || 'N/A'}`}>
             <div>
               <FaExclamationTriangle className='mx-auto size-5 text-rose-500' />
             </div>
           </ToolTip>
-        ),
+        );
+      },
       width: 120,
       align: 'center'
     },
     handlers.renderActionColumn({
       actions: {
         watchVideo: true,
+        retryProcess: (record) =>
+          record.state === VIDEO_LIBRARY_STATE_ERROR &&
+          handlers.hasPermission({
+            requiredPermissions: [
+              apiConfig.videoLibrary.retryProcess.permissionCode
+            ]
+          }),
         edit: handlers.hasPermission({
           requiredPermissions: [apiConfig.videoLibrary.update.permissionCode]
         }),
         delete: handlers.hasPermission({
           requiredPermissions: [apiConfig.videoLibrary.delete.permissionCode]
         })
+      },
+      columnProps: {
+        width: 150
       }
     })
   ];

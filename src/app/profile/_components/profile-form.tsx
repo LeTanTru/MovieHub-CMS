@@ -130,6 +130,7 @@ export default function ProfileForm() {
                 deleteImageFn={avatarImageManager.handleDeleteOnClick}
                 label='Ảnh đại diện'
                 avatar
+                defaultCrop
               />
             </Col>
           </Row>

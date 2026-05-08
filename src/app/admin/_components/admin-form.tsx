@@ -177,6 +177,7 @@ export default function AdminForm() {
                   label='Ảnh đại diện'
                   deleteImageFn={imageManager.handleDeleteOnClick}
                   avatar
+                  defaultCrop
                 />
               </Col>
             </Row>

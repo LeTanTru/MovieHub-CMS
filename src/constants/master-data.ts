@@ -6,9 +6,12 @@ import {
   AGE_RATING_T18,
   COLLECTION_TYPE_SECTION,
   COLLECTION_TYPE_TOPIC,
+  CONVERT_FILE_FAILED,
+  DOWNLOAD_TEMP_FILE_FAILED,
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER,
+  GENERATE_VTT_FAILED,
   GROUP_KIND_ADMIN,
   GROUP_KIND_EMPLOYEE,
   GROUP_KIND_USER,
@@ -194,7 +197,8 @@ export const queryKeys = {
   VIDEO_LIBRARY_LIST: 'video-library-list',
   VIDEO_LIBRARY: 'video-library',
   VOTE_COMMENT: 'vote-comment',
-  DELETE_ALL_NOTIFICATION: 'delete-all-notification'
+  DELETE_ALL_NOTIFICATION: 'delete-all-notification',
+  RETRY_PROCESS_VIDEO_LIBRARY: 'retry-process-video-library'
 };
 
 export const userKindOptions = [
@@ -1737,3 +1741,18 @@ export const objectNames = {
 } as const;
 
 export type ObjectNameKey = keyof typeof objectNames;
+
+export const videoLibraryErrorReasons = [
+  {
+    value: DOWNLOAD_TEMP_FILE_FAILED,
+    label: 'Tải file tạm thất bại'
+  },
+  {
+    value: CONVERT_FILE_FAILED,
+    label: 'Chuyển đổi file thất bại'
+  },
+  {
+    value: GENERATE_VTT_FAILED,
+    label: 'Tạo file VTT thất bại'
+  }
+];

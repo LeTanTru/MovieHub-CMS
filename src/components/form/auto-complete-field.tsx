@@ -92,7 +92,7 @@ export default function AutoCompleteField<
   className,
   formItemClassName,
   required,
-  allowClear,
+  allowClear = false,
   searchText,
   notFoundContent = 'Không có dữ liệu',
   labelClassName,
@@ -299,19 +299,19 @@ export default function AutoCompleteField<
                         <span className='opacity-30'>{placeholder}</span>
                       )}
 
-                      {field.value && allowClear ? (
+                      {field.value && allowClear && !disabled ? (
                         <span
                           role='button'
                           onClick={(e) => {
                             e.stopPropagation();
                             clearValue();
                           }}
-                          className='bg-accent ml-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-full px-0 hover:opacity-80'
+                          className='bg-accent ml-2 flex size-4 shrink-0 items-center justify-center rounded-full px-0 hover:opacity-80'
                         >
                           <X className='size-3' />
                         </span>
                       ) : (
-                        <ChevronDown className='ml-0 h-4 w-4 shrink-0 opacity-50' />
+                        <ChevronDown className='ml-0 size-4 shrink-0 text-gray-300' />
                       )}
                     </Button>
                   </PopoverTrigger>

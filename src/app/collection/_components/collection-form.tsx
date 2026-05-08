@@ -34,6 +34,7 @@ import { useCategoryListQuery } from '@/queries';
 import { route } from '@/routes';
 import { collectionSchema } from '@/schemaValidations';
 import {
+  CollectionFilterType,
   CollectionSearchType,
   type CollectionBodyType,
   type CollectionResType,
@@ -158,14 +159,16 @@ export default function CollectionForm() {
     } else {
       const { noLimit, ...filterWithoutNoLimit } = values.filter;
 
-      const filterDefaults = {
-        type: 0,
+      const filterDefaults: CollectionFilterType = {
         ageRating: 0,
-        language: '',
+        categoryIds: [],
+        comingSoon: false,
         country: '',
         isFeatured: false,
-        categoryIds: [],
-        limit: null
+        language: '',
+        limit: null,
+        topImdb: false,
+        type: 0
       };
 
       const cleanedFilter = Object.fromEntries(
@@ -442,6 +445,13 @@ export default function CollectionForm() {
                       label='Sắp ra mắt'
                     />
                   </Col>
+                  <Col className='grid-c-3'>
+                    <CheckboxField
+                      name='filter.topImdb'
+                      control={form.control}
+                      label='Top IMDb'
+                    />
+                  </Col>
                 </Row>
                 <Row className='mb-0 justify-end'>
                   <Col className='grid-c-2'>
@@ -449,23 +459,10 @@ export default function CollectionForm() {
                       type='button'
                       variant='primary'
                       onClick={() => {
-                        form.setValue('filter.ageRating', 0, {
-                          shouldDirty: true
+                        form.setValue('filter', defaultValues.filter, {
+                          shouldDirty: true,
+                          shouldValidate: true
                         });
-                        form.setValue('filter.categoryIds', [], {
-                          shouldDirty: true
-                        });
-                        form.setValue('filter.country', '', {
-                          shouldDirty: true
-                        });
-                        form.setValue('filter.language', '', {
-                          shouldDirty: true
-                        });
-                        form.setValue('filter.isFeatured', false, {
-                          shouldDirty: true
-                        });
-                        form.setValue('filter.type', 0, { shouldDirty: true });
-                        form.setValue('filter.limit', 1, { shouldDirty: true });
                       }}
                     >
                       Đặt lại bộ lọc

@@ -145,6 +145,11 @@ export const videoLibrarySchema = z
     }
   });
 
+export const retryProcessVideoLibrarySchema = z.object({
+  id: z.string().nonempty('Bắt buộc'),
+  content: z.string().nonempty('Bắt buộc')
+});
+
 export const videoLibrarySearchSchema = z.object({
   name: z.string().optional().nullable(),
   state: z.number().optional().nullable(),

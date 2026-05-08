@@ -165,6 +165,7 @@ export default function StyleForm() {
                   required
                   originalSize
                   aspect={2 / 3}
+                  defaultCrop
                 />
               </Col>
               <Col className='grid-c-6'>
@@ -184,6 +185,7 @@ export default function StyleForm() {
                   required
                   originalSize
                   aspect={16 / 9}
+                  defaultCrop
                 />
               </Col>
             </Row>
