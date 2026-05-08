@@ -176,6 +176,7 @@ export default function EmployeeForm() {
                   deleteImageFn={imageManager.handleDeleteOnClick}
                   label='Ảnh đại diện'
                   avatar
+                  defaultCrop
                 />
               </Col>
             </Row>

@@ -90,7 +90,7 @@ export default function SelectField<
   className,
   formItemClassName,
   required,
-  allowClear,
+  allowClear = false,
   searchText,
   notFoundContent = 'Không có kết quả nào',
   labelClassName,
@@ -189,19 +189,24 @@ export default function SelectField<
                         <span className='text-gray-300'>{placeholder}</span>
                       )}
 
-                      {selectedOption && allowClear ? (
+                      {selectedOption && allowClear && !disabled ? (
                         <span
                           role='button'
                           aria-label='Clear selection'
                           onClick={handleClear}
                           onKeyDown={(e) => e.key === 'Enter' && handleClear(e)}
-                          className='bg-accent ml-2 flex h-4 w-4 items-center justify-center rounded-full hover:opacity-80'
+                          className='bg-accent ml-2 flex size-4 items-center justify-center rounded-full hover:opacity-80'
                           tabIndex={0}
                         >
                           <X className='size-3' />
                         </span>
                       ) : (
-                        <ChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                        <ChevronDown
+                          className={cn('ml-2 size-4 shrink-0', {
+                            'text-gray-300': !selectedOption && !disabled,
+                            'opacity-50': disabled
+                          })}
+                        />
                       )}
                     </Button>
                   </PopoverTrigger>

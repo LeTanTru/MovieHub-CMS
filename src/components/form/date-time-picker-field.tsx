@@ -44,7 +44,7 @@ type DateTimePickerFieldProps<T extends FieldValues> = {
   labelClassName?: string;
   disabled?: boolean;
   placeholder?: string;
-  clearable?: boolean;
+  allowClear?: boolean;
   className?: string;
   formItemClassName?: string;
 };
@@ -61,7 +61,7 @@ export default function DateTimePickerField<T extends FieldValues>({
   placeholder,
   className,
   formItemClassName,
-  clearable = true
+  allowClear = false
 }: DateTimePickerFieldProps<T>) {
   const isMounted = useIsMounted();
 
@@ -196,10 +196,11 @@ export default function DateTimePickerField<T extends FieldValues>({
                       </span>
                       <span
                         className={cn('flex items-center gap-1', {
+                          'text-gray-300': !hasValue && !disabled,
                           'opacity-50': disabled
                         })}
                       >
-                        {clearable && hasValue && !disabled && (
+                        {allowClear && hasValue && !disabled ? (
                           <span
                             role='button'
                             aria-label='Clear date'
@@ -210,16 +211,13 @@ export default function DateTimePickerField<T extends FieldValues>({
                                 handleClear(e);
                               }
                             }}
-                            className='rounded-full p-0.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600'
+                            className='bg-accent ml-2 flex size-4 shrink-0 items-center justify-center rounded-full px-0 hover:opacity-80'
                           >
-                            <X className='h-3.5 w-3.5' />
+                            <X className='size-3' />
                           </span>
+                        ) : (
+                          <CalendarIcon className='size-4' />
                         )}
-                        <CalendarIcon
-                          className={cn('h-4 w-4', {
-                            'opacity-50': disabled
-                          })}
-                        />
                       </span>
                     </Button>
                   </PopoverTrigger>
@@ -367,7 +365,7 @@ export default function DateTimePickerField<T extends FieldValues>({
                       </div>
                     </div>
                     <div className='flex justify-center gap-2 border-t pt-2'>
-                      {clearable && (
+                      {allowClear && (
                         <Button
                           size='lg'
                           variant='outline'

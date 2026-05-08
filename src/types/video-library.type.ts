@@ -1,4 +1,5 @@
 import {
+  retryProcessVideoLibrarySchema,
   videoLibrarySchema,
   videoLibrarySearchSchema
 } from '@/schemaValidations';
@@ -27,6 +28,10 @@ export type VideoLibraryResType = {
 };
 
 export type VideoLibraryBodyType = z.infer<typeof videoLibrarySchema>;
+
+export type RetryProcessVideoLibraryBodyType = z.infer<
+  typeof retryProcessVideoLibrarySchema
+>;
 
 export type VideoLibrarySearchType = z.infer<typeof videoLibrarySearchSchema> &
   BaseSearchType;

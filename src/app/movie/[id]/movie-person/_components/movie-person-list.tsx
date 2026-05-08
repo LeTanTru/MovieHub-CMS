@@ -358,7 +358,7 @@ export default function MoviePersonList({ kind }: MoviePersonListProps) {
                             }}
                             disabled={selectedRow !== record.id}
                           >
-                            <X className='text-destructive' />
+                            <X className='text-rose-500' />
                           </Button>
                         </ToolTip>
                       </div>

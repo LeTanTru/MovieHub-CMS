@@ -1,4 +1,8 @@
-import { collectionSchema, collectionSearchSchema } from '@/schemaValidations';
+import {
+  collectionFilterSchema,
+  collectionSchema,
+  collectionSearchSchema
+} from '@/schemaValidations';
 import type { CollectionItemResType } from '@/types/collection-item.type';
 import type { MovieResType } from '@/types/movie.type';
 import type { BaseSearchType } from '@/types/search.type';
@@ -22,6 +26,8 @@ export type CollectionResType = {
   type: number;
   fillData: boolean;
 };
+
+export type CollectionFilterType = z.infer<typeof collectionFilterSchema>;
 
 export type CollectionBodyType = z.infer<typeof collectionSchema>;
 

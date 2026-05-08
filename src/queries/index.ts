@@ -14,3 +14,4 @@ export * from './review.query';
 export * from './server-config.query';
 export * from './sidebar.query';
 export * from './user.query';
+export * from './video-library.query';

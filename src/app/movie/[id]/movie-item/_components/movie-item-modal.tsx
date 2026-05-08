@@ -321,6 +321,7 @@ export default function MovieItemModal({
                       label='Ngày phát hành'
                       placeholder='Ngày phát hành'
                       required
+                      allowClear
                     />
                   </Col>
                 </Row>
@@ -354,6 +355,7 @@ export default function MovieItemModal({
                         name='videoId'
                         label='Video'
                         placeholder='Video'
+                        allowClear
                       />
                     </Col>
                   )}

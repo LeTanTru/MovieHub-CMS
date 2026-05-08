@@ -41,6 +41,7 @@ export const TAB_MOVIE_PERSON_KIND_DIRECTOR = 'director_tab';
 
 export const VIDEO_LIBRARY_STATE_PROCESSING = 0;
 export const VIDEO_LIBRARY_STATE_COMPLETE = 1;
+export const VIDEO_LIBRARY_STATE_ERROR = 2;
 
 export const MOVIE_TYPE_SINGLE = 1;
 export const MOVIE_TYPE_SERIES = 2;
@@ -94,3 +95,7 @@ export const SEND_NOTIFICATION_FOR_INTERESTED_USERS = 2;
 
 export const TAB_SETTING_GENERAL = 'general';
 export const TAB_SETTING_LIVE_ROOM = 'live_room';
+
+export const DOWNLOAD_TEMP_FILE_FAILED = 'download_temp_file_failed';
+export const CONVERT_FILE_FAILED = 'convert_file_failed';
+export const GENERATE_VTT_FAILED = 'generate_vtt_failed';

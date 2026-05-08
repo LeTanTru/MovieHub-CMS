@@ -983,6 +983,13 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       permissionCode: 'VID_L_U',
       isRequiredXClientType: true
+    },
+    retryProcess: {
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library/retry-process`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'VID_L_R_P',
+      isRequiredXClientType: true
     }
   },
   notification: {

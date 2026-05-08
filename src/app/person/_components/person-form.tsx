@@ -182,6 +182,7 @@ export default function PersonForm() {
                   deleteImageFn={imageManager.handleDeleteOnClick}
                   label='Ảnh đại diện'
                   avatar
+                  defaultCrop
                 />
               </Col>
             </Row>
@@ -212,6 +213,7 @@ export default function PersonForm() {
                   name='dateOfBirth'
                   label='Ngày sinh'
                   placeholder='Ngày sinh'
+                  allowClear
                 />
               </Col>
               <Col className='grid-c-6'>
@@ -243,6 +245,7 @@ export default function PersonForm() {
                   name='country'
                   label='Quốc tịch'
                   placeholder='Quốc tịch'
+                  allowClear
                 />
               </Col>
             </Row>

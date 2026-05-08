@@ -227,6 +227,18 @@ export default function MultiSelectField<
           } else {
             newValues = [...selectedValues, val];
           }
+          // Sort selected values by their label in the options array
+          newValues.sort((a, b) => {
+            const labelA = options.find((o) => getValue(o) === a);
+            const labelB = options.find((o) => getValue(o) === b);
+            const labelCompareA = labelA
+              ? normalizeText(String(getLabel(labelA)))
+              : '';
+            const labelCompareB = labelB
+              ? normalizeText(String(getLabel(labelB)))
+              : '';
+            return labelCompareA.localeCompare(labelCompareB);
+          });
           field.onChange(newValues);
           onValueChange?.(newValues);
         };
@@ -318,7 +330,7 @@ export default function MultiSelectField<
                                   onClick={(e) => handleRemove(val, e)}
                                   onMouseDown={(e) => e.stopPropagation()}
                                 >
-                                  <X className='h-3 w-3' />
+                                  <X className='size-3' />
                                 </span>
                               </span>
                             );

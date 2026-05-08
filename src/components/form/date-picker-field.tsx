@@ -44,7 +44,7 @@ type DatePickerFieldProps<T extends FieldValues> = {
   required?: boolean;
   placeholder?: string;
   labelClassName?: string;
-  clearable?: boolean;
+  allowClear?: boolean;
 };
 
 export default function DatePickerField<T extends FieldValues>({
@@ -59,7 +59,7 @@ export default function DatePickerField<T extends FieldValues>({
   required,
   placeholder,
   labelClassName,
-  clearable = true
+  allowClear = false
 }: DatePickerFieldProps<T>) {
   const calendarLocale: Locale = vi;
   const [open, setOpen] = useState<boolean>(false);
@@ -146,8 +146,13 @@ export default function DatePickerField<T extends FieldValues>({
                             : (placeholder ?? 'Chọn ngày');
                         })()}
                       </span>
-                      <span className={cn('flex items-center gap-1')}>
-                        {clearable && hasValue && !disabled && (
+                      <span
+                        className={cn('flex items-center gap-1', {
+                          'text-gray-300': !hasValue && !disabled,
+                          'opacity-50': disabled
+                        })}
+                      >
+                        {allowClear && hasValue && !disabled ? (
                           <span
                             role='button'
                             aria-label='Clear date'
@@ -158,14 +163,13 @@ export default function DatePickerField<T extends FieldValues>({
                                 handleClear(e);
                               }
                             }}
-                            className='rounded-full p-0.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600'
+                            className='bg-accent ml-2 flex size-4 shrink-0 items-center justify-center rounded-full px-0 hover:opacity-80'
                           >
-                            <X className='h-3.5 w-3.5' />
+                            <X className='size-3' />
                           </span>
+                        ) : (
+                          <CalendarIcon className='size-4' />
                         )}
-                        <CalendarIcon
-                          className={cn('h-4 w-4', { 'opacity-50': disabled })}
-                        />
                       </span>
                     </Button>
                   </PopoverTrigger>
@@ -242,7 +246,7 @@ export default function DatePickerField<T extends FieldValues>({
                       >
                         Hôm nay
                       </Button>
-                      {clearable && (
+                      {allowClear && (
                         <Button
                           type='button'
                           variant='outline'

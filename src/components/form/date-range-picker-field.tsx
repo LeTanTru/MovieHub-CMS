@@ -103,7 +103,12 @@ export default function DateRangePickerField<T extends FieldValues>({
                   ) : (
                     <span>Chọn khoảng thời gian</span>
                   )}
-                  <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                  <CalendarIcon
+                    className={cn({
+                      'text-gray-300': !field.value && !disabled,
+                      'opacity-50': disabled
+                    })}
+                  />
                 </Button>
               </PopoverTrigger>
               <PopoverContent
