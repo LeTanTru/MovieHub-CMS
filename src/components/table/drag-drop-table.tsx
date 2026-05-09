@@ -112,7 +112,7 @@ function SortableRow<T extends Record<any, any>>({
         <TableCell
           key={colIndex}
           className={cn(
-            `relative h-[65px] px-4 leading-8 ${
+            `relative h-[65px] px-4 leading-8 whitespace-nowrap ${
               col.align ? `text-${col.align}` : 'text-left'
             }`,
             {

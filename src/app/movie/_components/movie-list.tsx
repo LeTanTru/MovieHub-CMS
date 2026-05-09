@@ -207,7 +207,8 @@ export default function MovieList() {
             {record.originalTitle}
           </span>
         </>
-      )
+      ),
+      width: 300
     },
     {
       title: 'Phim',
@@ -311,7 +312,7 @@ export default function MovieList() {
           requiredPermissions: [apiConfig.movie.delete.permissionCode]
         })
       },
-      columnProps: { width: 180 }
+      columnProps: { width: 180, fixed: true }
     })
   ];
 
