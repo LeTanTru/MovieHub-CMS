@@ -29,7 +29,7 @@ import {
   objectNames,
   queryKeys
 } from '@/constants';
-import { useQueryParams, useSaveBase } from '@/hooks';
+import { useNavigate, useQueryParams, useSaveBase } from '@/hooks';
 import { useCategoryListQuery } from '@/queries';
 import { route } from '@/routes';
 import { collectionSchema } from '@/schemaValidations';
@@ -41,17 +41,22 @@ import {
   type StyleResType
 } from '@/types';
 import { renderListPageUrl } from '@/utils';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { PlusIcon, X } from 'lucide-react';
 import { logger } from '@/logger';
 
 export default function CollectionForm() {
+  const navigate = useNavigate();
+
+  const pathname = usePathname();
+
   const { id } = useParams<{ id: string }>();
 
   const {
-    searchParams: { type }
+    searchParams: { type },
+    serializeParams
   } = useQueryParams<CollectionSearchType>();
 
   const { data: categoryListData } = useCategoryListQuery();
@@ -187,6 +192,10 @@ export default function CollectionForm() {
     await handleSubmit(payload as any, form, collectionErrorMaps);
   };
 
+  const handleChangeType = (type: number) => {
+    navigate.replace(renderListPageUrl(pathname, serializeParams({ type })));
+  };
+
   return (
     <PageWrapper
       breadcrumbs={[
@@ -264,6 +273,7 @@ export default function CollectionForm() {
                     required
                     options={collectionTypeOptions}
                     disabled={isEditing}
+                    onValueChange={(value) => handleChangeType(value as number)}
                   />
                 </Col>
               </Row>
