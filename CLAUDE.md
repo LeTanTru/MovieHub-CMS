@@ -9,13 +9,13 @@ MovieHub CMS is a Next.js App Router administration console for managing a movie
 ## Commands
 
 ```bash
-yarn              # Install dependencies
-yarn dev          # Dev server on port 3001 (Turbopack)
-yarn clean-dev    # Clear .next cache, then dev
-yarn build        # Production build
-yarn start        # Production server on port 3001
-yarn lint         # ESLint on .ts/.tsx/.js/.jsx
-yarn format       # Prettier write all files
+yarn            # Install dependencies
+yarn dev        # Dev server on port 3001 (Turbopack)
+yarn clean-dev  # Clear .next cache, then dev
+yarn build      # Production build
+yarn start      # Production server on port 3001
+yarn lint       # ESLint on .ts/.tsx/.js/.jsx
+yarn format     # Prettier write all files
 yarn lint-staged  # Run on staged files (pre-commit hook)
 ```
 
