@@ -154,42 +154,37 @@ export default function CollectionForm() {
     values: CollectionBodyType,
     form: UseFormReturn<CollectionBodyType>
   ) => {
-    if (!values.styleId && values.type === COLLECTION_TYPE_SECTION) {
-      form.setError('styleId', { message: 'Bắt buộc' });
-    } else {
-      const { noLimit, ...filterWithoutNoLimit } = values.filter;
+    const { noLimit, ...filterWithoutNoLimit } = values.filter;
 
-      const filterDefaults: CollectionFilterType = {
-        ageRating: 0,
-        categoryIds: [],
-        comingSoon: false,
-        country: '',
-        isFeatured: false,
-        language: '',
-        limit: null,
-        topImdb: false,
-        type: 0
-      };
+    const filterDefaults: CollectionFilterType = {
+      ageRating: 0,
+      categoryIds: [],
+      comingSoon: false,
+      country: '',
+      isFeatured: false,
+      language: '',
+      limit: null,
+      topImdb: false,
+      type: 0
+    };
 
-      const cleanedFilter = Object.fromEntries(
-        Object.entries({
-          ...filterWithoutNoLimit,
-          limit: noLimit ? null : values.filter.limit
-        }).filter(([key, value]) => {
-          const defaultValue =
-            filterDefaults[key as keyof typeof filterDefaults];
-          if (!Array.isArray(value)) return value !== defaultValue;
-          return Array.isArray(value) && value.length > 0;
-        })
-      );
+    const cleanedFilter = Object.fromEntries(
+      Object.entries({
+        ...filterWithoutNoLimit,
+        limit: noLimit ? null : values.filter.limit
+      }).filter(([key, value]) => {
+        const defaultValue = filterDefaults[key as keyof typeof filterDefaults];
+        if (!Array.isArray(value)) return value !== defaultValue;
+        return Array.isArray(value) && value.length > 0;
+      })
+    );
 
-      const payload = {
-        ...values,
-        filter: JSON.stringify(cleanedFilter),
-        colors: values.colors
-      };
-      await handleSubmit(payload as any, form, collectionErrorMaps);
-    }
+    const payload = {
+      ...values,
+      filter: JSON.stringify(cleanedFilter),
+      colors: values.colors
+    };
+    await handleSubmit(payload as any, form, collectionErrorMaps);
   };
 
   return (

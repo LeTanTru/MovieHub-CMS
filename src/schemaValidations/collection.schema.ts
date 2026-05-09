@@ -1,3 +1,4 @@
+import { COLLECTION_TYPE_SECTION } from '@/constants';
 import { z } from 'zod';
 
 export const collectionFilterSchema = z.object({
@@ -13,15 +14,25 @@ export const collectionFilterSchema = z.object({
   type: z.number().optional().nullable()
 });
 
-export const collectionSchema = z.object({
-  colors: z.array(z.string()),
-  filter: collectionFilterSchema,
-  name: z.string().nonempty('Bắt buộc'),
-  randomData: z.boolean({ error: 'Bắt buộc' }),
-  styleId: z.string().nonempty('Bắt buộc'),
-  type: z.number({ error: 'Bắt buộc' }),
-  fillData: z.boolean().optional().nullable()
-});
+export const collectionSchema = z
+  .object({
+    colors: z.array(z.string()),
+    filter: collectionFilterSchema,
+    name: z.string().nonempty('Bắt buộc'),
+    randomData: z.boolean({ error: 'Bắt buộc' }),
+    styleId: z.string(),
+    type: z.number({ error: 'Bắt buộc' }),
+    fillData: z.boolean().optional().nullable()
+  })
+  .superRefine((data, ctx) => {
+    if (data.type === COLLECTION_TYPE_SECTION && !data.styleId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Bắt buộc',
+        path: ['styleId']
+      });
+    }
+  });
 
 export const collectionSearchSchema = z.object({
   name: z.string().optional().nullable(),

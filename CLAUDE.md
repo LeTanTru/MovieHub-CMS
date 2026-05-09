@@ -62,6 +62,10 @@ Use `useShallow` for multi-field selectors to avoid unnecessary re-renders. Alwa
 - **`useSaveBase`**: Create/edit submit flow, dirty-leave guard, cache invalidation for both `[queryKey]` and ``[`${queryKey}-list`]``.
 - Prefer `apiConfig.*.autoComplete` endpoints for autocomplete fields when available.
 
+### Query Files (`src/queries/*.query.ts`)
+
+All `useQuery` hooks should use `select: (data) => data.data` to extract the response payload, simplifying data access in components. Mutations don't need `select`.
+
 ### Query Key Convention (`src/constants/master-data.ts`)
 
 All `queryKey` strings for TanStack Query mutations/queries are centralized in `queryKeys`. Base keys (e.g., `ADMIN: 'admin'`) define entity names; mutation keys (e.g., `CHANGE_ADMIN_STATUS: 'change-admin-status'`) are explicit strings. Always import and use `queryKeys` instead of hardcoding strings.

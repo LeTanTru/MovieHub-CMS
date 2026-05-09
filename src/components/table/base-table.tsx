@@ -90,7 +90,7 @@ export default function BaseTable<T extends Record<any, any>>({
                     <TableHead
                       key={idx}
                       className={cn(
-                        `relative bg-zinc-50 px-4 py-4 text-sm! leading-5.5 text-black ${
+                        `relative bg-zinc-50 px-4 py-4 text-sm! leading-5.5 whitespace-nowrap text-black ${
                           col.align ? `text-${col.align}` : 'text-left'
                         }`,
                         {
