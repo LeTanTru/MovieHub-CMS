@@ -152,23 +152,6 @@ export default function VideoLibraryForm() {
     values: VideoLibraryBodyType,
     form: UseFormReturn<VideoLibraryBodyType>
   ) => {
-    if (values.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL) {
-      const isDurationValid =
-        values.duration !== null &&
-        values.duration !== undefined &&
-        values.duration !== '' &&
-        values.duration !== '00:00:00' &&
-        values.duration !== 0;
-
-      if (!isDurationValid) {
-        form.setError('duration', {
-          type: 'manual',
-          message: 'Bắt buộc'
-        });
-        return;
-      }
-    }
-
     await Promise.all([
       imageManager.handleSubmit(),
       videoManager.handleSubmit(),

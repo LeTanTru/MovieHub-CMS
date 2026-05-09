@@ -83,6 +83,15 @@ export const videoLibrarySchema = z
     const hasOutroStart = outroStartSec > 0;
     const hasDuration = durationSec > 0;
 
+    // Rule 0: duration is required when sourceType is EXTERNAL
+    if (isExternalSource && !hasDuration) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Bắt buộc',
+        path: ['duration']
+      });
+    }
+
     // Rule 1: introStart < introEnd
     // Error on BOTH fields if invalid, so fixing either one will clear both
     if (hasIntroStart && hasIntroEnd && introStartSec >= introEndSec) {
