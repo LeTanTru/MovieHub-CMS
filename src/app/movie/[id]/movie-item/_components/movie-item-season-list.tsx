@@ -11,7 +11,6 @@ import {
   MAX_PAGE_SIZE,
   MOVIE_ITEM_KIND_SEASON,
   MOVIE_TYPE_SINGLE,
-  movieItemKindOptions,
   objectNames,
   queryKeys
 } from '@/constants';
@@ -22,7 +21,6 @@ import {
   useNavigate,
   useQueryParams
 } from '@/hooks';
-import { cn } from '@/lib';
 import { route } from '@/routes';
 import { movieItemSearchSchema } from '@/schemaValidations';
 import type {
@@ -34,6 +32,7 @@ import type {
 } from '@/types';
 import {
   convertUTCToLocal,
+  formatSecondsToHMS,
   generatePath,
   notify,
   renderImageUrl,
@@ -256,11 +255,11 @@ export default function MovieItemSeasonList() {
       )
     },
     {
-      title: 'Tiêu đề phần',
+      title: 'Tiêu đề',
       dataIndex: 'title',
       render: (value, record) => (
         <span
-          className={cn('line-clamp-1 block truncate uppercase')}
+          className='line-clamp-1 block truncate uppercase'
           title={`${record.kind === MOVIE_ITEM_KIND_SEASON && `Phần ${record.label}: ${value}`}`}
         >
           <span className='font-bold'>
@@ -288,18 +287,21 @@ export default function MovieItemSeasonList() {
       render: (value) => convertUTCToLocal(value) || 'N/A',
       align: 'center'
     },
-    {
-      title: 'Loại mục phim',
-      dataIndex: 'kind',
-      width: 150,
-      render: (value) => {
-        const label = movieItemKindOptions.find(
-          (kind) => kind.value === value
-        )?.label;
-        return label || 'N/A';
-      },
-      align: 'center'
-    },
+    ...(movieType === MOVIE_TYPE_SINGLE
+      ? [
+          {
+            title: 'Thời lượng',
+            width: 120,
+            render: (_: unknown, record: MovieItemResType) => {
+              if (record.video) {
+                return formatSecondsToHMS(record.video.duration);
+              }
+              return 'N/A';
+            },
+            align: 'center' as const
+          }
+        ]
+      : []),
     handlers.renderActionColumn({
       actions: {
         watchVideo: (record) =>

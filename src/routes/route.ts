@@ -59,7 +59,8 @@ const route = defineRoute({
       permissionCode: [
         apiConfig.group.create.permissionCode,
         apiConfig.group.update.permissionCode
-      ]
+      ],
+      separate: true
     }
   },
   login: {
@@ -300,6 +301,23 @@ const route = defineRoute({
       path: '/notification',
       auth: true,
       permissionCode: [apiConfig.notification.getList.permissionCode]
+    }
+  },
+  statistics: {
+    movieDistribution: {
+      path: '/statistics/movie-distribution',
+      auth: true,
+      permissionCode: [apiConfig.statistics.movieDistribution.permissionCode]
+    },
+    overview: {
+      path: '/statistics/overview',
+      auth: true,
+      permissionCode: [apiConfig.statistics.overview.permissionCode]
+    },
+    topMovies: {
+      path: '/statistics/top-movies',
+      auth: true,
+      permissionCode: [apiConfig.statistics.topMovies.permissionCode]
     }
   }
 });

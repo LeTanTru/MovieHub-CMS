@@ -2,7 +2,13 @@ import apiConfig from '@/constants/api-config';
 import { COLLECTION_TYPE_TOPIC } from '@/constants/constant';
 import { route } from '@/routes';
 import type { MenuItem } from '@/types';
-import { Film, LucideLayoutGrid, Settings, UserRound } from 'lucide-react';
+import {
+  BarChart3,
+  Film,
+  LucideLayoutGrid,
+  Settings,
+  UserRound
+} from 'lucide-react';
 
 const menuConfig: MenuItem[] = [
   {
@@ -100,6 +106,36 @@ const menuConfig: MenuItem[] = [
         path: route.collection.getList.path,
         permissionCode: [apiConfig.collection.getList.permissionCode],
         query: { type: COLLECTION_TYPE_TOPIC }
+      }
+    ]
+  },
+  {
+    key: 'statistics-management',
+    label: 'Quản lý thống kê',
+    icon: BarChart3,
+    permissionCode: [
+      apiConfig.statistics.movieDistribution.permissionCode,
+      apiConfig.statistics.overview.permissionCode,
+      apiConfig.statistics.topMovies.permissionCode
+    ],
+    children: [
+      {
+        key: 'movie-distribution',
+        label: 'Phân loại phim',
+        path: route.statistics.movieDistribution.path,
+        permissionCode: [apiConfig.statistics.movieDistribution.permissionCode]
+      },
+      {
+        key: 'overview',
+        label: 'Tổng quan',
+        path: route.statistics.overview.path,
+        permissionCode: [apiConfig.statistics.overview.permissionCode]
+      },
+      {
+        key: 'top-movies',
+        label: 'Top phim',
+        path: route.statistics.topMovies.path,
+        permissionCode: [apiConfig.statistics.topMovies.permissionCode]
       }
     ]
   },

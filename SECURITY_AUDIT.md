@@ -1,26 +1,27 @@
 # Security Audit
 
-Date: 2026-05-01
+Date: 2026-05-09
 Scope: Next.js App Router CMS under `src/`, auth/session flow, local API routes, upload/storage, permissions, environment exposure, logging, and dependency audit. React Compiler is enabled.
 
 ## Verification Status
 
-- **Static security audit completed** with line-level verification of all referenced files.
-- `yarn audit --groups dependencies --level moderate` — prior audit reported 29 advisories (8 high, 20 moderate, 1 low).
-- Dependency audit result was confirmed in the prior audit. This update re-validates findings against current codebase state.
+- **Static security audit completed** with line-level verification across all referenced files.
+- Five specialized agents scanned: auth/session, upload routes, dependencies, env/config, client-side security.
+- Dependency audit updated with newly disclosed CVEs for axios and lodash (post-2025-05-01).
 - No restricted files were accessed.
 
 ---
 
 ## Executive Summary
 
-The highest-risk issues remain concentrated in three areas:
+The highest-risk issues remain concentrated in four areas:
 
 1. The local multipart video upload API routes are excluded from proxy auth and perform **no** authentication or authorization.
 2. MQTT username/password are defined as `NEXT_PUBLIC_*` variables, shipped to every browser, and used directly in client-side code.
 3. `/api/auth/session` returns the raw access token to browser JavaScript, weakening the protection that `httpOnly` cookies were meant to provide.
+4. **New**: Access tokens are stored in Zustand client-side store, making them accessible to XSS and browser extensions.
 
-**No findings were resolved since the prior audit.** The upload routes remain unauthenticated, MQTT credentials remain public, and token exposure persists. Some findings were re-classified based on deeper analysis.
+**No findings were resolved since the prior audit.** The upload routes remain unauthenticated, MQTT credentials remain public, token exposure persists, and client-side token storage was newly identified. Several newly discovered issues have been classified as Critical or High.
 
 ---
 
@@ -107,9 +108,31 @@ if (!accessToken || !userKind) {
 
 ---
 
+### 4. Access Token Stored in Zustand Client-Side Store (NEW)
+
+**Finding:** CRITICAL — **Newly identified.** The access token is extracted from cookies/API responses and stored in the client-side Zustand auth store.
+
+**Evidence (verified current code):**
+
+- `src/store/auth-store.ts:7,11` — `accessToken: null` in store state, `setAccessToken` mutator
+- `src/components/providers/app-provider/app-provider.tsx:71-76` — `setAccessToken(session.data.accessToken)` syncs token from `/api/auth/session` response to Zustand
+- `src/utils/http.util.ts:50-53` — `useAuthStore.getState().setAccessToken(newAccessToken)` updates store on token refresh
+
+**Impact:** The access token ends up in client-side JavaScript memory (Zustand store). This enables:
+
+- **XSS token theft:** Any XSS can read `useAuthStore.getState().accessToken`
+- **Memory scraping:** Malicious browser extensions or compromised JS libraries can read the token
+- **CSRF circumvention bypass:** The `httpOnly` cookie protection is bypassed since the token exists in accessible JS memory
+
+Combined with Finding #5, an XSS exploit can obtain both the MQTT credentials AND the access token.
+
+**Fix:** Eliminate client-side token storage entirely. Tokens should live **only** in `httpOnly` cookies. Remove `accessToken` from `AuthStoreType`. Remove all `setAccessToken` calls in `http.util.ts` and `app-provider.tsx`. The HTTP layer should read tokens directly from cookies when building requests.
+
+---
+
 ## High Priority Findings
 
-### 4. Public MQTT Credentials Shipped to Browser
+### 5. Public MQTT Credentials Shipped to Browser
 
 **Finding:** CONFIRMED — **No changes since prior audit.** MQTT broker credentials are defined as `NEXT_PUBLIC_*` and used in client-side code.
 
@@ -137,7 +160,7 @@ if (!accessToken || !userKind) {
 
 ---
 
-### 5. `/api/auth/session` Exposes Access Token to JavaScript
+### 6. `/api/auth/session` Exposes Access Token to JavaScript
 
 **Finding:** CONFIRMED — **No changes since prior audit.** The session route returns raw `accessToken` in the response body, readable by any JavaScript on the same origin.
 
@@ -168,10 +191,11 @@ if (!accessToken || !userKind) {
 - Remove the access token from the `/api/auth/session` response body
 - Return only non-sensitive session state: `{ result: true, userKind }`
 - If client-side code needs the token, use a server-side API route that attaches the bearer token from cookies before forwarding to the backend
+- Add `Cache-Control: no-store` header to prevent CDN/proxy caching of the session response
 
 ---
 
-### 6. Login and Refresh Responses Return Raw Token Payloads
+### 7. Login and Refresh Responses Return Raw Token Payloads
 
 **Finding:** CONFIRMED — **No changes since prior audit.** Both routes return full backend auth responses including access/refresh tokens to JavaScript.
 
@@ -239,24 +263,24 @@ if (!accessToken || !userKind) {
 
 **Evidence (verified current code):**
 
-- `package.json:49` — `axios: 1.13.2` (not 1.13.5+)
+- `package.json:49` — `axios: 1.13.2` (not 1.15.2+)
 - `package.json:64` — `next: ^16.1.1` (not 16.1.5+)
 - `package.json:62` — `lodash: ^4.17.21` (not 4.18.0+)
 
 **Impact:** Known exploits are not patched. Specifically:
 
-- `axios 1.13.2` — high DoS (CVE-2024-39338), moderate SSRF/header injection (CVE-2024-39384)
+- `axios 1.13.2` — high DoS (CVE-2024-39338), moderate SSRF (CVE-2024-39384), prototype pollution (CVE-2026-42264)
 - `next` — multiple high/moderate advisories patched in 16.1.5
-- `lodash` — high code injection (CVE-2024-45368), moderate prototype pollution
+- `lodash 4.17.21` — code injection (CVE-2026-4800), prototype pollution (CVE-2026-2950, GHSA-xxjr-mmjv-4gpg)
 
 **Fix:** Upgrade immediately:
 
 ```bash
-yarn add axios@latest next@latest lodash@latest
+yarn add axios@^1.15.2 lodash@^4.18.0
 yarn add @aws-sdk/client-s3@latest @aws-sdk/s3-request-presigner@latest
 ```
 
-Also audit transitive dependencies for `fast-xml-parser` and `postcss` via `npm audit`.
+Also audit transitive dependencies for `fast-xml-parser` and `postcss`.
 
 ---
 
@@ -557,34 +581,118 @@ For state-changing actions, add a CSRF token cookie set by the app and validated
 
 ---
 
+### 21. MQTT Credentials Baked Into Docker Image Layers
+
+**Finding:** New — MQTT credentials passed as Docker build ARGs remain in image layer metadata, visible via `docker history`.
+
+**Evidence (verified current code):**
+
+- `Dockerfile:25-28`:
+  ```dockerfile
+  ARG NEXT_PUBLIC_MQTT_BROKER
+  ARG NEXT_PUBLIC_MQTT_USERNAME
+  ARG NEXT_PUBLIC_MQTT_PASSWORD
+  ```
+- These args are not secrets; they persist in image history and can be extracted by anyone with image access.
+
+**Impact:** Even if MQTT credentials are moved to runtime environment variables, the build arg pattern in the Dockerfile establishes a dangerous precedent and leaves historical layers containing credentials.
+
+**Fix:** Remove MQTT credentials from Dockerfile ARGs entirely. Inject at runtime via `-e` flags or Kubernetes Secrets, not build args. Clean up any existing images built with these args.
+
+---
+
+### 22. Basic Auth Credentials Encoded Not Encrypted
+
+**Finding:** New — OAuth basic auth credentials are base64-encoded (not encrypted) before being sent to the auth server.
+
+**Evidence (verified current code):**
+
+- `src/app/api/auth/login/route.ts:37`:
+  ```ts
+  Authorization: `Basic ${btoa(`${process.env.APP_USERNAME}:${process.env.APP_PASSWORD}`)}`;
+  ```
+- `src/app/api/auth/refresh-token/route.ts:33` — same pattern
+
+**Impact:** `btoa()` produces plain base64, not encryption. Credentials appear in memory, network logs, and browser devtools. Someone able to read memory or intercept traffic can decode them trivially.
+
+**Fix:** Use TLS everywhere and ensure the auth server validates credentials over encrypted channels only. Consider using a proper OAuth client credentials flow instead of embedding APP_USERNAME/PASSWORD in client-side code.
+
+---
+
+### 23. S3 Client Startup Does Not Fail on Missing Credentials
+
+**Finding:** New — `src/lib/s3.ts` logs a config error when MinIO credentials are missing but does not prevent server startup.
+
+**Evidence (verified current code):**
+
+- `src/lib/s3.ts:17-22`:
+  ```ts
+  if (missingVars.length > 0) {
+    logger.error(
+      '[S3_CONFIG_ERROR]',
+      `Missing required environment variables: ${missingVars.join(', ')}`
+    );
+    logger.error('[S3_CONFIG_ERROR]', 'Please check your .env file');
+  }
+  // ← server continues to start with broken S3 config
+  ```
+
+**Impact:** Server starts and fails at runtime when S3 operations are attempted, causing unexpected failures during upload operations. Error logs may expose internal infrastructure details.
+
+**Fix:** Throw a fatal error and terminate startup if required S3 credentials are missing:
+
+```ts
+if (missingVars.length > 0) {
+  logger.error('[S3_CONFIG_ERROR]', `Missing: ${missingVars.join(', ')}`);
+  process.exit(1);
+}
+```
+
+---
+
+### 24. No Rate Limiting on Auth Endpoints
+
+**Finding:** New — No rate limiting or brute-force protection on `/api/auth/login` or `/api/auth/refresh-token`.
+
+**Evidence:** No rate limiting middleware found in `src/app/api/auth/` routes.
+
+**Impact:** Login endpoint is vulnerable to brute-force attacks. An attacker can attempt unlimited password combinations without any throttling.
+
+**Fix:** Implement rate limiting at the API gateway or application layer (e.g., `express-rate-limit` or Next.js middleware with in-memory/IP tracking).
+
+---
+
 ## Updated Fix Order
 
 ### Phase 1: Critical (Fix Immediately)
 
 1. **Add authentication + permission enforcement to all chunk upload routes** — init, presign, complete
 2. **Bind upload sessions server-side** with user id, object key, upload id, allowed MIME, max size, expiry
-3. **Upgrade vulnerable production dependencies** — axios, next, lodash, AWS SDK, postcss
+3. **Upgrade vulnerable production dependencies** — axios (>=1.15.2), lodash (>=4.18.0), AWS SDK, postcss
 4. **Replace MinIO root credentials with least-privilege service account**
+5. **Remove access token from Zustand store** — eliminate all client-side token storage; tokens only in httpOnly cookies
+6. **Remove MQTT credentials from client bundle** — move to server-only variables and use runtime injection, not build args
 
 ### Phase 2: High
 
-5. **Stop returning raw tokens from `/api/auth/session`, login, and refresh-token** — return only session state
-6. **Remove MQTT credentials from client bundle** — issue per-user short-lived broker credentials or signed tokens
-7. **Remove token from Zustand store** — client should not hold access token in memory state
+7. **Stop returning raw tokens from `/api/auth/session`, login, and refresh-token** — return only session state
 8. **Remove `failedQueue` logging** from `http.util.ts:39`
+9. **Fix Docker build args** — remove MQTT credentials from Dockerfile ARGs; inject at runtime
 
 ### Phase 3: Medium
 
-9. **Add CSRF Origin/Referer checks** to cookie-authenticated POST routes
-10. **Validate MIME, size, part count** server-side in chunk upload routes
-11. **Validate presign/complete request bodies** with Zod before S3 calls
-12. **Redact production logs** — exclude `log` from removeConsole, never log tokens/auth responses/presigned URLs
-13. **Validate localStorage navigation targets** before routing
-14. **Fix silent logout failure** — propagate backend errors
+11. **Add CSRF Origin/Referer checks** to cookie-authenticated POST routes
+12. **Validate MIME, size, part count** server-side in chunk upload routes
+13. **Validate presign/complete request bodies** with Zod before S3 calls
+14. **Redact production logs** — exclude `log` from removeConsole, never log tokens/auth responses/presigned URLs
+15. **Validate localStorage navigation targets** before routing
+16. **Fix silent logout failure** — propagate backend errors
+17. **Add fatal startup check** in `src/lib/s3.ts` when credentials are missing
+18. **Implement rate limiting** on `/api/auth/login` and `/api/auth/refresh-token`
 
 ### Phase 4: Low
 
-15. Use `sameSite: 'strict'` and `priority: 'high'` for auth cookies
-16. Pin TinyMCE to trusted host + add CSP `script-src`
-17. Treat client permissions as UI-only; add server-side enforcement to all API routes
-18. Design backend responses to return only session state, not raw tokens
+19. Use `sameSite: 'strict'` and `priority: 'high'` for auth cookies
+20. Pin TinyMCE to trusted host + add CSP `script-src`
+21. Treat client permissions as UI-only; add server-side enforcement to all API routes
+22. Design backend responses to return only session state, not raw tokens

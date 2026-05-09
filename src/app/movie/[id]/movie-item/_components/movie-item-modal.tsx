@@ -250,7 +250,7 @@ export default function MovieItemModal({
         <BaseForm
           onSubmit={onSubmit}
           defaultValues={defaultValues}
-          schema={movieItemSchema}
+          schema={movieItemSchema(movieType)}
           initialValues={initialValues}
           onFormChange={onFormChange}
         >
