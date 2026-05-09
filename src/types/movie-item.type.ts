@@ -37,7 +37,7 @@ export type MovieItemResType = {
   isLatest: boolean;
 };
 
-export type MovieItemBodyType = z.infer<typeof movieItemSchema>;
+export type MovieItemBodyType = z.infer<ReturnType<typeof movieItemSchema>>;
 
 export type MovieItemSearchType = z.infer<typeof movieItemSearchSchema> &
   BaseSearchType;
