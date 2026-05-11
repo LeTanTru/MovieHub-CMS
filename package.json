@@ -73,6 +73,7 @@
     "react-responsive": "^10.0.1",
     "react-scroll": "^1.9.3",
     "react-toastify": "^11.0.5",
+    "recharts": "^3.8.1",
     "rimraf": "^6.1.2",
     "tailwind-merge": "^3.4.0",
     "tinymce": "^8.3.1",

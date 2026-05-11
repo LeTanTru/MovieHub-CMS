@@ -32,7 +32,7 @@ export default function NotificationItem({
     <div
       onClick={onItemClick && (() => onItemClick(notification))}
       className={cn(
-        'flex cursor-pointer items-center justify-between rounded py-2 transition-colors duration-200 ease-linear hover:bg-gray-200',
+        'flex cursor-pointer items-center justify-between py-2 transition-colors duration-200 ease-linear hover:bg-gray-200',
         {
           'bg-gray-100': !notification.isRead
         }

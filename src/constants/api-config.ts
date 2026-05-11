@@ -1097,21 +1097,21 @@ const apiConfig = defineApiConfig({
   },
   statistics: {
     movieDistribution: {
-      baseUrl: `${AppConstants.apiUrl}/v1/statistics/movie-distribution`,
+      baseUrl: `${AppConstants.apiUrl}/v1/statistic/movie-distribution`,
       method: 'GET',
       headers: baseHeader,
       isRequiredXClientType: true,
       permissionCode: 'STAT_V'
     },
     overview: {
-      baseUrl: `${AppConstants.apiUrl}/v1/statistics/overview`,
+      baseUrl: `${AppConstants.apiUrl}/v1/statistic/overview`,
       method: 'GET',
       headers: baseHeader,
       isRequiredXClientType: true,
       permissionCode: 'STAT_V'
     },
     topMovies: {
-      baseUrl: `${AppConstants.apiUrl}/v1/statistics/top-movies`,
+      baseUrl: `${AppConstants.apiUrl}/v1/statistic/top-movies`,
       method: 'GET',
       headers: baseHeader,
       isRequiredXClientType: true,

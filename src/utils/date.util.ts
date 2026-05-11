@@ -16,7 +16,7 @@ export const formatDate = (
 
     return formatFn(parsedDate, outputFormat);
   } catch (error) {
-    logger.error('[INVALID_DATE_ERROR]', date, error);
+    logger.error('[DATE_FORMAT_ERROR]', error);
     return '';
   }
 };
@@ -38,7 +38,7 @@ export const convertLocalToUTC = (
 
     return formatFn(utcDate, outputFormat);
   } catch (error) {
-    logger.error('[CONVERT_LOCAL_TO_UTC_ERROR]', date, error);
+    logger.error('[CONVERT_LOCAL_TO_UTC_ERROR]', error);
     return '';
   }
 };
@@ -60,37 +60,70 @@ export const convertUTCToLocal = (
 
     return formatFn(localDate, outputFormat);
   } catch (error) {
-    logger.error('[CONVERT_UTC_TO_LOCAL_ERROR]', date, error);
+    logger.error('[CONVERT_UTC_TO_LOCAL_ERROR]', error);
     return '';
   }
 };
 
-export const timeAgo = (dateStr: string) => {
-  const [day, month, yearAndTime] = dateStr.split('/');
-  const [year, time] = yearAndTime.split(' ');
+export const timeAgo = (dateStr: string, short = false) => {
+  if (!dateStr) return short ? '0s' : 'Vừa xong';
 
-  const iso = `${year}-${month}-${day}T${time}+00:00`;
-  const date = new Date(iso);
+  try {
+    let date: Date | null = null;
 
-  if (isNaN(date.getTime())) return 'Invalid date';
+    if (dateStr.includes('/')) {
+      const [day, month, yearAndTime] = dateStr.split('/');
+      const [year, time] = yearAndTime.split(' ');
+      const iso = `${year}-${month}-${day}T${time}+00:00`;
+      date = new Date(iso);
+    } else {
+      date = new Date(dateStr);
+    }
 
-  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (!date || isNaN(date.getTime())) return 'Invalid date';
 
-  if (seconds < 5) return 'Vừa xong';
-  if (seconds < 60) return `${seconds} giây trước`;
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
 
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes} phút trước`;
+    if (seconds < 5) return short ? '0s' : 'Vừa xong';
+    if (seconds < 60) return short ? `${seconds}s` : `${seconds} giây trước`;
 
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} giờ trước`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return short ? `${minutes}m` : `${minutes} phút trước`;
 
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days} ngày trước`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return short ? `${hours}h` : `${hours} giờ trước`;
 
-  const months = Math.floor(days / 30);
-  if (months < 12) return `${months} tháng trước`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return short ? `${days}d` : `${days} ngày trước`;
 
-  const years = Math.floor(months / 12);
-  return `${years} năm trước`;
+    const weeks = Math.floor(days / 7);
+    if (weeks < 52) return short ? `${weeks}w` : `${weeks} tuần trước`;
+
+    const years = Math.floor(weeks / 52);
+    return short ? `${years}y` : `${years} năm trước`;
+  } catch {
+    return 'Invalid date';
+  }
+};
+
+export const getYearFromDate = (dateStr?: string) => {
+  if (!dateStr) return 'N/A';
+
+  try {
+    let year: string | undefined;
+
+    if (dateStr.includes('/')) {
+      const parts = dateStr.split('/');
+      year = parts[parts.length - 1]?.split(' ')[0];
+    } else {
+      const date = new Date(dateStr);
+      if (isValid(date)) {
+        year = date.getFullYear().toString();
+      }
+    }
+
+    return year || 'N/A';
+  } catch {
+    return 'N/A';
+  }
 };

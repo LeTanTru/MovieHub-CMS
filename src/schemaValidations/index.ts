@@ -19,6 +19,7 @@ export * from './review.schema';
 export * from './search.schema';
 export * from './server-config.schema';
 export * from './setting.schema';
+export * from './statistics.schema';
 export * from './style.schema';
 export * from './user.schema';
 export * from './video-library.schema';
