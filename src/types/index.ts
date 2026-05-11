@@ -28,6 +28,7 @@ export * from './search.type';
 export * from './server-config.type';
 export * from './setting.type';
 export * from './sidebar.type';
+export * from './statisitcs.type';
 export * from './style.type';
 export * from './table.type';
 export * from './user.type';

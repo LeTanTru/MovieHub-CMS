@@ -40,7 +40,7 @@ import {
   VIDEO_LIBRARY_STATE_COMPLETE,
   VIDEO_LIBRARY_STATE_PROCESSING
 } from '@/constants/constant';
-import { OptionType } from '@/types';
+import { DistributionGroupBy, OptionType, TopMoviesSortBy } from '@/types';
 
 export const uploadOptions = {
   LOGO: UPLOAD_LOGO,
@@ -198,7 +198,10 @@ export const queryKeys = {
   VIDEO_LIBRARY: 'video-library',
   VOTE_COMMENT: 'vote-comment',
   DELETE_ALL_NOTIFICATION: 'delete-all-notification',
-  RETRY_PROCESS_VIDEO_LIBRARY: 'retry-process-video-library'
+  RETRY_PROCESS_VIDEO_LIBRARY: 'retry-process-video-library',
+  MOVIE_DISTRIBUTION_STATISTICS: 'movie-distribution-statistics',
+  OVERVIEW_STATISTICS: 'overview-statistics',
+  TOP_MOVIES_STATISTICS: 'top-movies-statistics'
 };
 
 export const userKindOptions = [
@@ -1756,3 +1759,50 @@ export const videoLibraryErrorReasons = [
     label: 'Tạo file VTT thất bại'
   }
 ];
+
+export const distributionGroupOptions: {
+  label: string;
+  value: DistributionGroupBy;
+}[] = [
+  { label: 'Loại phim', value: 'type' },
+  { label: 'Quốc gia', value: 'country' },
+  { label: 'Ngôn ngữ', value: 'language' },
+  { label: 'Độ tuổi', value: 'ageRating' }
+];
+
+export const topMovieSortOptions: {
+  label: string;
+  value: TopMoviesSortBy;
+}[] = [
+  { label: 'Top lượt xem', value: 'viewCount' },
+  { label: 'Top bình luận', value: 'commentCount' },
+  { label: 'Top review', value: 'reviewCount' },
+  { label: 'Top điểm đánh giá', value: 'averageRating' }
+];
+
+export const chartColors = [
+  '#1678ff',
+  '#16a34a',
+  '#f97316',
+  '#dc2626',
+  '#7c3aed',
+  '#0891b2',
+  '#ca8a04',
+  '#475569'
+];
+
+export const typeLabelMap: Record<string, string> = {
+  '1': 'Phim lẻ',
+  '2': 'Phim bộ',
+  Unknown: 'Không xác định'
+};
+
+export const ageRatingLabelMap: Record<string, string> = {
+  '1': 'G',
+  '2': 'PG',
+  '3': 'PG-13',
+  '4': 'R',
+  '5': 'NC-17',
+  '6': '18+',
+  Unknown: 'Không xác định'
+};

@@ -46,7 +46,7 @@ export default function CollapsibleMenuItem({
   // Initial open when reload
   const isInitiallyOpen =
     item.children?.some(
-      (child) => child.path && pathname.includes(child.path)
+      (child) => child.path && pathname.startsWith(child.path)
     ) ?? false;
 
   const open = storeOpen ?? isInitiallyOpen;
@@ -67,7 +67,7 @@ export default function CollapsibleMenuItem({
   useEffect(() => {
     if (
       item.children?.find(
-        (child) => child.path && pathname.includes(child.path)
+        (child) => child.path && pathname.startsWith(child.path)
       )
     ) {
       setMenu(item.key, true);
