@@ -15,7 +15,7 @@ export default function SpeedSlider() {
         <BaseSpeedSlider.TrackFill className='absolute h-full w-[var(--slider-fill)] rounded-sm bg-white will-change-[width]' />
       </BaseSpeedSlider.Track>
 
-      <BaseSpeedSlider.Thumb className='absolute top-1/2 left-[var(--slider-fill)] z-20 h-[15px] w-[15px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cacaca] bg-white opacity-0 ring-white/40 transition-opacity will-change-[left] group-data-[active]:opacity-100 group-data-[dragging]:ring-4' />
+      <BaseSpeedSlider.Thumb className='absolute top-1/2 left-[var(--slider-fill)] z-20 size-[15px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cacaca] bg-white opacity-0 ring-white/40 transition-opacity will-change-[left] group-data-[active]:opacity-100 group-data-[dragging]:ring-4' />
     </BaseSpeedSlider.Root>
   );
 }

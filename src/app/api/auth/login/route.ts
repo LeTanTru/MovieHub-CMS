@@ -51,23 +51,23 @@ export async function POST(request: NextRequest) {
       maxAge: maxAge
     });
 
-    await setCookie(
-      storageKeys.ACCESS_TOKEN,
-      accessToken,
-      makeCookieOption(maxAgeAccessToken)
-    );
-
-    await setCookie(
-      storageKeys.REFRESH_TOKEN,
-      refreshToken,
-      makeCookieOption(maxAgeRefreshToken)
-    );
-
-    await setCookie(
-      storageKeys.USER_KIND,
-      String(userKind),
-      makeCookieOption(maxAgeAccessToken)
-    );
+    await Promise.all([
+      setCookie(
+        storageKeys.ACCESS_TOKEN,
+        accessToken,
+        makeCookieOption(maxAgeAccessToken)
+      ),
+      setCookie(
+        storageKeys.REFRESH_TOKEN,
+        refreshToken,
+        makeCookieOption(maxAgeRefreshToken)
+      ),
+      setCookie(
+        storageKeys.USER_KIND,
+        String(userKind),
+        makeCookieOption(maxAgeAccessToken)
+      )
+    ]);
 
     return NextResponse.json({
       result: true,

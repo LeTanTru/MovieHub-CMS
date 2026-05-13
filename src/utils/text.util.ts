@@ -27,9 +27,13 @@ export const parseSelectOptions = (options?: null | string): OptionType[] => {
   } catch (_e) {
     return options
       .split(',')
-      .map((option) => option.trim())
-      .filter(Boolean)
-      .map((option) => ({ label: option, value: option }));
+      .reduce((acc: { label: string; value: string }[], option) => {
+        const trimmed = option.trim();
+        if (trimmed) {
+          acc.push({ label: trimmed, value: trimmed });
+        }
+        return acc;
+      }, []);
   }
 };
 

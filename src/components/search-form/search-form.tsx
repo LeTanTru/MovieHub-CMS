@@ -179,7 +179,7 @@ export default function SearchForm<S extends FieldValues>({
               }
             })}
             {!!searchFields.length && searchFields.length < 4 && (
-              <Col className='grid-col-no-gutters w-auto shrink-0 flex-row space-x-2'>
+              <Col className='grid-col-no-gutters w-auto shrink-0 flex-row gap-2'>
                 <Button type='submit' variant='primary'>
                   <Search />
                 </Button>
@@ -195,7 +195,7 @@ export default function SearchForm<S extends FieldValues>({
           </Row>
         </Col>
         {searchFields.length >= 4 && (
-          <Col className='grid-col-no-gutters w-auto shrink-0 flex-row space-x-2'>
+          <Col className='grid-col-no-gutters w-auto shrink-0 flex-row gap-2'>
             <Button type='submit' variant='primary'>
               <Search />
             </Button>

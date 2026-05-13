@@ -30,7 +30,14 @@ export default function NotificationItem({
 }: NotificationItemProps) {
   return (
     <div
+      role='button'
+      tabIndex={0}
       onClick={onItemClick && (() => onItemClick(notification))}
+      onKeyDown={(e) => {
+        if (onItemClick && (e.key === 'Enter' || e.key === ' ')) {
+          onItemClick(notification);
+        }
+      }}
       className={cn(
         'flex cursor-pointer items-center justify-between py-2 transition-colors duration-200 ease-linear hover:bg-gray-200',
         {

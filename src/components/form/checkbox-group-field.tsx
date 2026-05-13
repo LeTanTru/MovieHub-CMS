@@ -69,10 +69,7 @@ export default function CheckboxGroupField<T extends FieldValues>({
                     return (
                       <FormItem
                         key={option.value}
-                        className={cn(
-                          'flex items-center space-y-0 space-x-1',
-                          className
-                        )}
+                        className={cn('flex items-center gap-x-1', className)}
                       >
                         <FormControl>
                           <Checkbox

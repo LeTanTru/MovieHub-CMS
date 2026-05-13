@@ -121,7 +121,14 @@ export default function DropdownNotification() {
   return (
     <div ref={dropdownRef} className='relative z-1 flex items-center gap-4'>
       <div
+        role='button'
+        tabIndex={0}
         onClick={toggleDropDown}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            toggleDropDown();
+          }
+        }}
         className='flex cursor-pointer items-center gap-2'
       >
         <div className='relative transition-all duration-200 ease-linear hover:opacity-60'>

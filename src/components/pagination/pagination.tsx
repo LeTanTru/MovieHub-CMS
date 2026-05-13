@@ -82,12 +82,12 @@ export default function Pagination({
         <Button
           variant='ghost'
           onClick={() => changePagination(currentPage - 1)}
-          className='hover:bg-muted flex h-8 w-8 items-center justify-center rounded transition-all duration-200 ease-linear'
+          className='hover:bg-muted flex size-8 items-center justify-center rounded transition-all duration-200 ease-linear'
         >
           <ChevronLeft className='size-5!' />
         </Button>
       ) : (
-        <span className='flex h-8 w-8 cursor-not-allowed items-center justify-center rounded opacity-50'>
+        <span className='flex size-8 cursor-not-allowed items-center justify-center rounded opacity-50'>
           <ChevronLeft className='size-5!' />
         </span>
       )}
@@ -96,7 +96,7 @@ export default function Pagination({
         p === '...' ? (
           <span
             key={`dots-${i}`}
-            className='text-muted-foreground flex h-8 w-8 items-center justify-center'
+            className='text-muted-foreground flex size-8 items-center justify-center'
           >
             …
           </span>
@@ -109,12 +109,12 @@ export default function Pagination({
         <Button
           variant='ghost'
           onClick={() => changePagination(currentPage + 1)}
-          className='hover:bg-muted flex h-8 w-8 items-center justify-center rounded transition-all duration-200 ease-linear'
+          className='hover:bg-muted flex size-8 items-center justify-center rounded transition-all duration-200 ease-linear'
         >
           <ChevronRight className='size-5!' />
         </Button>
       ) : (
-        <span className='flex h-8 w-8 cursor-not-allowed items-center justify-center rounded opacity-50'>
+        <span className='flex size-8 cursor-not-allowed items-center justify-center rounded opacity-50'>
           <ChevronRight className='size-5!' />
         </span>
       )}

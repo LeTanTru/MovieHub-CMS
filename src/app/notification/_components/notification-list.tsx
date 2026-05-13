@@ -121,11 +121,12 @@ export default function NotificationList() {
     });
   };
 
-  const ButtonReadAll = () => {
+  const renderButtonReadAll = () => {
     if (!canReadAll) return null;
 
     return (
       <Button
+        key='read-all'
         type='button'
         variant='primary'
         onClick={handleReadAll}
@@ -141,11 +142,12 @@ export default function NotificationList() {
     );
   };
 
-  const ButtonDeleteAll = () => {
+  const renderButtonDeleteAll = () => {
     if (!canDelete) return null;
 
     return (
       <ConfirmModal
+        key='delete-all'
         message='Bạn có chắc chắn muốn xóa tất cả không báo không?'
         onConfirm={handleDeleteAll}
         trigger={
@@ -170,10 +172,7 @@ export default function NotificationList() {
     <PageWrapper breadcrumbs={[{ label: 'Thông báo' }]}>
       <ListPageWrapper
         reloadButton={handlers.renderReloadButton()}
-        additionButtons={[
-          <ButtonReadAll key='read-all' />,
-          <ButtonDeleteAll key='delete-all' />
-        ]}
+        additionButtons={[renderButtonReadAll(), renderButtonDeleteAll()]}
       >
         {notificationList.length ? (
           <List className='scrollbar-none flex flex-col overflow-y-auto rounded bg-white'>

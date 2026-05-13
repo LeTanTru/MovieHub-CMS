@@ -10,9 +10,15 @@ const requiredEnvVars = {
   MINIO_UPLOAD_PREFIX: process.env.MINIO_UPLOAD_PREFIX
 };
 
-const missingVars = Object.entries(requiredEnvVars)
-  .filter(([_, value]) => !value)
-  .map(([key]) => key);
+const missingVars = Object.entries(requiredEnvVars).reduce(
+  (acc: string[], [key, value]) => {
+    if (!value) {
+      acc.push(key);
+    }
+    return acc;
+  },
+  []
+);
 
 if (missingVars.length > 0) {
   logger.error(

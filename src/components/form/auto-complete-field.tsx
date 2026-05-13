@@ -78,6 +78,8 @@ type AutoCompleteFieldProps<
   renderOption?: (option: AutoCompleteOption<TOption>) => ReactNode;
 };
 
+const EMPTY_INITIAL_PARAMS: Record<string, any> = {};
+
 export default function AutoCompleteField<
   TFieldValues extends FieldValues,
   TOption extends Record<string, any>
@@ -86,7 +88,7 @@ export default function AutoCompleteField<
   name,
   label,
   searchParams,
-  initialParams = {},
+  initialParams = EMPTY_INITIAL_PARAMS,
   placeholder,
   description,
   className,
@@ -159,12 +161,13 @@ export default function AutoCompleteField<
 
   const options: AutoCompleteOption<TOption>[] = (
     query.data?.data.content || []
-  )
-    .map((item) => {
-      const mapped = mappingData(item);
-      return mapped ? { ...mapped, extra: item } : null;
-    })
-    .filter((item) => item !== null);
+  ).reduce((acc: AutoCompleteOption<TOption>[], item) => {
+    const mapped = mappingData(item);
+    if (mapped) {
+      acc.push({ ...mapped, extra: item });
+    }
+    return acc;
+  }, []);
 
   useEffect(() => {
     if (
@@ -305,6 +308,12 @@ export default function AutoCompleteField<
                           onClick={(e) => {
                             e.stopPropagation();
                             clearValue();
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.stopPropagation();
+                              clearValue();
+                            }
                           }}
                           className='bg-accent ml-2 flex size-4 shrink-0 items-center justify-center rounded-full px-0 hover:opacity-80'
                         >

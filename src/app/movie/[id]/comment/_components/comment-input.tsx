@@ -7,7 +7,7 @@ import { commentSchema } from '@/schemaValidations';
 import { emojiIcon } from '@/assets';
 import { Send } from 'lucide-react';
 import { useClickOutside, useSaveBase } from '@/hooks';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import type { CommentBodyType, CommentResType } from '@/types';
 import type { UseFormReturn } from 'react-hook-form';
@@ -18,13 +18,23 @@ type CommentInputProps = { movieId: string };
 export default function CommentInput({ movieId }: CommentInputProps) {
   const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
 
-  const [showPicker, setShowPicker] = useState(false);
-
-  const wrapperRef = useClickOutside<HTMLDivElement>(() =>
-    setShowPicker(false)
-  );
-
   const pickerContainerRef = useRef<HTMLDivElement>(null);
+  const showPickerRef = useRef(false);
+
+  const togglePicker = (show?: boolean) => {
+    showPickerRef.current = show !== undefined ? show : !showPickerRef.current;
+    const pickerEl = pickerContainerRef.current?.querySelector(
+      'emoji-picker'
+    ) as HTMLElement;
+    if (pickerEl) {
+      Object.assign(pickerEl.style, {
+        opacity: showPickerRef.current ? '1' : '0',
+        visibility: showPickerRef.current ? 'visible' : 'hidden'
+      });
+    }
+  };
+
+  const wrapperRef = useClickOutside<HTMLDivElement>(() => togglePicker(false));
 
   const { loading, onFormChange, handleSubmit } = useSaveBase<
     CommentResType,
@@ -60,6 +70,17 @@ export default function CommentInput({ movieId }: CommentInputProps) {
     let picker: any;
     let mounted = true;
 
+    const handleEmojiClick = (event: any) => {
+      const emoji = event.detail.unicode;
+      if (formMethodsRef.current) {
+        const currentValue = formMethodsRef.current.getValues('content') || '';
+        formMethodsRef.current.setValue('content', currentValue + emoji, {
+          shouldDirty: true,
+          shouldTouch: true
+        });
+      }
+    };
+
     (async () => {
       const { Picker } = await import('emoji-picker-element');
       const vi = (await import('emoji-picker-element/i18n/vi')).default;
@@ -68,27 +89,19 @@ export default function CommentInput({ movieId }: CommentInputProps) {
 
       picker = new Picker();
       picker.i18n = vi;
-      picker.style.position = 'absolute';
-      picker.style.zIndex = '1000';
-      picker.style.opacity = '0';
-      picker.style.visibility = 'hidden';
-      picker.style.right = '100px';
-      picker.style.top = '5px';
-      picker.style.transition = 'all 0.2s linear';
+      Object.assign(picker.style, {
+        position: 'absolute',
+        zIndex: '1000',
+        opacity: '0',
+        visibility: 'hidden',
+        right: '100px',
+        top: '5px',
+        transition: 'all 0.2s linear'
+      });
       picker.style.setProperty('--border-radius', '8px');
       picker.style.setProperty('--border-size', '0');
 
-      picker.addEventListener('emoji-click', (event: any) => {
-        const emoji = event.detail.unicode;
-        if (formMethodsRef.current) {
-          const currentValue =
-            formMethodsRef.current.getValues('content') || '';
-          formMethodsRef.current.setValue('content', currentValue + emoji, {
-            shouldDirty: true,
-            shouldTouch: true
-          });
-        }
-      });
+      picker.addEventListener('emoji-click', handleEmojiClick);
 
       if (pickerContainerRef.current) {
         pickerContainerRef.current.appendChild(picker);
@@ -97,23 +110,12 @@ export default function CommentInput({ movieId }: CommentInputProps) {
 
     return () => {
       mounted = false;
-      if (picker && picker.parentNode) picker.parentNode.removeChild(picker);
+      if (picker) {
+        picker.removeEventListener('emoji-click', handleEmojiClick);
+        if (picker.parentNode) picker.parentNode.removeChild(picker);
+      }
     };
   }, []);
-
-  useEffect(() => {
-    const pickerEl = pickerContainerRef.current?.querySelector('emoji-picker');
-
-    if (pickerEl) {
-      if (!showPicker) {
-        pickerEl.style.opacity = '0';
-        pickerEl.style.visibility = 'hidden';
-      } else {
-        pickerEl.style.opacity = '1';
-        pickerEl.style.visibility = 'visible';
-      }
-    }
-  }, [showPicker]);
 
   return (
     <BaseForm
@@ -143,7 +145,7 @@ export default function CommentInput({ movieId }: CommentInputProps) {
                   <div className='flex'>
                     <Button
                       type='button'
-                      onClick={() => setShowPicker((prev) => !prev)}
+                      onClick={() => togglePicker()}
                       className='flex h-8 w-fit items-center justify-center hover:bg-transparent'
                       variant='ghost'
                       disabled={loading}

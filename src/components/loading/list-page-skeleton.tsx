@@ -39,7 +39,7 @@ function ListPageSkeleton() {
             key={i}
             className='mb-4 flex items-center gap-4 border-b border-zinc-100 pb-4'
           >
-            <Skeleton className='h-12 w-12 rounded' />
+            <Skeleton className='size-12 rounded' />
             <Skeleton className='h-12 w-16 rounded' />
             <div className='flex-1'>
               <Skeleton className='mb-2 h-4 w-64' />
@@ -55,11 +55,11 @@ function ListPageSkeleton() {
         <div className='mt-4 flex items-center justify-between'>
           <Skeleton className='h-4 w-32' />
           <div className='flex gap-2'>
-            <Skeleton className='h-8 w-8' />
-            <Skeleton className='h-8 w-8' />
-            <Skeleton className='h-8 w-8' />
-            <Skeleton className='h-8 w-8' />
-            <Skeleton className='h-8 w-8' />
+            <Skeleton className='size-8' />
+            <Skeleton className='size-8' />
+            <Skeleton className='size-8' />
+            <Skeleton className='size-8' />
+            <Skeleton className='size-8' />
           </div>
         </div>
       </div>

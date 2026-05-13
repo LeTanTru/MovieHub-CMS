@@ -86,9 +86,12 @@ export default function Modal({
       document.documentElement.scrollHeight > window.innerHeight;
 
     document.body.classList.add('body-lock');
-    document.body.style.overflow = 'hidden';
+    Object.assign(document.body.style, {
+      overflow: 'hidden',
+      marginRight: hasVerticalScroll ? '15px' : ''
+    });
+
     if (hasVerticalScroll) {
-      document.body.style.marginRight = '15px';
       const header = document.querySelector('.header');
       if (header && getComputedStyle(header).position === 'fixed') {
         header.setAttribute('style', 'padding-right: 15px');
@@ -97,8 +100,10 @@ export default function Modal({
 
     return () => {
       document.body.classList.remove('body-lock');
-      document.body.style.overflow = '';
-      document.body.style.marginRight = '';
+      Object.assign(document.body.style, {
+        overflow: '',
+        marginRight: ''
+      });
       const header = document.querySelector('.header');
       if (header && getComputedStyle(header).position === 'fixed') {
         (header as HTMLElement).style.paddingRight = '';

@@ -1,8 +1,10 @@
 import { ageRatingLabelMap, typeLabelMap } from '@/constants';
 import { DistributionGroupBy, TopMoviesSortBy } from '@/types';
 
+const numberFormatter = new Intl.NumberFormat('vi-VN');
+
 export const formatStatisticsValue = (value?: number) =>
-  new Intl.NumberFormat('vi-VN').format(value ?? 0);
+  numberFormatter.format(value ?? 0);
 
 export const formatRating = (value?: number) => (value ?? 0).toFixed(1);
 

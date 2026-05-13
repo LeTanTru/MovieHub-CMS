@@ -1,3 +1,5 @@
+const numberFormatter = new Intl.NumberFormat('vi-VN');
+
 export const formatMoney = (
   value: string | number,
   suffix: string = ' ₫'
@@ -7,7 +9,7 @@ export const formatMoney = (
   const num = Number(value);
   if (isNaN(num)) return '';
 
-  return new Intl.NumberFormat('vi-VN').format(num) + suffix;
+  return numberFormatter.format(num) + suffix;
 };
 
 export const formatNumber = (input: unknown, decimal = 2): string => {

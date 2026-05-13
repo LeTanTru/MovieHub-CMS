@@ -68,13 +68,11 @@ export default function PermissionList() {
     {} as Record<string, PermissionResType[]>
   );
 
-  (groupPermissions || [])
-    .map((group) => group.name)
-    .forEach((groupName) => {
-      if (!groupedPermissions[groupName]) {
-        groupedPermissions[groupName] = [];
-      }
-    });
+  (groupPermissions || []).forEach((group) => {
+    if (!groupedPermissions[group.name]) {
+      groupedPermissions[group.name] = [];
+    }
+  });
 
   const handleAdd = (group: string) => {
     const groupPermission = groupPermissions.find((gp) => gp.name === group);
@@ -114,7 +112,7 @@ export default function PermissionList() {
   return (
     <>
       <ListPageWrapper>
-        <div className='relative flex flex-col gap-y-4 px-4 py-4 max-[1560px]:max-w-300'>
+        <div className='relative flex flex-col gap-y-4 p-4 max-[1560px]:max-w-300'>
           {loading ? (
             <div className='absolute inset-0 flex justify-center bg-white/80'>
               <CircleLoading className='stroke-main-color mt-20' />

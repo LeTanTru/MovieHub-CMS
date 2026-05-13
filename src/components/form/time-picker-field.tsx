@@ -193,7 +193,7 @@ export default function TimePickerField<T extends FieldValues>({
                           }}
                           className='rounded-full p-0.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600'
                         >
-                          <X className='h-3.5 w-3.5' />
+                          <X className='size-3.5' />
                         </span>
                       )}
                     </Button>

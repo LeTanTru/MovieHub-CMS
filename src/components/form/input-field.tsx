@@ -44,6 +44,8 @@ const toNumberIfPossible = (value: string): string | number => {
   return !isNaN(num) && value.trim() !== '' ? num : value;
 };
 
+const EMPTY_OPTIONS: string[] = [];
+
 export default function InputField<T extends FieldValues>({
   control,
   name,
@@ -59,7 +61,7 @@ export default function InputField<T extends FieldValues>({
   readOnly = false,
   prefixIcon,
   suffixIcon,
-  options = [],
+  options = EMPTY_OPTIONS,
   onOptionSelect,
   ref,
   ...inputProps
@@ -202,7 +204,7 @@ export default function InputField<T extends FieldValues>({
                         >
                           <span className='flex-1'>{option}</span>
                           {field.value === option && (
-                            <Check className='text-main-color h-4 w-4' />
+                            <Check className='text-main-color size-4' />
                           )}
                         </div>
                       ))}

@@ -76,7 +76,7 @@ export default function ReviewItem({ review, onDelete }: ReviewItemProps) {
 
   return (
     <div className='pt-4'>
-      <div className='flex items-start space-x-3 rounded-md border p-3 transition hover:bg-gray-50'>
+      <div className='flex items-start rounded-md border p-3 transition hover:bg-gray-50'>
         <AvatarField
           src={renderImageUrl(review.author.avatarPath)}
           previewClassName='rounded-full'
@@ -248,20 +248,20 @@ export default function ReviewItem({ review, onDelete }: ReviewItemProps) {
 
 ReviewItem.Skeleton = function () {
   return (
-    <div className='flex h-30 w-full items-start space-x-3 rounded-md border p-3 transition hover:bg-gray-50'>
-      <div className='skeleton h-10 w-10 rounded-full!'></div>
+    <div className='flex h-30 w-full items-start rounded-md border p-3 transition hover:bg-gray-50'>
+      <div className='skeleton size-10 rounded-full!'></div>
       <div className='flex-1'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-x-2'>
             <h4 className='flex items-center gap-x-2 font-medium text-gray-800'>
               <div className='skeleton h-5 w-30 font-semibold'></div>
-              <div className='skeleton h-5 w-5'></div>
+              <div className='skeleton size-5'></div>
               <div className='skeleton h-5 w-20'></div>
               <div className='skeleton h-5 w-10'></div>
-              <div className='skeleton h-5 w-5'></div>
+              <div className='skeleton size-5'></div>
             </h4>
           </div>
-          <div className='skeleton mr-2 h-5 w-5'></div>
+          <div className='skeleton mr-2 size-5'></div>
         </div>
         <p className='skeleton mt-4 h-5 w-100 text-gray-700'></p>
 

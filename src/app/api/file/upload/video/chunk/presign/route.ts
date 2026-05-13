@@ -6,9 +6,7 @@ import { logger } from '@/logger';
 import { HttpStatusCode } from 'axios';
 
 export async function POST(req: NextRequest) {
-  const { objectName, uploadId, partNumber } = await req.json();
-
-  // Validate inputs
+  // Validate config before parsing body
   if (!BUCKET_NAME) {
     logger.error('[PRESIGN_ERROR]', 'Missing BUCKET_NAME configuration');
     return NextResponse.json(
@@ -17,6 +15,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const { objectName, uploadId, partNumber } = await req.json();
+
+  // Validate inputs
   if (!objectName || !uploadId || !partNumber) {
     logger.error('[PRESIGN_ERROR]', 'Missing required parameters:', {
       objectName,

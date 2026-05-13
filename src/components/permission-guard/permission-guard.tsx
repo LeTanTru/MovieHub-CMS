@@ -21,6 +21,9 @@ type PermissionGuardProps = { children: ReactNode };
 // Precompiled flat route map — built once at module load
 const routeMatcherCache: Array<{ pattern: RegExp; item: RouteItem }> = [];
 
+const createRouteRegex = (regexString: string) =>
+  new RegExp(`^${regexString}$`);
+
 function buildRouteCache(obj: Record<string, any>) {
   for (const key in obj) {
     const item = obj[key];
@@ -29,7 +32,7 @@ function buildRouteCache(obj: Record<string, any>) {
         .replace(/:[^/]+/g, '[^/]+')
         .replace(/\//g, '\\/');
       routeMatcherCache.push({
-        pattern: new RegExp(`^${regexString}$`),
+        pattern: createRouteRegex(regexString),
         item
       });
     }

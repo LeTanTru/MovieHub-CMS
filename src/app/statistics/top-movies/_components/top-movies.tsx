@@ -157,23 +157,17 @@ export default function TopMovies() {
                 <Table className='min-w-220'>
                   <TableHeader className='bg-zinc-50'>
                     <TableRow>
-                      <TableHead className='w-20 px-4 py-4 text-center'>
+                      <TableHead className='w-20 p-4 text-center'>
                         Hạng
                       </TableHead>
-                      <TableHead className='px-4 py-4'>Phim</TableHead>
-                      <TableHead className='px-4 py-4 text-right'>
-                        Lượt xem
-                      </TableHead>
-                      <TableHead className='px-4 py-4 text-right'>
+                      <TableHead className='p-4'>Phim</TableHead>
+                      <TableHead className='p-4 text-right'>Lượt xem</TableHead>
+                      <TableHead className='p-4 text-right'>
                         Bình luận
                       </TableHead>
-                      <TableHead className='px-4 py-4 text-right'>
-                        Review
-                      </TableHead>
-                      <TableHead className='px-4 py-4 text-right'>
-                        Điểm
-                      </TableHead>
-                      <TableHead className='px-4 py-4 text-right'>
+                      <TableHead className='p-4 text-right'>Review</TableHead>
+                      <TableHead className='p-4 text-right'>Điểm</TableHead>
+                      <TableHead className='p-4 text-right'>
                         Chỉ số chính
                       </TableHead>
                     </TableRow>

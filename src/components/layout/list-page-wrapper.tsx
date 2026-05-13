@@ -44,9 +44,12 @@ export default function ListPageWrapper({
           })}
         >
           {hasAddtionalButtons &&
-            additionButtons
-              ?.filter(Boolean)
-              ?.map((button, index) => <div key={index}>{button}</div>)}
+            additionButtons?.reduce<React.ReactNode[]>((acc, button, index) => {
+              if (button) {
+                acc.push(<div key={index}>{button}</div>);
+              }
+              return acc;
+            }, [])}
           {reloadButton}
           {addButton}
         </div>

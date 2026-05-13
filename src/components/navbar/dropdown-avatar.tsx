@@ -90,8 +90,15 @@ export default function DropdownAvatar() {
   return (
     <div
       ref={dropdownRef}
+      role='button'
+      tabIndex={0}
       className='relative z-1 flex items-center gap-4'
       onClick={handleAvatarClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleAvatarClick();
+        }
+      }}
     >
       <div className='flex cursor-pointer items-center gap-2'>
         <AvatarField
@@ -121,13 +128,13 @@ export default function DropdownAvatar() {
                     queryString ? `${pathname}?${queryString}` : pathname
                   }
                   href={route.profile.savePage.path}
-                  className='flex w-full cursor-pointer items-center gap-2 rounded bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
+                  className='flex w-full cursor-pointer items-center gap-2 rounded bg-transparent p-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
                 >
                   <User className='size-5' /> Hồ sơ
                 </Link>
               </ListItem>
               <ListItem
-                className='flex w-full cursor-pointer items-center gap-2 rounded bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
+                className='flex w-full cursor-pointer items-center gap-2 rounded bg-transparent p-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
                 onClick={handleLogout}
               >
                 {logoutLoading ? (

@@ -76,10 +76,16 @@ export default function GroupList() {
       render: (value) => {
         return (
           <ToolTip title={value}>
-            <div
-              className='mx-auto h-6 w-20 rounded'
-              style={{ background: value }}
-            ></div>
+            <Badge
+              className='text-sm font-normal'
+              style={{
+                borderColor: `${value}80`,
+                color: `${value}`,
+                backgroundColor: `${value}10`
+              }}
+            >
+              {value}
+            </Badge>
           </ToolTip>
         );
       },

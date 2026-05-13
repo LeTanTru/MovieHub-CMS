@@ -1,283 +1,299 @@
 # Memory Leak Audit
 
-Date: 2026-05-01
-Scope: Next.js App Router CMS under `src/`, hooks, components, providers, and HTTP layer.
+Date: 2026-05-13
+Scope: Next.js App Router CMS under `src/`, hooks, components, providers, table components, form previews, comments, MQTT, and HTTP layer.
 
 ---
 
 ## Executive Summary
 
-**Confirmed memory leaks (must fix):**
+**Confirmed memory leaks requiring immediate fixes:** none found in the current codebase.
 
-1. `base-table.tsx:65,71` — scroll listener attached to inner div but removed from outer element
-2. `drag-drop-table.tsx:185,191` — same wrong-element cleanup pattern
-3. `movie-person-list.tsx:144-148` — `setTimeout` with no cleanup function
+The previously reported hard leaks have been fixed:
 
-**Body-lock class cleanup issues (probable leaks / state corruption):**
+1. `src/components/table/base-table.tsx` now captures the scroll element and removes the listener from the same element.
+2. `src/app/movie/[id]/movie-person/_components/movie-person-list.tsx` now clears the pending focus `setTimeout`.
+3. `src/components/form/image-field.tsx` and `src/components/form/avatar-field.tsx` now clean up wheel, resize, and body-lock state consistently.
 
-4. `modal.tsx:88-92` — always removes both `body-lock` and `body-lock mobile` regardless of which was added
-5. `image-field.tsx:146-150` — same pattern
-6. `avatar-field.tsx:138-142` — same pattern
+**Remaining issues are mostly lifecycle robustness or render-performance concerns:**
 
-**Not leaks but problems (handler/closure recreation causing unnecessary re-renders):**
-
-- `comment-list.tsx:62-116` — `voteMap` IIFE, handlers, and `renderChildren` recreated every render
-- `use-list-base.tsx:568-594` — `extendableHandlers()` called at render time, creating new object every render
-- `use-save-base.tsx:159-204` — `beforeunload` and `click` listeners recreated when `isFormChanged` or `showDialog` changes
-
-**Module-level accumulators (not yet problematic but worth monitoring):**
-
-- `http.util.ts:26-29` — `failedQueue` array grows if refresh fails repeatedly
+- `src/components/modal/modal.tsx` uses global body scroll-lock state without coordination for stacked overlays.
+- `src/components/table/drag-drop-table.tsx` removes its scroll listener via a fresh `querySelector` call instead of capturing the exact node used during registration.
+- `src/app/movie/[id]/comment/_components/comment-list.tsx` recreates `voteMap`, handlers, and `renderChildren` every render.
+- `src/hooks/use-list-base.tsx`, `src/hooks/use-inifinite-list-base.tsx`, and `src/hooks/use-save-base.tsx` create new handler objects every render.
+- `src/hooks/use-save-base.tsx` recreates global `beforeunload` and document click listeners when dirty/dialog state changes. Cleanup is correct, so this is not a leak.
+- `src/utils/http.util.ts` has a module-level refresh queue. It is bounded by queue draining, but should be monitored during 401 storms.
 
 ---
 
-## Confirmed Leaks
+## Resolved Findings
 
-### 1. BaseTable Scroll Listener — Wrong Element
+### 1. BaseTable Scroll Listener
 
-**File:** `src/components/table/base-table.tsx:65,71`
+**File:** `src/components/table/base-table.tsx`
 
-```ts
-el.querySelector('div')?.addEventListener('scroll', handleScroll, {
-  passive: true
-});
-// cleanup:
-el.removeEventListener('scroll', handleScroll); // removes from wrong element
-```
+**Current status:** fixed.
 
-**Problem:** Listener is attached to `el.querySelector('div')` (the inner scrollable div) but `removeEventListener` is called on `el` (the outer container). The listener is never removed — it accumulates on every mount.
-
-**Impact:** Memory grows with each table mount/unmount cycle. Listener keeps firing on scroll even after table is destroyed.
-
-**Fix:**
+The scroll listener is now attached to `scrollDiv` and removed from the same captured `scrollDiv` reference:
 
 ```ts
 const scrollDiv = el.querySelector('div');
-scrollDiv?.addEventListener('scroll', handleScroll, { passive: true });
+scrollDiv?.addEventListener('scroll', handleScroll, {
+  passive: true
+});
+
 return () => {
   scrollDiv?.removeEventListener('scroll', handleScroll);
 };
 ```
 
+This resolves the old wrong-element cleanup bug.
+
+### 2. MoviePersonList Pending Focus Timer
+
+**File:** `src/app/movie/[id]/movie-person/_components/movie-person-list.tsx`
+
+**Current status:** fixed.
+
+The focus timer is now cleared on dependency changes or unmount:
+
+```ts
+const timer = setTimeout(() => {
+  input?.focus();
+  const val = input.value;
+  input.setSelectionRange(val.length, val.length);
+}, 0);
+return () => clearTimeout(timer);
+```
+
+### 3. ImageField and AvatarField Preview Cleanup
+
+**Files:**
+
+- `src/components/form/image-field.tsx`
+- `src/components/form/avatar-field.tsx`
+
+**Current status:** fixed for the originally reported issue.
+
+Both components now:
+
+- capture the preview node before adding the `wheel` listener,
+- remove the listener from the same node,
+- remove the `mobile` class only if the preview added it,
+- remove the `resize` listener when responsive breakpoints are active.
+
 ---
 
-### 2. DragDropTable Scroll Listener — CORRECTLY CLEANED UP
+## Current Findings
 
-**File:** `src/components/table/drag-drop-table.tsx:185,191`
+### 1. Modal Body Scroll Lock Is Not Coordinated Across Stacked Overlays
+
+**File:** `src/components/modal/modal.tsx`
+
+**Severity:** medium, state consistency issue.
+
+`Modal` currently locks body scroll when `open` is true and unlocks it when that modal closes:
+
+```ts
+document.body.classList.add('body-lock');
+document.body.style.overflow = 'hidden';
+
+return () => {
+  document.body.classList.remove('body-lock');
+  document.body.style.overflow = '';
+  document.body.style.marginRight = '';
+};
+```
+
+This is correct for one modal. It can become incorrect when multiple overlays are mounted at the same time, for example a modal plus a nested confirm dialog, image preview, or another portal overlay. The first overlay to unmount can remove `body-lock` and restore body scrolling while another overlay is still open.
+
+**Impact:** Not a memory leak, but it can corrupt global page state and cause body scrolling/layout shift while an overlay remains visible.
+
+**Recommended fix:** centralize body-lock ownership with a small reference counter/helper, for example `lockBodyScroll()` returning an unlock function. Each modal/preview increments on open and decrements on cleanup; only the final unlock restores body styles.
+
+### 2. DragDropTable Scroll Listener Cleanup Is Correct but Brittle
+
+**File:** `src/components/table/drag-drop-table.tsx`
+
+**Severity:** low.
+
+Current code attaches and removes from `el.querySelector('div')`:
 
 ```ts
 el.querySelector('div')?.addEventListener('scroll', handleScroll, {
   passive: true
 });
-// cleanup:
-el.querySelector('div')?.removeEventListener('scroll', handleScroll); // same element, correctly removes
-```
 
-**Status:** This one is actually correct. Both attachment and cleanup use `el.querySelector('div')` consistently. No leak here. (I initially flagged this as wrong based on the BaseTable pattern, but the code is consistent.)
-
----
-
-### 3. MoviePersonList setTimeout Without Cleanup
-
-**File:** `src/app/movie/[id]/movie-person/_components/movie-person-list.tsx:144-148`
-
-```ts
-useEffect(() => {
-  if (selectedRow && inputRefs.current[selectedRow]) {
-    const input = inputRefs.current[selectedRow];
-    setTimeout(() => {
-      input?.focus();
-      const val = input.value;
-      input.setSelectionRange(val.length, val.length);
-    }, 0); // NO CLEANUP — timer keeps running if component unmounts
-  }
-}, [selectedRow]);
-```
-
-**Problem:** Every time `selectedRow` changes, a new `setTimeout` is scheduled but no cleanup function is returned. If the component unmounts while a timeout is pending, the timeout fires anyway — though in this case `input` will be null due to the optional chaining, so it doesn't cause visible bugs. Still a leak pattern.
-
-**Fix:**
-
-```ts
-useEffect(() => {
-  if (selectedRow && inputRefs.current[selectedRow]) {
-    const input = inputRefs.current[selectedRow];
-    const timer = setTimeout(() => {
-      input?.focus();
-      const val = input.value;
-      input.setSelectionRange(val.length, val.length);
-    }, 0);
-    return () => clearTimeout(timer);
-  }
-}, [selectedRow]);
-```
-
----
-
-## Body-Lock Class Cleanup Issues
-
-### 4. Modal Body Lock — Removes Wrong Classes
-
-**File:** `src/components/modal/modal.tsx:88-92`
-
-```ts
-if (isMobileDevice()) document.body.classList.add('body-lock', 'mobile');
-else document.body.classList.add('body-lock');
 return () => {
-  document.body.classList.remove('body-lock');
-  document.body.classList.remove('body-lock', 'mobile'); // always removes both classes
+  el.querySelector('div')?.removeEventListener('scroll', handleScroll);
 };
 ```
 
-**Problem:** On mobile, both `body-lock` and `mobile` are added. On desktop, only `body-lock` is added. But the cleanup **always** calls `remove('body-lock', 'mobile')` — removing `mobile` even when it was never added (and vice versa). This is harmless in practice (removing a non-existent class is a no-op) but reveals the intent doesn't match the implementation.
+This is currently consistent and is not a confirmed leak. However, it is less robust than `BaseTable` because cleanup performs a new lookup instead of capturing the original scroll node. If the inner scroll element were replaced before unmount, cleanup could remove from the wrong node.
 
-**Fix:**
-
-```ts
-useEffect(() => {
-  if (!open) return;
-  const isMobile = isMobileDevice();
-  if (isMobile) document.body.classList.add('body-lock', 'mobile');
-  else document.body.classList.add('body-lock');
-  return () => {
-    document.body.classList.remove('body-lock');
-    if (isMobile) document.body.classList.remove('mobile');
-  };
-}, [open]);
-```
-
-**Note:** The same pattern exists in `image-field.tsx:146-150` and `avatar-field.tsx:138-142`. Fix consistently across all three.
-
----
-
-## Not Leaks But Performance Issues
-
-### 5. Comment List — voteMap IIFE and Handler Recreation
-
-**File:** `src/app/movie/[id]/comment/_components/comment-list.tsx:62-116`
-
-- `voteMap` (lines 62-66): Created as IIFE every render → new object reference every render
-- `handleVote` (lines 67-75): Recreated every render
-- `handlePinComment` (lines 77-80): Recreated every render
-- `handleDeleteComment` (lines 82-94): Recreated every render
-- `handleReplySuccess` (line 96): Recreated every render
-- `renderChildren` (lines 98-116): Recreated every render
-
-**Impact:** `CommentItem` receives new function references every render, breaking referential equality. React Compiler cannot optimize away object recreation patterns.
-
-**Fix:** Wrap `voteMap` in `useMemo`, stabilize handlers with `useCallback`.
-
----
-
-### 6. useListBase — extendableHandlers() Called at Render Time
-
-**File:** `src/hooks/use-list-base.tsx:568-594`
+**Recommended fix:**
 
 ```ts
-const extendableHandlers = (): HandlerType<T, S> => {
-  const handlers = { ... };
-  override?.(handlers);
-  return handlers;
-};
-const handlers = extendableHandlers();  // called every render → new object every render
-```
+const scrollDiv = el.querySelector('div');
+scrollDiv?.addEventListener('scroll', handleScroll, { passive: true });
 
-**Impact:** `handlers` is a new object on every render, passed down to table columns. Column renderers receive a new `handlers` reference even when data hasn't changed.
-
-**Fix:** Memoize `handlers` with `useMemo` keyed on stable dependencies, or refactor to use refs for the override pattern.
-
----
-
-### 7. useSaveBase — Listeners Recreated on State Change
-
-**File:** `src/hooks/use-save-base.tsx:159-204`
-
-```ts
-useEffect(() => {
-  const handleBeforeUnload = (e: BeforeUnloadEvent) => { ... };
-  window.addEventListener('beforeunload', handleBeforeUnload, true);
-  return () => window.removeEventListener('beforeunload', handleBeforeUnload, true);
-}, [isFormChanged]);  // re-runs and recreates listener when isFormChanged changes
-
-useEffect(() => {
-  const handleClick = (e: MouseEvent) => { ... };
-  document.addEventListener('click', handleClick, true);
-  return () => document.removeEventListener('click', handleClick, true);
-}, [isFormChanged, showDialog]);  // re-runs when either changes
-```
-
-**Impact:** Listeners are recreated (old removed, new added) every time `isFormChanged` toggles or `showDialog` changes. Not a true leak — cleanup correctly removes the old listener — but inefficient.
-
-**Fix:** Use refs to hold the latest `isFormChanged` value, keeping listeners stable.
-
----
-
-### 8. HTTP Refresh Queue — Module-Level Array
-
-**File:** `src/utils/http.util.ts:26-41`
-
-```ts
-let failedQueue: Array<{ resolve, reject }> = [];
-
-const processQueue = (error, token = null) => {
-  failedQueue.forEach((prom) => { ... });
-  failedQueue = [];
+return () => {
+  scrollDiv?.removeEventListener('scroll', handleScroll);
 };
 ```
 
-**Impact:** `failedQueue` accumulates Promises during concurrent refresh attempts. If `refreshToken` fails repeatedly, the queue grows. Each entry holds a closure (`resolve`/`reject`). In practice this is bounded (queue drains on success/failure), but on rapid 401 storms it could grow.
+### 3. CommentList Recreates Objects and Handlers Every Render
 
-**Status:** Not a confirmed leak — bounded by queue processing. Monitor if seeing memory growth under heavy auth failures.
+**File:** `src/app/movie/[id]/comment/_components/comment-list.tsx`
+
+**Severity:** medium performance issue.
+
+The following values are recreated every render:
+
+- `voteMap`
+- `handleVote`
+- `handlePinComment`
+- `handleDeleteComment`
+- `handleReplySuccess`
+- `renderChildren`
+
+These are passed into `CommentItem`, so child components receive new references even when the underlying data has not changed.
+
+**Impact:** Not a memory leak. It can cause avoidable rerenders across a recursive comment tree.
+
+**Recommended fix:** use `useMemo` for `voteMap` and `useCallback` for handlers/render helpers where it provides stable references without making dependencies harder to reason about.
+
+### 4. Handler Objects Are Recreated in Base Hooks
+
+**Files:**
+
+- `src/hooks/use-list-base.tsx`
+- `src/hooks/use-inifinite-list-base.tsx`
+- `src/hooks/use-save-base.tsx`
+
+**Severity:** medium performance issue.
+
+These hooks call `extendableHandlers()` during render and return a new `handlers` object every render.
+
+Example from `use-list-base.tsx`:
+
+```ts
+const handlers = extendableHandlers();
+```
+
+**Impact:** Not a leak. However, consumers that include `handlers` in dependency arrays or pass handlers deep into memoized children lose referential stability. `CommentList` currently has an effect depending on `handlers`, which means that effect can rerun more often than the meaningful dependencies require.
+
+**Recommended fix:** either memoize the returned handlers object or expose stable callback functions directly. If the `override` pattern makes full memoization awkward, move mutable extension points into refs and keep the public handler object stable.
+
+### 5. useSaveBase Reattaches Global Listeners on State Changes
+
+**File:** `src/hooks/use-save-base.tsx`
+
+**Severity:** low performance issue.
+
+`beforeunload` is recreated when `isFormChanged` changes, and the document click listener is recreated when `isFormChanged` or `showDialog` changes:
+
+```ts
+window.addEventListener('beforeunload', handleBeforeUnload, true);
+return () =>
+  window.removeEventListener('beforeunload', handleBeforeUnload, true);
+
+document.addEventListener('click', handleClick, true);
+return () => document.removeEventListener('click', handleClick, true);
+```
+
+Cleanup is correct, so this is not a memory leak.
+
+**Recommended fix:** use refs for the latest dirty/dialog state and register each global listener once.
+
+### 6. HTTP Refresh Queue Is Bounded but Worth Monitoring
+
+**File:** `src/utils/http.util.ts`
+
+**Severity:** low, monitor.
+
+`failedQueue` is a module-level array used to queue requests while one refresh is in progress. It is cleared in `processQueue()` on success or handled failure.
+
+**Impact:** Not a confirmed leak. During a large 401 storm, the queue can temporarily hold many Promise closures until refresh completes or fails.
+
+**Recommended hardening:**
+
+- keep `processQueue(error, null)` in every refresh failure path,
+- avoid logging the full queue in production,
+- consider a maximum queue size or fail-fast behavior if auth failures spike.
 
 ---
 
-## Additional Observations
+## Additional Checks
 
-### File Upload — Object URL Revocation (Correct)
+### Emoji Picker Components
 
-**File:** `src/hooks/use-file-upload.ts:150,286`
+**Files:**
 
-Object URL revocation is correctly implemented in both `clearFiles` (line 150) and `removeFile` (line 286). No leak here.
+- `src/app/movie/[id]/comment/_components/comment-input.tsx`
+- `src/app/movie/[id]/comment/_components/comment-form.tsx`
 
-### MQTT Subscriptions — AppProvider
+Both components dynamically create an `emoji-picker` element and attach an anonymous `emoji-click` listener. On cleanup they remove the entire picker node and guard async import completion with `mounted = false`.
 
-**File:** `src/components/providers/app-provider/app-provider.tsx:88-151`
+**Status:** not a confirmed leak. Removing the node should allow the picker and its listener to be garbage collected. For clarity and explicit cleanup, the listener could be named and removed before removing the node.
 
-Three MQTT subscriptions (`NOTIFICATION_CMS`, `NOTIFICATION_ACCOUNT`, `message` listener) attached on mount. Profile changes trigger re-subscribe. The old subscription cleanup runs before the new one registers, but there's a brief window where both could be active during rapid profile changes.
+### File Upload Object URLs
 
-**Status:** Not a confirmed leak — cleanup is present and correct. Could be optimized with a subscription manager pattern but not a leak per se.
+**File:** `src/hooks/use-file-upload.ts`
 
-### Auth Store — Zustand
+Object URLs are revoked in both `clearFiles` and `removeFile`.
+
+**Status:** no leak found.
+
+### MQTT Subscriptions and Message Listeners
+
+**Files:**
+
+- `src/components/providers/mqtt-provider/mqtt-provider.tsx`
+- `src/hooks/use-mqtt.ts`
+- `src/lib/mqtt.ts`
+
+MQTT subscriptions and message listeners have cleanup paths:
+
+- `client.unsubscribe(...)` in provider effects,
+- `client.off('message', handler)` in provider and `useMqtt`.
+
+`src/lib/mqtt.ts` registers lifecycle logging listeners on a module-level singleton client. This is expected to live for the app session.
+
+**Status:** no confirmed leak.
+
+### Modal Body Scroll Listener
+
+**File:** `src/components/modal/modal.tsx`
+
+`Modal.Body` captures the scroll element and removes the `scroll` and `resize` listeners on cleanup.
+
+**Status:** no leak found.
+
+### Auth Store
 
 **File:** `src/store/auth.store.ts`
 
-`setProfile` replaces the profile object entirely (not accumulating). `clearState()` resets all fields to `null`. No leak here.
+The Zustand auth store replaces profile/token state and clears fields on logout.
 
-### Dropdown Avatar Logout
-
-**File:** `src/components/navbar/dropdown-avatar.tsx`
-
-On logout: removes localStorage, calls `queryClient.removeQueries()`, calls `clearState()`, navigates to login. Properly cleans up all state.
+**Status:** no leak found.
 
 ---
 
 ## Fix Priority
 
-### Critical (Must Fix)
+### High
 
-1. BaseTable scroll listener wrong-element bug → listeners accumulate
-2. MoviePersonList setTimeout missing cleanup → timer leaks on unmount
+1. Centralize body scroll-lock management so multiple modals/previews cannot unlock the body while another overlay is open.
 
-### High (Should Fix)
+### Medium
 
-3. Body-lock class cleanup in Modal/ImageField/AvatarField → class state inconsistency
-4. Comment list voteMap + handler recreation → excessive re-renders
+2. Stabilize `CommentList` `voteMap`, handlers, and recursive renderer.
+3. Stabilize `handlers` returned by `use-list-base`, `use-inifinite-list-base`, and `use-save-base`.
 
-### Medium (Nice to Fix)
+### Low
 
-5. useListBase extendableHandlers() → new object every render
-6. useSaveBase listener recreation → inefficient re-attachment
-
-### Low (Monitor)
-
-7. HTTP failedQueue growth under auth failure storms
+4. Capture `DragDropTable` scroll element before listener registration, matching `BaseTable`.
+5. Keep `useSaveBase` global listeners stable with refs.
+6. Optionally make emoji picker event cleanup explicit.
+7. Monitor `http.util.ts` refresh queue behavior under heavy 401 failures.

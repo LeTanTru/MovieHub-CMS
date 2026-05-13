@@ -88,7 +88,7 @@ export default function LoginForm() {
       defaultValues={defaultValues}
       schema={loginSchema}
       onSubmit={onSubmit}
-      className='flex flex-col items-center justify-around gap-0 rounded-lg px-6 py-6 shadow-[0px_0px_10px_2px] shadow-black/20 max-[1560px]:w-120 min-[1560px]:w-120'
+      className='flex flex-col items-center justify-around gap-0 rounded-lg p-6 shadow-[0px_0px_10px_2px] shadow-black/20 max-[1560px]:w-120 min-[1560px]:w-120'
     >
       {(form) => (
         <>
@@ -106,7 +106,7 @@ export default function LoginForm() {
           </Row>
           <Row className='w-full'>
             <Col className='grid-c-12 grid-col-no-gutters items-center justify-center'>
-              <h1 className='text-xl font-bold text-zinc-800 uppercase'>
+              <h1 className='text-xl font-semibold text-zinc-800 uppercase'>
                 Đăng nhập
               </h1>
             </Col>
