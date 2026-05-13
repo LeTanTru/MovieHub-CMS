@@ -109,7 +109,7 @@ const TextAreaField = <T extends FieldValues>({
                   rest.onChange?.(e);
                 }}
               />
-              {maxLength && (
+              {!!maxLength && (
                 <div
                   className={cn(
                     'pointer-events-none absolute top-1 right-1.5 text-xs leading-none select-none',

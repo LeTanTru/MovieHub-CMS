@@ -12,9 +12,11 @@ export async function POST() {
       logger.error('[LOGOUT_BACKEND_ERROR]', e);
     }
 
-    await removeCookie(storageKeys.ACCESS_TOKEN);
-    await removeCookie(storageKeys.REFRESH_TOKEN);
-    await removeCookie(storageKeys.USER_KIND);
+    await Promise.all([
+      removeCookie(storageKeys.ACCESS_TOKEN),
+      removeCookie(storageKeys.REFRESH_TOKEN),
+      removeCookie(storageKeys.USER_KIND)
+    ]);
 
     return NextResponse.json(
       {

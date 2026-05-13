@@ -27,7 +27,7 @@ export default function SettingMenu({
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
           <Menu.Button className={buttonClass}>
-            <SettingsIcon className='h-8 w-8 transform transition-transform duration-200 ease-out group-data-[open]:rotate-90' />
+            <SettingsIcon className='size-8 transform transition-transform duration-200 ease-out group-data-[open]:rotate-90' />
           </Menu.Button>
         </Tooltip.Trigger>
         <Tooltip.Content className={tooltipClass} placement={tooltipPlacement}>

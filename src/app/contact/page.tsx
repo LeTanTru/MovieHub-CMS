@@ -99,7 +99,7 @@ export default function ContactPage() {
           </p>
           <div className='mb-2'>
             <div className='inline-flex min-h-7.5 items-center justify-center gap-2 rounded border border-white bg-white px-3 py-2 text-xs font-medium text-black opacity-100'>
-              <div className='relative h-3 w-3 shrink-0'>
+              <div className='relative size-3 shrink-0'>
                 <Image
                   alt='Telegram'
                   src='/telegram.svg'
@@ -121,7 +121,7 @@ export default function ContactPage() {
           </div>
           <div className='mb-2'>
             <div className='inline-flex min-h-7.5 items-center justify-center gap-2 rounded border border-white bg-white px-3 py-2 text-xs font-medium text-black opacity-100'>
-              <div className='relative h-3 w-3 shrink-0'>
+              <div className='relative size-3 shrink-0'>
                 <Image
                   alt='Discord'
                   src='/discord.svg'
@@ -143,7 +143,7 @@ export default function ContactPage() {
           </div>
           <div className='mb-2'>
             <div className='inline-flex min-h-7.5 items-center justify-center gap-2 rounded border border-white bg-white px-3 py-2 text-xs font-medium text-black opacity-100'>
-              <div className='relative h-3 w-3 shrink-0'>
+              <div className='relative size-3 shrink-0'>
                 <Image
                   alt='Facebook'
                   src='/facebook.svg'
@@ -165,7 +165,7 @@ export default function ContactPage() {
           </div>
           <div className='mb-2'>
             <div className='inline-flex min-h-7.5 items-center justify-center gap-2 rounded border border-white bg-white px-3 py-2 text-xs font-medium text-black opacity-100'>
-              <div className='relative h-3 w-3 shrink-0'>
+              <div className='relative size-3 shrink-0'>
                 <Image
                   alt='Instagram'
                   src='/instagram.svg'
@@ -187,7 +187,7 @@ export default function ContactPage() {
           </div>
           <div className='mb-4'>
             <div className='inline-flex min-h-7.5 items-center justify-center gap-2 rounded border border-white bg-white px-3 py-2 text-xs font-medium text-black opacity-100'>
-              <div className='relative h-3 w-3 shrink-0'>
+              <div className='relative size-3 shrink-0'>
                 <Image
                   alt='X'
                   src='/x.svg'

@@ -210,7 +210,7 @@ export default function CollapsibleMenuItem({
                 style={{ top: pos.y, left: pos.x }}
                 className='fixed z-10 w-40 overflow-hidden pl-1'
               >
-                <div className='bg-sidebar rounded-lg px-1 py-1'>
+                <div className='bg-sidebar rounded-lg p-1'>
                   <SidebarMenu
                     className={cn({ 'bg-sidebar-active-menu': open })}
                   >

@@ -20,7 +20,7 @@ const useQueryParams = <S extends Record<string, any>>() => {
     }
 
     const sortedParams = new URLSearchParams();
-    [...params.keys()].sort().forEach((k) => {
+    [...params.keys()].toSorted().forEach((k) => {
       const v = params.get(k);
       if (v !== null) sortedParams.set(k, v);
     });

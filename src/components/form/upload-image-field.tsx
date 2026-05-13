@@ -503,7 +503,7 @@ export default function UploadImageField<T extends FieldValues>({
                   />
                   <span className='text-sm'>Cắt ảnh</span>
                 </label>
-                {originalSize && (
+                {!!originalSize && (
                   <label
                     className='flex cursor-pointer items-center gap-2'
                     htmlFor='keep-original-size'

@@ -89,16 +89,14 @@ export default function GroupForm() {
     return acc;
   }, {} as any);
 
-  (groupPermissions || [])
-    .map((group) => group.name)
-    .forEach((groupName) => {
-      if (!groupedPermissions[groupName]) {
-        groupedPermissions[groupName] = [];
-      }
-    });
+  (groupPermissions || []).forEach((group) => {
+    if (!groupedPermissions[group.name]) {
+      groupedPermissions[group.name] = [];
+    }
+  });
 
   const sortedGroupPermissions = useMemo(() => {
-    return [...groupPermissions].sort((a, b) => a.ordering - b.ordering);
+    return groupPermissions.toSorted((a, b) => a.ordering - b.ordering);
   }, [groupPermissions]);
 
   const defaultValues: GroupBodyType = {

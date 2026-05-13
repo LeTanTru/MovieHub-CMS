@@ -243,7 +243,7 @@ const useInfiniteListBase = <
   }, [infiniteQuery.data]);
 
   const changePagination = (page: number) => {
-    setPagination({ ...pagination, current: page });
+    setPagination((prev) => ({ ...prev, current: page }));
 
     setQueryParams({
       ...searchParams,

@@ -101,57 +101,62 @@ export default function CollectionForm() {
     fillData: false
   };
 
+  const {
+    color: dataColor,
+    fillData: dataFillData,
+    filter: dataFilter,
+    name: dataName,
+    style: dataStyle,
+    type: dataType
+  } = data ?? {};
+
   const initialValues: CollectionBodyType = useMemo(() => {
     let parsedColors: string[] = ['#000000', '#000000'];
 
-    if (data?.color) {
+    if (dataColor) {
       try {
-        if (typeof data.color === 'string') {
-          parsedColors = JSON.parse(data.color);
-        } else if (Array.isArray(data.color)) {
-          parsedColors = data.color;
-        } else {
-          parsedColors = [data.color];
-        }
+        parsedColors =
+          typeof dataColor === 'string'
+            ? JSON.parse(dataColor)
+            : Array.isArray(dataColor)
+              ? dataColor
+              : [dataColor];
       } catch (error) {
-        parsedColors = [data.color as string];
+        parsedColors = [dataColor as string];
         logger.error('[PARSE_COLOR_ERROR]', error);
       }
     }
 
     let filter: CollectionBodyType['filter'] = {};
-
-    if (data?.filter) {
+    if (dataFilter) {
       try {
-        if (typeof data.filter === 'string') {
-          filter = JSON.parse(data.filter);
-        } else if (typeof data.filter === 'object') {
-          filter = data.filter as CollectionBodyType['filter'];
-        }
+        filter =
+          typeof dataFilter === 'string'
+            ? JSON.parse(dataFilter)
+            : (dataFilter as CollectionBodyType['filter']);
       } catch (error) {
         logger.error('[PARSE_FILTER_ERROR]', error);
-        filter = {};
       }
     }
 
     return {
       colors: parsedColors,
-      filter: data?.filter
+      filter: dataFilter
         ? { ...filter, noLimit: filter.limit ? false : true }
         : {},
-      name: data?.name || '',
+      name: dataName || '',
       randomData: false,
-      styleId: data?.style?.id?.toString() || '',
-      type: data?.type || type ? Number(type) : COLLECTION_TYPE_TOPIC,
-      fillData: data?.fillData || false
+      styleId: dataStyle?.id?.toString() || '',
+      type: dataType || type ? Number(type) : COLLECTION_TYPE_TOPIC,
+      fillData: dataFillData || false
     };
   }, [
-    data?.color,
-    data?.fillData,
-    data?.filter,
-    data?.name,
-    data?.style?.id,
-    data?.type,
+    dataColor,
+    dataFillData,
+    dataFilter,
+    dataName,
+    dataStyle?.id,
+    dataType,
     type
   ]);
 

@@ -61,7 +61,7 @@ export default function ColorPickerField<T extends FieldValues>({
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
             )}
-            <div className='flex items-center space-x-4'>
+            <div className='flex items-center gap-4'>
               <FormControl>
                 <input
                   type='color'

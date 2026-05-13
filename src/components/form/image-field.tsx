@@ -130,14 +130,20 @@ export default function ImageField({
     [zoomOnScroll]
   );
 
+  const handleWheelRef = useRef(handleWheel);
+  useEffect(() => {
+    handleWheelRef.current = handleWheel;
+  }, [handleWheel]);
+
   useEffect(() => {
     if (!open || !previewRef.current) return;
 
     const node = previewRef.current;
-    node.addEventListener('wheel', handleWheel, { passive: true });
+    const handler = (e: WheelEvent) => handleWheelRef.current(e);
+    node.addEventListener('wheel', handler, { passive: true });
 
-    return () => node.removeEventListener('wheel', handleWheel);
-  }, [handleWheel, open]);
+    return () => node.removeEventListener('wheel', handler);
+  }, [open]);
 
   // Lock body scroll without layout shift when modal opens
   useEffect(() => {

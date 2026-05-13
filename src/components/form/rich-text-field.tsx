@@ -21,7 +21,7 @@ const TinyEditor = dynamic(
     ssr: false,
     loading: () => (
       <div className='bg-muted text-muted-foreground flex h-112.5 items-center justify-center rounded border text-sm'>
-        Loading editor...
+        Loading editor…
       </div>
     )
   }

@@ -31,13 +31,7 @@ import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/form';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
-import {
-  type MouseEvent,
-  type ReactNode,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 type MultiSelectFieldProps<
   TFieldValues extends FieldValues,
@@ -92,11 +86,13 @@ const measureVisibleCount = (
     'position:absolute;visibility:hidden;display:flex;gap:4px;top:-9999px;left:-9999px;pointer-events:none;';
   document.body.appendChild(measurer);
 
+  const optionMap = new Map(options.map((o) => [getValue(o), o]));
+
   let totalWidth = 0;
   let count = 0;
 
   for (const val of selectedValues) {
-    const option = options.find((o) => getValue(o) === val);
+    const option = optionMap.get(val);
     if (!option) continue;
 
     const span = document.createElement('span');
@@ -243,12 +239,7 @@ export default function MultiSelectField<
           onValueChange?.(newValues);
         };
 
-        const handleRemove = (
-          val: string | number,
-          e: MouseEvent<HTMLSpanElement>
-        ) => {
-          e.stopPropagation();
-          e.preventDefault();
+        const handleRemove = (val: string | number) => {
           const newValues = selectedValues.filter((v) => v !== val);
           field.onChange(newValues);
           onValueChange?.(newValues);
@@ -327,8 +318,19 @@ export default function MultiSelectField<
                                 <span
                                   role='button'
                                   className='flex items-center justify-center rounded-sm transition-colors hover:bg-gray-300/60'
-                                  onClick={(e) => handleRemove(val, e)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    handleRemove(val);
+                                  }}
                                   onMouseDown={(e) => e.stopPropagation()}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                      e.stopPropagation();
+                                      e.preventDefault();
+                                      handleRemove(val);
+                                    }
+                                  }}
                                 >
                                   <X className='size-3' />
                                 </span>

@@ -224,7 +224,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
   }, [current, listQuery.data]);
 
   const changePagination = (page: number) => {
-    setPagination({ ...pagination, current: page });
+    setPagination((prev) => ({ ...prev, current: page }));
 
     setQueryParams({
       ...searchParams,

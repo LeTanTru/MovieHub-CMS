@@ -4,25 +4,23 @@ import { validatePermission } from '@/utils/validate-permission.util';
 
 export const getFirstActiveRoute = (userPermissions: string[]): string => {
   const filterMenuByPermission = (menu: MenuItem[]): MenuItem[] => {
-    return menu
-      .map((item) => {
-        let children: MenuItem[] | undefined;
-        if (item.children) {
-          children = filterMenuByPermission(item.children);
-        }
+    return menu.flatMap((item) => {
+      let children: MenuItem[] | undefined;
+      if (item.children) {
+        children = filterMenuByPermission(item.children);
+      }
 
-        const allowed =
-          !item.permissionCode ||
-          validatePermission({
-            requiredPermissions: item.permissionCode,
-            userPermissions
-          });
+      const allowed =
+        !item.permissionCode ||
+        validatePermission({
+          requiredPermissions: item.permissionCode,
+          userPermissions
+        });
 
-        if (!allowed && (!children || children.length === 0)) return null;
+      if (!allowed && (!children || children.length === 0)) return [];
 
-        return { ...item, children };
-      })
-      .filter(Boolean) as MenuItem[];
+      return [{ ...item, children }];
+    });
   };
 
   const filteredMenu = filterMenuByPermission(menuConfig);
