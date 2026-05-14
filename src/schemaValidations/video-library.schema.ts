@@ -159,6 +159,10 @@ export const retryProcessVideoLibrarySchema = z.object({
   content: z.string().nonempty('Bắt buộc')
 });
 
+export const processAudioVideoLibrarySchema = z.object({
+  id: z.string().nonempty('Bắt buộc')
+});
+
 export const videoLibrarySearchSchema = z.object({
   name: z.string().optional().nullable(),
   state: z.number().optional().nullable(),

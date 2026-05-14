@@ -8,6 +8,7 @@ const VideoPlayer = dynamic(
   () => import('@/components/video-player').then((mod) => mod.VideoPlayer),
   { ssr: false }
 );
+
 import type { VideoLibraryResType } from '@/types';
 import { useAuthStore } from '@/store';
 import {

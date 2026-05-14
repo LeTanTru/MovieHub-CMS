@@ -199,7 +199,8 @@ export default function AdminList() {
       key: 'status',
       placeholder: 'Trạng thái',
       type: FieldTypes.SELECT,
-      options: statusOptions
+      options: statusOptions,
+      submitOnChanged: true
     }
   ];
 

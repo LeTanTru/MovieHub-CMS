@@ -171,13 +171,15 @@ export default function UserList() {
       key: 'kind',
       placeholder: 'Vai trò',
       type: FieldTypes.SELECT,
-      options: userKindOptions
+      options: userKindOptions,
+      submitOnChanged: true
     },
     {
       key: 'status',
       placeholder: 'Trạng thái',
       type: FieldTypes.SELECT,
-      options: employeeStatusOptions
+      options: employeeStatusOptions,
+      submitOnChanged: true
     }
   ];
 

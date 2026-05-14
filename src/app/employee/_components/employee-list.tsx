@@ -208,13 +208,15 @@ export default function EmployeeList() {
       options: groupListData?.content.map((group) => ({
         label: group.name,
         value: group.kind
-      }))
+      })),
+      submitOnChanged: true
     },
     {
       key: 'status',
       placeholder: 'Trạng thái',
       type: FieldTypes.SELECT,
-      options: employeeStatusOptions
+      options: employeeStatusOptions,
+      submitOnChanged: true
     }
   ];
 

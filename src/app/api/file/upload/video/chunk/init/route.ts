@@ -5,21 +5,18 @@ import { randomBytes } from 'crypto';
 import { logger } from '@/logger';
 import { HttpStatusCode } from 'axios';
 
-function generateRandomFileName(length = 10): string {
-  const chars =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const bytes = randomBytes(length);
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += chars[bytes[i] % chars.length];
-  }
-  return result;
-}
-
 export async function POST(req: NextRequest) {
   const { mimeType } = await req.json();
 
-  const randomName = generateRandomFileName(10);
+  if (!mimeType || !mimeType.startsWith('video/')) {
+    logger.error('[INIT_UPLOAD_ERROR]', 'Invalid mime type:', mimeType);
+    return NextResponse.json(
+      { error: 'Invalid mime type' },
+      { status: HttpStatusCode.BadRequest }
+    );
+  }
+
+  const randomName = randomBytes(10).toString('hex');
   const ext =
     mimeType === 'video/quicktime'
       ? 'mov'

@@ -145,13 +145,15 @@ export default function PersonList({ kind }: PersonListProps) {
       key: 'country',
       placeholder: 'Quốc tịch',
       type: FieldTypes.SELECT,
-      options: countryOptions
+      options: countryOptions,
+      submitOnChanged: true
     },
     {
       key: 'gender',
       placeholder: 'Giới tính',
       type: FieldTypes.SELECT,
-      options: genderOptions
+      options: genderOptions,
+      submitOnChanged: true
     }
   ];
 

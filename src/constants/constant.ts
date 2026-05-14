@@ -99,3 +99,5 @@ export const TAB_SETTING_LIVE_ROOM = 'live_room';
 export const DOWNLOAD_TEMP_FILE_FAILED = 'download_temp_file_failed';
 export const CONVERT_FILE_FAILED = 'convert_file_failed';
 export const GENERATE_VTT_FAILED = 'generate_vtt_failed';
+
+export const AUDIO_STATE_COMPLETE = 1;
