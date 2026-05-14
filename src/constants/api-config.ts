@@ -413,6 +413,12 @@ const apiConfig = defineApiConfig({
       headers: multipartHeader,
       isUpload: true
     },
+    uploadChunkAbort: {
+      baseUrl: `/api/file/upload/video/chunk/abort`,
+      method: 'POST',
+      headers: baseHeader,
+      isUpload: true
+    },
     delete: {
       baseUrl: `${AppConstants.mediaUrl}/v1/file/delete-file`,
       method: 'POST',
@@ -989,6 +995,43 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'VID_L_R_P',
+      isRequiredXClientType: true
+    },
+    processAudio: {
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library/process-audio`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'VID_L_P_A',
+      isRequiredXClientType: true
+    }
+  },
+  videoLibrarySubtitle: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library-subtitle/admin/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'VID_L_S_L',
+      isRequiredXClientType: true
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library-subtitle/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'VID_L_S_D',
+      isRequiredXClientType: true
+    },
+    translate: {
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library-subtitle/translate`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'VID_L_S_T',
+      isRequiredXClientType: true
+    },
+    update: {
+      baseUrl: `${AppConstants.apiUrl}/v1/video-library-subtitle/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'VID_L_S_U',
       isRequiredXClientType: true
     }
   },

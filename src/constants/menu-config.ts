@@ -1,5 +1,8 @@
 import apiConfig from '@/constants/api-config';
-import { COLLECTION_TYPE_TOPIC } from '@/constants/constant';
+import {
+  COLLECTION_TYPE_TOPIC,
+  VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
+} from '@/constants/constant';
 import { route } from '@/routes';
 import type { MenuItem } from '@/types';
 import {
@@ -62,7 +65,8 @@ const menuConfig: MenuItem[] = [
         key: 'video-library',
         label: 'Video',
         path: route.videoLibrary.getList.path,
-        permissionCode: [apiConfig.videoLibrary.getList.permissionCode]
+        permissionCode: [apiConfig.videoLibrary.getList.permissionCode],
+        query: { sourceType: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL }
       },
       {
         key: 'person',

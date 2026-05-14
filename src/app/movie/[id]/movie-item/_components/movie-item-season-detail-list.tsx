@@ -367,7 +367,8 @@ export default function MovieItemSeasonDetailList() {
             key: 'kind' as const,
             placeholder: 'Loại',
             type: FieldTypes.SELECT,
-            options: kindOptions
+            options: kindOptions,
+            submitOnChanged: true
           }
         ]
       : [])

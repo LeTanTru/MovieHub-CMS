@@ -18,10 +18,13 @@ import {
   DEFAULT_TABLE_PAGE_SIZE,
   objectNames,
   VIDEO_LIBRARY_STATE_ERROR,
-  videoLibraryErrorReasons
+  videoLibraryErrorReasons,
+  AUDIO_STATE_COMPLETE,
+  VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
 } from '@/constants';
 import { useDisclosure, useListBase } from '@/hooks';
 import {
+  useProcessAudioVideoLibraryMutation,
   useRetryProcessVideoLibraryMutation,
   useServerConfigListQuery
 } from '@/queries';
@@ -33,12 +36,12 @@ import type {
   VideoLibrarySearchType
 } from '@/types';
 import { formatSecondsToHMS, notify, renderImageUrl } from '@/utils';
-import { LucideLoader, PlayCircle } from 'lucide-react';
+import { AudioLines, LucideLoader, PlayCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import { FaCircleCheck, FaRotateRight } from 'react-icons/fa6';
-import useVideoLibraryStore from '@/store/video-library.store';
 import { logger } from '@/logger';
+import { useVideoLibraryStore } from '@/store';
 
 export default function VideoLibraryList() {
   const {
@@ -65,6 +68,9 @@ export default function VideoLibraryList() {
   const { mutateAsync: retryProcessMutate, isPending: retryProcessLoading } =
     useRetryProcessVideoLibraryMutation();
 
+  const { mutateAsync: processAudioMutate, isPending: processAudioLoading } =
+    useProcessAudioVideoLibraryMutation();
+
   const { data, pagination, loading, handlers } = useListBase<
     VideoLibraryResType,
     VideoLibrarySearchType
@@ -72,7 +78,10 @@ export default function VideoLibraryList() {
     apiConfig: apiConfig.videoLibrary,
     options: {
       queryKey: queryKeys.VIDEO_LIBRARY,
-      objectName: objectNames.VIDEO
+      objectName: objectNames.VIDEO,
+      defaultFilters: {
+        sourceType: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
+      }
     },
     override: (handlers) => {
       handlers.handleDeleteError = (code) => {
@@ -107,6 +116,7 @@ export default function VideoLibraryList() {
             </ToolTip>
           );
         },
+
         retryProcess: (
           record: VideoLibraryResType,
           buttonProps?: Record<string, any>
@@ -120,7 +130,7 @@ export default function VideoLibraryList() {
               {
                 onSuccess: (res) => {
                   if (res.result) {
-                    notify.success('Đã gửi yêu cầu xử lý lại video');
+                    notify.success('Gửi yêu cầu xử lý lại video thành công');
                     handlers.invalidateQueries();
                   }
                 },
@@ -133,7 +143,7 @@ export default function VideoLibraryList() {
           };
 
           return (
-            <ToolTip title='Xem video' sideOffset={0}>
+            <ToolTip title='Xử lý lại video' sideOffset={0}>
               <span>
                 <Button
                   disabled={retryProcessLoading}
@@ -143,6 +153,47 @@ export default function VideoLibraryList() {
                   {...buttonProps}
                 >
                   <FaRotateRight className='text-main-color size-4' />
+                </Button>
+              </span>
+            </ToolTip>
+          );
+        },
+
+        processAudio: (
+          record: VideoLibraryResType,
+          buttonProps?: Record<string, any>
+        ) => {
+          const handleProcessAudio = async (record: VideoLibraryResType) => {
+            await processAudioMutate(
+              {
+                id: record.id
+              },
+              {
+                onSuccess: (res) => {
+                  if (res.result) {
+                    notify.success('Gửi yêu cầu tách audio thành công');
+                    handlers.invalidateQueries();
+                  }
+                },
+                onError: (error) => {
+                  logger.error('[PROCESS_AUDIO_VIDEO_LIBRARY]', error);
+                  notify.error('Gửi yêu cầu tách audio thất bại');
+                }
+              }
+            );
+          };
+
+          return (
+            <ToolTip title='Tách audio' sideOffset={0}>
+              <span>
+                <Button
+                  disabled={processAudioLoading}
+                  onClick={() => handleProcessAudio(record)}
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  variant='ghost'
+                  {...buttonProps}
+                >
+                  <AudioLines className='text-main-color size-4' />
                 </Button>
               </span>
             </ToolTip>
@@ -235,6 +286,14 @@ export default function VideoLibraryList() {
               apiConfig.videoLibrary.retryProcess.permissionCode
             ]
           }),
+        processAudio: (record) =>
+          record.audioState !== AUDIO_STATE_COMPLETE &&
+          record.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL &&
+          handlers.hasPermission({
+            requiredPermissions: [
+              apiConfig.videoLibrary.processAudio.permissionCode
+            ]
+          }),
         edit: handlers.hasPermission({
           requiredPermissions: [apiConfig.videoLibrary.update.permissionCode]
         }),
@@ -243,7 +302,7 @@ export default function VideoLibraryList() {
         })
       },
       columnProps: {
-        width: 150
+        width: 180
       }
     })
   ];
@@ -255,19 +314,22 @@ export default function VideoLibraryList() {
         key: 'sourceType',
         placeholder: 'Nguồn',
         type: FieldTypes.SELECT,
-        options: videoLibrarySourceTypeOptions
+        options: videoLibrarySourceTypeOptions,
+        submitOnChanged: true
       },
       {
         key: 'state',
         placeholder: 'Tình trạng',
         type: FieldTypes.SELECT,
-        options: videoLibraryStateOptions
+        options: videoLibraryStateOptions,
+        submitOnChanged: true
       },
       {
         key: 'serverConfigId',
         placeholder: 'Máy chủ',
         type: FieldTypes.SELECT,
-        options: serverConfigOptions
+        options: serverConfigOptions,
+        submitOnChanged: true
       }
     ];
 

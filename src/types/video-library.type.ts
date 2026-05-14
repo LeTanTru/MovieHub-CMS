@@ -1,4 +1,5 @@
 import {
+  processAudioVideoLibrarySchema,
   retryProcessVideoLibrarySchema,
   videoLibrarySchema,
   videoLibrarySearchSchema
@@ -7,6 +8,8 @@ import { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 
 export type VideoLibraryResType = {
+  audioState: number;
+  audioUrl: string;
   content: string;
   createdDate: string;
   description: string;
@@ -31,6 +34,10 @@ export type VideoLibraryBodyType = z.infer<typeof videoLibrarySchema>;
 
 export type RetryProcessVideoLibraryBodyType = z.infer<
   typeof retryProcessVideoLibrarySchema
+>;
+
+export type ProcessAudioVideoLibraryBodyType = z.infer<
+  typeof processAudioVideoLibrarySchema
 >;
 
 export type VideoLibrarySearchType = z.infer<typeof videoLibrarySearchSchema> &

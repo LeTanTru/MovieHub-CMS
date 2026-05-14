@@ -340,7 +340,8 @@ export default function MovieList() {
       key: 'type',
       placeholder: 'Phim',
       type: FieldTypes.SELECT,
-      options: movieTypeOptions
+      options: movieTypeOptions,
+      submitOnChanged: true
     },
     {
       key: 'ageRating',
@@ -349,25 +350,29 @@ export default function MovieList() {
       options: ageRatingOptions.map((ageRating) => ({
         label: `${ageRating.label} - ${ageRating.mean}`,
         value: ageRating.value
-      }))
+      })),
+      submitOnChanged: true
     },
     {
       key: 'language',
       placeholder: 'Ngôn ngữ',
       type: FieldTypes.SELECT,
-      options: languageOptions
+      options: languageOptions,
+      submitOnChanged: true
     },
     {
       key: 'country',
       placeholder: 'Quốc gia',
       type: FieldTypes.SELECT,
-      options: countryOptions
+      options: countryOptions,
+      submitOnChanged: true
     },
     {
       key: 'releaseYear',
       placeholder: 'Năm phát hành',
       type: FieldTypes.SELECT,
-      options: years
+      options: years,
+      submitOnChanged: true
     },
     {
       key: 'isFeatured',
