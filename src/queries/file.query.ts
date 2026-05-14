@@ -79,3 +79,15 @@ export const useDeleteFileMutation = () => {
       })
   });
 };
+
+export const useDeleteObjectMutation = () => {
+  return useMutation({
+    mutationKey: [queryKeys.DELETE_FILE],
+    mutationFn: ({ filePath }: { filePath: string }) =>
+      http.post<ApiResponse<any>>(apiConfig.file.deleteObject, {
+        body: {
+          objectName: filePath
+        }
+      })
+  });
+};

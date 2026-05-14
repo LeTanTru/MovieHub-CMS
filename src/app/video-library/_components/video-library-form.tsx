@@ -26,7 +26,11 @@ import {
 } from '@/constants';
 import { useAuthStore } from '@/store';
 import { useChunkUpload, useFileUploadManager, useSaveBase } from '@/hooks';
-import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
+import {
+  useDeleteFileMutation,
+  useDeleteObjectMutation,
+  useUploadLogoMutation
+} from '@/queries';
 import { route } from '@/routes';
 import { videoLibrarySchema } from '@/schemaValidations';
 import type { VideoLibraryBodyType, VideoLibraryResType } from '@/types';
@@ -57,7 +61,11 @@ export default function VideoLibraryForm() {
   const { mutateAsync: uploadLogoMutation, isPending: uploadLogoLoading } =
     useUploadLogoMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
+
+  const { mutateAsync: deleteObjectMutate } = useDeleteObjectMutation();
+
   const { upload } = useChunkUpload();
+
   const {
     data,
     loading,
@@ -89,7 +97,7 @@ export default function VideoLibraryForm() {
 
   const videoManager = useFileUploadManager({
     initialUrl: data?.content,
-    deleteFileMutate: deleteFileMutate,
+    deleteFileMutate: deleteObjectMutate,
     isEditing,
     onOpen: true
   });
