@@ -136,6 +136,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
     total: 0
   });
+
   const {
     searchParams,
     queryString,
@@ -166,18 +167,39 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
     } as S;
   }, [mergedSearchParams, pageSize, excludeFromQueryFilter]);
 
-  // Clear undefined | null params
+  // Clear undefined | null params and remove excluded params
   useEffect(() => {
+    let hasChanges = false;
+    const newParams = { ...searchParams };
+
+    // 1. Add missing default filters
     Object.entries(defaultFilters).forEach(([key, value]) => {
-      if (
-        (searchParams[key as keyof S] === undefined ||
-          searchParams[key as keyof S] === null) &&
-        !notShowFromSearchParams.includes(key)
-      ) {
-        setQueryParam(key as keyof S, value as S[keyof S]);
+      const isMissing =
+        newParams[key as keyof S] === undefined ||
+        newParams[key as keyof S] === null;
+      const isNotExcluded = !notShowFromSearchParams.includes(key);
+
+      if (isMissing && isNotExcluded) {
+        newParams[key as keyof S] = value as S[keyof S];
+        hasChanges = true;
       }
     });
-  }, [defaultFilters, notShowFromSearchParams, searchParams, setQueryParam]);
+
+    // 2. Remove any params that are in notShowFromSearchParams
+    notShowFromSearchParams.forEach((key) => {
+      if (
+        newParams[key as keyof S] !== undefined &&
+        newParams[key as keyof S] !== null
+      ) {
+        delete newParams[key as keyof S];
+        hasChanges = true;
+      }
+    });
+
+    if (!hasChanges) return;
+
+    setQueryParams(newParams as Partial<S>);
+  }, [defaultFilters, notShowFromSearchParams, searchParams, setQueryParams]);
 
   const additionalPathParams = () => ({});
 

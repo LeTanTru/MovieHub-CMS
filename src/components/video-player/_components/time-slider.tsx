@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/lib';
+import TimeSliderHighlight from './time-slider-highlight';
 import { TimeSlider as BaseTimeSlider } from '@vidstack/react';
 
 type TimeSliderProps = {
@@ -25,7 +25,7 @@ export default function TimeSlider({
         <BaseTimeSlider.Progress className='absolute z-10 h-full w-(--slider-progress) rounded-sm bg-[#ffffff80] will-change-[width]' />
 
         {duration > 0 && introEnd > introStart && (
-          <IntroRangeHighlight
+          <TimeSliderHighlight
             start={introStart || 0}
             end={introEnd}
             duration={duration}
@@ -33,7 +33,7 @@ export default function TimeSlider({
         )}
 
         {duration > 0 && outroStart > 0 && outroStart < duration && (
-          <IntroRangeHighlight
+          <TimeSliderHighlight
             start={outroStart}
             end={duration}
             duration={duration}
@@ -46,47 +46,15 @@ export default function TimeSlider({
         noClamp
       >
         <BaseTimeSlider.Thumbnail.Root
-          className='block h-(--thumbnail-height) max-h-40 min-h-20 w-(--thumbnail-width) max-w-45 min-w-30 overflow-hidden border border-white bg-black'
+          className='block h-(--thumbnail-height) max-h-40 min-h-20 w-(--thumbnail-width) max-w-45 min-w-30 overflow-hidden border border-white bg-gray-950'
           src={vttUrl}
         >
           <BaseTimeSlider.Thumbnail.Img />
         </BaseTimeSlider.Thumbnail.Root>
-        <BaseTimeSlider.Value className='rounded-sm bg-black px-2 py-px text-[13px] font-medium text-white' />
+        <BaseTimeSlider.Value className='rounded-sm bg-gray-950 px-2 py-px text-[13px] font-medium text-white' />
       </BaseTimeSlider.Preview>
 
-      <BaseTimeSlider.Thumb className='absolute top-1/2 left-(--slider-fill) z-20 size-[15px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cacaca] bg-white opacity-0 ring-white/40 transition-opacity will-change-[left] group-data-active:opacity-100 group-data-dragging:ring-4' />
+      <BaseTimeSlider.Thumb className='absolute top-1/2 left-(--slider-fill) z-20 size-3.75 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cacaca] bg-white opacity-0 ring-white/40 transition-opacity will-change-[left] group-data-active:opacity-100 group-data-dragging:ring-4' />
     </BaseTimeSlider.Root>
-  );
-}
-
-type IntroRangeHighlightProps = {
-  start: number;
-  end: number;
-  duration: number;
-};
-
-function IntroRangeHighlight({
-  start,
-  end,
-  duration
-}: IntroRangeHighlightProps) {
-  const left = (start / duration) * 100;
-  const width = ((end - start) / duration) * 100;
-  const styles = {
-    left: `${left}%`,
-    width: `${width}%`
-  };
-  const isAtStart = start === 0;
-
-  return (
-    <div
-      className={cn(
-        'pointer-events-none absolute top-0 h-full bg-gray-200/50 transition-all duration-200',
-        {
-          'rounded-tl rounded-bl': isAtStart
-        }
-      )}
-      style={styles}
-    />
   );
 }

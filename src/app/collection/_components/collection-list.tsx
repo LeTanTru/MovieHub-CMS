@@ -36,7 +36,7 @@ import { useState } from 'react';
 import StyleInfoModal from './style-info-modal';
 
 export default function CollectionList() {
-  const navigate = useNavigate(false);
+  const navigate = useNavigate();
   const { opened, open, close } = useDisclosure();
   const [selectedCollection, setSelectedCollection] =
     useState<CollectionResType | null>(null);
