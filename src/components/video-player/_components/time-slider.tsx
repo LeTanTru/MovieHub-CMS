@@ -46,12 +46,12 @@ export default function TimeSlider({
         noClamp
       >
         <BaseTimeSlider.Thumbnail.Root
-          className='block h-(--thumbnail-height) max-h-40 min-h-20 w-(--thumbnail-width) max-w-45 min-w-30 overflow-hidden border border-white bg-gray-950'
+          className='block h-(--thumbnail-height) max-h-40 min-h-20 w-(--thumbnail-width) max-w-45 min-w-30 overflow-hidden border border-white bg-black'
           src={vttUrl}
         >
           <BaseTimeSlider.Thumbnail.Img />
         </BaseTimeSlider.Thumbnail.Root>
-        <BaseTimeSlider.Value className='rounded-sm bg-gray-950 px-2 py-px text-[13px] font-medium text-white' />
+        <BaseTimeSlider.Value className='rounded-sm bg-black px-2 py-px text-[13px] font-medium text-white' />
       </BaseTimeSlider.Preview>
 
       <BaseTimeSlider.Thumb className='absolute top-1/2 left-(--slider-fill) z-20 size-3.75 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cacaca] bg-white opacity-0 ring-white/40 transition-opacity will-change-[left] group-data-active:opacity-100 group-data-dragging:ring-4' />
