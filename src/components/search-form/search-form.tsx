@@ -56,6 +56,7 @@ export default function SearchForm<S extends FieldValues>({
   searchFields,
   schema,
   initialValues,
+  resetValues,
   handleSearchSubmit,
   handleSearchReset
 }: SearchFormProps<S>) {
@@ -68,7 +69,10 @@ export default function SearchForm<S extends FieldValues>({
 
   const handleReset = (form: UseFormReturn<z.infer<typeof schema>>) => {
     handleSearchReset();
-    form.reset(defaultValues);
+    form.reset({
+      ...defaultValues,
+      ...resetValues
+    });
   };
 
   const renderField = (

@@ -513,9 +513,27 @@ const useInfiniteListBase = <
       handlers.changeQueryFilter(values);
     };
 
+    const resetSearchValues = Object.fromEntries(
+      Object.entries(defaultFilters).filter(
+        ([key]) => !notShowFromSearchParams.includes(key)
+      )
+    ) as Partial<S>;
+
     // Handle reset
     const handleSearchReset = () => {
-      if (Object.keys(searchParams).length === 0) return;
+      const preservedParams = Object.fromEntries(
+        Object.entries(searchParams).filter(([key]) =>
+          excludeFromQueryFilter.includes(key)
+        )
+      );
+
+      const resetParams = {
+        ...resetSearchValues,
+        ...preservedParams
+      };
+
+      if (serializeParams(searchParams) === serializeParams(resetParams))
+        return;
 
       setPagination({
         current: DEFAULT_TABLE_PAGE_START + 1,
@@ -523,27 +541,13 @@ const useInfiniteListBase = <
         total: 0
       });
 
-      const preservedParams = Object.fromEntries(
-        Object.entries(searchParams).filter(([key]) =>
-          excludeFromQueryFilter.includes(key)
-        )
-      );
-
-      const filteredValues = Object.fromEntries(
-        Object.entries(defaultFilters).filter(
-          ([key]) => !notShowFromSearchParams.includes(key)
-        )
-      );
-
-      setQueryParams({
-        ...(filteredValues as Partial<S>),
-        ...preservedParams
-      });
+      setQueryParams(resetParams);
     };
 
     return (
       <SearchForm<S>
         initialValues={mergedValues}
+        resetValues={resetSearchValues}
         searchFields={searchFields}
         schema={schema}
         handleSearchSubmit={handleSearchSubmit}
