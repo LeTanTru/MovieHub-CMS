@@ -107,6 +107,7 @@ const AppSidebar = () => {
                     alt='logo'
                     width={250}
                     height={50}
+                    loading='eager'
                     className='mx-auto w-4/5 object-cover'
                     unoptimized
                   />

@@ -100,6 +100,7 @@ export default function LoginForm() {
                   width={180}
                   height={50}
                   alt='MovieHub Logo'
+                  loading='eager'
                 />
               </div>
             </Col>
