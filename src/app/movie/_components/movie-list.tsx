@@ -39,7 +39,9 @@ import { useMemo } from 'react';
 import { AiOutlineUser } from 'react-icons/ai';
 
 export default function MovieList() {
-  const navigate = useNavigate(false);
+  const navigate = useNavigate();
+  const { serializeParams } = useQueryParams();
+
   const { data: categoryListData } = useCategoryListQuery();
 
   const categoryList =
@@ -49,7 +51,6 @@ export default function MovieList() {
         label: category.name
       }))
       .sort((a, b) => a.label.localeCompare(b.label)) || [];
-  const { serializeParams } = useQueryParams();
 
   const { data, pagination, loading, handlers } = useListBase<
     MovieResType,

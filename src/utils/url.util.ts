@@ -54,7 +54,10 @@ export const renderVttUrl = (
   return `https://${hostname}/v1/file/public-download${url}`;
 };
 
-export const renderFileUrl = (url: string) => {
+export const renderFileUrl = (url: string, isPublic?: boolean) => {
   if (!url) return '';
-  return url.startsWith('https') ? url : `${AppConstants.contentRootUrl}${url}`;
+
+  return url.startsWith('https')
+    ? url
+    : `${isPublic ? AppConstants.publicContentUrl : AppConstants.contentRootUrl}${url}`;
 };

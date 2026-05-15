@@ -119,8 +119,14 @@ const route = defineRoute({
         apiConfig.videoLibrary.update.permissionCode
       ],
       separate: true
+    },
+    subtitle: {
+      path: '/video-library/:id/subtitle',
+      auth: true,
+      permissionCode: [apiConfig.videoLibrarySubtitle.getList.permissionCode]
     }
   },
+
   movie: {
     getList: {
       path: '/movie',

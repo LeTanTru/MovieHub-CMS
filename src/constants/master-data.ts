@@ -202,7 +202,8 @@ export const queryKeys = {
   USER: 'user',
   VIDEO_LIBRARY_LIST: 'video-library-list',
   VIDEO_LIBRARY: 'video-library',
-  VOTE_COMMENT: 'vote-comment'
+  VOTE_COMMENT: 'vote-comment',
+  VIDEO_LIBRARY_SUBTITLE: 'video-library-subtitle'
 };
 
 export const userKindOptions = [
@@ -1726,20 +1727,21 @@ export const objectNames = {
   COLLECTION: 'bộ sưu tập',
   COMMENT: 'bình luận',
   EMPLOYEE: 'nhân viên',
-  GROUP: 'vai trò',
   GROUP_PERMISSION: 'nhóm quyền',
-  MOVIE: 'phim',
+  GROUP: 'vai trò',
   MOVIE_ITEM: 'phần',
+  MOVIE: 'phim',
   NOTIFICATION: 'thông báo',
+  PERMISSION: 'quyền',
   PERSON_ACTOR: 'diễn viên',
   PERSON_DIRECTOR: 'đạo diễn',
-  PERMISSION: 'quyền',
   PROFILE: 'hồ sơ',
   REVIEW: 'đánh giá',
   SERVER_CONFIG: 'máy chủ',
   SETTING: 'cài đặt',
   SIDEBAR: 'phim',
   STYLE: 'thiết kế',
+  SUBTITLE: 'phụ đề',
   USER: 'người dùng',
   VIDEO: 'video'
 } as const;

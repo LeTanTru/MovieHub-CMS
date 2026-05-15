@@ -22,7 +22,12 @@ import {
   AUDIO_STATE_COMPLETE,
   VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
 } from '@/constants';
-import { useDisclosure, useListBase } from '@/hooks';
+import {
+  useDisclosure,
+  useListBase,
+  useNavigate,
+  useQueryParams
+} from '@/hooks';
 import {
   useProcessAudioVideoLibraryMutation,
   useRetryProcessVideoLibraryMutation,
@@ -35,15 +40,30 @@ import type {
   VideoLibraryResType,
   VideoLibrarySearchType
 } from '@/types';
-import { formatSecondsToHMS, notify, renderImageUrl } from '@/utils';
-import { AudioLines, LucideLoader, PlayCircle } from 'lucide-react';
+import {
+  formatSecondsToHMS,
+  generatePath,
+  notify,
+  renderImageUrl,
+  renderListPageUrl
+} from '@/utils';
+import {
+  AudioLines,
+  LucideLoader,
+  PlayCircle,
+  ScissorsLineDashed
+} from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import { FaCircleCheck, FaRotateRight } from 'react-icons/fa6';
 import { logger } from '@/logger';
 import { useVideoLibraryStore } from '@/store';
+import { route } from '@/routes';
 
 export default function VideoLibraryList() {
+  const navigate = useNavigate();
+  const { serializeParams } = useQueryParams();
+
   const {
     opened: openedPlayModal,
     open: openPlayModal,
@@ -111,6 +131,43 @@ export default function VideoLibraryList() {
                   {...buttonProps}
                 >
                   <PlayCircle className='text-main-color size-4' />
+                </Button>
+              </span>
+            </ToolTip>
+          );
+        },
+
+        editSubtitle: (
+          record: VideoLibraryResType,
+          buttonProps?: Record<string, any>
+        ) => {
+          const handleEditSubtitle = (video: VideoLibraryResType) => {
+            navigate.push(
+              renderListPageUrl(
+                generatePath(route.videoLibrary.subtitle.path, {
+                  id: video.id
+                }),
+                serializeParams({
+                  name: video.name
+                })
+              )
+            );
+          };
+
+          return (
+            <ToolTip title='Chỉnh sửa phụ đề' sideOffset={0}>
+              <span>
+                <Button
+                  disabled={
+                    record.audioState !== AUDIO_STATE_COMPLETE ||
+                    record.state !== VIDEO_LIBRARY_STATE_COMPLETE
+                  }
+                  onClick={() => handleEditSubtitle(record)}
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  variant='ghost'
+                  {...buttonProps}
+                >
+                  <ScissorsLineDashed className='text-main-color size-4.5' />
                 </Button>
               </span>
             </ToolTip>
@@ -279,6 +336,7 @@ export default function VideoLibraryList() {
     handlers.renderActionColumn({
       actions: {
         watchVideo: true,
+        editSubtitle: (record) => record.audioState === AUDIO_STATE_COMPLETE,
         retryProcess: (record) =>
           record.state === VIDEO_LIBRARY_STATE_ERROR &&
           handlers.hasPermission({
