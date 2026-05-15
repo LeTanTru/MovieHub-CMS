@@ -125,6 +125,12 @@ type UseInfiniteListBaseProps<
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
 
+const TABLE_ACTION_COLUMN_WIDTH = 120;
+const TABLE_STATUS_COLUMN_WIDTH = 150;
+const STATUS_COLOR_ALPHA = 80;
+const STATUS_BACKGROUND_ALPHA = 10;
+const INFINITE_SCROLL_THRESHOLD = 100;
+
 const useInfiniteListBase = <
   T extends { id: string },
   S extends BaseSearchType
@@ -365,7 +371,7 @@ const useInfiniteListBase = <
     return {
       title: 'Hành động',
       align: 'center' as const,
-      width: 120,
+      width: TABLE_ACTION_COLUMN_WIDTH,
       ...options?.columnProps,
       render: (_: any, record: T) => {
         if (!options?.actions) return null;
@@ -412,7 +418,7 @@ const useInfiniteListBase = <
   }): Column<T> => {
     return {
       title: 'Trạng thái',
-      width: 150,
+      width: TABLE_STATUS_COLUMN_WIDTH,
       dataIndex: 'status',
       align: 'center',
       ...options?.columnProps,
@@ -425,9 +431,9 @@ const useInfiniteListBase = <
             className='border border-solid text-sm font-medium'
             variant='outline'
             style={{
-              borderColor: `${status?.color}80`,
+              borderColor: `${status?.color}${STATUS_COLOR_ALPHA}`,
               color: `${status?.color}`,
-              backgroundColor: `${status?.color}10`
+              backgroundColor: `${status?.color}${STATUS_BACKGROUND_ALPHA}`
             }}
           >
             {status?.label || 'N/A'}
@@ -584,7 +590,10 @@ const useInfiniteListBase = <
   const handleScrollLoadMore = (e: UIEvent<HTMLElement>) => {
     const target = e.currentTarget;
 
-    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 100) {
+    if (
+      target.scrollTop + target.clientHeight >=
+      target.scrollHeight - INFINITE_SCROLL_THRESHOLD
+    ) {
       loadMore();
     }
   };

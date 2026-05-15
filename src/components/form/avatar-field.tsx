@@ -42,10 +42,16 @@ type AvatarFieldProps = {
   hoverIconClassName?: string;
 } & HTMLAttributes<HTMLElement>;
 
+const AVATAR_SIZE_DEFAULT = 48;
+const AVATAR_PREVIEW_SIZE_DEFAULT = 200;
+const IMAGE_PREVIEW_SCALE_MIN = 1;
+const IMAGE_PREVIEW_SCALE_MAX = 3;
+const IMAGE_PREVIEW_SCALE_STEP = 0.1;
+
 export default function AvatarField({
-  size = 48,
+  size = AVATAR_SIZE_DEFAULT,
   breakpoints,
-  previewSize = 200,
+  previewSize = AVATAR_PREVIEW_SIZE_DEFAULT,
   src,
   fallbackSrc,
   className,
@@ -63,7 +69,7 @@ export default function AvatarField({
 }: AvatarFieldProps) {
   const isMounted = useIsMounted();
   const [open, setOpen] = useState<boolean>(false);
-  const [scale, setScale] = useState<number>(1);
+  const [scale, setScale] = useState<number>(IMAGE_PREVIEW_SCALE_MIN);
   const [viewportWidth, setViewportWidth] = useState<number>(0);
 
   const { isError: imageError } = useImageStatus(src);
@@ -117,8 +123,13 @@ export default function AvatarField({
     (e: WheelEvent) => {
       if (!zoomOnScroll) return;
       setScale((prev) => {
-        const next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
-        return Math.max(1, Math.min(3, next));
+        const next =
+          prev +
+          (e.deltaY > 0 ? -IMAGE_PREVIEW_SCALE_STEP : IMAGE_PREVIEW_SCALE_STEP);
+        return Math.max(
+          IMAGE_PREVIEW_SCALE_MIN,
+          Math.min(IMAGE_PREVIEW_SCALE_MAX, next)
+        );
       });
     },
     [zoomOnScroll]
@@ -240,7 +251,7 @@ export default function AvatarField({
               exit={{ opacity: 0 }}
               onClick={(e) => {
                 e.stopPropagation();
-                setScale(1);
+                setScale(IMAGE_PREVIEW_SCALE_MIN);
                 setOpen(false);
               }}
             >

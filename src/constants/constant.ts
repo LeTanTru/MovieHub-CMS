@@ -2,6 +2,7 @@ export const DEFAULT_TABLE_PAGE_SIZE = 10;
 export const DEFAULT_TABLE_PAGE_START = 0;
 export const MAX_PAGE_SIZE = 1_000_000;
 export const NOTIFICATION_PAGE_SIZE = 20;
+export const QUERY_STALE_TIME = 60 * 1000;
 
 export const UPLOAD_LOGO = 'LOGO';
 export const UPLOAD_AVATAR = 'AVATAR';
@@ -101,5 +102,3 @@ export const CONVERT_FILE_FAILED = 'convert_file_failed';
 export const GENERATE_VTT_FAILED = 'generate_vtt_failed';
 
 export const AUDIO_STATE_COMPLETE = 1;
-
-export const QUERY_STALE_TIME = 60 * 1000;
