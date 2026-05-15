@@ -101,3 +101,5 @@ export const CONVERT_FILE_FAILED = 'convert_file_failed';
 export const GENERATE_VTT_FAILED = 'generate_vtt_failed';
 
 export const AUDIO_STATE_COMPLETE = 1;
+
+export const QUERY_STALE_TIME = 60 * 1000;
