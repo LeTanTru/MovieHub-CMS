@@ -12,7 +12,8 @@ export const useSession = () => {
   return useQuery({
     queryKey: [queryKeys.SESSION],
     queryFn: () =>
-      http.get<ApiResponse<SessionResType | null>>(apiConfig.api.auth.session)
+      http.get<ApiResponse<SessionResType | null>>(apiConfig.api.auth.session),
+    select: (data) => data.data
   });
 };
 

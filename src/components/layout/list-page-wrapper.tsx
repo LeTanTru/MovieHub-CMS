@@ -20,6 +20,9 @@ export default function ListPageWrapper({
 }: ListPageWrapperProps) {
   const hasAddtionalButtons = !!additionButtons && additionButtons.length > 0;
 
+  const showHeader =
+    !!searchForm || !!addButton || !!reloadButton || hasAddtionalButtons;
+
   return (
     <div
       tabIndex={-1}
@@ -28,32 +31,30 @@ export default function ListPageWrapper({
         className
       )}
     >
-      <div
-        className={cn(
-          'bg-list-page-wrapper flex items-start justify-between rounded-tl-lg rounded-tr-lg p-4',
-          {
-            'py-0': !(searchForm || addButton || reloadButton)
-          }
-        )}
-      >
-        {!!searchForm && <div className='flex-1'>{searchForm}</div>}
-        <div
-          className={cn('flex gap-2', {
-            'ml-auto': !searchForm,
-            'ml-2': !!searchForm
-          })}
-        >
-          {hasAddtionalButtons &&
-            additionButtons?.reduce<React.ReactNode[]>((acc, button, index) => {
-              if (button) {
-                acc.push(<div key={index}>{button}</div>);
-              }
-              return acc;
-            }, [])}
-          {reloadButton}
-          {addButton}
+      {showHeader && (
+        <div className='bg-list-page-wrapper flex items-start justify-between rounded-tl-lg rounded-tr-lg p-4'>
+          {!!searchForm && <div className='flex-1'>{searchForm}</div>}
+          <div
+            className={cn('flex gap-2', {
+              'ml-auto': !searchForm,
+              'ml-2': !!searchForm
+            })}
+          >
+            {hasAddtionalButtons &&
+              additionButtons?.reduce<React.ReactNode[]>(
+                (acc, button, index) => {
+                  if (button) {
+                    acc.push(<div key={index}>{button}</div>);
+                  }
+                  return acc;
+                },
+                []
+              )}
+            {reloadButton}
+            {addButton}
+          </div>
         </div>
-      </div>
+      )}
       {children}
     </div>
   );

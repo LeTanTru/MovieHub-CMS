@@ -2,11 +2,6 @@
   overflow: hidden;
 }
 
-.base-table table {
-  width: 100%;
-  table-layout: fixed;
-}
-
 .table-row-dragging {
   outline: 2px solid cyan;
   z-index: 9999;
