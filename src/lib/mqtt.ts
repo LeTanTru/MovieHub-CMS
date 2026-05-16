@@ -5,7 +5,7 @@ import mqtt, { MqttClient } from 'mqtt';
 let client: MqttClient;
 const MQTT_RECONNECT_PERIOD = 3000;
 const MQTT_CONNECT_TIMEOUT = 30000;
-const MQTT_KEEPALIVE = 60;
+const MQTT_KEEPALIVE = 30;
 
 export const getMqttClient = () => {
   if (!client) {
