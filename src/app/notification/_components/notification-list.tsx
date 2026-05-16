@@ -66,10 +66,10 @@ export default function NotificationList() {
       { ids: [notification.id] },
       {
         onSuccess: () => {
-          invalidateQueries([
-            queryKeys.UNREAD_NOTIFICATION_COUNT,
-            queryKeys.NOTIFICATION_INFINITE
-          ]);
+          invalidateQueries(
+            [queryKeys.UNREAD_NOTIFICATION_COUNT],
+            [queryKeys.NOTIFICATION_INFINITE]
+          );
         }
       }
     );
@@ -94,10 +94,10 @@ export default function NotificationList() {
   const handleReadAll = async () => {
     await readAllNotificationMutate(undefined, {
       onSuccess: () => {
-        invalidateQueries([
-          queryKeys.UNREAD_NOTIFICATION_COUNT,
-          queryKeys.NOTIFICATION_INFINITE
-        ]);
+        invalidateQueries(
+          [queryKeys.UNREAD_NOTIFICATION_COUNT],
+          [queryKeys.NOTIFICATION_INFINITE]
+        );
       },
       onError: (error) => {
         logger.error('[READ_ALL_NOTIFICATION_ERROR]', error);
@@ -109,10 +109,10 @@ export default function NotificationList() {
   const handleDeleteAll = async () => {
     await deleteAllNotificationMutate(undefined, {
       onSuccess: () => {
-        invalidateQueries([
-          queryKeys.UNREAD_NOTIFICATION_COUNT,
-          queryKeys.NOTIFICATION_INFINITE
-        ]);
+        invalidateQueries(
+          [queryKeys.UNREAD_NOTIFICATION_COUNT],
+          [queryKeys.NOTIFICATION_INFINITE]
+        );
       },
       onError: (error) => {
         logger.error('[DELETE_ALL_NOTIFICATION_ERROR]', error);

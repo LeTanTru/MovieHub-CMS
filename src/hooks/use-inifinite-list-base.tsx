@@ -24,7 +24,12 @@ import type {
   PaginationType,
   SearchFormProps
 } from '@/types';
-import { convertUTCToLocal, http, notify } from '@/utils';
+import {
+  convertUTCToLocal,
+  http,
+  invalidateQueries as invalidateQueryUtil,
+  notify
+} from '@/utils';
 import {
   keepPreviousData,
   useMutation,
@@ -41,7 +46,6 @@ import {
   useState
 } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
-import { getQueryClient } from '@/components/providers/query-provider';
 
 type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   changePagination: (page: number) => void;
@@ -151,7 +155,6 @@ const useInfiniteListBase = <
   } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
-  const queryClient = getQueryClient();
   const [data, setData] = useState<T[]>([]);
   const hasPermission = useValidatePermission();
 
@@ -275,9 +278,7 @@ const useInfiniteListBase = <
         if (res.result) {
           if (showNotify) notify.success(`Xoá ${objectName} thành công`);
           options?.onSuccess?.();
-          await queryClient.invalidateQueries({
-            queryKey: [`${queryKey}-infinite`]
-          });
+          await invalidateQueryUtil([`${queryKey}-infinite`]);
         } else {
           if (res.code) {
             if (options?.onError) options?.onError(res.code);
@@ -562,10 +563,8 @@ const useInfiniteListBase = <
     );
   };
 
-  const invalidateQueries = async () => {
-    await queryClient.invalidateQueries({
-      queryKey: [`${queryKey}-infinite`, queryFilter]
-    });
+  const invalidateQueries = () => {
+    invalidateQueryUtil([`${queryKey}-infinite`, queryFilter]);
   };
 
   const renderReloadButton = () => (

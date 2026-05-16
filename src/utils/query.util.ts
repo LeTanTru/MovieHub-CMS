@@ -1,9 +1,9 @@
 import { getQueryClient } from '@/components/providers/query-provider';
 
-export const invalidateQueries = (keys: string[]) => {
+export const invalidateQueries = (...args: (string | number | object)[][]) => {
   const queryClient = getQueryClient();
-  keys.forEach((key) => {
-    queryClient.invalidateQueries({ queryKey: [key] });
+  args.forEach((key) => {
+    queryClient.invalidateQueries({ queryKey: key });
   });
 };
 

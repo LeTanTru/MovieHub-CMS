@@ -13,7 +13,7 @@ const Navbar = () => {
   );
 
   return (
-    <nav className='bg-background relative z-10 flex h-16 items-center justify-between p-3 shadow-[0px_0px_10px_5px] shadow-gray-200'>
+    <nav className='bg-background relative z-40 flex h-16 items-center justify-between p-3 shadow-[0px_0px_10px_5px] shadow-gray-200'>
       {/* LEFT */}
       <ToolTip
         title={
