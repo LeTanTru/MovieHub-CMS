@@ -22,10 +22,11 @@ import { useParams } from 'next/navigation';
 import CommentItem from './comment-item';
 import { DotLoading } from '@/components/loading';
 import { Button } from '@/components/form';
-import { invalidateQueries } from '@/utils';
+import { invalidateQueries, notify } from '@/utils';
 import { useCommentStore } from '@/store';
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { logger } from '@/logger';
 
 export default function CommentList() {
   const { id: movieId } = useParams<{ id: string }>();
@@ -109,9 +110,17 @@ export default function CommentList() {
       onSuccess: () => {
         if (commentToDelete.parent) {
           invalidateQueries([
-            `${queryKeys.COMMENT}-${commentToDelete.parent.id}-infinite`
+            `${queryKeys.COMMENT}-${commentToDelete.parent.id}-infinite`,
+            { parentId: commentToDelete.parent.id }
           ]);
+          notify.success('Xóa bình luận thành công');
+        } else {
+          notify.error('Xóa bình luận thất bại');
         }
+      },
+      onError: (error) => {
+        logger.error('[DELETE_COMMENT_ERROR]', error);
+        notify.error('Xóa bình luận thất bại');
       }
     });
   };

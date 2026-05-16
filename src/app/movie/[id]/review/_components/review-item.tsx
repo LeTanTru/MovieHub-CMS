@@ -26,6 +26,7 @@ import {
   convertUTCToLocal,
   getLastWord,
   invalidateQueries,
+  notify,
   renderImageUrl,
   timeAgo
 } from '@/utils';
@@ -36,6 +37,7 @@ import {
   AiOutlineEyeInvisible
 } from 'react-icons/ai';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
+import { logger } from '@/logger';
 
 type ReviewItemProps = {
   review: ReviewResType;
@@ -68,7 +70,16 @@ export default function ReviewItem({ review, onDelete }: ReviewItemProps) {
       },
       {
         onSuccess: (res) => {
-          if (res.result) invalidateQueries([queryKeys.REVIEW_INFINITE]);
+          if (res.result) {
+            invalidateQueries([queryKeys.REVIEW_INFINITE]);
+            notify.success('Cập nhật trạng thái thành công');
+          } else {
+            notify.error('Cập nhật trạng thái thất bại');
+          }
+        },
+        onError: (error) => {
+          logger.error('[CHANGE_STATUS_REVIEW_ERROR]', error);
+          notify.error('Cập nhật trạng thái thất bại');
         }
       }
     );

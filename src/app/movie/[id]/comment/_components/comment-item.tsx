@@ -181,7 +181,8 @@ export default function CommentItem({
     const parentIdToInvalidate = level === 0 ? comment.id : rootId;
 
     invalidateQueries([
-      `${queryKeys.COMMENT}-${parentIdToInvalidate}-infinite`
+      `${queryKeys.COMMENT}-${parentIdToInvalidate}-infinite`,
+      { parentId: parentIdToInvalidate }
     ]);
 
     setOpenParentIds((prev) => [...prev, comment.id]);
@@ -240,17 +241,29 @@ export default function CommentItem({
           : COMMENT_STATUS_SHOW
     });
     if (comment.parent)
-      invalidateQueries([`${queryKeys.COMMENT}-${comment.parent.id}-infinite`]);
-    else invalidateQueries([queryKeys.COMMENT_INFINITE]);
+      invalidateQueries([
+        `${queryKeys.COMMENT}-${comment.parent.id}-infinite`,
+        { parentId: comment.parent.id }
+      ]);
+    else
+      invalidateQueries([
+        queryKeys.COMMENT_INFINITE,
+        { movieId: comment.movieId }
+      ]);
   };
 
   const handleVote = (id: string, type: number) => {
     onVote(id, type, async () => {
       if (comment.parent)
         invalidateQueries([
-          `${queryKeys.COMMENT}-${comment.parent.id}-infinite`
+          `${queryKeys.COMMENT}-${comment.parent.id}-infinite`,
+          { parentId: comment.parent.id }
         ]);
-      else invalidateQueries([queryKeys.COMMENT_INFINITE]);
+      else
+        invalidateQueries([
+          queryKeys.COMMENT_INFINITE,
+          { movieId: comment.movieId }
+        ]);
     });
   };
 

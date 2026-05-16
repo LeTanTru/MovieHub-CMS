@@ -62,7 +62,7 @@ export default function CommentInput({ movieId }: CommentInputProps) {
     form: UseFormReturn<CommentBodyType>
   ) => {
     await handleSubmit(values);
-    invalidateQueries([queryKeys.COMMENT_INFINITE]);
+    invalidateQueries([queryKeys.COMMENT_INFINITE, { movieId }]);
     form.reset();
   };
 
