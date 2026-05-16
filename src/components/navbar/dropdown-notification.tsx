@@ -147,7 +147,7 @@ export default function DropdownNotification() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.1, ease: 'linear' }}
-            className='absolute top-full -right-8.5 mt-4 w-150 rounded bg-white shadow-[0px_0px_10px_8px] shadow-gray-200'
+            className='absolute top-full -right-8.5 z-50 mt-4 w-150 rounded bg-white shadow-[0px_0px_10px_8px] shadow-gray-200'
           >
             <div className='z-2 before:absolute before:-top-4 before:left-0 before:h-4 before:w-full before:bg-transparent'></div>
             <div className='absolute -top-2 right-10 border-r-8 border-b-8 border-l-8 border-r-transparent border-b-white border-l-transparent'></div>
