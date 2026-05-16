@@ -24,14 +24,18 @@ import type {
   PaginationType,
   SearchFormProps
 } from '@/types';
-import { convertUTCToLocal, http, notify } from '@/utils';
+import {
+  convertUTCToLocal,
+  http,
+  invalidateQueries as invalidateQueryUtil,
+  notify
+} from '@/utils';
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { PlusIcon, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
-import { getQueryClient } from '@/components/providers/query-provider';
 
 type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   changePagination: (page: number) => void;
@@ -132,7 +136,6 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
   } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
-  const queryClient = getQueryClient();
   const [data, setData] = useState<T[]>([]);
   const hasPermission = useValidatePermission();
 
@@ -277,9 +280,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
         if (res.result) {
           if (showNotify) notify.success(`Xoá ${objectName} thành công`);
           options?.onSuccess?.();
-          await queryClient.invalidateQueries({
-            queryKey: [`${queryKey}-list`]
-          });
+          await invalidateQueryUtil([`${queryKey}-list`]);
         } else {
           if (res.code) {
             if (options?.onError) options?.onError(res.code);
@@ -570,10 +571,8 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
     );
   };
 
-  const invalidateQueries = async () => {
-    await queryClient.invalidateQueries({
-      queryKey: [`${queryKey}-list`, queryFilter]
-    });
+  const invalidateQueries = () => {
+    invalidateQueryUtil([`${queryKey}-list`, queryFilter]);
   };
 
   const renderReloadButton = () => (

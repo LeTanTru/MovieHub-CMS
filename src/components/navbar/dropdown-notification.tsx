@@ -80,10 +80,10 @@ export default function DropdownNotification() {
   const handleReadAll = async () => {
     await readAllNotificationMutate(undefined, {
       onSuccess: () => {
-        invalidateQueries([
-          queryKeys.UNREAD_NOTIFICATION_COUNT,
-          queryKeys.NOTIFICATION_INFINITE
-        ]);
+        invalidateQueries(
+          [queryKeys.UNREAD_NOTIFICATION_COUNT],
+          [queryKeys.NOTIFICATION_INFINITE]
+        );
       },
       onError: (error) => {
         logger.error('[READ_ALL_NOTIFICATION_ERROR]', error);
@@ -95,10 +95,10 @@ export default function DropdownNotification() {
   const handleDeleteAll = async () => {
     await deleteAllNotificationMutate(undefined, {
       onSuccess: () => {
-        invalidateQueries([
-          queryKeys.UNREAD_NOTIFICATION_COUNT,
-          queryKeys.NOTIFICATION_INFINITE
-        ]);
+        invalidateQueries(
+          [queryKeys.UNREAD_NOTIFICATION_COUNT],
+          [queryKeys.NOTIFICATION_INFINITE]
+        );
       },
       onError: (error) => {
         logger.error('[DELETE_ALL_NOTIFICATION_ERROR]', error);

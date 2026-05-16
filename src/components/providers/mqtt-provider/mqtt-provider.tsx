@@ -87,11 +87,11 @@ export default function MqttProvider() {
     callback: (data) => {
       switch (data.cmd) {
         case mqttCMDs.DONE_CONVERT_VIDEO:
-          invalidateQueries([
-            queryKeys.UNREAD_NOTIFICATION_COUNT,
-            queryKeys.NOTIFICATION_INFINITE,
-            queryKeys.VIDEO_LIBRARY_LIST
-          ]);
+          invalidateQueries(
+            [queryKeys.UNREAD_NOTIFICATION_COUNT],
+            [queryKeys.NOTIFICATION_INFINITE],
+            [queryKeys.VIDEO_LIBRARY_LIST]
+          );
           notify.success(data.title);
           break;
       }
@@ -108,10 +108,10 @@ export default function MqttProvider() {
       switch (data.cmd) {
         case mqttCMDs.REPLY_COMMENT:
         case mqttCMDs.VOTE_COMMENT:
-          invalidateQueries([
-            queryKeys.UNREAD_NOTIFICATION_COUNT,
-            queryKeys.NOTIFICATION_INFINITE
-          ]);
+          invalidateQueries(
+            [queryKeys.UNREAD_NOTIFICATION_COUNT],
+            [queryKeys.NOTIFICATION_INFINITE]
+          );
           break;
       }
     }
