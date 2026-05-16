@@ -110,6 +110,11 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
 
+const TABLE_ACTION_COLUMN_WIDTH = 120;
+const TABLE_STATUS_COLUMN_WIDTH = 150;
+const STATUS_COLOR_ALPHA = 80;
+const STATUS_BACKGROUND_ALPHA = 10;
+
 const useListBase = <T extends { id: string }, S extends BaseSearchType>({
   apiConfig,
   options,
@@ -368,7 +373,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
     return {
       title: 'Hành động',
       align: 'center' as const,
-      width: 120,
+      width: TABLE_ACTION_COLUMN_WIDTH,
       ...options?.columnProps,
       render: (_: any, record: T) => {
         if (!options?.actions) return null;
@@ -415,7 +420,7 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
   }): Column<T> => {
     return {
       title: 'Trạng thái',
-      width: 150,
+      width: TABLE_STATUS_COLUMN_WIDTH,
       dataIndex: 'status',
       align: 'center',
       ...options?.columnProps,
@@ -428,9 +433,9 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
             className='border border-solid text-sm font-medium'
             variant='outline'
             style={{
-              borderColor: `${status?.color}80`,
+              borderColor: `${status?.color}${STATUS_COLOR_ALPHA}`,
               color: `${status?.color}`,
-              backgroundColor: `${status?.color}10`
+              backgroundColor: `${status?.color}${STATUS_BACKGROUND_ALPHA}`
             }}
           >
             {status?.label || 'N/A'}
@@ -516,16 +521,14 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
       handlers.changeQueryFilter(values);
     };
 
+    const resetSearchValues = Object.fromEntries(
+      Object.entries(defaultFilters).filter(
+        ([key]) => !notShowFromSearchParams.includes(key)
+      )
+    ) as Partial<S>;
+
     // Handle reset
     const handleSearchReset = () => {
-      if (Object.keys(searchParams).length === 0) return;
-
-      setPagination({
-        current: DEFAULT_TABLE_PAGE_START + 1,
-        pageSize: DEFAULT_TABLE_PAGE_SIZE,
-        total: 0
-      });
-
       const preservedParams = Object.fromEntries(
         Object.entries(searchParams).filter(([key]) =>
           excludeFromQueryFilter.includes(key)
@@ -538,15 +541,27 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
         )
       );
 
-      setQueryParams({
+      const resetParams = {
         ...(filteredValues as Partial<S>),
         ...preservedParams
+      };
+
+      if (serializeParams(searchParams) === serializeParams(resetParams))
+        return;
+
+      setPagination({
+        current: DEFAULT_TABLE_PAGE_START + 1,
+        pageSize: DEFAULT_TABLE_PAGE_SIZE,
+        total: 0
       });
+
+      setQueryParams(resetParams);
     };
 
     return (
       <SearchForm<S>
         initialValues={mergedValues}
+        resetValues={resetSearchValues}
         searchFields={searchFields}
         schema={schema}
         handleSearchSubmit={handleSearchSubmit}

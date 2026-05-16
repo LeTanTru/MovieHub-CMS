@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { ConfirmModal } from '@/components/modal';
 import { Ellipsis, Mars, Pin, Reply, Venus } from 'lucide-react';
@@ -166,7 +166,7 @@ export default function CommentItem({
   const commentCount = commentList.length;
   const isOpen = isActiveParent;
 
-  const scrollTargetName = useMemo(() => `comment-${comment.id}`, [comment.id]); // unique name for scroll target
+  const scrollTargetName = `comment-${comment.id}`; // unique name for scroll target
   const [isScrollTarget, setIsScrollTarget] = useState(false); // state to trigger highlight effect
 
   const {

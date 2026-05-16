@@ -1,6 +1,6 @@
 import { Button, Col, Row } from '@/components/form';
 import { ConfirmModal } from '@/components/modal';
-import { storageKeys } from '@/constants';
+import { QUERY_STALE_TIME, storageKeys } from '@/constants';
 import useDisclosure from '@/hooks/use-disclosure';
 import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
@@ -74,7 +74,7 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
           })
         : Promise.resolve({ data: undefined } as any),
     enabled: !isCreate,
-    staleTime: 60 * 1000
+    staleTime: QUERY_STALE_TIME
   });
 
   const data: R = itemQuery.data?.data;

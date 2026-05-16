@@ -69,9 +69,9 @@ export default function AppProvider({ children }: AppProviderProps) {
     );
 
   useEffect(() => {
-    if (session?.result && session?.data) {
-      setAccessToken(session.data.accessToken);
-      setUserKind(session.data.userKind);
+    if (session) {
+      setAccessToken(session.accessToken);
+      setUserKind(session.userKind);
     }
   }, [session, setAccessToken, setUserKind]);
 

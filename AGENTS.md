@@ -6,10 +6,10 @@
 yarn              # Install deps
 yarn dev          # Dev server (port 3001, Turbopack)
 yarn clean-dev    # Clear .next then dev
-yarn build      # Production build
-yarn start      # Production server (port 3001)
-yarn lint       # ESLint
-yarn format     # Prettier write all
+yarn build        # Production build
+yarn start        # Production server (port 3001)
+yarn lint         # ESLint
+yarn format       # Prettier write all
 ```
 
 **No test framework.** Do not invent tests.
@@ -27,23 +27,24 @@ yarn format     # Prettier write all
 
 ## Environment Variables
 
-Config-driven env validation: `src/config.ts` (Zod schema). Only the following are defined and used:
+Config-driven env validation: `src/config.ts` (Zod schema). Add new env keys there and update `.env.example`.
 
 **Public (NEXT*PUBLIC*\*)**
 | Variable | Description |
 |---|---|
-| `NEXT_PUBLIC_NODE_ENV` | Environment mode (`development`/`production`) |
-| `NEXT_PUBLIC_AUTH_API_URL` | Authentication API base URL |
+| `NEXT_PUBLIC_NODE_ENV` | Environment mode |
+| `NEXT_PUBLIC_AUTH_API_URL` | Auth API base URL |
 | `NEXT_PUBLIC_API_URL` | Main API base URL |
 | `NEXT_PUBLIC_API_MEDIA_URL` | Media API base URL |
 | `NEXT_PUBLIC_TINYMCE_URL` | TinyMCE CDN URL |
-| `NEXT_PUBLIC_MEDIA_HOST` | Media files hostname (for `next/image` remotePatterns) |
-| `NEXT_PUBLIC_CLIENT_TYPE` | Client type identifier (used in HTTP header) |
+| `NEXT_PUBLIC_MEDIA_HOST` | Media hostname (for `next/image` remotePatterns) |
+| `NEXT_PUBLIC_CLIENT_TYPE` | Client type (used in HTTP header) |
 | `NEXT_PUBLIC_MQTT_BROKER` | MQTT broker URL |
 | `NEXT_PUBLIC_MQTT_USERNAME` | MQTT username |
 | `NEXT_PUBLIC_MQTT_PASSWORD` | MQTT password |
+| `NEXT_PUBLIC_URL` | App URL |
 
-**Private (server-only, used directly in API routes)**
+**Private (server-only, used in API routes)**
 
 - `APP_USERNAME`, `APP_PASSWORD` — OAuth credentials
 - `GRANT_TYPE`, `GRANT_TYPE_REFRESH_TOKEN` — OAuth grant types
@@ -51,8 +52,6 @@ Config-driven env validation: `src/config.ts` (Zod schema). Only the following a
 **Minio (S3-compatible storage)**
 
 - `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`, `MINIO_UPLOAD_FOLDER`, `MINIO_UPLOAD_PREFIX`
-
-Unused variables (`NEXT_PUBLIC_URL`, `NEXT_PUBLIC_APP_NAME`) have been removed from `src/config.ts`, `.env.example`, `Dockerfile`, and `Dockerfile`.
 
 ## Stores
 
@@ -69,6 +68,12 @@ Unused variables (`NEXT_PUBLIC_URL`, `NEXT_PUBLIC_APP_NAME`) have been removed f
 - **Server state**: TanStack Query (`useQuery`, `useMutation`)
 - **Animations**: Import `m` from `framer-motion`, use `LazyMotion` + `domAnimation`
 
+## Query Patterns
+
+- All `useQuery` hooks in `src/queries/` must use `select: (data) => data.data` to extract the response payload.
+- Mutations do not need `select`.
+- Query keys centralized in `queryKeys` (`src/constants/master-data.ts`). Never hardcode query key strings.
+
 ## UI Patterns
 
 - `ImageField`: `freeAspect`, `freePreviewAspect` props
@@ -82,11 +87,19 @@ Unused variables (`NEXT_PUBLIC_URL`, `NEXT_PUBLIC_APP_NAME`) have been removed f
   </Modal>
   ```
 
+## Table Components
+
+- `BaseTable` and `DragDropTable` use `w-auto min-w-fit` on `<Table>` to prevent column collapse on resize.
+- The `Table` UI component (`src/components/ui/table.tsx`) does NOT force `w-full` on the `<table>` element — columns size to content and the wrapper handles overflow scrolling.
+
 ## ESLint Rules (Common Issues)
 
 - **jsx-a11y/click-events-have-key-events**: Add `onKeyDown` handler to elements with `role='button'` or click handlers. Handle `Enter` or `Space`.
 - **react-doctor/no-derived-state-effect**: Compute derived state during render, not in `useEffect`. For store sync, use `useLayoutEffect`.
 - **react-doctor/no-inline-bounce-easing**: Use custom animation with `cubic-bezier(0.16, 1, 0.3, 1)`, not `animate-bounce`.
+- **react-doctor/js-flatmap-filter**: Use `.flatMap()` instead of `.map().filter(Boolean)`.
+- **react-doctor/prefer-dynamic-import**: Heavy libraries (e.g., `recharts`) must use `next/dynamic` with `ssr: false`.
+- **react-doctor/no-usememo-simple-expression**: Do not wrap trivial expressions (string concat, property access, ternaries) in `useMemo`.
 - **nextjs-no-img-element**: Use `next/image` with `fill` + `unoptimized` for external SVGs.
 
 ## Code Style
@@ -97,6 +110,9 @@ Unused variables (`NEXT_PUBLIC_URL`, `NEXT_PUBLIC_APP_NAME`) have been removed f
 - Prefix unused: `_args`, `_var`
 - Unused array index in map: `key={index}` satisfies `react/jsx-key`
 - `cn()` from `@/lib/utils` for conditional classes
+- `FormControl` (Radix `Slot`) requires the actual input as its direct child
+- `Col` has no `span` prop — control width via utility classes
+- Grid utilities: `grid-row`, `grid-col`, `grid-c-*` from `src/styles/grid.css`
 
 ## Git
 
@@ -110,6 +126,6 @@ Files in this list MUST NOT be read:
 
 - `.env`
 - `credentials.json`
-- `supesecrets.txt`
+- `supersecrets.txt`
 
-See also: `.kilo/rules/restricted-files.md` (referenced in `opencode.json`).
+See also: `.kilo/rules/restricted-files.md`.

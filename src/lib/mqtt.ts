@@ -3,15 +3,18 @@ import { logger } from '@/logger';
 import mqtt, { MqttClient } from 'mqtt';
 
 let client: MqttClient;
+const MQTT_RECONNECT_PERIOD = 3000;
+const MQTT_CONNECT_TIMEOUT = 30000;
+const MQTT_KEEPALIVE = 60;
 
 export const getMqttClient = () => {
   if (!client) {
     client = mqtt.connect(envConfig.NEXT_PUBLIC_MQTT_BROKER as string, {
       username: envConfig.NEXT_PUBLIC_MQTT_USERNAME as string,
       password: envConfig.NEXT_PUBLIC_MQTT_PASSWORD as string,
-      reconnectPeriod: 3000,
-      connectTimeout: 30000,
-      keepalive: 60
+      reconnectPeriod: MQTT_RECONNECT_PERIOD,
+      connectTimeout: MQTT_CONNECT_TIMEOUT,
+      keepalive: MQTT_KEEPALIVE
     });
 
     client.on('connect', (e) => logger.info('MQTT connected', e));

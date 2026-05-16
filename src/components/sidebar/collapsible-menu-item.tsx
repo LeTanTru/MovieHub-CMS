@@ -118,7 +118,7 @@ export default function CollapsibleMenuItem({
             toggleMenu(item.key);
           }}
           className={cn(
-            'hover:bg-sidebar! active:bg-sidebar! mx-auto my-1 min-h-10 cursor-pointer rounded-none pl-8 font-normal whitespace-nowrap text-white transition-all! duration-200! ease-linear! hover:text-white focus-visible:ring-0! active:text-white',
+            'hover:bg-sidebar active:bg-sidebar mx-auto min-h-10 cursor-pointer rounded-none pl-8 font-normal whitespace-nowrap text-white transition-all! duration-200! ease-linear! hover:text-white focus-visible:ring-0! active:text-white',
             {
               'opacity-80 hover:opacity-100': !item.children?.find(
                 (child) => child.path === pathname
@@ -155,11 +155,11 @@ export default function CollapsibleMenuItem({
                         <SidebarMenuItem key={sub.key}>
                           <SidebarMenuButton
                             className={cn(
-                              'm-1 mx-auto min-h-10 w-[calc(100%-8px)] justify-start rounded-lg pl-12 font-normal text-white transition-all duration-200 ease-linear hover:text-white focus-visible:ring-0! active:text-white',
+                              'mx-auto min-h-10 w-full justify-start rounded-none pl-12 font-normal text-white transition-all duration-200 ease-linear hover:text-white focus-visible:ring-0! active:text-white',
                               {
                                 'bg-sidebar-item-active hover:bg-sidebar-item-active active:bg-sidebar-item-active':
                                   sub.path && pathname.startsWith(sub.path),
-                                'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu opacity-65 hover:opacity-100':
+                                'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu hover:bg-sidebar-item-active/80! opacity-65 hover:opacity-100':
                                   sub.path && !pathname.startsWith(sub.path)
                               }
                             )}
@@ -208,9 +208,9 @@ export default function CollapsibleMenuItem({
                 exit={{ scale: 0.85, opacity: 0 }}
                 transition={{ duration: 0.1, ease: 'linear' }}
                 style={{ top: pos.y, left: pos.x }}
-                className='fixed z-10 w-40 overflow-hidden pl-1'
+                className='fixed z-10 max-w-60 min-w-40 pl-1'
               >
-                <div className='bg-sidebar rounded-lg p-1'>
+                <div className='bg-sidebar overflow-hidden rounded'>
                   <SidebarMenu
                     className={cn({ 'bg-sidebar-active-menu': open })}
                   >
@@ -224,11 +224,11 @@ export default function CollapsibleMenuItem({
                             <SidebarMenuItem key={sub.key}>
                               <SidebarMenuButton
                                 className={cn(
-                                  'mx-auto min-h-10 w-full justify-start rounded-lg pl-4 font-normal text-white transition-all duration-200 ease-linear hover:text-white focus-visible:ring-0! active:text-white',
+                                  'mx-auto min-h-10 w-full justify-start rounded-none px-4 font-normal text-white transition-all! duration-200! ease-linear! hover:text-white focus-visible:ring-0! active:text-white',
                                   {
                                     'bg-sidebar-item-active hover:bg-sidebar-item-active active:bg-sidebar-item-active':
                                       sub.path && pathname.startsWith(sub.path),
-                                    'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu opacity-65 hover:opacity-100':
+                                    'active:bg-sidebar-active-menu hover:bg-sidebar-active-menu hover:bg-sidebar-item-active/80! opacity-65 hover:opacity-100':
                                       sub.path && !pathname.startsWith(sub.path)
                                   }
                                 )}

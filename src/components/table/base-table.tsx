@@ -57,31 +57,46 @@ export default function BaseTable<T extends Record<any, any>>({
     const el = scrollRef.current;
     if (!el) return;
 
+    const scrollDiv = el.querySelector('div');
+    if (!scrollDiv) return;
+
     const handleScroll = () => {
-      const div = scrollRef.current?.querySelector('div');
-      const maxScrollLeft = (div?.scrollWidth ?? 0) - (div?.clientWidth ?? 0);
-      setScrollAtEnd((div?.scrollLeft ?? 0) >= maxScrollLeft);
+      const maxScrollLeft = scrollDiv.scrollWidth - scrollDiv.clientWidth;
+      if (maxScrollLeft <= 0) {
+        setScrollAtEnd(true);
+      } else {
+        setScrollAtEnd(Math.ceil(scrollDiv.scrollLeft) >= maxScrollLeft - 1);
+      }
     };
 
-    const scrollDiv = el.querySelector('div');
-    scrollDiv?.addEventListener('scroll', handleScroll, {
+    scrollDiv.addEventListener('scroll', handleScroll, {
       passive: true
     });
+
+    const resizeObserver = new ResizeObserver(() => {
+      handleScroll();
+    });
+
+    resizeObserver.observe(scrollDiv);
+    const table = el.querySelector('table');
+    if (table) resizeObserver.observe(table);
+
     handleScroll();
 
     return () => {
-      scrollDiv?.removeEventListener('scroll', handleScroll);
+      scrollDiv.removeEventListener('scroll', handleScroll);
+      resizeObserver.disconnect();
     };
   }, []);
 
   return (
-    <div className='bg-base-table flex flex-col gap-y-5 rounded-br-lg rounded-bl-lg text-sm'>
+    <div className='bg-base-table flex flex-col gap-y-5 rounded-br-lg rounded-bl-lg'>
       <div className='base-table relative flex-1'>
         <div
           className='scroll-wrapper bg-base-table w-full [&>div]:overflow-y-hidden'
           ref={scrollRef}
         >
-          <Table className='w-full min-w-200'>
+          <Table className='w-full'>
             <TableHeader className='bg-gray-50'>
               <TableRow className='border-b-[0.2px] border-b-gray-100'>
                 {columns.map((col, idx) => {
@@ -90,10 +105,9 @@ export default function BaseTable<T extends Record<any, any>>({
                     <TableHead
                       key={idx}
                       className={cn(
-                        `relative bg-zinc-50 px-4 py-4 text-sm! leading-5.5 whitespace-nowrap text-black ${
-                          col.align ? `text-${col.align}` : 'text-left'
-                        }`,
+                        'relative bg-zinc-50 px-4 py-2 whitespace-nowrap text-black',
                         {
+                          [`text-${col.align || 'left'}`]: true,
                           'before:absolute before:top-1/2 before:right-0 before:h-1/2 before:w-0.5 before:-translate-y-1/2 before:bg-zinc-100':
                             !isLast && !col.fixed,
                           'sticky right-0 z-1 z-10 bg-white transition-all duration-300':
@@ -102,7 +116,10 @@ export default function BaseTable<T extends Record<any, any>>({
                             col.fixed && !scrollAtEnd
                         }
                       )}
-                      style={{ width: col.width }}
+                      style={{
+                        width: col.width,
+                        minWidth: col.width
+                      }}
                     >
                       {col.title}
                     </TableHead>
@@ -111,9 +128,8 @@ export default function BaseTable<T extends Record<any, any>>({
               </TableRow>
             </TableHeader>
             <TableBody className='[&_tr:last-child]:border-b-none'>
-              {dataSource.length > 0 ? (
-                <>
-                  {dataSource.map((row, rowIndex) => (
+              {dataSource.length > 0
+                ? dataSource.map((row, rowIndex) => (
                     <TableRow
                       key={String(row[rowKey])}
                       className={cn(
@@ -126,16 +142,19 @@ export default function BaseTable<T extends Record<any, any>>({
                           <TableCell
                             key={colIndex}
                             className={cn(
-                              `relative h-[65px] px-4 leading-8 ${
-                                col.align ? `text-${col.align}` : 'text-left'
-                              }`,
+                              'relative h-[65px] px-4 leading-8 whitespace-nowrap',
                               {
+                                [`text-${col.align || 'left'}`]: true,
                                 'sticky right-0 z-1 z-10 bg-white transition-all duration-300':
                                   col.fixed,
                                 'before:absolute before:top-0 before:-bottom-px before:left-0 before:w-7.5 before:-translate-x-full before:shadow-[inset_-10px_0_8px_-8px] before:shadow-[rgba(5,5,5,0.1)]':
                                   col.fixed && !scrollAtEnd
                               }
                             )}
+                            style={{
+                              width: col.width,
+                              minWidth: col.width
+                            }}
                           >
                             {col.render
                               ? col.render(
@@ -152,44 +171,27 @@ export default function BaseTable<T extends Record<any, any>>({
                         );
                       })}
                     </TableRow>
-                  ))}
-                  {/* {!(!total || total <= 1) && (
+                  ))
+                : dataSource.length === 0 &&
+                  !loading && (
                     <TableRow className='hover:bg-transparent'>
                       <TableCell
                         colSpan={columns.length}
-                        className='py-4 text-right'
+                        className='py-8 text-center align-middle'
+                        style={{ textAlign: 'center' }}
                       >
-                        <Pagination
-                          changePagination={changePagination}
-                          currentPage={pagination.current}
-                          totalPages={total}
-                        />
+                        <div className='flex flex-col items-center justify-center'>
+                          <Image
+                            src={emptyData.src}
+                            alt='Không có dữ liệu'
+                            width={150}
+                            height={50}
+                          />
+                          <span>Không có dữ liệu</span>
+                        </div>
                       </TableCell>
                     </TableRow>
-                  )} */}
-                </>
-              ) : (
-                dataSource.length === 0 &&
-                !loading && (
-                  <TableRow className='hover:bg-transparent'>
-                    <TableCell
-                      colSpan={columns.length}
-                      className='py-8 text-center align-middle'
-                      style={{ textAlign: 'center' }}
-                    >
-                      <div className='flex flex-col items-center justify-center'>
-                        <Image
-                          src={emptyData.src}
-                          alt='Không có dữ liệu'
-                          width={150}
-                          height={50}
-                        />
-                        <span>Không có dữ liệu</span>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )
-              )}
+                  )}
             </TableBody>
           </Table>
         </div>

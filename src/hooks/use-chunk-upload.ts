@@ -2,13 +2,45 @@ import { apiConfig } from '@/constants';
 import { logger } from '@/logger';
 import { useState, useCallback } from 'react';
 
+const MEGABYTE = 1024 ** 2;
+const GIGABYTE = 1024 ** 3;
+const MILLISECONDS_PER_SECOND = 1000;
+const PERCENTAGE_MULTIPLIER = 100;
+const CHUNK_UPLOAD_SMALL_FILE_LIMIT = 100 * MEGABYTE;
+const CHUNK_UPLOAD_MEDIUM_FILE_LIMIT = 500 * MEGABYTE;
+const CHUNK_UPLOAD_LARGE_FILE_LIMIT = 1.5 * GIGABYTE;
+const CHUNK_UPLOAD_SMALL_SIZE = 5 * MEGABYTE;
+const CHUNK_UPLOAD_MEDIUM_SIZE = 10 * MEGABYTE;
+const CHUNK_UPLOAD_LARGE_SIZE = 20 * MEGABYTE;
+const CHUNK_UPLOAD_XL_SIZE = 32 * MEGABYTE;
+const CHUNK_UPLOAD_SMALL_CONCURRENCY = 2;
+const CHUNK_UPLOAD_MEDIUM_CONCURRENCY = 4;
+const CHUNK_UPLOAD_LARGE_CONCURRENCY = 5;
+const CHUNK_UPLOAD_XL_CONCURRENCY = 6;
+
 function getChunkConfig(fileSize: number) {
-  const GB = 1024 ** 3;
-  const MB = 1024 ** 2;
-  if (fileSize < 100 * MB) return { chunkSize: 5 * MB, concurrency: 2 };
-  if (fileSize < 500 * MB) return { chunkSize: 10 * MB, concurrency: 4 };
-  if (fileSize < 1.5 * GB) return { chunkSize: 20 * MB, concurrency: 5 };
-  return { chunkSize: 32 * MB, concurrency: 6 };
+  if (fileSize < CHUNK_UPLOAD_SMALL_FILE_LIMIT) {
+    return {
+      chunkSize: CHUNK_UPLOAD_SMALL_SIZE,
+      concurrency: CHUNK_UPLOAD_SMALL_CONCURRENCY
+    };
+  }
+  if (fileSize < CHUNK_UPLOAD_MEDIUM_FILE_LIMIT) {
+    return {
+      chunkSize: CHUNK_UPLOAD_MEDIUM_SIZE,
+      concurrency: CHUNK_UPLOAD_MEDIUM_CONCURRENCY
+    };
+  }
+  if (fileSize < CHUNK_UPLOAD_LARGE_FILE_LIMIT) {
+    return {
+      chunkSize: CHUNK_UPLOAD_LARGE_SIZE,
+      concurrency: CHUNK_UPLOAD_LARGE_CONCURRENCY
+    };
+  }
+  return {
+    chunkSize: CHUNK_UPLOAD_XL_SIZE,
+    concurrency: CHUNK_UPLOAD_XL_CONCURRENCY
+  };
 }
 
 type Part = {
@@ -86,7 +118,9 @@ const useChunkUpload = () => {
             parts.push({ partNumber, etag });
 
             done++;
-            const currentProgress = Math.round((done / totalParts) * 100);
+            const currentProgress = Math.round(
+              (done / totalParts) * PERCENTAGE_MULTIPLIER
+            );
             setProgress(currentProgress);
             onProgress?.(currentProgress);
 
@@ -113,10 +147,12 @@ const useChunkUpload = () => {
         const endTime = performance.now();
         const duration = endTime - startTime; // milliseconds
 
-        const seconds = (duration / 1000).toFixed(2);
-        const mbPerSec = (file.size / 1024 / 1024 / (duration / 1000)).toFixed(
-          2
-        );
+        const seconds = (duration / MILLISECONDS_PER_SECOND).toFixed(2);
+        const mbPerSec = (
+          file.size /
+          MEGABYTE /
+          (duration / MILLISECONDS_PER_SECOND)
+        ).toFixed(2);
 
         logger.info(`Upload hoàn thành:`);
         logger.info(`Thời gian: ${seconds}s`);

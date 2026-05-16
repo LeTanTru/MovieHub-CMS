@@ -111,17 +111,14 @@ function SortableRow<T extends Record<any, any>>({
       {columns.map((col, colIndex) => (
         <TableCell
           key={colIndex}
-          className={cn(
-            `relative h-[65px] px-4 leading-8 whitespace-nowrap ${
-              col.align ? `text-${col.align}` : 'text-left'
-            }`,
-            {
-              'sticky right-0 z-10 bg-white transition-all duration-300':
-                col.fixed,
-              'before:absolute before:top-0 before:-bottom-px before:left-0 before:w-7.5 before:-translate-x-full before:shadow-[inset_-10px_0_8px_-8px] before:shadow-[rgba(5,5,5,0.1)]':
-                col.fixed && !scrollAtEnd
-            }
-          )}
+          className={cn('relative h-[65px] px-4 leading-8 whitespace-nowrap', {
+            [`text-${col.align || 'left'}`]: true,
+            'sticky right-0 z-10 bg-white transition-all duration-300':
+              col.fixed,
+            'before:absolute before:top-0 before:-bottom-px before:left-0 before:w-7.5 before:-translate-x-full before:shadow-[inset_-10px_0_8px_-8px] before:shadow-[rgba(5,5,5,0.1)]':
+              col.fixed && !scrollAtEnd
+          })}
+          style={{ width: col.width, minWidth: col.width }}
         >
           {col.key === 'sort' ? (
             <button
@@ -147,7 +144,7 @@ function SortableRow<T extends Record<any, any>>({
 
 export default function DragDropTable<T extends Record<any, any>>({
   columns,
-  dataSource,
+  dataSource = [],
   rowKey = 'id',
   loading,
   onDragEnd,
@@ -155,7 +152,6 @@ export default function DragDropTable<T extends Record<any, any>>({
   rowClassName,
   rowStyle
 }: DragDropTableProps<T>) {
-  const [rows, setRows] = useState(() => dataSource || []);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollAtEnd, setScrollAtEnd] = useState(false);
 
@@ -169,26 +165,38 @@ export default function DragDropTable<T extends Record<any, any>>({
   );
 
   useEffect(() => {
-    setRows(dataSource || []);
-  }, [dataSource]);
-
-  useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
 
+    const scrollDiv = el.querySelector('div');
+    if (!scrollDiv) return;
+
     const handleScroll = () => {
-      const div = scrollRef.current?.querySelector('div');
-      const maxScrollLeft = (div?.scrollWidth ?? 0) - (div?.clientWidth ?? 0);
-      setScrollAtEnd((div?.scrollLeft ?? 0) >= maxScrollLeft);
+      const maxScrollLeft = scrollDiv.scrollWidth - scrollDiv.clientWidth;
+      if (maxScrollLeft <= 0) {
+        setScrollAtEnd(true);
+      } else {
+        setScrollAtEnd(Math.ceil(scrollDiv.scrollLeft) >= maxScrollLeft - 1);
+      }
     };
 
-    el.querySelector('div')?.addEventListener('scroll', handleScroll, {
+    scrollDiv.addEventListener('scroll', handleScroll, {
       passive: true
     });
+
+    const resizeObserver = new ResizeObserver(() => {
+      handleScroll();
+    });
+
+    resizeObserver.observe(scrollDiv);
+    const table = el.querySelector('table');
+    if (table) resizeObserver.observe(table);
+
     handleScroll();
 
     return () => {
-      el.querySelector('div')?.removeEventListener('scroll', handleScroll);
+      scrollDiv.removeEventListener('scroll', handleScroll);
+      resizeObserver.disconnect();
     };
   }, []);
 
@@ -196,7 +204,7 @@ export default function DragDropTable<T extends Record<any, any>>({
     <div className='mr-2 flex flex-col gap-y-5 overflow-hidden rounded-lg bg-white text-sm'>
       <div className='base-table relative flex-1 overflow-hidden'>
         <div
-          className='scroll-wrapper bg-base-table w-full [&>div]:overflow-y-hidden'
+          className='scroll-wrapper bg-base-table w-full overflow-x-auto [&>div]:overflow-y-hidden'
           ref={scrollRef}
         >
           <DndContext
@@ -204,7 +212,7 @@ export default function DragDropTable<T extends Record<any, any>>({
             collisionDetection={closestCorners}
             onDragEnd={onDragEnd}
           >
-            <Table className='w-full min-w-200'>
+            <Table className='w-full'>
               <TableHeader className='bg-gray-50'>
                 <TableRow className='border-b-gray-100 not-last:border-b-[0.2px]'>
                   {columns.map((col, idx) => {
@@ -213,10 +221,9 @@ export default function DragDropTable<T extends Record<any, any>>({
                       <TableHead
                         key={idx}
                         className={cn(
-                          `relative bg-zinc-50 px-4 py-4 text-sm! leading-5.5 text-black ${
-                            col.align ? `text-${col.align}` : 'text-left'
-                          }`,
+                          'relative bg-zinc-50 px-4 py-4 text-sm! leading-5.5 whitespace-nowrap text-black',
                           {
+                            [`text-${col.align || 'left'}`]: true,
                             'before:absolute before:top-1/2 before:right-0 before:h-1/2 before:w-0.5 before:-translate-y-1/2 before:bg-zinc-100':
                               !isLast && !col.fixed,
                             'sticky right-0 z-10 bg-white transition-all duration-300':
@@ -225,7 +232,7 @@ export default function DragDropTable<T extends Record<any, any>>({
                               col.fixed && !scrollAtEnd
                           }
                         )}
-                        style={{ width: col.width }}
+                        style={{ width: col.width, minWidth: col.width }}
                       >
                         {col.title}
                       </TableHead>
@@ -234,12 +241,12 @@ export default function DragDropTable<T extends Record<any, any>>({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {rows.length > 0 ? (
+                {dataSource.length > 0 ? (
                   <SortableContext
-                    items={rows.map((r) => r[rowKey])}
+                    items={dataSource.map((r) => r[rowKey])}
                     strategy={verticalListSortingStrategy}
                   >
-                    {rows.map((row, idx) => (
+                    {dataSource.map((row, idx) => (
                       <SortableRow
                         key={String(row[rowKey])}
                         row={row}

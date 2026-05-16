@@ -36,6 +36,7 @@ export type SearchFormProps<S extends FieldValues> = {
     dateFormat?: string;
   }[];
   initialValues: Partial<S>;
+  resetValues?: Partial<S>;
   schema: ZodObject;
   handleSearchSubmit: (values: any) => void;
   handleSearchReset: () => void;

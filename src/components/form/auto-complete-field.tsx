@@ -79,6 +79,11 @@ type AutoCompleteFieldProps<
 };
 
 const EMPTY_INITIAL_PARAMS: Record<string, any> = {};
+const AUTO_COMPLETE_DEBOUNCE_MS = 400;
+const POPOVER_SIDE_OFFSET = 8;
+const EMPTY_STATE_IMAGE_WIDTH = 120;
+const EMPTY_STATE_IMAGE_HEIGHT = 50;
+const HIGHLIGHTED_INDEX_NONE = -1;
 
 export default function AutoCompleteField<
   TFieldValues extends FieldValues,
@@ -114,7 +119,9 @@ export default function AutoCompleteField<
   const [initialOption, setInitialOption] = useState<AutoCompleteOption | null>(
     null
   );
-  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(
+    HIGHLIGHTED_INDEX_NONE
+  );
   const commandInputRef = useRef<HTMLInputElement>(null);
   const initialFetched = useRef(false);
   const commandRef = useRef<HTMLDivElement>(null);
@@ -122,7 +129,11 @@ export default function AutoCompleteField<
   const fieldValue = useWatch({ control, name });
 
   const updateSearch = useMemo(
-    () => debounce((val: string) => setDebouncedSearch(val), 400),
+    () =>
+      debounce(
+        (val: string) => setDebouncedSearch(val),
+        AUTO_COMPLETE_DEBOUNCE_MS
+      ),
     []
   );
 
@@ -216,7 +227,7 @@ export default function AutoCompleteField<
 
   useEffect(() => {
     if (!search) {
-      setHighlightedIndex(-1);
+      setHighlightedIndex(HIGHLIGHTED_INDEX_NONE);
     }
   }, [search]);
 
@@ -326,7 +337,7 @@ export default function AutoCompleteField<
                   </PopoverTrigger>
 
                   <PopoverContent
-                    sideOffset={8}
+                    sideOffset={POPOVER_SIDE_OFFSET}
                     className='scrollbar-none max-h-[60vh] w-(--radix-popover-trigger-width) overflow-auto p-0'
                   >
                     <Command
@@ -370,8 +381,8 @@ export default function AutoCompleteField<
                         <CommandEmpty className='mx-auto h-50 pt-2 pb-4 text-center text-sm'>
                           <Image
                             src={emptyData.src}
-                            width={120}
-                            height={50}
+                            width={EMPTY_STATE_IMAGE_WIDTH}
+                            height={EMPTY_STATE_IMAGE_HEIGHT}
                             className='mx-auto'
                             alt={notFoundContent as string}
                           />
@@ -380,7 +391,7 @@ export default function AutoCompleteField<
                       ) : (
                         <CommandGroup
                           onMouseLeave={() => {
-                            setHighlightedIndex(-1);
+                            setHighlightedIndex(HIGHLIGHTED_INDEX_NONE);
                             if (commandRef.current) {
                               const items =
                                 commandRef.current.querySelectorAll(
@@ -404,7 +415,9 @@ export default function AutoCompleteField<
                                   key={opt.value}
                                   onSelect={() => toggleValue(opt.value)}
                                   onMouseEnter={() => setHighlightedIndex(idx)}
-                                  onMouseLeave={() => setHighlightedIndex(-1)}
+                                  onMouseLeave={() =>
+                                    setHighlightedIndex(HIGHLIGHTED_INDEX_NONE)
+                                  }
                                   title={opt.label}
                                   className={cn(
                                     'block cursor-pointer truncate rounded transition-all duration-200 ease-linear',

@@ -30,12 +30,12 @@ const useQueryParams = <S extends Record<string, any>>() => {
       .filter(Boolean)
       .join('&');
 
-    navigate.replace(`${pathname}?${sortedParams}`);
+    navigate.push(`${pathname}?${sortedParams}`);
   };
 
   const setQueryParams = (newParams: Partial<S>) => {
     const queryString = serializeParams(newParams as Record<string, any>);
-    navigate.replace(queryString ? `${pathname}?${queryString}` : pathname);
+    navigate.push(queryString ? `${pathname}?${queryString}` : pathname);
   };
 
   const serializeParams = (obj: Record<string, any>) => {
