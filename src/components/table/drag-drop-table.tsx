@@ -28,6 +28,8 @@ import {
   verticalListSortingStrategy,
   useSortable
 } from '@dnd-kit/sortable';
+
+const EMPTY_DATA_SOURCE: unknown[] = [];
 import { CSS } from '@dnd-kit/utilities';
 import { Grip } from 'lucide-react';
 import { m, AnimatePresence } from 'framer-motion';
@@ -144,7 +146,7 @@ function SortableRow<T extends Record<any, any>>({
 
 export default function DragDropTable<T extends Record<any, any>>({
   columns,
-  dataSource = [],
+  dataSource = EMPTY_DATA_SOURCE as T[],
   rowKey = 'id',
   loading,
   onDragEnd,

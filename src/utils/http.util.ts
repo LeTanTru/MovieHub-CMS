@@ -12,11 +12,11 @@ import axios, {
   type AxiosRequestConfig,
   type AxiosResponse
 } from 'axios';
-import { redirect } from 'next/navigation';
+import { redirect, unstable_rethrow } from 'next/navigation';
 
 const isClient = typeof window !== 'undefined';
 const axiosInstance = axios.create();
-// const TIME_OUT = 10000;
+const TIME_OUT = 10000;
 
 type RequestConfigWithRetry = InternalAxiosRequestConfig & {
   _retry?: boolean;
@@ -97,6 +97,7 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance.request(originalConfig);
       } catch (error) {
+        unstable_rethrow(error);
         logger.error('[REFRESH_TOKEN_ERROR]', error);
         if (
           error instanceof AxiosError &&
@@ -187,7 +188,7 @@ export const sendRequest = async <T>(
       method,
       headers: baseHeader,
       params,
-      // timeout: TIME_OUT,
+      timeout: TIME_OUT,
       ...options
     };
 
