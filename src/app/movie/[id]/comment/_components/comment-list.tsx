@@ -4,7 +4,12 @@ import './comment.css';
 import CommentInput from './comment-input';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { NoData } from '@/components/no-data';
-import { apiConfig, objectNames, queryKeys } from '@/constants';
+import {
+  SKELETON_LOADING_COUNT,
+  apiConfig,
+  objectNames,
+  queryKeys
+} from '@/constants';
 import {
   useInfiniteListBase,
   useIsMounted,
@@ -181,7 +186,7 @@ export default function CommentList() {
         {loading ? (
           <div className='space-y-4 px-4'>
             <div className='skeleton ml-4 h-5 w-20' />
-            {Array.from({ length: 8 }).map((_, index) => (
+            {Array.from({ length: SKELETON_LOADING_COUNT }).map((_, index) => (
               <CommentItem.Skeleton key={index} />
             ))}
           </div>

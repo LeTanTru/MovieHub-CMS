@@ -13,6 +13,7 @@ import { cn } from '@/lib';
 import { createPortal } from 'react-dom';
 import { useIsMounted } from '@/hooks';
 import { X, ChevronDown, Info } from 'lucide-react';
+import { BODY_SCROLL_LOCK_MARGIN } from '@/constants';
 import { Button } from '@/components/form';
 
 type ModalContextType = {
@@ -85,21 +86,22 @@ export default function Modal({
     const hasVerticalScroll =
       document.documentElement.scrollHeight > window.innerHeight;
 
-    document.body.classList.add('body-lock');
     Object.assign(document.body.style, {
       overflow: 'hidden',
-      marginRight: hasVerticalScroll ? '15px' : ''
+      marginRight: hasVerticalScroll ? `${BODY_SCROLL_LOCK_MARGIN}px` : ''
     });
 
     if (hasVerticalScroll) {
       const header = document.querySelector('.header');
       if (header && getComputedStyle(header).position === 'fixed') {
-        header.setAttribute('style', 'padding-right: 15px');
+        header.setAttribute(
+          'style',
+          `padding-right: ${BODY_SCROLL_LOCK_MARGIN}px`
+        );
       }
     }
 
     return () => {
-      document.body.classList.remove('body-lock');
       Object.assign(document.body.style, {
         overflow: '',
         marginRight: ''

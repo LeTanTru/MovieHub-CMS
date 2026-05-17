@@ -14,6 +14,7 @@ import {
 } from '@/utils';
 import type { CommentResType, CommentSearchType } from '@/types';
 import {
+  AVATAR_SIZE_COMMENT,
   apiConfig,
   COMMENT_STATUS_HIDE,
   COMMENT_STATUS_SHOW,
@@ -337,7 +338,7 @@ export default function CommentItem({
           <AvatarField
             src={renderImageUrl(authorInfo.avatarPath)}
             previewClassName='rounded-full'
-            size={40}
+            size={AVATAR_SIZE_COMMENT}
             alt={getLastWord(authorInfo.fullName)}
             className='mr-4'
           />

@@ -1,6 +1,14 @@
 'use client';
 
-import { apiConfig, objectNames, queryKeys } from '@/constants';
+import {
+  EMOJI_ICON_SIZE,
+  EMOJI_PICKER_TOP_OFFSET,
+  EMOJI_PICKER_TRANSITION_DURATION,
+  EMOJI_PICKER_Z_INDEX,
+  apiConfig,
+  objectNames,
+  queryKeys
+} from '@/constants';
 import { BaseForm } from '@/components/form/base-form';
 import { Button, Col, Row, TextAreaField } from '@/components/form';
 import { commentSchema } from '@/schemaValidations';
@@ -91,12 +99,12 @@ export default function CommentInput({ movieId }: CommentInputProps) {
       picker.i18n = vi;
       Object.assign(picker.style, {
         position: 'absolute',
-        zIndex: '1000',
+        zIndex: String(EMOJI_PICKER_Z_INDEX),
         opacity: '0',
         visibility: 'hidden',
         right: '100px',
-        top: '5px',
-        transition: 'all 0.2s linear'
+        top: `${EMOJI_PICKER_TOP_OFFSET}px`,
+        transition: `all ${EMOJI_PICKER_TRANSITION_DURATION} linear`
       });
       picker.style.setProperty('--border-radius', '8px');
       picker.style.setProperty('--border-size', '0');
@@ -153,8 +161,8 @@ export default function CommentInput({ movieId }: CommentInputProps) {
                       <Image
                         src={emojiIcon.src}
                         alt='Emoji icon'
-                        width={25}
-                        height={25}
+                        width={EMOJI_ICON_SIZE}
+                        height={EMOJI_ICON_SIZE}
                       />
                     </Button>
                     <Button

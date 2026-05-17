@@ -16,6 +16,7 @@ import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import {
+  MOVIE_YEAR_MIN,
   ageRatingOptions,
   apiConfig,
   countryOptions,
@@ -219,7 +220,7 @@ export default function MovieForm() {
   const years = useMemo(() => {
     const currentYear = new Date().getFullYear();
     const yearOptions = [];
-    for (let year = 1900; year <= currentYear; year++) {
+    for (let year = MOVIE_YEAR_MIN; year <= currentYear; year++) {
       yearOptions.push({
         value: year,
         label: year.toString()

@@ -16,6 +16,9 @@ import { CheckIcon, EyeIcon, EyeOffIcon, XIcon } from 'lucide-react';
 import { useId, useState } from 'react';
 import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 
+const PASSWORD_MIN_LENGTH = 8;
+const PASSWORD_MAX_SCORE = 4;
+
 type PasswordFieldProps<T extends FieldValues> = {
   control: Control<T>;
   name: FieldPath<T>;
@@ -70,7 +73,10 @@ export default function PasswordField<T extends FieldValues>({
 
   const checkStrength = (pass: string) => {
     const requirements = [
-      { regex: /.{8,}/, text: 'Ít nhất 8 ký tự' },
+      {
+        regex: new RegExp(`.{${PASSWORD_MIN_LENGTH},}`),
+        text: `Ít nhất ${PASSWORD_MIN_LENGTH} ký tự`
+      },
       { regex: /[0-9]/, text: 'Ít nhất 1 số' },
       { regex: /[a-z]/, text: 'Ít nhất 1 chữ cái thường' },
       { regex: /[A-Z]/, text: 'Ít nhất 1 chữ cái hoa' }
@@ -169,12 +175,14 @@ export default function PasswordField<T extends FieldValues>({
                   role='progressbar'
                   aria-valuenow={strengthScore}
                   aria-valuemin={0}
-                  aria-valuemax={4}
+                  aria-valuemax={PASSWORD_MAX_SCORE}
                   aria-label='Password strength'
                 >
                   <div
                     className={`h-full ${getStrengthColor(strengthScore)} transition-all duration-500 ease-out`}
-                    style={{ width: `${(strengthScore / 4) * 100}%` }}
+                    style={{
+                      width: `${(strengthScore / PASSWORD_MAX_SCORE) * 100}%`
+                    }}
                   ></div>
                 </div>
 
@@ -189,8 +197,11 @@ export default function PasswordField<T extends FieldValues>({
                   className='space-y-1.5'
                   aria-label='Password requirements'
                 >
-                  {strength.map((req, index) => (
-                    <ListItem key={index} className='flex items-center gap-2'>
+                  {strength.map((req) => (
+                    <ListItem
+                      key={req.text}
+                      className='flex items-center gap-2'
+                    >
                       {req.met ? (
                         <CheckIcon
                           size={16}

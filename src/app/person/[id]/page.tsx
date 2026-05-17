@@ -1,5 +1,6 @@
 import { PersonForm } from '@/app/person/_components';
 import envConfig from '@/config';
+import { OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '@/constants';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -28,8 +29,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: '/logo.webp',
-        width: 1200,
-        height: 630,
+        width: OG_IMAGE_WIDTH,
+        height: OG_IMAGE_HEIGHT,
         alt: 'MovieHub CMS'
       }
     ]

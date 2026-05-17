@@ -4,7 +4,12 @@ import { Button } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { DotLoading } from '@/components/loading';
 import { NoData } from '@/components/no-data';
-import { apiConfig, objectNames, queryKeys } from '@/constants';
+import {
+  SKELETON_LOADING_COUNT,
+  apiConfig,
+  objectNames,
+  queryKeys
+} from '@/constants';
 import { useInfiniteListBase, useQueryParams } from '@/hooks';
 import { route } from '@/routes';
 import type { ReviewResType, ReviewSearchType } from '@/types';
@@ -61,7 +66,7 @@ export default function ReviewList() {
         {loading ? (
           <div className='space-y-4 p-4'>
             <div className='skeleton ml-4 h-5 w-20' />
-            {Array.from({ length: 8 }).map((_, index) => (
+            {Array.from({ length: SKELETON_LOADING_COUNT }).map((_, index) => (
               <ReviewItem.Skeleton key={index} />
             ))}
           </div>

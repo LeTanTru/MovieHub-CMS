@@ -157,7 +157,7 @@ const useChunkUpload = () => {
         logger.info(`Upload hoàn thành:`);
         logger.info(`Thời gian: ${seconds}s`);
         logger.info(`Tốc độ: ${mbPerSec} MB/s`);
-        logger.info(`Kích thước: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+        logger.info(`Kích thước: ${(file.size / MEGABYTE).toFixed(2)} MB`);
         return res?.filePath || '';
       } catch (error) {
         logger.error('Upload failed', error);

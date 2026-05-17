@@ -15,6 +15,8 @@ import type { Editor as TinyMCEEditor } from 'tinymce';
 import envConfig from '@/config';
 import dynamic from 'next/dynamic';
 
+const TINYMCE_DEFAULT_HEIGHT = 450;
+
 const TinyEditor = dynamic(
   () => import('@tinymce/tinymce-react').then((m) => m.Editor),
   {
@@ -100,7 +102,7 @@ export default function RichTextField<T extends FieldValues>({
                 value={field.value || ''}
                 disabled={disabled || readOnly}
                 init={{
-                  height: height ?? 450,
+                  height: height ?? TINYMCE_DEFAULT_HEIGHT,
                   menubar: 'file edit view insert format tools table help',
                   language: 'vi',
                   plugins: [

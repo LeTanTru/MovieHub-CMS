@@ -280,7 +280,7 @@ export default function UploadImageField<T extends FieldValues>({
             className={cn(
               'group relative inline-flex cursor-pointer items-center justify-center rounded',
               {
-                'border-input border-2 border-dashed transition-all transition-colors duration-200 ease-linear hover:border-gray-300 hover:bg-gray-100':
+                'border-input border-2 border-dashed transition-all transition-colors duration-200 ease-linear hover:bg-gray-100':
                   !value,
                 'rounded-full': avatar,
                 'border-gray-300 bg-gray-100': isDragging,
