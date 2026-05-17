@@ -179,9 +179,9 @@ export default function InputField<T extends FieldValues>({
                       }}
                       className='absolute top-full left-0 z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-white p-1 shadow-[0px_0px_10px_5px] shadow-gray-200'
                     >
-                      {filteredOptions.map((option, index) => (
+                      {filteredOptions.map((option) => (
                         <div
-                          key={index}
+                          key={option}
                           role='option'
                           className={cn(
                             'relative flex cursor-pointer items-center rounded p-2 text-sm transition-all duration-200 ease-linear hover:bg-gray-100',

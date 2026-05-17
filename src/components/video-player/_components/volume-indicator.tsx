@@ -1,5 +1,6 @@
 'use client';
 
+import { INDICATOR_AUTO_HIDE_MS } from '@/constants';
 import { useIndicator } from '@/components/video-player/video-player';
 import { useMediaState } from '@vidstack/react';
 import { AnimatePresence, m } from 'framer-motion';
@@ -43,7 +44,7 @@ export default function VolumeIndicator() {
 
       const timeout = setTimeout(() => {
         dispatch({ type: 'hide' });
-      }, 800);
+      }, INDICATOR_AUTO_HIDE_MS);
 
       return () => clearTimeout(timeout);
     } else {

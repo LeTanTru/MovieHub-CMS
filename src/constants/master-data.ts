@@ -1,4 +1,5 @@
 import {
+  AGE_RATING_18_PLUS,
   AGE_RATING_K,
   AGE_RATING_P,
   AGE_RATING_T13,
@@ -6,6 +7,9 @@ import {
   AGE_RATING_T18,
   COLLECTION_TYPE_SECTION,
   COLLECTION_TYPE_TOPIC,
+  COLOR_STATUS_ACTIVE,
+  COLOR_STATUS_ERROR,
+  COLOR_STATUS_PENDING,
   CONVERT_FILE_FAILED,
   DOWNLOAD_TEMP_FILE_FAILED,
   GENDER_FEMALE,
@@ -70,22 +74,22 @@ export const statusOptions = [
   {
     value: STATUS_ACTIVE,
     label: 'Hoạt động',
-    color: '#00c950'
+    color: COLOR_STATUS_ACTIVE
   },
   {
     value: STATUS_PENDING,
     label: 'Đang chờ',
-    color: '#ffc107'
+    color: COLOR_STATUS_PENDING
   },
   {
     value: STATUS_LOCK,
     label: 'Khóa',
-    color: '#dc3545'
+    color: COLOR_STATUS_ERROR
   },
   {
     value: STATUS_DELETED,
     label: 'Đã xóa',
-    color: '#dc3545'
+    color: COLOR_STATUS_ERROR
   }
 ];
 
@@ -93,12 +97,12 @@ export const employeeStatusOptions = [
   {
     value: STATUS_ACTIVE,
     label: 'Hoạt động',
-    color: '#00c950'
+    color: COLOR_STATUS_ACTIVE
   },
   {
     value: STATUS_LOCK,
     label: 'Khóa',
-    color: '#dc3545'
+    color: COLOR_STATUS_ERROR
   }
 ];
 
@@ -106,12 +110,12 @@ export const movieStatusOptions = [
   {
     label: 'Hoạt động',
     value: STATUS_ACTIVE,
-    color: '#00c950'
+    color: COLOR_STATUS_ACTIVE
   },
   {
     label: 'Đang chờ',
     value: STATUS_PENDING,
-    color: '#ffc107'
+    color: COLOR_STATUS_PENDING
   }
 ];
 
@@ -1654,17 +1658,17 @@ export const serverConfigStatusOptions = [
   {
     value: STATUS_ACTIVE,
     label: 'Hoạt động',
-    color: '#00c950'
+    color: COLOR_STATUS_ACTIVE
   },
   {
     value: STATUS_LOCK,
     label: 'Khóa',
-    color: '#dc3545'
+    color: COLOR_STATUS_ERROR
   },
   {
     value: STATUS_PENDING,
     label: 'Đang chờ',
-    color: '#ffc107'
+    color: COLOR_STATUS_PENDING
   }
 ];
 
@@ -1794,18 +1798,18 @@ export const chartColors = [
   '#475569'
 ];
 
-export const typeLabelMap: Record<string, string> = {
-  '1': 'Phim lẻ',
-  '2': 'Phim bộ',
+export const typeLabelMap: Record<number | string, string> = {
+  [MOVIE_TYPE_SINGLE]: 'Phim lẻ',
+  [MOVIE_TYPE_SERIES]: 'Phim bộ',
   Unknown: 'Không xác định'
 };
 
-export const ageRatingLabelMap: Record<string, string> = {
-  '1': 'G',
-  '2': 'PG',
-  '3': 'PG-13',
-  '4': 'R',
-  '5': 'NC-17',
-  '6': '18+',
+export const ageRatingLabelMap: Record<number | string, string> = {
+  [AGE_RATING_P]: 'G',
+  [AGE_RATING_K]: 'PG',
+  [AGE_RATING_T13]: 'PG-13',
+  [AGE_RATING_T16]: 'R',
+  [AGE_RATING_T18]: 'NC-17',
+  [AGE_RATING_18_PLUS]: '18+',
   Unknown: 'Không xác định'
 };

@@ -57,6 +57,7 @@ export const AGE_RATING_K = 2;
 export const AGE_RATING_T13 = 3;
 export const AGE_RATING_T16 = 4;
 export const AGE_RATING_T18 = 5;
+export const AGE_RATING_18_PLUS = 6;
 
 export const MOVIE_IS_FEATURED = 1;
 export const MOVIE_IS_NOT_FEATURED = 0;
@@ -102,3 +103,46 @@ export const CONVERT_FILE_FAILED = 'convert_file_failed';
 export const GENERATE_VTT_FAILED = 'generate_vtt_failed';
 
 export const AUDIO_STATE_COMPLETE = 1;
+
+// Auth cookie expiration (seconds)
+export const ACCESS_TOKEN_MAX_AGE = 24 * 60 * 60; // 1 day
+export const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
+
+// Open Graph image dimensions
+export const OG_IMAGE_WIDTH = 1200;
+export const OG_IMAGE_HEIGHT = 630;
+
+// Emoji picker
+export const EMOJI_PICKER_Z_INDEX = 1000;
+export const EMOJI_PICKER_TRANSITION_DURATION = '0.2s';
+export const EMOJI_PICKER_TOP_OFFSET = 5;
+export const EMOJI_ICON_SIZE = 25;
+
+// Skeleton loading
+export const SKELETON_LOADING_COUNT = 8;
+
+// Movie
+export const MOVIE_YEAR_MIN = 1900;
+
+// Avatar
+export const AVATAR_SIZE_COMMENT = 40;
+
+// Layout
+export const BODY_SCROLL_LOCK_MARGIN = 15;
+
+// Video player
+export const INDICATOR_AUTO_HIDE_MS = 800;
+
+// Image preview zoom
+export const IMAGE_PREVIEW_SCALE_MIN = 1;
+export const IMAGE_PREVIEW_SCALE_MAX = 3;
+export const IMAGE_PREVIEW_SCALE_STEP = 0.1;
+
+// Slider
+export const SLIDER_DEFAULT_MIN = 0;
+export const SLIDER_DEFAULT_MAX = 100;
+
+// Status colors
+export const COLOR_STATUS_ACTIVE = '#00c950';
+export const COLOR_STATUS_ERROR = '#dc3545';
+export const COLOR_STATUS_PENDING = '#ffc107';

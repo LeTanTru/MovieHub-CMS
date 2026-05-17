@@ -4,6 +4,7 @@ import { Button, ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import {
+  MOVIE_YEAR_MIN,
   ageRatingOptions,
   apiConfig,
   countryOptions,
@@ -320,7 +321,7 @@ export default function MovieList() {
   const years = useMemo(() => {
     const currentYear = new Date().getFullYear();
     const yearOptions = [];
-    for (let year = 1900; year <= currentYear; year++) {
+    for (let year = MOVIE_YEAR_MIN; year <= currentYear; year++) {
       yearOptions.push({
         value: year,
         label: year.toString()

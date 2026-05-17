@@ -43,6 +43,7 @@ export default function CheckboxField<T extends FieldValues>({
       render={({ field, fieldState }) => (
         <FormItem
           className={cn(
+            'relative',
             { 'cursor-not-allowed select-none': disabled },
             formItemClassName
           )}

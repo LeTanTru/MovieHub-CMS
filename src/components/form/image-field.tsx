@@ -16,9 +16,14 @@ import {
   useRef,
   useState
 } from 'react';
+import {
+  BODY_SCROLL_LOCK_MARGIN,
+  IMAGE_PREVIEW_SCALE_MAX,
+  IMAGE_PREVIEW_SCALE_MIN,
+  IMAGE_PREVIEW_SCALE_STEP
+} from '@/constants';
 import { useImageStatus, useIsMounted } from '@/hooks';
 import { createPortal } from 'react-dom';
-import { isMobileDevice } from '@/utils';
 
 type ImageFieldProps = {
   src?: string;
@@ -122,39 +127,53 @@ export default function ImageField({
       if (!zoomOnScroll) return;
 
       setScale((prev) => {
-        let next = prev + (e.deltaY > 0 ? -0.1 : 0.1);
-        next = Math.max(1, Math.min(3, next));
+        let next =
+          prev +
+          (e.deltaY > 0 ? -IMAGE_PREVIEW_SCALE_STEP : IMAGE_PREVIEW_SCALE_STEP);
+        next = Math.max(
+          IMAGE_PREVIEW_SCALE_MIN,
+          Math.min(IMAGE_PREVIEW_SCALE_MAX, next)
+        );
         return next;
       });
     },
     [zoomOnScroll]
   );
 
-  const handleWheelRef = useRef(handleWheel);
-  useEffect(() => {
-    handleWheelRef.current = handleWheel;
-  }, [handleWheel]);
-
   useEffect(() => {
     if (!open || !previewRef.current) return;
 
     const node = previewRef.current;
-    const handler = (e: WheelEvent) => handleWheelRef.current(e);
-    node.addEventListener('wheel', handler, { passive: true });
+    node.addEventListener('wheel', handleWheel, { passive: true });
 
-    return () => node.removeEventListener('wheel', handler);
-  }, [open]);
+    return () => node.removeEventListener('wheel', handleWheel);
+  }, [handleWheel, open]);
 
   // Lock body scroll without layout shift when modal opens
   useEffect(() => {
     if (!open) return;
 
-    const isMobile = isMobileDevice();
-    if (isMobile) document.body.classList.add('body-lock', 'mobile');
-    else document.body.classList.add('body-lock');
+    const hasVerticalScroll =
+      document.documentElement.scrollHeight > window.innerHeight;
+
+    document.body.style.overflow = 'hidden';
+    if (hasVerticalScroll) {
+      document.body.style.marginRight = `${BODY_SCROLL_LOCK_MARGIN}px`;
+      const header = document.querySelector('.header');
+      if (header && getComputedStyle(header).position === 'fixed') {
+        header.setAttribute(
+          'style',
+          `padding-right: ${BODY_SCROLL_LOCK_MARGIN}px`
+        );
+      }
+    }
+
     return () => {
-      document.body.classList.remove('body-lock');
-      if (isMobile) document.body.classList.remove('mobile');
+      document.body.style.cssText = '';
+      const header = document.querySelector('.header');
+      if (header && getComputedStyle(header).position === 'fixed') {
+        (header as HTMLElement).style.paddingRight = '';
+      }
     };
   }, [open]);
 
@@ -207,6 +226,7 @@ export default function ImageField({
                 'h-auto w-auto max-w-full',
                 imageClassName
               )}
+              unoptimized
             />
           ) : freeAspect ? (
             // freeAspect: no AspectRatio wrapper, image sizes to its natural dimensions
@@ -220,6 +240,7 @@ export default function ImageField({
                 'h-auto w-full rounded object-contain',
                 imageClassName
               )}
+              unoptimized
             />
           ) : aspect ? (
             <AspectRatio
@@ -233,6 +254,7 @@ export default function ImageField({
                 fill
                 className={cn('rounded object-cover', imageClassName)}
                 sizes='(max-width: 768px) 100vw, 50vw'
+                unoptimized
               />
             </AspectRatio>
           ) : (
@@ -249,6 +271,7 @@ export default function ImageField({
                 },
                 imageClassName
               )}
+              unoptimized
             />
           )
         ) : (
@@ -321,6 +344,7 @@ export default function ImageField({
                         transform: `scale(${scale})`,
                         transformOrigin: 'center center'
                       }}
+                      unoptimized
                     />
                   ) : (
                     <div
@@ -344,6 +368,7 @@ export default function ImageField({
                           transformOrigin: 'center center'
                         }}
                         sizes='(max-width: 768px) 100vw, 50vw'
+                        unoptimized
                       />
                     </div>
                   ))}

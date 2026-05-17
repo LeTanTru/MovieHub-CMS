@@ -1,5 +1,6 @@
 'use client';
 
+import { SLIDER_DEFAULT_MAX, SLIDER_DEFAULT_MIN } from '@/constants';
 import {
   FormControl,
   FormDescription,
@@ -11,6 +12,8 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib';
 import { Control, FieldPath, FieldValues } from 'react-hook-form';
+
+const SLIDER_DEFAULT_STEP = 1;
 
 type SliderFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -43,8 +46,8 @@ export default function SliderField<T extends FieldValues>({
   required,
   labelClassName,
   disabled,
-  min = 0,
-  max = 100,
+  min = SLIDER_DEFAULT_MIN,
+  max = SLIDER_DEFAULT_MAX,
   trackClassName,
   rangeClassName,
   thumbClassName,
@@ -52,7 +55,7 @@ export default function SliderField<T extends FieldValues>({
   description,
   unit,
   showUnit = true,
-  step = 1,
+  step = SLIDER_DEFAULT_STEP,
   markers
 }: SliderFieldProps<T>) {
   return (

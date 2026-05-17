@@ -16,10 +16,15 @@ import {
   useRef,
   useState
 } from 'react';
+import {
+  BODY_SCROLL_LOCK_MARGIN,
+  IMAGE_PREVIEW_SCALE_MAX,
+  IMAGE_PREVIEW_SCALE_MIN,
+  IMAGE_PREVIEW_SCALE_STEP
+} from '@/constants';
 import { defaultAvatar } from '@/assets';
 import { useImageStatus, useIsMounted } from '@/hooks';
 import { createPortal } from 'react-dom';
-import { isMobileDevice } from '@/utils';
 
 type AvatarFieldProps = {
   size?: number;
@@ -44,9 +49,6 @@ type AvatarFieldProps = {
 
 const AVATAR_SIZE_DEFAULT = 48;
 const AVATAR_PREVIEW_SIZE_DEFAULT = 200;
-const IMAGE_PREVIEW_SCALE_MIN = 1;
-const IMAGE_PREVIEW_SCALE_MAX = 3;
-const IMAGE_PREVIEW_SCALE_STEP = 0.1;
 
 export default function AvatarField({
   size = AVATAR_SIZE_DEFAULT,
@@ -69,7 +71,7 @@ export default function AvatarField({
 }: AvatarFieldProps) {
   const isMounted = useIsMounted();
   const [open, setOpen] = useState<boolean>(false);
-  const [scale, setScale] = useState<number>(IMAGE_PREVIEW_SCALE_MIN);
+  const [scale, setScale] = useState<number>(1);
   const [viewportWidth, setViewportWidth] = useState<number>(0);
 
   const { isError: imageError } = useImageStatus(src);
@@ -135,29 +137,38 @@ export default function AvatarField({
     [zoomOnScroll]
   );
 
-  const handleWheelRef = useRef(handleWheel);
-  useEffect(() => {
-    handleWheelRef.current = handleWheel;
-  }, [handleWheel]);
-
   useEffect(() => {
     if (!open || !previewRef.current) return;
     const node = previewRef.current;
-    const handler = (e: WheelEvent) => handleWheelRef.current(e);
-    node.addEventListener('wheel', handler, { passive: true });
-    return () => node.removeEventListener('wheel', handler);
-  }, [open]);
+    node.addEventListener('wheel', handleWheel, { passive: true });
+    return () => node.removeEventListener('wheel', handleWheel);
+  }, [handleWheel, open]);
 
   // Lock body scroll without layout shift when modal opens
   useEffect(() => {
     if (!open) return;
 
-    const isMobile = isMobileDevice();
-    if (isMobile) document.body.classList.add('body-lock', 'mobile');
-    else document.body.classList.add('body-lock');
+    const hasVerticalScroll =
+      document.documentElement.scrollHeight > window.innerHeight;
+
+    document.body.style.overflow = 'hidden';
+    if (hasVerticalScroll) {
+      document.body.style.marginRight = `${BODY_SCROLL_LOCK_MARGIN}px`;
+      const header = document.querySelector('.header');
+      if (header && getComputedStyle(header).position === 'fixed') {
+        header.setAttribute(
+          'style',
+          `padding-right: ${BODY_SCROLL_LOCK_MARGIN}px`
+        );
+      }
+    }
+
     return () => {
-      document.body.classList.remove('body-lock');
-      if (isMobile) document.body.classList.remove('mobile');
+      document.body.style.cssText = '';
+      const header = document.querySelector('.header');
+      if (header && getComputedStyle(header).position === 'fixed') {
+        (header as HTMLElement).style.paddingRight = '';
+      }
     };
   }, [open]);
 
@@ -251,7 +262,7 @@ export default function AvatarField({
               exit={{ opacity: 0 }}
               onClick={(e) => {
                 e.stopPropagation();
-                setScale(IMAGE_PREVIEW_SCALE_MIN);
+                setScale(1);
                 setOpen(false);
               }}
             >

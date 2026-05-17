@@ -1,5 +1,6 @@
 import { ProfileForm } from '@/app/profile/_components';
 import envConfig from '@/config';
+import { OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '@/constants';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import type { Metadata } from 'next';
 
@@ -21,8 +22,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: '/logo.webp',
-        width: 1200,
-        height: 630,
+        width: OG_IMAGE_WIDTH,
+        height: OG_IMAGE_HEIGHT,
         alt: 'MovieHub CMS'
       }
     ]

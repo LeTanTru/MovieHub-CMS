@@ -8,7 +8,15 @@ import { Send } from 'lucide-react';
 import Image from 'next/image';
 import { useClickOutside, useSaveBase } from '@/hooks';
 import { commentSchema } from '@/schemaValidations';
-import { apiConfig, objectNames, queryKeys } from '@/constants';
+import {
+  EMOJI_ICON_SIZE,
+  EMOJI_PICKER_TOP_OFFSET,
+  EMOJI_PICKER_TRANSITION_DURATION,
+  EMOJI_PICKER_Z_INDEX,
+  apiConfig,
+  objectNames,
+  queryKeys
+} from '@/constants';
 import type { CommentBodyType, CommentResType } from '@/types';
 import { emojiIcon } from '@/assets';
 import { useCommentStore } from '@/store';
@@ -136,12 +144,12 @@ export default function CommentForm({
       picker.i18n = vi;
       Object.assign(picker.style, {
         position: 'absolute',
-        zIndex: '1000',
+        zIndex: String(EMOJI_PICKER_Z_INDEX),
         opacity: '0',
         visibility: 'hidden',
         right: '170px',
-        top: '5px',
-        transition: 'all 0.2s linear'
+        top: `${EMOJI_PICKER_TOP_OFFSET}px`,
+        transition: `all ${EMOJI_PICKER_TRANSITION_DURATION} linear`
       });
       picker.style.setProperty('--border-radius', '8px');
       picker.style.setProperty('--border-size', '0');
@@ -202,8 +210,8 @@ export default function CommentForm({
                   <Image
                     src={emojiIcon.src}
                     alt='Emoji icon'
-                    width={25}
-                    height={25}
+                    width={EMOJI_ICON_SIZE}
+                    height={EMOJI_ICON_SIZE}
                   />
                 </Button>
                 <Button

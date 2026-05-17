@@ -9,6 +9,8 @@ import { cn } from '@/lib';
 import type { BreadcrumbType } from '@/types';
 import type { HTMLAttributes } from 'react';
 
+const HEADER_HEIGHT_PX = 64;
+
 type PageWrapperProps = HTMLAttributes<HTMLElement> & {
   breadcrumbs: BreadcrumbType[];
   loading?: boolean;
@@ -33,9 +35,10 @@ export default function PageWrapper({
   return (
     <main
       id={scrollContainerId}
-      className={cn('bg-page-wrapper h-[calc(100vh-64px)]', {
+      className={cn('bg-page-wrapper', {
         'overflow-y-auto': !loading
       })}
+      style={{ height: `calc(100vh - ${HEADER_HEIGHT_PX}px)` }}
       {...props}
     >
       <div className='min-h-[calc(100vh-128px)]'>

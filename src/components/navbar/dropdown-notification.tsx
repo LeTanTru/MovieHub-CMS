@@ -1,8 +1,8 @@
 'use client';
 
 import {
-  apiConfig,
   NOTIFICATION_PAGE_SIZE,
+  apiConfig,
   objectNames,
   queryKeys
 } from '@/constants';
@@ -23,6 +23,8 @@ import { ConfirmModal } from '@/components/modal';
 import { invalidateQueries, notify } from '@/utils';
 import { logger } from '@/logger';
 import NotificationList from './notification-list';
+
+const NOTIFICATION_BADGE_MAX_DISPLAY = 9;
 
 export default function DropdownNotification() {
   const {
@@ -135,7 +137,9 @@ export default function DropdownNotification() {
           <Bell className='size-7' />
           {!!totalUnread && (
             <div className='absolute -top-1 right-0 flex size-4 items-center justify-center rounded-full bg-rose-500 px-2 text-[10px] font-medium text-white select-none'>
-              {totalUnread > 9 ? '9+' : totalUnread}
+              {totalUnread > NOTIFICATION_BADGE_MAX_DISPLAY
+                ? `${NOTIFICATION_BADGE_MAX_DISPLAY}+`
+                : totalUnread}
             </div>
           )}
         </div>

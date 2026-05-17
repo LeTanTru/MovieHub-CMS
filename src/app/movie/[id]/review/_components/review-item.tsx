@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import {
+  AVATAR_SIZE_COMMENT,
   apiConfig,
   GENDER_FEMALE,
   GENDER_MALE,
@@ -91,7 +92,7 @@ export default function ReviewItem({ review, onDelete }: ReviewItemProps) {
         <AvatarField
           src={renderImageUrl(review.author.avatarPath)}
           previewClassName='rounded-full'
-          size={40}
+          size={AVATAR_SIZE_COMMENT}
           alt={getLastWord(review.author.fullName)}
           className='mr-4'
         />

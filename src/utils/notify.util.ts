@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
 import { toast, ToastOptions, Bounce } from 'react-toastify';
 
+const TOAST_AUTO_CLOSE_MS = 3000;
+
 const defaultOptions: ToastOptions = {
   position: 'top-right',
-  autoClose: 3000,
+  autoClose: TOAST_AUTO_CLOSE_MS,
   hideProgressBar: false,
   closeOnClick: true,
   pauseOnHover: true,

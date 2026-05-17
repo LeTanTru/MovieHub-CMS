@@ -22,6 +22,8 @@ import {
 } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 
+const TEXTAREA_DEFAULT_ROWS = 8;
+
 type TextAreaFieldProps<T extends FieldValues> = {
   control: Control<T>;
   name: FieldPath<T>;
@@ -50,7 +52,7 @@ const TextAreaField = <T extends FieldValues>({
   disabled = false,
   readOnly = false,
   maxLength,
-  rows = 8,
+  rows = TEXTAREA_DEFAULT_ROWS,
   ref,
   formItemClassName,
   ...rest

@@ -4,6 +4,10 @@ import { Button } from '@/components/form';
 import { cn } from '@/lib';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+const PAGINATION_VISIBLE_THRESHOLD = 7;
+const PAGINATION_START_VISIBLE_COUNT = 5;
+const PAGINATION_END_OFFSET = 3;
+
 type PaginationProps = {
   totalPages: number;
   changePagination: (page: number) => void;
@@ -43,15 +47,15 @@ export default function Pagination({
   };
 
   const getVisiblePages = () => {
-    if (totalPages <= 7) {
+    if (totalPages <= PAGINATION_VISIBLE_THRESHOLD) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
-    if (currentPage <= 4) {
+    if (currentPage <= PAGINATION_START_VISIBLE_COUNT - 1) {
       return [1, 2, 3, 4, 5, '...', totalPages];
     }
 
-    if (currentPage >= totalPages - 3) {
+    if (currentPage >= totalPages - PAGINATION_END_OFFSET) {
       return [
         1,
         '...',
