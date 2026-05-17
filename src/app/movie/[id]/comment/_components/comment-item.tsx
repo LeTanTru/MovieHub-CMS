@@ -34,7 +34,6 @@ import {
 } from 'react-icons/ai';
 import CommentForm from './comment-form';
 import { m, AnimatePresence } from 'framer-motion';
-import { useCommentStore } from '@/store';
 import { useAuth, useInfiniteListBase, useValidatePermission } from '@/hooks';
 import { DotLoading } from '@/components/loading';
 import {
@@ -46,7 +45,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useChangeCommenStatusMutation } from '@/queries';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
-import { useShallow } from 'zustand/react/shallow';
 import { Badge } from '@/components/ui/badge';
 import { Element, scroller } from 'react-scroll';
 
@@ -64,6 +62,16 @@ type CommentItemProps = {
     level: number,
     rootId?: string
   ) => ReactNode;
+  openReply: (comment: CommentResType) => void;
+  closeReply: () => void;
+  setEditingComment: (comment: CommentResType | null) => void;
+  setOpenParentIds: (fn: (prev: string[]) => string[]) => void;
+  clearScrollTarget: () => void;
+  openParentIds: string[];
+  replyingComment: CommentResType | null;
+  editingComment: CommentResType | null;
+  targetCommentId: string | null;
+  targetParentId: string | null;
 };
 
 export default function CommentItem({
@@ -75,35 +83,19 @@ export default function CommentItem({
   onPin,
   onDelete,
   renderChildren,
-  onReplySuccess
+  onReplySuccess,
+  openReply,
+  closeReply,
+  setEditingComment,
+  setOpenParentIds,
+  clearScrollTarget,
+  openParentIds,
+  replyingComment,
+  editingComment,
+  targetCommentId,
+  targetParentId
 }: CommentItemProps) {
   const hasPermission = useValidatePermission();
-
-  const {
-    openParentIds,
-    replyingComment,
-    editingComment,
-    targetCommentId,
-    targetParentId,
-    setOpenParentIds,
-    clearScrollTarget,
-    openReply,
-    closeReply,
-    setEditingComment
-  } = useCommentStore(
-    useShallow((s) => ({
-      openParentIds: s.openParentIds,
-      replyingComment: s.replyingComment,
-      editingComment: s.editingComment,
-      targetCommentId: s.targetCommentId,
-      targetParentId: s.targetParentId,
-      setOpenParentIds: s.setOpenParentIds,
-      clearScrollTarget: s.clearScrollTarget,
-      openReply: s.openReply,
-      closeReply: s.closeReply,
-      setEditingComment: s.setEditingComment
-    }))
-  );
 
   const isActiveParent = openParentIds.includes(comment.id);
 
@@ -461,8 +453,7 @@ export default function CommentItem({
                       <Button
                         variant='ghost'
                         className={cn('size-5! p-0! hover:text-sky-500', {
-                          'like-pop [&_svg]:fill-sky-500 [&_svg]:stroke-sky-500':
-                            isLiked
+                          '[&_svg]:fill-sky-500 [&_svg]:stroke-sky-500': isLiked
                         })}
                         onClick={() =>
                           handleVote(comment.id, REACTION_TYPE_LIKE)
@@ -479,7 +470,7 @@ export default function CommentItem({
                       <Button
                         variant='ghost'
                         className={cn('size-5! p-0! hover:text-rose-500', {
-                          'dislike-pop [&_svg]:fill-rose-500 [&_svg]:stroke-rose-500':
+                          '[&_svg]:fill-rose-500 [&_svg]:stroke-rose-500':
                             isDisliked
                         })}
                         onClick={() =>

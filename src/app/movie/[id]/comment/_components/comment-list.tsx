@@ -1,6 +1,5 @@
 'use client';
 
-import './comment.css';
 import CommentInput from './comment-input';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { NoData } from '@/components/no-data';
@@ -42,11 +41,29 @@ export default function CommentList() {
     searchParams: { movieTitle }
   } = useQueryParams<{ movieTitle: string }>();
 
-  const { targetCommentId, targetParentId, setOpenParentIds } = useCommentStore(
+  const {
+    targetCommentId,
+    targetParentId,
+    setOpenParentIds,
+    clearScrollTarget,
+    openReply,
+    closeReply,
+    setEditingComment,
+    openParentIds,
+    replyingComment,
+    editingComment
+  } = useCommentStore(
     useShallow((s) => ({
       targetCommentId: s.targetCommentId,
       targetParentId: s.targetParentId,
-      setOpenParentIds: s.setOpenParentIds
+      setOpenParentIds: s.setOpenParentIds,
+      clearScrollTarget: s.clearScrollTarget,
+      openReply: s.openReply,
+      closeReply: s.closeReply,
+      setEditingComment: s.setEditingComment,
+      openParentIds: s.openParentIds,
+      replyingComment: s.replyingComment,
+      editingComment: s.editingComment
     }))
   );
 
@@ -165,6 +182,16 @@ export default function CommentList() {
         onDelete={() => handleDeleteComment(c)}
         onReplySuccess={handleReplySuccess}
         renderChildren={renderChildren}
+        openReply={openReply}
+        closeReply={closeReply}
+        setEditingComment={setEditingComment}
+        setOpenParentIds={setOpenParentIds}
+        clearScrollTarget={clearScrollTarget}
+        openParentIds={openParentIds}
+        replyingComment={replyingComment}
+        editingComment={editingComment}
+        targetCommentId={targetCommentId}
+        targetParentId={targetParentId}
       />
     ));
 
