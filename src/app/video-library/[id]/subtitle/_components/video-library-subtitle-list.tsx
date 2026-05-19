@@ -50,7 +50,6 @@ export default function VideoLibrarySubtitleList() {
       excludeFromQueryFilter: ['name']
     }
   });
-  console.log('🚀 ~ VideoLibrarySubtitleList ~ subtitleList:', subtitleList);
 
   return (
     <PageWrapper

@@ -6,8 +6,10 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export const useProfileQuery = (enabled: boolean = false) => {
   return useQuery({
     queryKey: [queryKeys.PROFILE],
-    queryFn: () =>
-      http.get<ApiResponse<ProfileResType>>(apiConfig.account.getProfile),
+    queryFn: ({ signal }) =>
+      http.get<ApiResponse<ProfileResType>>(apiConfig.account.getProfile, {
+        signal
+      }),
     enabled: enabled,
     select: (data) => data.data
   });

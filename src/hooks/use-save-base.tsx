@@ -67,10 +67,11 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
 
   const itemQuery = useQuery({
     queryKey: [queryKey, pathParams],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       apiConfig.getById
         ? http.get<ApiResponse<R>>(apiConfig.getById, {
-            pathParams
+            pathParams,
+            signal
           })
         : Promise.resolve({ data: undefined } as any),
     enabled: !isCreate,

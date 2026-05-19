@@ -11,13 +11,14 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export const useVideoLibraryQuery = (id: string) => {
   return useQuery({
     queryKey: [queryKeys.VIDEO_LIBRARY, id],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       http.get<ApiResponse<VideoLibraryResType>>(
         apiConfig.videoLibrary.getById,
         {
           pathParams: {
             id
-          }
+          },
+          signal
         }
       ),
     enabled: !!id,

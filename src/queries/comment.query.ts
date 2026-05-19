@@ -12,11 +12,12 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export const useVoteListCommentQuery = ({ movieId }: { movieId: string }) => {
   return useQuery({
     queryKey: [queryKeys.VOTE_COMMENT, movieId],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       http.get<ApiResponse<CommentVoteResType[]>>(apiConfig.comment.voteList, {
         pathParams: {
           movieId
-        }
+        },
+        signal
       }),
     enabled: !!movieId,
     select: (data) => data.data

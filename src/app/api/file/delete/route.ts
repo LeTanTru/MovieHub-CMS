@@ -3,8 +3,19 @@ import { s3Client, BUCKET_NAME } from '@/lib/s3';
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { HttpStatusCode } from 'axios';
 import { logger } from '@/logger';
+import { getCookie } from '@/utils';
+import { storageKeys } from '@/constants';
 
 export async function DELETE(req: NextRequest) {
+  const accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
+
+  if (!accessToken) {
+    return NextResponse.json(
+      { message: 'Unauthorized' },
+      { status: HttpStatusCode.Unauthorized }
+    );
+  }
+
   try {
     const { objectName } = await req.json();
 
@@ -45,5 +56,3 @@ export async function DELETE(req: NextRequest) {
     );
   }
 }
-
-export { DELETE as POST };

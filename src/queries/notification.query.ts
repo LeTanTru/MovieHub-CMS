@@ -10,9 +10,10 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export const useCountUnreadNotificationQuery = () => {
   return useQuery({
     queryKey: [queryKeys.UNREAD_NOTIFICATION_COUNT],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       http.get<ApiResponse<UnreadCountNotificationResType>>(
-        apiConfig.notification.countUnread
+        apiConfig.notification.countUnread,
+        { signal }
       ),
     select: (data) => data.data
   });

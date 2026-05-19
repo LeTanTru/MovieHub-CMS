@@ -12,11 +12,12 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export const useServerConfigListQuery = (params?: ServerConfigSearchType) => {
   return useQuery({
     queryKey: [queryKeys.SERVER_CONFIG_LIST],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       http.get<ApiResponseList<ServerConfigResType>>(
         apiConfig.serverConfig.autoComplete,
         {
-          params
+          params,
+          signal
         }
       ),
     select: (data) => data.data

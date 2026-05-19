@@ -216,13 +216,14 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
   // Regular query for pagination
   const listQuery = useQuery({
     queryKey: [`${queryKey}-list`, queryFilter],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       http.get<ApiResponseList<T>>(apiConfig.getList, {
         params: {
           ...queryFilter,
           ...handlers.additionalParams()
         },
-        pathParams: { ...handlers.additionalPathParams() }
+        pathParams: { ...handlers.additionalPathParams() },
+        signal
       }),
     enabled,
     placeholderData: keepPreviousData
