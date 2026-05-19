@@ -62,9 +62,9 @@ const eslintConfig = [
           caughtErrorsIgnorePattern: '^_'
         }
       ],
-      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
-      'react/jsx-no-target-blank': 'off',
+      'react/jsx-no-target-blank': 'error',
       'react/prop-types': 0,
       'react/display-name': 0,
       'space-before-blocks': ['error', 'always'],
