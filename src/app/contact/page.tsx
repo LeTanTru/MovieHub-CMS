@@ -115,6 +115,7 @@ export default function ContactPage() {
                 href='https://t.me/congdongrophim'
                 title='Telegram'
                 target='_blank'
+                rel='noopener noreferrer'
               >
                 https://t.me/congdongmoviehub
               </Link>
@@ -137,6 +138,7 @@ export default function ContactPage() {
                 href='https://discord.gg/rophim'
                 title='Discord'
                 target='_blank'
+                rel='noopener noreferrer'
               >
                 https://discord.gg/moviehub
               </Link>
@@ -159,6 +161,7 @@ export default function ContactPage() {
                 href='https://www.facebook.com/rogiaitri'
                 title='Facebook'
                 target='_blank'
+                rel='noopener noreferrer'
               >
                 https://www.facebook.com/moviehub
               </Link>
@@ -181,6 +184,7 @@ export default function ContactPage() {
                 href='https://www.instagram.com/rophimtv'
                 title='Instagram'
                 target='_blank'
+                rel='noopener noreferrer'
               >
                 https://www.instagram.com/moviehub
               </Link>
@@ -203,6 +207,7 @@ export default function ContactPage() {
                 href='https://x.com/rophimtv'
                 title='X'
                 target='_blank'
+                rel='noopener noreferrer'
               >
                 https://x.com/moviehub
               </Link>

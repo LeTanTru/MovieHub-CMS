@@ -21,11 +21,12 @@ export const useMovieDistributionQuery = ({
 }) => {
   return useQuery({
     queryKey: [queryKeys.MOVIE_DISTRIBUTION_STATISTICS, params],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       http.get<ApiResponse<MovieDistributionResType[]>>(
         apiConfig.statistics.movieDistribution,
         {
-          params
+          params,
+          signal
         }
       ),
     enabled,
@@ -42,9 +43,10 @@ export const useOverviewQuery = ({
 }) => {
   return useQuery({
     queryKey: [queryKeys.OVERVIEW_STATISTICS, params],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       http.get<ApiResponse<OverviewResType>>(apiConfig.statistics.overview, {
-        params
+        params,
+        signal
       }),
     enabled,
     select: (data) => data.data
@@ -60,11 +62,12 @@ export const useTopMoviesQuery = ({
 }) => {
   return useQuery({
     queryKey: [queryKeys.TOP_MOVIES_STATISTICS, params],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       http.get<ApiResponseList<TopMoviesResType>>(
         apiConfig.statistics.topMovies,
         {
-          params
+          params,
+          signal
         }
       ),
     enabled,

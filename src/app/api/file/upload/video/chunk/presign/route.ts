@@ -4,9 +4,21 @@ import { UploadPartCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { logger } from '@/logger';
 import { HttpStatusCode } from 'axios';
+import { getCookie } from '@/utils';
+import { storageKeys } from '@/constants';
+import { z } from 'zod';
+import { presignSchema } from '../validation';
 
 export async function POST(req: NextRequest) {
-  // Validate config before parsing body
+  const accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
+
+  if (!accessToken) {
+    return NextResponse.json(
+      { message: 'Unauthorized' },
+      { status: HttpStatusCode.Unauthorized }
+    );
+  }
+
   if (!BUCKET_NAME) {
     logger.error('[PRESIGN_ERROR]', 'Missing BUCKET_NAME configuration');
     return NextResponse.json(
@@ -15,27 +27,28 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { objectName, uploadId, partNumber } = await req.json();
+  const body = await req.json();
+  const parsed = presignSchema.safeParse(body);
 
-  // Validate inputs
-  if (!objectName || !uploadId || !partNumber) {
-    logger.error('[PRESIGN_ERROR]', 'Missing required parameters:', {
-      objectName,
-      uploadId,
-      partNumber
-    });
+  if (!parsed.success) {
+    logger.error(
+      '[PRESIGN_ERROR]',
+      'Invalid parameters:',
+      z.treeifyError(parsed.error)
+    );
     return NextResponse.json(
-      { error: 'Missing required parameters' },
+      { error: 'Invalid parameters', details: z.treeifyError(parsed.error) },
       { status: HttpStatusCode.BadRequest }
     );
   }
+
+  const { objectName, uploadId, partNumber } = parsed.data;
 
   logger.info(
     `[Presign] Creating presigned URL - Bucket: ${BUCKET_NAME}, Key: ${objectName}, Part: ${partNumber}`
   );
 
   try {
-    // Create presigned URL for uploading a part
     const command = new UploadPartCommand({
       Bucket: BUCKET_NAME,
       Key: objectName,
@@ -43,7 +56,7 @@ export async function POST(req: NextRequest) {
       PartNumber: partNumber
     });
 
-    const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+    const url = await getSignedUrl(s3Client, command, { expiresIn: 300 });
 
     logger.info(`[Presign] Success - Part ${partNumber}`);
 

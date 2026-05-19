@@ -6,10 +6,11 @@
 yarn              # Install deps
 yarn dev          # Dev server (port 3001, Turbopack)
 yarn clean-dev    # Clear .next then dev
-yarn build        # Production build
+yarn build        # Production build (output: standalone)
 yarn start        # Production server (port 3001)
 yarn lint         # ESLint
 yarn format       # Prettier write all
+ANALYZE=true yarn build  # Bundle analysis
 ```
 
 **No test framework.** Do not invent tests.
@@ -18,18 +19,20 @@ yarn format       # Prettier write all
 
 ## Architecture
 
-- App Router CMS (`src/app`). Providers order: `ThemeProvider` → `QueryProvider` → `AppProvider` → `PermissionGuard`.
+- Next.js 16 App Router CMS (`src/app`). React Compiler enabled.
+- Providers order: `ThemeProvider` → `QueryProvider` → `AppProvider` → `PermissionGuard`.
 - `QueryProvider`: `staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`.
+- Auth session: `gcTime: 0`, `refetchOnMount: 'always'` (see `src/queries/auth.query.ts`).
 - API endpoints + permissions: `src/constants/api-config.ts`
 - Routes + permissions: `src/routes/route.ts`
-- HTTP layer: `src/utils/http.util.ts` (auto-injects auth, refresh-token rotation, dedup queue)
+- HTTP layer: `src/utils/http.util.ts` (10s timeout, auto-injects auth, refresh-token rotation, dedup queue, rethrows errors)
 - Access: `PermissionGuard` enforces route-level auth/permission
 
 ## Environment Variables
 
-Config-driven env validation: `src/config.ts` (Zod schema). Add new env keys there and update `.env.example`.
+Config-driven env validation: `src/config.ts` (Zod v4, uses `.safeParse()`). Add new env keys there and update `.env.example`.
 
-**Public (NEXT*PUBLIC*\*)**
+**Public (`NEXT_PUBLIC_*`)**
 | Variable | Description |
 |---|---|
 | `NEXT_PUBLIC_NODE_ENV` | Environment mode |
@@ -49,16 +52,12 @@ Config-driven env validation: `src/config.ts` (Zod schema). Add new env keys the
 - `APP_USERNAME`, `APP_PASSWORD` — OAuth credentials
 - `GRANT_TYPE`, `GRANT_TYPE_REFRESH_TOKEN` — OAuth grant types
 
-**Minio (S3-compatible storage)**
-
-- `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`, `MINIO_UPLOAD_FOLDER`, `MINIO_UPLOAD_PREFIX`
-
 ## Stores
 
-- `useAuthStore` (Zustand): profile, auth state
-- `useAppLoadingStore`: global loading state
+All stores exported from `src/store/index.ts`: `useAuthStore`, `useCommentStore`, `useSidebarStore`, `useVideoLibraryStore`.
+
 - Use `useShallow` for selector optimization
-- **Store updates in render**: If a parent component needs derived state, use `useLayoutEffect`, not direct render-time calls (causes "update while rendering" error)
+- **Store updates in render**: Compute derived state during render. For store sync in effects, use `useLayoutEffect`, not `useEffect` (causes "update while rendering" error)
 
 ## React Patterns
 
@@ -91,6 +90,7 @@ Config-driven env validation: `src/config.ts` (Zod schema). Add new env keys the
 
 - `BaseTable` and `DragDropTable` use `w-auto min-w-fit` on `<Table>` to prevent column collapse on resize.
 - The `Table` UI component (`src/components/ui/table.tsx`) does NOT force `w-full` on the `<table>` element — columns size to content and the wrapper handles overflow scrolling.
+- `DragDropTable` uses `EMPTY_DATA_SOURCE` constant to avoid array literal recreation.
 
 ## ESLint Rules (Common Issues)
 
@@ -106,7 +106,7 @@ Config-driven env validation: `src/config.ts` (Zod schema). Add new env keys the
 
 - `@/*` path aliases, never deep relative
 - `'use client'` for browser APIs/hooks
-- Zod v4: `.check()` for validators
+- Zod v4: `.safeParse()` for validation (not `.check()`)
 - Prefix unused: `_args`, `_var`
 - Unused array index in map: `key={index}` satisfies `react/jsx-key`
 - `cn()` from `@/lib/utils` for conditional classes

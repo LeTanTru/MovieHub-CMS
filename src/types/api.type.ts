@@ -22,6 +22,7 @@ export type Payload = {
   body?: any;
   options?: AxiosRequestConfig;
   authorization?: string;
+  signal?: AbortSignal;
 };
 
 export type ApiResponse<T> = {

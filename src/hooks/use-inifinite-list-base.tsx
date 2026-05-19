@@ -213,7 +213,7 @@ const useInfiniteListBase = <
   // Infinite Query for infinite scroll
   const infiniteQuery = useInfiniteQuery({
     queryKey: [`${queryKey}-infinite`, queryFilter],
-    queryFn: ({ pageParam = 0 }) =>
+    queryFn: ({ pageParam = 0, signal }) =>
       http.get<ApiResponseList<T>>(apiConfig.getList, {
         params: {
           ...queryFilter,
@@ -221,7 +221,8 @@ const useInfiniteListBase = <
           size: pageSize,
           ...handlers.additionalParams()
         },
-        pathParams: { ...handlers.additionalPathParams() }
+        pathParams: { ...handlers.additionalPathParams() },
+        signal
       }),
     getNextPageParam: (lastPage, allPages) => {
       const currentPage = allPages.length - 1;

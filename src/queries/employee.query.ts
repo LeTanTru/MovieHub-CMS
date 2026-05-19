@@ -16,8 +16,10 @@ export const useChangeEmployeeStatusMutation = () => {
 export const useEmployeeProfileQuery = (enabled: boolean = false) => {
   return useQuery({
     queryKey: [queryKeys.EMPLOYEE_PROFILE],
-    queryFn: () =>
-      http.get<ApiResponse<ProfileResType>>(apiConfig.employee.getProfile),
+    queryFn: ({ signal }) =>
+      http.get<ApiResponse<ProfileResType>>(apiConfig.employee.getProfile, {
+        signal
+      }),
     enabled,
     select: (data) => data.data
   });

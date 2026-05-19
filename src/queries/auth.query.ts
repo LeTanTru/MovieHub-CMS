@@ -11,8 +11,10 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export const useSession = () => {
   return useQuery({
     queryKey: [queryKeys.SESSION],
-    queryFn: () =>
-      http.get<ApiResponse<SessionResType | null>>(apiConfig.api.auth.session),
+    queryFn: ({ signal }) =>
+      http.get<ApiResponse<SessionResType | null>>(apiConfig.api.auth.session, {
+        signal
+      }),
     select: (data) => data.data,
     refetchOnMount: 'always',
     gcTime: 0

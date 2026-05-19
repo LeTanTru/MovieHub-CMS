@@ -12,11 +12,12 @@ export const useGroupPermissionListQuery = (
 ) => {
   return useQuery({
     queryKey: [queryKeys.GROUP_PERMISSION_LIST, params],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       http.get<ApiResponseList<GroupPermissionResType>>(
         apiConfig.groupPermission.getList,
         {
-          params
+          params,
+          signal
         }
       ),
     select: (data) => data.data

@@ -1,5 +1,5 @@
 # Stage 1: Dependencies
-FROM node:20-alpine AS deps
+FROM node:20.11-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -7,7 +7,7 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --prefer-offline && yarn cache clean
 
 # Stage 2: Builder
-FROM node:20-alpine AS builder
+FROM node:20.11-alpine AS builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
@@ -42,7 +42,7 @@ ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
 RUN yarn config set ignore-scripts true && yarn build
 
 # Stage 3: Runner
-FROM node:20-alpine AS runner
+FROM node:20.11-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production

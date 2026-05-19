@@ -4,17 +4,37 @@ import { CreateMultipartUploadCommand } from '@aws-sdk/client-s3';
 import { randomBytes } from 'crypto';
 import { logger } from '@/logger';
 import { HttpStatusCode } from 'axios';
+import { getCookie } from '@/utils';
+import { storageKeys } from '@/constants';
+import { z } from 'zod';
+import { initSchema } from '../validation';
 
 export async function POST(req: NextRequest) {
-  const { mimeType } = await req.json();
+  const accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
 
-  if (!mimeType || !mimeType.startsWith('video/')) {
-    logger.error('[INIT_UPLOAD_ERROR]', 'Invalid mime type:', mimeType);
+  if (!accessToken) {
     return NextResponse.json(
-      { error: 'Invalid mime type' },
+      { message: 'Unauthorized' },
+      { status: HttpStatusCode.Unauthorized }
+    );
+  }
+
+  const body = await req.json();
+  const parsed = initSchema.safeParse(body);
+
+  if (!parsed.success) {
+    logger.error(
+      '[INIT_UPLOAD_ERROR]',
+      'Invalid parameters:',
+      z.treeifyError(parsed.error)
+    );
+    return NextResponse.json(
+      { error: 'Invalid parameters', details: z.treeifyError(parsed.error) },
       { status: HttpStatusCode.BadRequest }
     );
   }
+
+  const { mimeType } = parsed.data;
 
   const randomName = randomBytes(10).toString('hex');
   const ext =

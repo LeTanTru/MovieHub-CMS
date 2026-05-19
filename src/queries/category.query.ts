@@ -6,13 +6,14 @@ import { useQuery } from '@tanstack/react-query';
 export const useCategoryListQuery = () => {
   return useQuery({
     queryKey: [queryKeys.CATEGORY_LIST],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       http.get<ApiResponseList<CategoryResType>>(
         apiConfig.category.autoComplete,
         {
           params: {
             size: MAX_PAGE_SIZE
-          }
+          },
+          signal
         }
       ),
     select: (data) => data.data

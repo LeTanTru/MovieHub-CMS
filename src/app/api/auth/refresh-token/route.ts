@@ -42,7 +42,7 @@ export async function POST() {
       path: '/',
       httpOnly: true,
       sameSite: 'lax',
-      secure: envConfig.NEXT_PUBLIC_NODE_ENV === 'production',
+      secure: envConfig.NEXT_PUBLIC_NODE_ENV !== 'development',
       maxAge: maxAge
     });
 

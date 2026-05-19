@@ -29,6 +29,7 @@ function buildRouteCache(obj: Record<string, any>) {
     const item = obj[key];
     if (item?.path) {
       const regexString = item.path
+        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
         .replace(/:[^/]+/g, '[^/]+')
         .replace(/\//g, '\\/');
       routeMatcherCache.push({
@@ -69,6 +70,13 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
 
   const isPublicRoute = matchedRoute?.auth === false;
 
+  const isSafeInternalPath = (path: unknown): path is string => {
+    if (typeof path !== 'string' || !path.startsWith('/')) return false;
+    if (path.startsWith('//')) return false;
+    if (/^(javascript|data|vbscript):/i.test(path)) return false;
+    return true;
+  };
+
   useEffect(() => {
     // non-existent route → show 404
     if (matchedRoute === null) return;
@@ -95,7 +103,7 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
       if (pathname === route.home.path || pathname === route.login.path) {
         const pathNoLogin = getData(storageKeys.PATH_NO_LOGIN);
         let targetPath =
-          (pathNoLogin && pathNoLogin !== route.home.path
+          (isSafeInternalPath(pathNoLogin) && pathNoLogin !== route.home.path
             ? pathNoLogin
             : firstActiveRoute) || route.profile.savePage.path;
 

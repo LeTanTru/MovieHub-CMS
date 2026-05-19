@@ -11,11 +11,12 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export const usePermissionListQuery = (params?: PermissionSearchType) => {
   return useQuery({
     queryKey: [queryKeys.PERMISSION_LIST, params],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       http.get<ApiResponseList<PermissionResType>>(
         apiConfig.permission.getList,
         {
-          params
+          params,
+          signal
         }
       ),
     select: (data) => data.data
