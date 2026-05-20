@@ -14,10 +14,9 @@ const defaultOptions: ToastOptions = {
   theme: 'light',
   transition: Bounce,
   className: `
-    whitespace-nowrap
     pr-10!
     min-w-80!
-    max-w-300!
+    max-w-120!
     w-fit!
   `
 };

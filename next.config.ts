@@ -5,6 +5,22 @@ import envConfig from './src/config';
 
 const nextConfig: NextConfig = {
   async headers() {
+    const isDev = process.env.NODE_ENV !== 'production';
+
+    const cspHeader = `
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ''} https://cdn.tiny.cloud https://tinymce-swart.vercel.app blob:;
+      style-src 'self' 'unsafe-inline' https://tinymce-swart.vercel.app;
+      img-src 'self' data: blob: https:;
+      font-src 'self';
+      media-src 'self' blob: https:;
+      connect-src 'self' https: wss:;
+      worker-src 'self' blob:;
+      frame-ancestors 'none';
+    `
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+
     return [
       {
         source: '/(.*)',
@@ -28,6 +44,10 @@ const nextConfig: NextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), payment=()'
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: cspHeader
           }
         ]
       }

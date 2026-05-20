@@ -428,7 +428,8 @@ const apiConfig = defineApiConfig({
     deleteObject: {
       baseUrl: `/api/file/delete`,
       method: 'DELETE',
-      headers: baseHeader
+      headers: baseHeader,
+      permissionCode: 'FILE_U_D'
     }
   },
   group: {

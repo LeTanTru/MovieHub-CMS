@@ -21,6 +21,7 @@ export type VideoLibraryResType = {
   modifiedDate: string;
   name: string;
   outroStart: number;
+  reason: string;
   relativeContentPath: string;
   sourceType: number;
   spriteUrl: string;
