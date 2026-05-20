@@ -28,6 +28,7 @@ import {
   MOVIE_TYPE_SERIES,
   MOVIE_TYPE_SINGLE,
   MOVIE_TYPE_TRAILER,
+  NO_SPEECH,
   PERSON_KIND_ACTOR,
   PERSON_KIND_DIRECTOR,
   SEND_NOTIFICATION_FOR_ALL_USERS,
@@ -1764,6 +1765,10 @@ export const videoLibraryErrorReasons = [
   {
     value: GENERATE_VTT_FAILED,
     label: 'Tạo file VTT thất bại'
+  },
+  {
+    value: NO_SPEECH,
+    label: 'Video không có phụ đề'
   }
 ];
 

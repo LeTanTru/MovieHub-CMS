@@ -5,8 +5,8 @@ import Link from 'next/link';
 export default function Footer() {
   return (
     <footer className='bg-neutral-200 px-12.5 py-4 text-center text-sm text-black/88'>
-      <strong>CMS</strong> - © Copyright {new Date().getFullYear()}. Tất cả bản
-      quyền đã được bảo lưu.
+      <strong>CMS</strong> - © Copyright&nbsp;{new Date().getFullYear()}. Tất cả
+      bản quyền đã được bảo lưu.
       <div className='mt-1 flex items-center justify-center gap-x-2'>
         <Link
           href={route.contact.path}

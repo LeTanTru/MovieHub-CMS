@@ -20,7 +20,9 @@ import {
   VIDEO_LIBRARY_STATE_ERROR,
   videoLibraryErrorReasons,
   AUDIO_STATE_COMPLETE,
-  VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
+  VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
+  AUDIO_STATE_PROCESSING,
+  NO_SPEECH
 } from '@/constants';
 import {
   useDisclosure,
@@ -88,7 +90,7 @@ export default function VideoLibraryList() {
   const { mutateAsync: retryProcessMutate, isPending: retryProcessLoading } =
     useRetryProcessVideoLibraryMutation();
 
-  const { mutateAsync: processAudioMutate, isPending: processAudioLoading } =
+  const { mutateAsync: processAudioMutate } =
     useProcessAudioVideoLibraryMutation();
 
   const { data, pagination, loading, handlers } = useListBase<
@@ -240,15 +242,30 @@ export default function VideoLibraryList() {
             );
           };
 
+          const isNoSpeech = record.reason === NO_SPEECH;
+
           return (
-            <ToolTip title='Tách audio' sideOffset={0}>
+            <ToolTip
+              title={isNoSpeech ? 'Video không có giọng nói' : 'Tách audio'}
+              sideOffset={0}
+            >
               <span>
                 <Button
-                  disabled={processAudioLoading}
+                  disabled={
+                    (record.audioState === AUDIO_STATE_PROCESSING &&
+                      record.state === VIDEO_LIBRARY_STATE_COMPLETE) ||
+                    isNoSpeech
+                  }
                   onClick={() => handleProcessAudio(record)}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   variant='ghost'
                   {...buttonProps}
+                  loading={
+                    record.audioState === AUDIO_STATE_PROCESSING &&
+                    record.state === VIDEO_LIBRARY_STATE_COMPLETE &&
+                    !isNoSpeech
+                  }
+                  iconClassName='stroke-main-color size-4'
                 >
                   <AudioLines className='text-main-color size-4' />
                 </Button>
@@ -306,10 +323,11 @@ export default function VideoLibraryList() {
     {
       title: 'Tình trạng',
       dataIndex: 'state',
-      render: (value) => {
+      render: (value, record) => {
         const reasonLabel = videoLibraryErrorReasons.find(
-          (reason) => reason.value === value
+          (reason) => reason.value === record.reason
         )?.label;
+
         return value === VIDEO_LIBRARY_STATE_PROCESSING ? (
           <ToolTip title='Đang xử lý'>
             <div>
@@ -336,7 +354,9 @@ export default function VideoLibraryList() {
     handlers.renderActionColumn({
       actions: {
         watchVideo: true,
-        editSubtitle: (record) => record.audioState === AUDIO_STATE_COMPLETE,
+        editSubtitle: (record) =>
+          record.audioState === AUDIO_STATE_COMPLETE &&
+          record.state === VIDEO_LIBRARY_STATE_COMPLETE,
         retryProcess: (record) =>
           record.state === VIDEO_LIBRARY_STATE_ERROR &&
           handlers.hasPermission({
@@ -346,7 +366,7 @@ export default function VideoLibraryList() {
           }),
         processAudio: (record) =>
           record.audioState !== AUDIO_STATE_COMPLETE &&
-          record.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL &&
+          record.state === VIDEO_LIBRARY_STATE_COMPLETE &&
           handlers.hasPermission({
             requiredPermissions: [
               apiConfig.videoLibrary.processAudio.permissionCode

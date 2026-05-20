@@ -1,12 +1,9 @@
 import { ImageField } from '@/components/form';
-import { VIDEO_LIBRARY_STATE_COMPLETE } from '@/constants';
 import { route } from '@/routes';
 import { useVideoLibraryStore } from '@/store';
 import { ConvertVideoNotificationType, NotificationResType } from '@/types';
 import { convertUTCToLocal, parseJSON, renderImageUrl, timeAgo } from '@/utils';
 import Link from 'next/link';
-import { FaExclamationTriangle } from 'react-icons/fa';
-import { FaCircleCheck } from 'react-icons/fa6';
 import { useMemo } from 'react';
 
 export default function ConvertVideoBody({
@@ -43,11 +40,6 @@ export default function ConvertVideoBody({
           <h3 className='font-medium' title={notification.title}>
             {notification.title}
           </h3>
-          {body?.state === VIDEO_LIBRARY_STATE_COMPLETE ? (
-            <FaCircleCheck className='size-4.5 text-emerald-500' />
-          ) : (
-            <FaExclamationTriangle className='size-4.5 text-rose-500' />
-          )}
         </div>
         <div
           className='text-muted-foreground shrink-0 text-xs'
