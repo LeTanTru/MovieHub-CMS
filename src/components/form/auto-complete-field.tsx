@@ -383,7 +383,7 @@ export default function AutoCompleteField<
                             src={emptyData.src}
                             width={EMPTY_STATE_IMAGE_WIDTH}
                             height={EMPTY_STATE_IMAGE_HEIGHT}
-                            className='mx-auto'
+                            className='mx-auto h-auto'
                             alt={notFoundContent as string}
                           />
                           {notFoundContent}

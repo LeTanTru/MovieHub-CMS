@@ -186,6 +186,7 @@ export default function BaseTable<T extends Record<any, any>>({
                             alt='Không có dữ liệu'
                             width={150}
                             height={50}
+                            className='h-auto'
                           />
                           <span>Không có dữ liệu</span>
                         </div>

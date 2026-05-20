@@ -4,7 +4,7 @@ import { CreateMultipartUploadCommand } from '@aws-sdk/client-s3';
 import { randomBytes } from 'crypto';
 import { logger } from '@/logger';
 import { HttpStatusCode } from 'axios';
-import { getCookie } from '@/utils';
+import { decodeJwt, getCookie } from '@/utils';
 import { storageKeys } from '@/constants';
 import { z } from 'zod';
 import { initSchema } from '../validation';
@@ -46,6 +46,16 @@ export async function POST(req: NextRequest) {
           ? 'ogg'
           : 'mp4';
 
+  let userId = 'unknown';
+  try {
+    const payload = decodeJwt(accessToken);
+    if (payload) {
+      userId = payload?.user_id || payload?.user_name || 'unknown';
+    }
+  } catch (err) {
+    logger.error('[JWT_DECODE_ERROR]', err);
+  }
+
   const objectName = `${process.env.MINIO_UPLOAD_FOLDER}/${process.env.MINIO_UPLOAD_PREFIX}_${randomName}.${ext}`;
 
   try {
@@ -54,7 +64,8 @@ export async function POST(req: NextRequest) {
       new CreateMultipartUploadCommand({
         Bucket: BUCKET_NAME,
         Key: objectName,
-        ContentType: mimeType
+        ContentType: mimeType,
+        Tagging: `uploadedBy=${userId}`
       })
     );
     return NextResponse.json(

@@ -1,9 +1,8 @@
 import { logger } from '@/logger';
+import { JwtType } from '@/types';
 import { jwtDecode } from 'jwt-decode';
 
-export const decodeJwt = (
-  token: string
-): { exp: number; authorities: string[] } | null => {
+export const decodeJwt = (token: string): JwtType | null => {
   try {
     return jwtDecode(token);
   } catch (error) {

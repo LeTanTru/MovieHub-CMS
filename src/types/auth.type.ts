@@ -49,3 +49,16 @@ export type RefreshTokenResType = {
   additional_info: string;
   jti: string;
 };
+
+export type JwtType = {
+  user_kind: number;
+  user_id: string;
+  grant_type: string;
+  additional_info: string;
+  user_name: string;
+  scope: string[];
+  exp: number;
+  authorities: string[];
+  jti: string;
+  client_id: string;
+};

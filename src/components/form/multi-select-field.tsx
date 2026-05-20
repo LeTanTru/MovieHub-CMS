@@ -391,7 +391,7 @@ export default function MultiSelectField<
                           src={emptyData.src}
                           width={120}
                           height={50}
-                          className='mx-auto mb-2'
+                          className='mx-auto mb-2 h-auto'
                           alt={notFoundContent as string}
                         />
                         {notFoundContent}

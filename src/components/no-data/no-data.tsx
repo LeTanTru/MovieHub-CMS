@@ -22,7 +22,13 @@ export default function NoData({
         className
       )}
     >
-      <Image src={emptyData.src} width={width} height={height} alt={content} />
+      <Image
+        src={emptyData.src}
+        width={width}
+        height={height}
+        alt={content}
+        className='h-auto'
+      />
       <p>{content}</p>
     </div>
   );
