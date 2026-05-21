@@ -4,13 +4,9 @@ import { mqttCMDs, mqttTopics, queryKeys } from '@/constants';
 import { useAuth, useMqtt } from '@/hooks';
 import { getMqttClient } from '@/lib/mqtt';
 import { logger } from '@/logger';
+import { mqttMessageSchema } from '@/schemaValidations';
 import { NotificationResType } from '@/types';
-import {
-  generateMqttTopic,
-  invalidateQueries,
-  notify,
-  parseJSON
-} from '@/utils';
+import { generateMqttTopic, invalidateQueries, notify } from '@/utils';
 import { useEffect } from 'react';
 
 export default function MqttProvider() {
@@ -67,10 +63,20 @@ export default function MqttProvider() {
   // Receive message from CMS
   useEffect(() => {
     const onMessage = (topic: string, message: Buffer) => {
-      logger.info(
-        `[MQTT] Received MQTT message on topic: ${topic}`,
-        parseJSON(message.toString())
-      );
+      try {
+        const raw = JSON.parse(message.toString());
+        const parsed = mqttMessageSchema.safeParse(raw);
+
+        if (parsed.success) {
+          logger.info(`[MQTT] Received MQTT message on topic: ${topic}`, {
+            cmd: parsed.data.cmd
+          });
+        } else {
+          logger.warn(`[MQTT] Received invalid message on topic: ${topic}`);
+        }
+      } catch {
+        logger.warn(`[MQTT] Received unparseable message on topic: ${topic}`);
+      }
     };
 
     client.on('message', onMessage);

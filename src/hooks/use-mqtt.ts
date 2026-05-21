@@ -1,5 +1,6 @@
 import { getMqttClient } from '@/lib/mqtt';
 import { logger } from '@/logger';
+import { mqttMessageSchema } from '@/schemaValidations';
 import { useEffect, useRef } from 'react';
 
 type UseMqttType<T> = {
@@ -18,14 +19,21 @@ const useMqtt = <T>({ topic, cmd, callback }: UseMqttType<T>) => {
       if (incomingTopic !== topic) return;
 
       try {
-        const parsedData: { cmd: string; data: T } = JSON.parse(
-          message.toString()
-        );
-        if (parsedData.cmd === cmd) {
-          callbackRef.current(parsedData.data);
+        const raw = JSON.parse(message.toString());
+        const parsed = mqttMessageSchema.safeParse(raw);
+
+        if (!parsed.success) {
+          logger.warn(
+            `[MQTT_WARNING] Invalid message schema on topic ${topic}`
+          );
+          return;
+        }
+
+        if (parsed.data.cmd === cmd) {
+          callbackRef.current(parsed.data.data as T);
         } else {
           logger.warn(
-            `[MQTT_WARNING] Received ${parsedData.cmd}, expected: ${cmd}, message: ${message}`
+            `[MQTT_WARNING] Received ${parsed.data.cmd}, expected: ${cmd}`
           );
         }
       } catch (error) {

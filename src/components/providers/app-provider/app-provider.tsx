@@ -40,16 +40,23 @@ type AppProviderProps = { children: ReactNode };
 export default function AppProvider({ children }: AppProviderProps) {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { accessToken, userKind, setAccessToken, setUserKind, setProfile } =
-    useAuthStore(
-      useShallow((s) => ({
-        accessToken: s.accessToken,
-        userKind: s.userKind,
-        setAccessToken: s.setAccessToken,
-        setUserKind: s.setUserKind,
-        setProfile: s.setProfile
-      }))
-    );
+  const {
+    accessToken,
+    userKind,
+    setAccessToken,
+    setCsrfToken,
+    setProfile,
+    setUserKind
+  } = useAuthStore(
+    useShallow((s) => ({
+      accessToken: s.accessToken,
+      userKind: s.userKind,
+      setAccessToken: s.setAccessToken,
+      setCsrfToken: s.setCsrfToken,
+      setProfile: s.setProfile,
+      setUserKind: s.setUserKind
+    }))
+  );
 
   const { data: session, isLoading: sessionLoading } = useSession();
 
@@ -71,9 +78,10 @@ export default function AppProvider({ children }: AppProviderProps) {
   useEffect(() => {
     if (session) {
       setAccessToken(session.accessToken);
+      setCsrfToken(session.csrfToken);
       setUserKind(session.userKind);
     }
-  }, [session, setAccessToken, setUserKind]);
+  }, [session, setUserKind, setAccessToken, setCsrfToken]);
 
   const profile = profileData || employeeProfileData;
 

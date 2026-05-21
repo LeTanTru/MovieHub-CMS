@@ -4,12 +4,14 @@ const storageKeys = {
   ACTIVE_SETTING_TAB: 'active_setting_tab',
   ACTIVE_TAB_MOVIE_PERSON_KIND: 'active_tab_movie_person_kind',
   ACTIVE_TAB_PERSON_KIND: 'active_tab_person_kind',
+  CSRF_TOKEN: 'csrf_token',
   PATH_NO_LOGIN: 'path_no_login',
   PREVIOUS_PATH: 'previous_path',
   REFRESH_TOKEN: 'refresh_token',
   SELECTED_MOVIE_ITEM: 'selected_movie_item',
   USER_KIND: 'user_kind',
   X_CLIENT_TYPE: 'X-Client-Type',
+  X_CSRF_TOKEN: 'X-CSRF-Token',
   DISCLAIMER_SHOWN: 'disclaimer_shown'
 };
 

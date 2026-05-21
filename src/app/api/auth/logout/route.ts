@@ -15,21 +15,29 @@ export async function POST() {
     await Promise.all([
       removeCookie(storageKeys.ACCESS_TOKEN),
       removeCookie(storageKeys.REFRESH_TOKEN),
-      removeCookie(storageKeys.USER_KIND)
+      removeCookie(storageKeys.USER_KIND),
+      removeCookie(storageKeys.CSRF_TOKEN)
     ]);
 
-    return NextResponse.json(
+    return new NextResponse(
+      JSON.stringify(
+        { result: true, message: 'Logged out successfully' },
+        null,
+        2
+      ),
       {
-        result: true,
-        message: 'Logged out successfully'
-      },
-      { status: HttpStatusCode.Ok }
+        status: HttpStatusCode.Ok,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   } catch (error) {
     logger.error('[LOGOUT_ERROR]', error);
-    return NextResponse.json(
-      { result: false, message: 'Logout failed' },
-      { status: HttpStatusCode.InternalServerError }
+    return new NextResponse(
+      JSON.stringify({ result: false, message: 'Logout failed' }, null, 2),
+      {
+        status: HttpStatusCode.InternalServerError,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   }
 }

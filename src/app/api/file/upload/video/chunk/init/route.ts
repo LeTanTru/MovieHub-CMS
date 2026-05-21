@@ -4,38 +4,29 @@ import { CreateMultipartUploadCommand } from '@aws-sdk/client-s3';
 import { randomBytes } from 'crypto';
 import { logger } from '@/logger';
 import { HttpStatusCode } from 'axios';
-import { decodeJwt, getCookie } from '@/utils';
+import { getCookie, validateCsrfToken, csrfErrorResponse } from '@/utils';
 import { storageKeys } from '@/constants';
-import { z } from 'zod';
-import { initSchema } from '../validation';
 
 export async function POST(req: NextRequest) {
+  if (!validateCsrfToken(req)) {
+    return csrfErrorResponse();
+  }
+
   const accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
 
   if (!accessToken) {
-    return NextResponse.json(
-      { message: 'Unauthorized' },
-      { status: HttpStatusCode.Unauthorized }
+    return new NextResponse(
+      JSON.stringify({ message: 'Unauthorized' }, null, 2),
+      {
+        status: HttpStatusCode.Unauthorized,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   }
 
   const body = await req.json();
-  const parsed = initSchema.safeParse(body);
 
-  if (!parsed.success) {
-    logger.error(
-      '[INIT_UPLOAD_ERROR]',
-      'Invalid parameters:',
-      z.treeifyError(parsed.error)
-    );
-    return NextResponse.json(
-      { error: 'Invalid parameters', details: z.treeifyError(parsed.error) },
-      { status: HttpStatusCode.BadRequest }
-    );
-  }
-
-  const { mimeType } = parsed.data;
-
+  const { mimeType } = body;
   const randomName = randomBytes(10).toString('hex');
   const ext =
     mimeType === 'video/quicktime'
@@ -46,42 +37,32 @@ export async function POST(req: NextRequest) {
           ? 'ogg'
           : 'mp4';
 
-  let userId = 'unknown';
-  try {
-    const payload = decodeJwt(accessToken);
-    if (payload) {
-      userId = payload?.user_id || payload?.user_name || 'unknown';
-    }
-  } catch (err) {
-    logger.error('[JWT_DECODE_ERROR]', err);
-  }
-
   const objectName = `${process.env.MINIO_UPLOAD_FOLDER}/${process.env.MINIO_UPLOAD_PREFIX}_${randomName}.${ext}`;
 
   try {
-    // Create multipart upload
     const { UploadId } = await s3Client.send(
       new CreateMultipartUploadCommand({
         Bucket: BUCKET_NAME,
         Key: objectName,
-        ContentType: mimeType,
-        Tagging: `uploadedBy=${userId}`
+        ContentType: mimeType
       })
     );
-    return NextResponse.json(
+
+    return new NextResponse(
+      JSON.stringify({ uploadId: UploadId, objectName }, null, 2),
       {
-        uploadId: UploadId,
-        objectName: objectName
-      },
-      {
-        status: HttpStatusCode.Ok
+        status: HttpStatusCode.Ok,
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   } catch (error) {
     logger.error('[CREATE_MULTIPART_UPLOAD_ERROR]', error);
-    return NextResponse.json(
-      { message: 'Create multipart upload failed' },
-      { status: HttpStatusCode.BadRequest }
+    return new NextResponse(
+      JSON.stringify({ message: 'Create multipart upload failed' }, null, 2),
+      {
+        status: HttpStatusCode.BadRequest,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   }
 }

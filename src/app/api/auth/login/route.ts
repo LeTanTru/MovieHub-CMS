@@ -1,7 +1,10 @@
-import envConfig from '@/config';
+import { generateCsrfToken } from '../_lib/generate-csrf-token';
+import { getBasicAuthHeader } from '../_lib/auth';
+import { makeCookieOption } from '../_lib/make-cookie-option';
 import {
   ACCESS_TOKEN_MAX_AGE,
   apiConfig,
+  CSRF_TOKEN_MAX_AGE,
   REFRESH_TOKEN_MAX_AGE,
   storageKeys
 } from '@/constants';
@@ -9,7 +12,6 @@ import { logger } from '@/logger';
 import { LoginResType } from '@/types';
 import { http, isAxiosError, setCookie } from '@/utils';
 import { HttpStatusCode } from 'axios';
-import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -17,18 +19,28 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     if (!body) {
-      return NextResponse.json(
-        { result: false, message: 'Body is required' },
-        { status: HttpStatusCode.BadRequest }
+      return new NextResponse(
+        JSON.stringify({ result: false, message: 'Body is required' }, null, 2),
+        {
+          status: HttpStatusCode.BadRequest,
+          headers: { 'Content-Type': 'application/json' }
+        }
       );
     }
 
     const { username, password } = body;
 
     if (!username || !password) {
-      return NextResponse.json(
-        { result: false, message: 'All fields are required' },
-        { status: HttpStatusCode.BadRequest }
+      return new NextResponse(
+        JSON.stringify(
+          { result: false, message: 'All fields are required' },
+          null,
+          2
+        ),
+        {
+          status: HttpStatusCode.BadRequest,
+          headers: { 'Content-Type': 'application/json' }
+        }
       );
     }
 
@@ -36,7 +48,7 @@ export async function POST(request: NextRequest) {
       body: { ...body, grant_type: process.env.GRANT_TYPE },
       options: {
         headers: {
-          Authorization: `Basic ${btoa(`${process.env.APP_USERNAME}:${process.env.APP_PASSWORD}`)}`
+          Authorization: getBasicAuthHeader()
         }
       }
     });
@@ -45,13 +57,7 @@ export async function POST(request: NextRequest) {
     const refreshToken = res.refresh_token;
     const userKind = res.user_kind;
 
-    const makeCookieOption = (maxAge: number): Partial<ResponseCookie> => ({
-      path: '/',
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: envConfig.NEXT_PUBLIC_NODE_ENV !== 'development',
-      maxAge: maxAge
-    });
+    const csrfToken = generateCsrfToken();
 
     await Promise.all([
       setCookie(
@@ -68,13 +74,18 @@ export async function POST(request: NextRequest) {
         storageKeys.USER_KIND,
         String(userKind),
         makeCookieOption(ACCESS_TOKEN_MAX_AGE)
+      ),
+      setCookie(
+        storageKeys.CSRF_TOKEN,
+        csrfToken,
+        makeCookieOption(CSRF_TOKEN_MAX_AGE)
       )
     ]);
 
-    return NextResponse.json({
-      result: true,
-      data: res
-    });
+    return new NextResponse(
+      JSON.stringify({ result: true, data: res }, null, 2),
+      { headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error) {
     if (isAxiosError(error)) {
       const response = error.response?.data;
@@ -82,26 +93,32 @@ export async function POST(request: NextRequest) {
       logger.error('[LOGIN_ERROR]', response);
 
       if (response) {
-        return NextResponse.json(
+        return new NextResponse(
+          JSON.stringify({ result: false, ...response }, null, 2),
           {
-            result: false,
-            ...response
-          },
-          { status: error.response?.status }
+            status: error.response?.status,
+            headers: { 'Content-Type': 'application/json' }
+          }
         );
       }
 
-      return NextResponse.json(
-        { result: false, message: 'Login failed' },
-        { status: error.response?.status }
+      return new NextResponse(
+        JSON.stringify({ result: false, message: 'Login failed' }, null, 2),
+        {
+          status: error.response?.status,
+          headers: { 'Content-Type': 'application/json' }
+        }
       );
     }
 
     logger.error('[LOGIN_ERROR]', error);
 
-    return NextResponse.json(
-      { result: false, message: 'Login failed' },
-      { status: HttpStatusCode.InternalServerError }
+    return new NextResponse(
+      JSON.stringify({ result: false, message: 'Login failed' }, null, 2),
+      {
+        status: HttpStatusCode.InternalServerError,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   }
 }
