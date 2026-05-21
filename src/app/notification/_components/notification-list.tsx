@@ -62,6 +62,7 @@ export default function NotificationList() {
 
   const handleUpdateRead = async (notification: NotificationResType) => {
     if (notification.isRead) return;
+
     await updateReadMutate(
       { ids: [notification.id] },
       {
