@@ -4,7 +4,7 @@ import { logger } from '@/logger';
 import { route } from '@/routes';
 import type { ApiConfig, Payload } from '@/types';
 import { useAuthStore } from '@/store';
-import { getData, getCookie } from '@/utils';
+import { getCookie } from '@/utils';
 import axios, {
   AxiosError,
   HttpStatusCode,
@@ -152,22 +152,20 @@ export const sendRequest = async <T>(
 
   let accessToken: string | null = '';
   let clientType: string | null | undefined = '';
+  let csrfToken: string | null = '';
 
   if (!ignoreAuth) {
     if (isClient) {
       accessToken = useAuthStore.getState().accessToken;
+      csrfToken = useAuthStore.getState().csrfToken;
     } else {
       accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
+      csrfToken = await getCookie(storageKeys.CSRF_TOKEN);
     }
   }
 
   if (isRequiredXClientType) {
-    if (isClient) {
-      clientType =
-        getData(storageKeys.X_CLIENT_TYPE) || envConfig.NEXT_PUBLIC_CLIENT_TYPE;
-    } else {
-      clientType = envConfig.NEXT_PUBLIC_CLIENT_TYPE;
-    }
+    clientType = envConfig.NEXT_PUBLIC_CLIENT_TYPE;
   }
 
   const baseHeader: Record<string, string> = { ...headers };
@@ -182,6 +180,12 @@ export const sendRequest = async <T>(
 
   if (clientType) {
     baseHeader[storageKeys.X_CLIENT_TYPE] = clientType;
+  }
+
+  const stateChangingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
+  const isRelativeUrl = baseUrl.startsWith('/') && !baseUrl.startsWith('//');
+  if (stateChangingMethods.includes(method) && csrfToken && isRelativeUrl) {
+    baseHeader[storageKeys.X_CSRF_TOKEN] = csrfToken;
   }
 
   Object.entries(pathParams).forEach(([key, value]) => {

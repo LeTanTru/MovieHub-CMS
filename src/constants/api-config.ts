@@ -83,7 +83,8 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.authApiUrl}/v1/account/list`,
       method: 'GET',
       headers: baseHeader,
-      permissionCode: 'ACC_L'
+      permissionCode: 'ACC_L',
+      isRequiredXClientType: true
     },
     getProfile: {
       baseUrl: `${AppConstants.authApiUrl}/v1/account/profile`,
@@ -386,50 +387,54 @@ const apiConfig = defineApiConfig({
       method: 'POST',
       headers: multipartHeader,
       permissionCode: 'FILE_U',
-      isUpload: true
+      isUpload: true,
+      isRequiredXClientType: true
     },
     uploadVideo: {
       baseUrl: `${AppConstants.mediaUrl}/v1/file/upload-video`,
       method: 'POST',
       headers: multipartHeader,
       permissionCode: 'FILE_U_V',
-      isUpload: true
+      isUpload: true,
+      isRequiredXClientType: true
     },
     uploadChunkInit: {
       baseUrl: `/api/file/upload/video/chunk/init`,
       method: 'POST',
-      headers: multipartHeader,
-      isUpload: true
+      headers: baseHeader,
+      isRequiredXClientType: true
     },
     uploadChunkPresign: {
       baseUrl: `/api/file/upload/video/chunk/presign`,
       method: 'POST',
       headers: baseHeader,
-      isUpload: true
+      isRequiredXClientType: true
     },
     uploadChunkComplete: {
       baseUrl: `/api/file/upload/video/chunk/complete`,
       method: 'POST',
-      headers: multipartHeader,
-      isUpload: true
+      headers: baseHeader,
+      isRequiredXClientType: true
     },
     uploadChunkAbort: {
       baseUrl: `/api/file/upload/video/chunk/abort`,
       method: 'POST',
       headers: baseHeader,
-      isUpload: true
+      isRequiredXClientType: true
     },
     delete: {
       baseUrl: `${AppConstants.mediaUrl}/v1/file/delete-file`,
       method: 'POST',
       headers: baseHeader,
-      permissionCode: 'FILE_U_D'
+      permissionCode: 'FILE_U_D',
+      isRequiredXClientType: true
     },
     deleteObject: {
       baseUrl: `/api/file/delete`,
       method: 'DELETE',
       headers: baseHeader,
-      permissionCode: 'FILE_U_D'
+      permissionCode: 'FILE_U_D',
+      isRequiredXClientType: true
     }
   },
   group: {
@@ -865,13 +870,6 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       permissionCode: 'SDB_C_A',
       isRequiredXClientType: true
-    }
-  },
-  sns: {
-    sendSignal: {
-      baseUrl: `${AppConstants.apiUrl}/v1/sns/send-signal`,
-      method: 'POST',
-      headers: baseHeader
     }
   },
   style: {

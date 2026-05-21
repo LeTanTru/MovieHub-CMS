@@ -1,25 +1,40 @@
+import { generateCsrfToken } from '../_lib/generate-csrf-token';
+import { getBasicAuthHeader } from '../_lib/auth';
+import { makeCookieOption } from '../_lib/make-cookie-option';
 import {
   ACCESS_TOKEN_MAX_AGE,
   apiConfig,
+  CSRF_TOKEN_MAX_AGE,
   REFRESH_TOKEN_MAX_AGE,
   storageKeys
 } from '@/constants';
 import { logger } from '@/logger';
 import { RefreshTokenResType } from '@/types';
-import { getCookie, http, isAxiosError, setCookie } from '@/utils';
+import {
+  getCookie,
+  http,
+  isAxiosError,
+  removeCookie,
+  setCookie
+} from '@/utils';
 import { HttpStatusCode } from 'axios';
-import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { NextResponse } from 'next/server';
-import envConfig from '@/config';
 
 export async function POST() {
   try {
     const refresh_token = await getCookie(storageKeys.REFRESH_TOKEN);
 
     if (!refresh_token) {
-      return NextResponse.json(
-        { result: false, message: 'Refresh token is required' },
-        { status: HttpStatusCode.BadRequest }
+      return new NextResponse(
+        JSON.stringify(
+          { result: false, message: 'Refresh token is required' },
+          null,
+          2
+        ),
+        {
+          status: HttpStatusCode.BadRequest,
+          headers: { 'Content-Type': 'application/json' }
+        }
       );
     }
 
@@ -32,19 +47,11 @@ export async function POST() {
         },
         options: {
           headers: {
-            Authorization: `Basic ${btoa(`${process.env.APP_USERNAME}:${process.env.APP_PASSWORD}`)}`
+            Authorization: getBasicAuthHeader()
           }
         }
       }
     );
-
-    const makeCookieOption = (maxAge: number): Partial<ResponseCookie> => ({
-      path: '/',
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: envConfig.NEXT_PUBLIC_NODE_ENV !== 'development',
-      maxAge: maxAge
-    });
 
     if (res.access_token) {
       await setCookie(
@@ -53,14 +60,17 @@ export async function POST() {
         makeCookieOption(ACCESS_TOKEN_MAX_AGE)
       );
     }
+
     if (res.refresh_token) {
+      await removeCookie(storageKeys.REFRESH_TOKEN);
       await setCookie(
         storageKeys.REFRESH_TOKEN,
         res.refresh_token,
         makeCookieOption(REFRESH_TOKEN_MAX_AGE)
       );
     }
-    if (res.user_kind !== undefined) {
+
+    if (res.user_kind) {
       await setCookie(
         storageKeys.USER_KIND,
         String(res.user_kind),
@@ -68,12 +78,20 @@ export async function POST() {
       );
     }
 
-    return NextResponse.json(
+    const csrfToken = generateCsrfToken();
+
+    await setCookie(
+      storageKeys.CSRF_TOKEN,
+      csrfToken,
+      makeCookieOption(CSRF_TOKEN_MAX_AGE)
+    );
+
+    return new NextResponse(
+      JSON.stringify({ result: true, data: res }, null, 2),
       {
-        result: true,
-        data: res
-      },
-      { status: HttpStatusCode.Ok }
+        status: HttpStatusCode.Ok,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   } catch (error) {
     if (isAxiosError(error)) {
@@ -82,26 +100,40 @@ export async function POST() {
       logger.error('[REFRESH_TOKEN_ERROR]', response);
 
       if (response) {
-        return NextResponse.json(
+        return new NextResponse(
+          JSON.stringify({ result: false, ...response }, null, 2),
           {
-            result: false,
-            ...response
-          },
-          { status: error.response?.status }
+            status: error.response?.status,
+            headers: { 'Content-Type': 'application/json' }
+          }
         );
       }
 
-      return NextResponse.json(
-        { result: false, message: 'Refresh token failed' },
-        { status: error.response?.status }
+      return new NextResponse(
+        JSON.stringify(
+          { result: false, message: 'Refresh token failed' },
+          null,
+          2
+        ),
+        {
+          status: error.response?.status,
+          headers: { 'Content-Type': 'application/json' }
+        }
       );
     }
 
     logger.error('[REFRESH_TOKEN_ERROR]', error);
 
-    return NextResponse.json(
-      { result: false, message: 'Refresh token failed' },
-      { status: HttpStatusCode.InternalServerError }
+    return new NextResponse(
+      JSON.stringify(
+        { result: false, message: 'Refresh token failed' },
+        null,
+        2
+      ),
+      {
+        status: HttpStatusCode.InternalServerError,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   }
 }

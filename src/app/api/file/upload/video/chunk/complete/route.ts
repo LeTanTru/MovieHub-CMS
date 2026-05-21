@@ -3,37 +3,28 @@ import { s3Client, BUCKET_NAME } from '@/lib/s3';
 import { CompleteMultipartUploadCommand } from '@aws-sdk/client-s3';
 import { HttpStatusCode } from 'axios';
 import { logger } from '@/logger';
-import { getCookie } from '@/utils';
+import { getCookie, validateCsrfToken, csrfErrorResponse } from '@/utils';
 import { storageKeys } from '@/constants';
-import { z } from 'zod';
-import { completeSchema } from '../validation';
 
 export async function POST(req: NextRequest) {
+  if (!validateCsrfToken(req)) {
+    return csrfErrorResponse();
+  }
+
   const accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
 
   if (!accessToken) {
-    return NextResponse.json(
-      { message: 'Unauthorized' },
-      { status: HttpStatusCode.Unauthorized }
+    return new NextResponse(
+      JSON.stringify({ message: 'Unauthorized' }, null, 2),
+      {
+        status: HttpStatusCode.Unauthorized,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   }
 
   const body = await req.json();
-  const parsed = completeSchema.safeParse(body);
-
-  if (!parsed.success) {
-    logger.error(
-      '[MULTIPART_UPLOAD_ERROR]',
-      'Invalid parameters:',
-      z.treeifyError(parsed.error)
-    );
-    return NextResponse.json(
-      { error: 'Invalid parameters', details: z.treeifyError(parsed.error) },
-      { status: HttpStatusCode.BadRequest }
-    );
-  }
-
-  const { objectName, uploadId, parts } = parsed.data;
+  const { objectName, uploadId, parts } = body;
 
   try {
     await s3Client.send(
@@ -42,7 +33,7 @@ export async function POST(req: NextRequest) {
         Key: objectName,
         UploadId: uploadId,
         MultipartUpload: {
-          Parts: parts.map((p) => ({
+          Parts: parts.map((p: { partNumber: number; etag: string }) => ({
             PartNumber: p.partNumber,
             ETag: p.etag
           }))
@@ -50,19 +41,21 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    return NextResponse.json(
+    return new NextResponse(
+      JSON.stringify({ filePath: `/${BUCKET_NAME}/${objectName}` }, null, 2),
       {
-        filePath: `/${BUCKET_NAME}/${objectName}`
-      },
-      { status: HttpStatusCode.Ok }
+        status: HttpStatusCode.Ok,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   } catch (error) {
     logger.error('[MULTIPART_UPLOAD_ERROR]', error);
-    return NextResponse.json(
+    return new NextResponse(
+      JSON.stringify({ message: 'Multipart upload failed' }, null, 2),
       {
-        message: 'Multipart upload failed'
-      },
-      { status: HttpStatusCode.BadRequest }
+        status: HttpStatusCode.BadRequest,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   }
 }

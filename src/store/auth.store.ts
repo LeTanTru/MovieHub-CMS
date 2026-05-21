@@ -2,20 +2,23 @@ import type { AuthStoreType, ProfileResType } from '@/types';
 import { create } from 'zustand';
 
 const useAuthStore = create<AuthStoreType>((set) => ({
-  profile: null,
-  isLoggedOut: false,
   accessToken: null,
+  csrfToken: null,
+  isLoggedOut: false,
+  profile: null,
   userKind: null,
 
+  setAccessToken: (accessToken) => set({ accessToken }),
+  setCsrfToken: (csrfToken) => set({ csrfToken }),
   setProfile: (profile: ProfileResType | null) => set({ profile }),
-  setAccessToken: (accessToken: string | null) => set({ accessToken }),
   setUserKind: (userKind: string | null) => set({ userKind }),
 
   clearState: () =>
     set({
-      profile: null,
-      isLoggedOut: false,
       accessToken: null,
+      csrfToken: null,
+      isLoggedOut: false,
+      profile: null,
       userKind: null
     })
 }));

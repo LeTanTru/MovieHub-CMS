@@ -4,45 +4,43 @@ import { UploadPartCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { logger } from '@/logger';
 import { HttpStatusCode } from 'axios';
-import { getCookie } from '@/utils';
+import { getCookie, validateCsrfToken, csrfErrorResponse } from '@/utils';
 import { storageKeys } from '@/constants';
-import { z } from 'zod';
-import { presignSchema } from '../validation';
 
 export async function POST(req: NextRequest) {
+  if (!validateCsrfToken(req)) {
+    return csrfErrorResponse();
+  }
+
   const accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
 
   if (!accessToken) {
-    return NextResponse.json(
-      { message: 'Unauthorized' },
-      { status: HttpStatusCode.Unauthorized }
+    return new NextResponse(
+      JSON.stringify({ message: 'Unauthorized' }, null, 2),
+      {
+        status: HttpStatusCode.Unauthorized,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   }
 
   if (!BUCKET_NAME) {
     logger.error('[PRESIGN_ERROR]', 'Missing BUCKET_NAME configuration');
-    return NextResponse.json(
-      { error: 'Server configuration error: Missing bucket name' },
-      { status: HttpStatusCode.InternalServerError }
+    return new NextResponse(
+      JSON.stringify(
+        { error: 'Server configuration error: Missing bucket name' },
+        null,
+        2
+      ),
+      {
+        status: HttpStatusCode.InternalServerError,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   }
 
   const body = await req.json();
-  const parsed = presignSchema.safeParse(body);
-
-  if (!parsed.success) {
-    logger.error(
-      '[PRESIGN_ERROR]',
-      'Invalid parameters:',
-      z.treeifyError(parsed.error)
-    );
-    return NextResponse.json(
-      { error: 'Invalid parameters', details: z.treeifyError(parsed.error) },
-      { status: HttpStatusCode.BadRequest }
-    );
-  }
-
-  const { objectName, uploadId, partNumber } = parsed.data;
+  const { objectName, uploadId, partNumber } = body;
 
   logger.info(
     `[Presign] Creating presigned URL - Bucket: ${BUCKET_NAME}, Key: ${objectName}, Part: ${partNumber}`
@@ -60,12 +58,18 @@ export async function POST(req: NextRequest) {
 
     logger.info(`[Presign] Success - Part ${partNumber}`);
 
-    return NextResponse.json({ url }, { status: HttpStatusCode.Ok });
+    return new NextResponse(JSON.stringify({ url }, null, 2), {
+      status: HttpStatusCode.Ok,
+      headers: { 'Content-Type': 'application/json' }
+    });
   } catch (error) {
     logger.error('[CREATE_PRESIGNED_URL_ERROR]', error);
-    return NextResponse.json(
-      { message: 'Create presigned URL failed' },
-      { status: HttpStatusCode.BadRequest }
+    return new NextResponse(
+      JSON.stringify({ message: 'Create presigned URL failed' }, null, 2),
+      {
+        status: HttpStatusCode.BadRequest,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   }
 }

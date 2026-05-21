@@ -18,21 +18,24 @@ export type LoginResType = {
 
 export type SessionResType = {
   accessToken: string | null;
+  csrfToken: string | null;
   userKind: string | null;
 };
 
 type AuthStoreState = {
-  profile: ProfileResType | null;
-  isLoggedOut: boolean;
   accessToken: string | null;
+  csrfToken: string | null;
+  isLoggedOut: boolean;
+  profile: ProfileResType | null;
   userKind: string | null;
 };
 
 type AuthStoreActions = {
-  setProfile: (profile: ProfileResType | null) => void;
-  setAccessToken: (token: string | null) => void;
-  setUserKind: (kind: string | null) => void;
   clearState: () => void;
+  setAccessToken: (token: string | null) => void;
+  setCsrfToken: (token: string | null) => void;
+  setProfile: (profile: ProfileResType | null) => void;
+  setUserKind: (kind: string | null) => void;
 };
 
 export type AuthStoreType = AuthStoreState & AuthStoreActions;

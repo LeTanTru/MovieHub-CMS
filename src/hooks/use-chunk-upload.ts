@@ -1,5 +1,6 @@
 import { apiConfig } from '@/constants';
 import { logger } from '@/logger';
+import { http } from '@/utils';
 import { useState, useCallback } from 'react';
 
 const MEGABYTE = 1024 ** 2;
@@ -68,11 +69,12 @@ const useChunkUpload = () => {
 
       try {
         // 1. Init multipart upload → receive uploadId
-        const initRes = await fetch(apiConfig.file.uploadChunkInit.baseUrl, {
-          method: apiConfig.file.uploadChunkInit.method,
-          headers: apiConfig.file.uploadChunkInit.headers,
-          body: JSON.stringify({ fileName: file.name, mimeType: file.type })
-        }).then((r) => r.json());
+        const initRes = await http.post<{
+          uploadId: string;
+          objectName: string;
+        }>(apiConfig.file.uploadChunkInit, {
+          body: { fileName: file.name, mimeType: file.type }
+        });
 
         uploadId = initRes.uploadId;
         objectName = initRes.objectName;
@@ -95,14 +97,12 @@ const useChunkUpload = () => {
             const chunk = file.slice(start, start + chunkSize);
 
             // 2. Get presigned URL for this part
-            const { url } = await fetch(
-              apiConfig.file.uploadChunkPresign.baseUrl,
+            const { url } = await http.post<{ url: string }>(
+              apiConfig.file.uploadChunkPresign,
               {
-                method: apiConfig.file.uploadChunkPresign.method,
-                headers: apiConfig.file.uploadChunkPresign.headers,
-                body: JSON.stringify({ objectName, uploadId, partNumber })
+                body: { objectName, uploadId, partNumber }
               }
-            ).then((r) => r.json());
+            );
 
             // 3. PUT chunk directly to MinIO — not through Next.js
             const res = await fetch(url, { method: 'PUT', body: chunk });
@@ -138,11 +138,12 @@ const useChunkUpload = () => {
         parts.sort((a, b) => a.partNumber - b.partNumber);
 
         // 4. Tell MinIO to complete the upload
-        const res = await fetch(apiConfig.file.uploadChunkComplete.baseUrl, {
-          method: apiConfig.file.uploadChunkComplete.method,
-          headers: apiConfig.file.uploadChunkComplete.headers,
-          body: JSON.stringify({ objectName, uploadId, parts })
-        }).then((r) => r.json());
+        const res = await http.post<{ filePath: string }>(
+          apiConfig.file.uploadChunkComplete,
+          {
+            body: { objectName, uploadId, parts }
+          }
+        );
 
         const endTime = performance.now();
         const duration = endTime - startTime; // milliseconds
@@ -164,10 +165,8 @@ const useChunkUpload = () => {
 
         if (uploadId && objectName) {
           try {
-            await fetch(apiConfig.file.uploadChunkAbort.baseUrl, {
-              method: apiConfig.file.uploadChunkAbort.method,
-              headers: apiConfig.file.uploadChunkAbort.headers,
-              body: JSON.stringify({ objectName, uploadId })
+            await http.post(apiConfig.file.uploadChunkAbort, {
+              body: { objectName, uploadId }
             });
             logger.info(`Successfully aborted upload for ${objectName}`);
           } catch (abortError) {
