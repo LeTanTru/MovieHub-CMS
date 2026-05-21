@@ -56,7 +56,6 @@ export async function POST(request: NextRequest) {
     const accessToken = res.access_token;
     const refreshToken = res.refresh_token;
     const userKind = res.user_kind;
-
     const csrfToken = generateCsrfToken();
 
     await Promise.all([

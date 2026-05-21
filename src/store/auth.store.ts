@@ -4,7 +4,6 @@ import { create } from 'zustand';
 const useAuthStore = create<AuthStoreType>((set) => ({
   accessToken: null,
   csrfToken: null,
-  isLoggedOut: false,
   profile: null,
   userKind: null,
 
@@ -17,7 +16,6 @@ const useAuthStore = create<AuthStoreType>((set) => ({
     set({
       accessToken: null,
       csrfToken: null,
-      isLoggedOut: false,
       profile: null,
       userKind: null
     })
