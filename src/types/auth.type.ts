@@ -25,7 +25,6 @@ export type SessionResType = {
 type AuthStoreState = {
   accessToken: string | null;
   csrfToken: string | null;
-  isLoggedOut: boolean;
   profile: ProfileResType | null;
   userKind: string | null;
 };

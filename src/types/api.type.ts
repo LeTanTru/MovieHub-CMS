@@ -8,6 +8,7 @@ export type ApiConfig = {
   method: HttpMethod;
   permissionCode?: string;
   isRequiredXClientType?: boolean;
+  isRequiredCsrfToken?: boolean;
   ignoreAuth?: boolean;
   isUpload?: boolean;
 };

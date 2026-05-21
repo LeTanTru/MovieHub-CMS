@@ -28,6 +28,8 @@ export default function NotificationList({
     useUpdateReadNotificationMutation();
 
   const handleItemClick = (notification: NotificationResType) => {
+    onItemClick?.();
+
     if (notification.isRead) return;
 
     updateReadNotificationMutate(
@@ -41,8 +43,6 @@ export default function NotificationList({
         }
       }
     );
-
-    onItemClick?.();
   };
 
   if (loading) {

@@ -6,6 +6,10 @@ import { logger } from '@/logger';
 import { HttpStatusCode } from 'axios';
 import { getCookie, validateCsrfToken, csrfErrorResponse } from '@/utils';
 import { storageKeys } from '@/constants';
+import {
+  parseRequestBody,
+  presignMultipartUploadSchema
+} from '../_lib/validation';
 
 export async function POST(req: NextRequest) {
   if (!validateCsrfToken(req)) {
@@ -39,8 +43,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body = await req.json();
-  const { objectName, uploadId, partNumber } = body;
+  const parsedBody = await parseRequestBody(req, presignMultipartUploadSchema);
+
+  if (!parsedBody.success) {
+    return parsedBody.response;
+  }
+
+  const { objectName, uploadId, partNumber } = parsedBody.data;
 
   logger.info(
     `[Presign] Creating presigned URL - Bucket: ${BUCKET_NAME}, Key: ${objectName}, Part: ${partNumber}`
@@ -54,7 +63,7 @@ export async function POST(req: NextRequest) {
       PartNumber: partNumber
     });
 
-    const url = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+    const url = await getSignedUrl(s3Client, command, { expiresIn: 60 * 60 }); // 1h
 
     logger.info(`[Presign] Success - Part ${partNumber}`);
 

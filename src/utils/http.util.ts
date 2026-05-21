@@ -138,6 +138,7 @@ export const sendRequest = async <T>(
     method,
     ignoreAuth,
     isRequiredXClientType,
+    isRequiredCsrfToken,
     isUpload
   } = apiConfig;
 
@@ -157,9 +158,15 @@ export const sendRequest = async <T>(
   if (!ignoreAuth) {
     if (isClient) {
       accessToken = useAuthStore.getState().accessToken;
-      csrfToken = useAuthStore.getState().csrfToken;
     } else {
       accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
+    }
+  }
+
+  if (isRequiredCsrfToken) {
+    if (isClient) {
+      csrfToken = useAuthStore.getState().csrfToken;
+    } else {
       csrfToken = await getCookie(storageKeys.CSRF_TOKEN);
     }
   }
@@ -182,9 +189,7 @@ export const sendRequest = async <T>(
     baseHeader[storageKeys.X_CLIENT_TYPE] = clientType;
   }
 
-  const stateChangingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
-  const isRelativeUrl = baseUrl.startsWith('/') && !baseUrl.startsWith('//');
-  if (stateChangingMethods.includes(method) && csrfToken && isRelativeUrl) {
+  if (isRequiredCsrfToken && csrfToken) {
     baseHeader[storageKeys.X_CSRF_TOKEN] = csrfToken;
   }
 

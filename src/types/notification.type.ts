@@ -68,3 +68,11 @@ export type VoteCommentNotificationType = {
     avatarPath: string;
   };
 };
+
+export type AudioNotificationType = {
+  id: string;
+  name: string;
+  duration: number;
+  state: number;
+  thumbnailUrl: string;
+};

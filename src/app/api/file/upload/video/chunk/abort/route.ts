@@ -5,6 +5,10 @@ import { logger } from '@/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { s3Client, BUCKET_NAME } from '@/lib/s3';
 import { storageKeys } from '@/constants';
+import {
+  abortMultipartUploadSchema,
+  parseRequestBody
+} from '../_lib/validation';
 
 export async function POST(req: NextRequest) {
   if (!validateCsrfToken(req)) {
@@ -23,9 +27,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body = await req.json();
+  const parsedBody = await parseRequestBody(req, abortMultipartUploadSchema);
 
-  const { objectName, uploadId } = body;
+  if (!parsedBody.success) {
+    return parsedBody.response;
+  }
+
+  const { objectName, uploadId } = parsedBody.data;
 
   try {
     await s3Client.send(
