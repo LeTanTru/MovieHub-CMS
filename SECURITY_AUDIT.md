@@ -1,657 +1,502 @@
-# Security Audit Report — MovieHub CMS
+# Security Audit Report - MovieHub CMS
 
-**Audit Date:** 2026-05-17  
-**Last Updated:** 2026-05-17 (Post-fix review)  
+**Audit Date:** 2026-05-21  
 **Project:** MovieHub CMS (Next.js 16 App Router)  
-**Scope:** Full codebase scan — authentication, API routes, client-side code, configuration, infrastructure  
-**Methodology:** Static analysis, data flow tracing, control flow analysis, OWASP Top 10 / API Security Top 10 mapping
+**Scope:** Current repo state only; static review of auth/session, internal API routes, file/media flows, client security, config, Docker, and CI workflow  
+**Methodology:** Local code inspection, parallel subagent review passes, and `yarn audit --groups dependencies`
 
 ---
 
 ## Executive Summary
 
-| Severity  | Count  | Resolved | Remaining |
-| --------- | ------ | -------- | --------- |
-| Critical  | 2      | 1        | 1         |
-| High      | 6      | 0        | 6         |
-| Medium    | 9      | 3        | 6         |
-| Low       | 8      | 8        | 0         |
-| Info      | 3      | 3        | 0         |
-| **Total** | **28** | **15**   | **13**    |
+| Severity  |  Count |
+| --------- | -----: |
+| Critical  |      2 |
+| High      |      3 |
+| Medium    |     10 |
+| Low       |      0 |
+| Info      |      0 |
+| **Total** | **15** |
 
-**Risk Score: HIGH** — One critical and four lower-severity findings resolved. Multiple high-severity findings remain.
+**Overall Risk:** Critical
 
-### Top Priority Fixes
-
-1. ~~Fix inverted `secure` cookie flag~~ ✅ **RESOLVED**
-2. Remove MQTT credentials from client-side bundle and Docker build
-3. Add server-side permission enforcement (client-side-only auth is bypassable)
-4. Add CSRF protection to all state-changing endpoints
-5. Add rate limiting to authentication endpoints
+The highest-risk issue is architectural: several internal routes trust client-supplied cookies and decoded JWT claims without server-side verification. That breaks the assumption that these routes are protected by cookie auth. The current code also exposes MQTT broker credentials to every browser, re-exposes bearer tokens to client JavaScript, leaves multipart upload endpoints under-protected, and has dependency advisories that need remediation.
 
 ---
 
-## Resolved Findings
+## Findings
 
-### ✅ MED-003: S3 Delete Endpoint — No Ownership Verification (IDOR) — RESOLVED
+### CRIT-001: Internal Route Authentication and Authorization Trust Unverified Client-Supplied Cookies and JWT Claims
 
-**Status:** Fixed in `src/app/api/file/delete/route.ts` and `src/app/api/file/upload/video/chunk/init/route.ts`
+- **Severity:** Critical
+- **Type:** Broken Authentication / Broken Access Control - CWE-287 / CWE-345 / CWE-347
+- **Location:** `src/utils/jwt.util.ts:4-10`, `src/proxy.ts:7-30`, `src/utils/csrf.util.ts:4-12`, `src/app/api/file/delete/route.ts:20-39`, `src/app/api/file/upload/video/chunk/init/route.ts:10-25`, `src/app/api/file/upload/video/chunk/presign/route.ts:10-21`, `src/app/api/file/upload/video/chunk/complete/route.ts:9-20`, `src/app/api/file/upload/video/chunk/abort/route.ts:9-20`
+- **OWASP:** A01:2021 Broken Access Control, A07:2021 Identification and Authentication Failures
+- **Effort to Fix:** Extensive
 
-**Fix Applied:**
-
-- Multipart uploads now include `Tagging: 'uploadedBy=${userId}'` during initialization.
-- The delete endpoint verifies object ownership by checking the `uploadedBy` tag against the current user's ID before proceeding.
-- Admins are exempt from this ownership check.
-
-### ✅ CRIT-001: Inverted Secure Cookie Flag — RESOLVED
-
-**Status:** Fixed in `src/app/api/auth/login/route.ts` and `src/app/api/auth/refresh-token/route.ts`
-
-**Fix Applied:** Changed `secure: envConfig.NEXT_PUBLIC_NODE_ENV !== 'production'` to `secure: envConfig.NEXT_PUBLIC_NODE_ENV !== 'development'`
-
-**Verification:** Cookies now set with `secure: true` in all environments except local development. This ensures tokens are only transmitted over HTTPS in staging/production.
-
-### ✅ SEC-006: Open Redirect via Unvalidated `PATH_NO_LOGIN` — RESOLVED
-
-**Status:** Fixed in `src/components/permission-guard/permission-guard.tsx`
-
-**Fix Applied:** Added `isSafeInternalPath()` validation function that:
-
-- Rejects non-string values
-- Requires paths to start with `/`
-- Blocks protocol-relative URLs (`//`)
-- Blocks `javascript:`, `data:`, `vbscript:` URI schemes
-
-**Verification:** Post-login redirect now validates `PATH_NO_LOGIN` against safe internal path criteria before navigation.
-
-### ✅ SEC-009: Auth Retry Queue Logged to Console — RESOLVED
-
-**Status:** Fixed in `src/utils/http.util.ts`
-
-**Fix Applied:** Gated `logger.info(failedQueue)` behind `process.env.NODE_ENV === 'development'` check
-
-**Verification:** Queue logging only occurs in development mode, not in production builds.
-
-### ✅ Debug Console Log Removed — RESOLVED
-
-**Status:** Fixed in `src/app/video-library/[id]/subtitle/_components/video-library-subtitle-list.tsx`
-
-**Fix Applied:** Removed `console.log('🚀 ~ VideoLibrarySubtitleList ~ subtitleList:', subtitleList)`
-
-### ✅ LOW-007: Deprecated `X-XSS-Protection` Header — RESOLVED
-
-**Status:** Fixed in `next.config.ts`
-
-**Fix Applied:** Removed deprecated `X-XSS-Protection: 1; mode=block` header. Modern browsers ignore this; rely on Content-Security-Policy instead.
-
-### ✅ INFO-001: No `Permissions-Policy` Header — RESOLVED
-
-**Status:** Fixed in `next.config.ts`
-
-**Fix Applied:** Added `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()` header.
-
-### ✅ INFO-002: Incomplete `.gitignore` for Environment Files — RESOLVED
-
-**Status:** Fixed in `.gitignore`
-
-**Fix Applied:** Added `.env*.local`, `.env*.production`, `.env*.test` patterns.
-
-### ✅ INFO-003: Node.js Base Image Not Pinned — RESOLVED
-
-**Status:** Fixed in `Dockerfile`
-
-**Fix Applied:** Pinned from `node:20-alpine` to `node:20.11-alpine` across all stages.
-
-### ✅ LOW-001: Missing `rel="noopener noreferrer"` on External Links — RESOLVED
-
-**Status:** Fixed in `src/app/contact/page.tsx`
-
-**Fix Applied:** Added `rel='noopener noreferrer'` to all 5 external social media links (Telegram, Discord, Facebook, Instagram, X).
-
-### ✅ LOW-002: Presigned URL Expiration Too Long — RESOLVED
-
-**Status:** Fixed in `src/app/api/file/upload/video/chunk/presign/route.ts`
-
-**Fix Applied:** Reduced `expiresIn` from `3600` (1 hour) to `300` (5 minutes).
-
-### ✅ LOW-003: `window.location.href` Redirect Pattern — RESOLVED
-
-**Status:** Fixed in `src/utils/http.util.ts`
-
-**Fix Applied:** Added validation that `route.login.path` is a string starting with `/` before assigning to `window.location.href`.
-
-### ✅ LOW-004: Module-Scoped Mutable State for Token Refresh — RESOLVED
-
-**Status:** Fixed in `src/utils/http.util.ts`
-
-**Fix Applied:** Moved `isRefreshing` and `failedQueue` declarations after `isClient` guard. The module-level state is only used in client context; server-side code paths use `getCookie` instead of the store.
-
-### ✅ LOW-005: Path Parameter Injection in Route Regex — RESOLVED
-
-**Status:** Fixed in `src/components/permission-guard/permission-guard.tsx`
-
-**Fix Applied:** Added regex metacharacter escaping (`[.*+?^${}()|[\]\\]`) before converting route paths to regex patterns.
-
-### ✅ LOW-006: DELETE Exported as POST Alias — RESOLVED
-
-**Status:** Fixed in `src/app/api/file/delete/route.ts`
-
-**Fix Applied:** Removed `export { DELETE as POST }`. The endpoint is only accessible via DELETE method, matching the `apiConfig.file.deleteObject` configuration.
-
-### ✅ MED-001: Missing Content-Security-Policy Header — RESOLVED
-
-**Status:** Fixed in `next.config.ts`
-
-**Fix Applied:** Added `Content-Security-Policy` header to `next.config.ts` with appropriate directives.
-
----
-
-## Critical Findings
-
-### CRIT-002: MQTT Credentials Exposed in Client-Side Bundle & Docker Build
-
-| Field             | Value                                                              |
-| ----------------- | ------------------------------------------------------------------ |
-| **Severity**      | Critical                                                           |
-| **Type**          | Sensitive Data Exposure — CWE-200 / CWE-312                        |
-| **Location**      | `src/config.ts:13-14`, `src/lib/mqtt.ts:12-14`, `Dockerfile:18-40` |
-| **OWASP**         | A02:2021 — Cryptographic Failures                                  |
-| **Effort to Fix** | Moderate                                                           |
-| **Status**        | Partially Fixed — `NEXT_PUBLIC_URL` removed from config.ts         |
-
-**Evidence:**
+**Evidence**
 
 ```ts
-// config.ts — NEXT_PUBLIC_ prefix means bundled into client JS
+// src/utils/jwt.util.ts
+export const decodeJwt = (token: string): JwtType | null => {
+  return jwtDecode(token);
+};
+```
+
+```ts
+// src/app/api/file/delete/route.ts
+const permissionCodes = decodeJwt(accessToken)?.authorities || [];
+```
+
+```ts
+// src/utils/csrf.util.ts
+return headerToken === cookieToken;
+```
+
+The file routes accept any cookie value the caller sends. `decodeJwt()` does not verify JWT signature, issuer, or audience. Multipart routes only require that an `access_token` cookie exist. CSRF protection is only a double-submit equality check, so a direct caller can self-supply both cookie and header values.
+
+**Impact Analysis**
+
+An attacker can call these internal routes without a real session by forging cookie/header values. For `/api/file/delete`, a forged JWT containing elevated `authorities` can satisfy the permission check. For multipart upload routes, any non-empty fake access token can unlock route access.
+
+**Remediation**
+
+- Verify access tokens server-side before trusting any claims.
+- Reject unsigned, expired, or invalid JWTs before route logic runs.
+- Centralize verified-session enforcement in a shared server helper or middleware.
+- Bind CSRF validation to a verified session secret, not just header-cookie equality.
+
+---
+
+### CRIT-002: MQTT Broker Credentials Are Exposed to Every Browser and Baked Into Build Artifacts
+
+- **Severity:** Critical
+- **Type:** Sensitive Data Exposure - CWE-200 / CWE-522
+- **Location:** `src/config.ts:12-14`, `src/lib/mqtt.ts:12-18`, `Dockerfile:25-39`, `.github/workflows/docker.yml:31-41`
+- **OWASP:** A02:2021 Cryptographic Failures
+- **Effort to Fix:** Moderate
+
+**Evidence**
+
+```ts
+// src/config.ts
+NEXT_PUBLIC_MQTT_BROKER: z.url(),
 NEXT_PUBLIC_MQTT_USERNAME: z.string(),
 NEXT_PUBLIC_MQTT_PASSWORD: z.string(),
+```
 
-// mqtt.ts — credentials used in client-side connection
-client = mqtt.connect(envConfig.NEXT_PUBLIC_MQTT_BROKER, {
-  username: envConfig.NEXT_PUBLIC_MQTT_USERNAME,
-  password: envConfig.NEXT_PUBLIC_MQTT_PASSWORD,
+```ts
+// src/lib/mqtt.ts
+client = mqtt.connect(envConfig.NEXT_PUBLIC_MQTT_BROKER as string, {
+  username: envConfig.NEXT_PUBLIC_MQTT_USERNAME as string,
+  password: envConfig.NEXT_PUBLIC_MQTT_PASSWORD as string
 });
 ```
 
 ```dockerfile
-# Dockerfile — baked into build artifact
+ARG NEXT_PUBLIC_MQTT_USERNAME
 ARG NEXT_PUBLIC_MQTT_PASSWORD
+ENV NEXT_PUBLIC_MQTT_USERNAME=$NEXT_PUBLIC_MQTT_USERNAME
 ENV NEXT_PUBLIC_MQTT_PASSWORD=$NEXT_PUBLIC_MQTT_PASSWORD
 ```
 
-**Impact:** MQTT broker credentials are visible to anyone inspecting the browser JavaScript source or extracting them from the Docker image. An attacker can connect directly to the MQTT broker, subscribe to/publish on any topic, intercept notifications, or send malicious commands.
+**Impact Analysis**
 
-**Remediation:**
+Any logged-in user can recover the broker credentials from the client bundle or runtime and connect outside the app. If broker ACLs are permissive, this enables unauthorized topic reads and possibly spoofed publishes.
 
-- Remove `NEXT_PUBLIC_MQTT_*` variables; use server-only env vars
-- Move MQTT connection to a server-side API route or WebSocket proxy
-- Use short-lived, scoped tokens instead of static credentials
-- Implement topic-level ACLs on the MQTT broker
-- Remove MQTT args from Dockerfile
+**Remediation**
 
----
-
-## High Findings
-
-### HIGH-001: No CSRF Protection on State-Changing API Routes
-
-| Field             | Value                                                                           |
-| ----------------- | ------------------------------------------------------------------------------- |
-| **Severity**      | High                                                                            |
-| **Type**          | Cross-Site Request Forgery — CWE-352                                            |
-| **Location**      | All API routes (login, logout, refresh-token, file/delete, chunk upload routes) |
-| **OWASP**         | A01:2021 — Broken Access Control                                                |
-| **Effort to Fix** | Moderate                                                                        |
-
-**Evidence:** All `POST`, `DELETE`, `PUT` handlers accept requests without CSRF token verification. Cookies use `sameSite: 'lax'` which only protects against cross-site top-level navigations.
-
-**Impact:** An attacker can craft a malicious page that triggers state-changing operations (logout, file deletion, video upload) using the victim's authenticated session cookies.
-
-**Remediation:**
-
-- Implement CSRF tokens (Double Submit Cookie or Synchronizer Token Pattern)
-- Or change `sameSite` to `'strict'` for sensitive cookies
-- Add CSRF middleware to all state-changing API routes
+- Remove MQTT secrets from all `NEXT_PUBLIC_*` variables.
+- Stop injecting MQTT credentials through Docker build args and CI build args.
+- Replace them with short-lived per-user broker tokens or a server-side relay.
+- Enforce strict topic ACLs on the broker.
 
 ---
 
-### HIGH-002: Missing Server-Side Permission Enforcement
+### HIGH-001: Multipart Upload Routes Lack Server-Side Permission Enforcement
 
-| Field             | Value                                                                  |
-| ----------------- | ---------------------------------------------------------------------- |
-| **Severity**      | High                                                                   |
-| **Type**          | Broken Access Control / Privilege Escalation — CWE-285 / CWE-602       |
-| **Location**      | `src/components/permission-guard/permission-guard.tsx`, all API routes |
-| **OWASP**         | A01:2021 — Broken Access Control                                       |
-| **Effort to Fix** | Extensive                                                              |
-| **Status**        | Partially Fixed — Auth token checks added to file upload/delete routes |
+- **Severity:** High
+- **Type:** Missing Authorization - CWE-862
+- **Location:** `src/app/api/file/upload/video/chunk/init/route.ts:10-25`, `src/app/api/file/upload/video/chunk/presign/route.ts:10-21`, `src/app/api/file/upload/video/chunk/complete/route.ts:9-20`, `src/app/api/file/upload/video/chunk/abort/route.ts:9-20`, `src/constants/api-config.ts:401-424`
+- **OWASP:** A01:2021 Broken Access Control
+- **Effort to Fix:** Moderate
 
-**Evidence:** Permission checks are performed exclusively in the client-side `PermissionGuard` React component. API route handlers now verify token presence (added in recent changes), but still do not validate permissions:
+**Evidence**
+
+The four chunk-upload routes only check CSRF and token presence. They never call `validatePermission(...)`, and the corresponding `apiConfig.file.uploadChunk*` entries have no `permissionCode`.
+
+**Impact Analysis**
+
+Even with a real low-privilege session, any authenticated CMS user can initialize uploads, generate presigned URLs, complete uploads, and abort uploads without holding `FILE_U_V` or an equivalent upload permission.
+
+**Remediation**
+
+- Enforce the same upload permission used by `apiConfig.file.uploadVideo`.
+- Add `permissionCode` metadata for all four internal chunk routes.
+- Fail closed when route-level permission metadata is missing.
+
+---
+
+### HIGH-002: Bearer Tokens Are Re-Exposed to Browser JavaScript and Stored in Zustand
+
+- **Severity:** High
+- **Type:** Sensitive Data in Client Memory - CWE-200 / CWE-316 / CWE-922
+- **Location:** `src/app/api/auth/session/route.ts:25-33`, `src/app/api/auth/login/route.ts:84`, `src/app/api/auth/refresh-token/route.ts:89`, `src/app/(auth)/login/_components/login-form.tsx:55-61`, `src/components/providers/app-provider/app-provider.tsx:78-82`, `src/store/auth.store.ts:4-13`, `src/utils/http.util.ts:157-188`
+- **OWASP:** A02:2021 Cryptographic Failures
+- **Effort to Fix:** Moderate
+
+**Evidence**
 
 ```ts
-// file/delete/route.ts — now checks token exists, but no permission validation
-const accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
-if (!accessToken) {
-  return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+// src/app/api/auth/session/route.ts
+data: {
+  (accessToken, userKind, csrfToken);
 }
-// No permission check — any authenticated user can delete ANY S3 object
 ```
 
-**Recent Improvements:**
-
-- ✅ Auth token checks added to: `delete`, `init`, `presign`, `complete`, `abort` routes
-- ✅ Zod validation schemas added for all chunk upload operations (`validation.ts`)
-- ✅ Path traversal prevention in S3 key validation
-- ✅ MIME type allowlist enforced for video uploads
-
-**Impact:** Any authenticated user can bypass all route-level permissions by directly calling API endpoints. The entire permission system is cosmetic without server-side enforcement.
-
-**Remediation:**
-
-- Implement server-side middleware (`middleware.ts`) that validates permissions on protected routes
-- Add permission checks in each API route handler by decoding JWT and checking `authorities` claim
-- Enforce `permissionCode` mappings from `src/constants/api-config.ts` server-side
-
----
-
-### HIGH-003: No Rate Limiting on Authentication Endpoints
-
-| Field             | Value                                                                        |
-| ----------------- | ---------------------------------------------------------------------------- |
-| **Severity**      | High                                                                         |
-| **Type**          | Missing Rate Limiting — CWE-307                                              |
-| **Location**      | `src/app/api/auth/login/route.ts`, `src/app/api/auth/refresh-token/route.ts` |
-| **OWASP**         | A07:2021 — Identification and Authentication Failures                        |
-| **Effort to Fix** | Moderate                                                                     |
-
-**Evidence:** Login and refresh-token endpoints have no rate limiting, brute-force protection, or account lockout mechanisms.
-
-**Impact:** Unlimited credential stuffing, brute-force attacks, and refresh token rotation abuse.
-
-**Remediation:**
-
-- Implement rate limiting (`@upstash/ratelimit` or Redis-based sliding window)
-- IP-based throttling (e.g., 5 attempts per minute per IP)
-- Account lockout after N failed attempts
-- CAPTCHA after repeated failures
-
----
-
-### HIGH-004: Access Token Stored in Client-Side Zustand Store
-
-| Field             | Value                                                                                |
-| ----------------- | ------------------------------------------------------------------------------------ |
-| **Severity**      | High                                                                                 |
-| **Type**          | Sensitive Data in Client Memory — CWE-316                                            |
-| **Location**      | `src/store/auth.store.ts:7,11`, `src/app/(auth)/login/_components/login-form.tsx:60` |
-| **OWASP**         | A04:2021 — Insecure Design                                                           |
-| **Effort to Fix** | Moderate                                                                             |
-
-**Evidence:**
-
 ```ts
-// auth.store.ts
+// src/store/auth.store.ts
 accessToken: null,
-setAccessToken: (accessToken: string | null) => set({ accessToken }),
+setAccessToken: (accessToken) => set({ accessToken }),
 ```
 
-**Impact:** JWT access token stored in client-side JavaScript store. Any XSS vulnerability can read the token directly from memory via `useAuthStore.getState().accessToken`. Combined with cookie storage, this doubles the attack surface.
+The code correctly stores auth cookies as `httpOnly`, but then returns the raw access token to browser code and stores it in client state for reuse.
 
-**Remediation:** Remove access token from Zustand store. Rely solely on httpOnly cookies for auth.
+**Impact Analysis**
+
+Any XSS, malicious extension, or compromised first-party script can steal a reusable bearer token instead of being limited to cookie-riding.
+
+**Remediation**
+
+- Stop returning access tokens from `/api/auth/session`, `/api/auth/login`, and `/api/auth/refresh-token`.
+- Keep bearer tokens server-side and proxy authenticated API work through server handlers where possible.
+- If browser-visible tokens remain necessary, reduce lifetime and scope aggressively.
 
 ---
 
-### HIGH-005: Credentials in Basic Auth Header via `btoa()`
+### HIGH-003: No Brute-Force or Abuse Throttling on Login and Refresh Endpoints
 
-| Field             | Value                                                                              |
-| ----------------- | ---------------------------------------------------------------------------------- |
-| **Severity**      | High                                                                               |
-| **Type**          | Improper Credential Handling — CWE-256                                             |
-| **Location**      | `src/app/api/auth/login/route.ts:39`, `src/app/api/auth/refresh-token/route.ts:35` |
-| **OWASP**         | A02:2021 — Cryptographic Failures                                                  |
-| **Effort to Fix** | Quick                                                                              |
+- **Severity:** High
+- **Type:** Missing Rate Limiting - CWE-307
+- **Location:** `src/app/api/auth/login/route.ts`, `src/app/api/auth/refresh-token/route.ts`
+- **OWASP:** A07:2021 Identification and Authentication Failures
+- **Effort to Fix:** Moderate
 
-**Evidence:**
+**Evidence**
+
+The login and refresh handlers accept unbounded requests. There is no IP throttling, account throttling, backoff, lockout, or abuse accounting.
+
+**Impact Analysis**
+
+`/api/auth/login` is exposed to credential stuffing and brute-force attacks. `/api/auth/refresh-token` can be abused for refresh churn and session-stability attacks.
+
+**Remediation**
+
+- Add IP-based and account-based rate limiting.
+- Apply stricter limits to login than to normal application routes.
+- Consider lockout or step-up verification after repeated failures.
+
+---
+
+### MED-001: Multipart Upload Lifecycle Does Not Bind `uploadId` and `objectName` to the Initiating User
+
+- **Severity:** Medium
+- **Type:** Insecure Direct Object Reference - CWE-639
+- **Location:** `src/app/api/file/upload/video/chunk/presign/route.ts:42-54`, `src/app/api/file/upload/video/chunk/complete/route.ts:27-39`, `src/app/api/file/upload/video/chunk/abort/route.ts:27-34`
+- **OWASP:** A01:2021 Broken Access Control
+- **Effort to Fix:** Moderate
+
+**Evidence**
+
+`objectName`, `uploadId`, `partNumber`, and `parts` are read directly from `req.json()` and passed into S3 multipart commands. There is no server-side record tying that upload state to the initiating principal.
+
+**Impact Analysis**
+
+If one user obtains another user's `uploadId` and `objectName`, they can mint additional presigned URLs, complete the upload with attacker-controlled parts, or abort it.
+
+**Remediation**
+
+- Persist multipart upload state server-side at init time.
+- Bind `uploadId` and `objectName` to the verified user/session, allowed prefix, and expiration.
+- Enforce that binding in presign, complete, and abort handlers.
+
+---
+
+### MED-002: Multipart Upload Routes Have Shape Validation But No Strong Server-Side Abuse Controls
+
+- **Severity:** Medium
+- **Type:** Improper Input Validation - CWE-20 / Uncontrolled Resource Consumption - CWE-770
+- **Location:** `src/app/api/file/upload/video/chunk/_lib/validation.ts:60-113`, `src/app/api/file/upload/video/chunk/init/route.ts:32-41`, `src/app/api/file/upload/video/chunk/presign/route.ts:46-66`, `src/app/api/file/upload/video/chunk/complete/route.ts:30-49`
+- **OWASP:** A04:2021 Insecure Design
+- **Effort to Fix:** Moderate
+
+**Evidence**
+
+The current tree now has Zod validation for request body shape, MIME type allowlisting, object-name pattern, part number range, and sorted/unique complete parts. However, the server still does not persist the declared `fileSize`, expected part count, owner, expiry, or total uploaded bytes across the multipart lifecycle.
+
+**Impact Analysis**
+
+Attackers can declare an allowed upload, request many presigned parts up to the protocol maximum, upload more data than intended, and create storage/bandwidth cost exhaustion or long-lived incomplete uploads.
+
+**Remediation**
+
+- Keep the current request schemas, but add persisted multipart upload state.
+- Enforce declared file size, expected part count, owner, expiration, and upload status on presign, complete, and abort.
+- Cap concurrent uploads, part counts, and bytes per user.
+- Expire or garbage-collect abandoned uploads.
+
+---
+
+### MED-003: File Delete Route Accepts Arbitrary Bucket Keys
+
+- **Severity:** Medium
+- **Type:** Insecure Direct Object Reference - CWE-639 / External Control of File Name or Path - CWE-73
+- **Location:** `src/app/api/file/delete/route.ts:47-69`, `src/lib/s3.ts:36-38`
+- **OWASP:** A01:2021 Broken Access Control
+- **Effort to Fix:** Moderate
+
+**Evidence**
 
 ```ts
-Authorization: `Basic ${btoa(`${process.env.APP_USERNAME}:${process.env.APP_PASSWORD}`)}`;
-```
-
-**Impact:** `btoa()` provides no cryptographic protection — it's trivially reversible encoding. If credentials are exposed through error logging, stack traces, or SSR leaks, they are immediately usable.
-
-**Remediation:**
-
-- Ensure `APP_USERNAME`/`APP_PASSWORD` are never logged
-- Consider using private_key_jwt for OAuth2 client authentication
-- Add rate limiting on login endpoint
-
----
-
-### HIGH-006: `@typescript-eslint/no-explicit-any` and `react/jsx-no-target-blank` Rules Disabled
-
-| Field             | Value                                |
-| ----------------- | ------------------------------------ |
-| **Severity**      | High                                 |
-| **Type**          | Security Misconfiguration — CWE-693  |
-| **Location**      | `eslint.config.mjs:65,67`            |
-| **OWASP**         | A05:2021 — Security Misconfiguration |
-| **Effort to Fix** | Quick                                |
-
-**Evidence:**
-
-```js
-'@typescript-eslint/no-explicit-any': 'off',
-'react/jsx-no-target-blank': 'off',
-```
-
-**Impact:** `any` type bypasses all TypeScript type checking, allowing type confusion bugs and injection vectors. Disabled `jsx-no-target-blank` allows reverse tabnabbing vulnerabilities.
-
-**Remediation:**
-
-```js
-'@typescript-eslint/no-explicit-any': 'warn',
-'react/jsx-no-target-blank': 'error',
-```
-
----
-
-## Medium Findings
-
-### ✅ MED-002: Stored XSS via TinyMCE Rich Text Editor — RESOLVED
-
-| Field             | Value                                            |
-| ----------------- | ------------------------------------------------ |
-| **Severity**      | Medium                                           |
-| **Type**          | Stored Cross-Site Scripting — CWE-79             |
-| **Location**      | `src/components/form/rich-text-field.tsx:99-195` |
-| **OWASP**         | A03:2021 — Injection                             |
-| **Effort to Fix** | Moderate                                         |
-
-**Evidence:** TinyMCE configured with `code`, `template`, `link`, `media`, `codesample` plugins. `paste_as_text: false` allows pasting raw HTML. No server-side sanitization of editor output.
-
-**Impact:** Privileged users could inject malicious JavaScript via the rich text editor. If rendered without sanitization, it executes in other users' sessions.
-
-**Remediation Applied:**
-
-- Enabled TinyMCE's `valid_elements` and `extended_valid_elements` to restrict allowed tags/attributes
-- Sanitized HTML output client-side using DOMPurify before setting form values
-- Disabled `code` and `codesample` plugins since raw HTML editing is not required
-
----
-
-### ✅ MED-003: S3 Delete Endpoint — No Ownership Verification (IDOR) — RESOLVED
-
-| Field             | Value                                      |
-| ----------------- | ------------------------------------------ |
-| **Severity**      | Medium                                     |
-| **Type**          | Insecure Direct Object Reference — CWE-639 |
-| **Location**      | `src/app/api/file/delete/route.ts:20-40`   |
-| **OWASP**         | A01:2021 — Broken Access Control           |
-| **Effort to Fix** | Moderate                                   |
-| **Status**        | Fixed — S3 Object Tagging Ownership Check  |
-
-**Evidence:**
-
-- Multipart uploads now include `Tagging: 'uploadedBy=${userId}'` during initialization.
-- The delete endpoint verifies object ownership by checking the `uploadedBy` tag against the current user's ID before proceeding.
-- Admins are exempt from this ownership check.
-
-**Impact:** Resolved. Users can no longer delete objects they do not own.
-
----
-
-### MED-004: Presigned URL Endpoint — Overly Permissive
-
-| Field             | Value                                                        |
-| ----------------- | ------------------------------------------------------------ |
-| **Severity**      | Medium                                                       |
-| **Type**          | Overly Permissive Upload — CWE-434                           |
-| **Location**      | `src/app/api/file/upload/video/chunk/presign/route.ts:48-55` |
-| **OWASP**         | A01:2021 — Broken Access Control                             |
-| **Effort to Fix** | Moderate                                                     |
-
-**Evidence:**
-
-```ts
-const command = new UploadPartCommand({ Bucket: BUCKET_NAME, Key: objectName, ... });
-const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
-```
-
-**Impact:** Any authenticated user can request presigned URLs for arbitrary S3 keys. 1-hour expiry is generous for multipart upload parts.
-
-**Remediation:**
-
-- Enforce `objectName` starts with user's prefix
-- Reduce presigned URL expiry to 5-15 minutes
-- Validate `uploadId` was initiated by the requesting user
-- Add rate limiting to presign endpoint
-
----
-
-### MED-005: MQTT Message Trust — Unvalidated Message Processing
-
-| Field             | Value                                                                                           |
-| ----------------- | ----------------------------------------------------------------------------------------------- |
-| **Severity**      | Medium                                                                                          |
-| **Type**          | Improper Input Validation — CWE-20                                                              |
-| **Location**      | `src/hooks/use-mqtt.ts:17-34`, `src/components/providers/mqtt-provider/mqtt-provider.tsx:68-81` |
-| **OWASP**         | A03:2021 — Injection                                                                            |
-| **Effort to Fix** | Moderate                                                                                        |
-
-**Evidence:**
-
-```ts
-const parsedData: { cmd: string; data: T } = JSON.parse(message.toString());
-if (parsedData.cmd === cmd) {
-  callbackRef.current(parsedData.data);
+let key = objectName;
+const prefix = `/${BUCKET_NAME}/`;
+if (key.startsWith(prefix)) {
+  key = key.substring(prefix.length);
 }
 ```
 
-**Impact:** MQTT messages parsed as JSON with no schema validation. If broker is compromised, attacker can publish malicious payloads triggering arbitrary callback behavior and UI manipulation.
+The route passes the resulting caller-controlled key directly to `DeleteObjectCommand` and does not restrict it to `UPLOAD_FOLDER` or `UPLOAD_PREFIX`.
 
-**Remediation:**
+**Impact Analysis**
 
-- Validate incoming MQTT messages against Zod schemas before processing
-- Sanitize data before logging or displaying in notifications
-- Implement message signing/verification
+Any request that clears the route's auth checks can delete arbitrary objects in the configured bucket, not just intended CMS upload objects.
 
----
+**Remediation**
 
-### MED-006: Refresh Token Rotation Without Old Token Invalidation
-
-| Field             | Value                                                                           |
-| ----------------- | ------------------------------------------------------------------------------- |
-| **Severity**      | Medium                                                                          |
-| **Type**          | Broken Authentication — CWE-287                                                 |
-| **Location**      | `src/app/api/auth/refresh-token/route.ts:26-39`, `src/utils/http.util.ts:45-61` |
-| **OWASP**         | A07:2021 — Identification and Authentication Failures                           |
-| **Effort to Fix** | Moderate                                                                        |
-
-**Evidence:** New refresh token is set, but old one is not explicitly invalidated server-side. If the auth server doesn't implement token family detection, stolen refresh tokens remain valid after rotation.
-
-**Impact:** A stolen refresh token can be used concurrently with the legitimate user, defeating the purpose of rotation.
-
-**Remediation:** Ensure auth server implements proper refresh token rotation with family detection — revoke entire token family if old token is reused.
+- Canonicalize keys and reject anything outside the intended upload prefix.
+- Enforce deletion against server-tracked object metadata where possible.
 
 ---
 
-### MED-007: Excessive Data Exposure in Session Endpoint
+### MED-004: Auth Mutation Routes Skip CSRF Validation
 
-| Field             | Value                                    |
-| ----------------- | ---------------------------------------- |
-| **Severity**      | Medium                                   |
-| **Type**          | Excessive Data Exposure — CWE-213        |
-| **Location**      | `src/app/api/auth/session/route.ts:7-19` |
-| **OWASP**         | A02:2021 — Cryptographic Failures        |
-| **Effort to Fix** | Quick                                    |
+- **Severity:** Medium
+- **Type:** Cross-Site Request Forgery - CWE-352
+- **Location:** `src/app/api/auth/refresh-token/route.ts:21-92`, `src/app/api/auth/logout/route.ts:7-55`, compared with `src/utils/csrf.util.ts:4-21`
+- **OWASP:** A01:2021 Broken Access Control
+- **Effort to Fix:** Quick
 
-**Evidence:**
+**Evidence**
+
+CSRF validation exists and is enforced on file mutation routes, but neither `POST /api/auth/refresh-token` nor `POST /api/auth/logout` calls `validateCsrfToken()`.
+
+**Impact Analysis**
+
+This permits forced logout and refresh-token churn from same-site attacker surfaces or future cookie-policy regressions.
+
+**Remediation**
+
+- Require CSRF validation on all cookie-authenticated state-changing routes.
+- Apply the same CSRF policy to auth mutation routes as to file mutation routes.
+
+---
+
+### MED-005: CSP Still Permits Inline Script Execution in Production
+
+- **Severity:** Medium
+- **Type:** Improper Restriction of Rendered UI Layers - CWE-693
+- **Location:** `next.config.ts:10-17`
+- **OWASP:** A05:2021 Security Misconfiguration
+- **Effort to Fix:** Moderate
+
+**Evidence**
 
 ```ts
-return NextResponse.json({
-  result: true,
-  data: { accessToken, userKind } // Full access token in response body
+script-src 'self' 'unsafe-inline' ...
+style-src 'self' 'unsafe-inline' ...
+```
+
+**Impact Analysis**
+
+Any HTML or script injection bug elsewhere in the application has a larger blast radius because inline script execution is already allowed by policy.
+
+**Remediation**
+
+- Move to nonce- or hash-based CSP.
+- Remove `unsafe-inline` from `script-src`.
+- Minimize third-party script origins.
+
+---
+
+### MED-006: CI Deployment Trust Relies on Mutable Action Tags and Runtime `ssh-keyscan`
+
+- **Severity:** Medium
+- **Type:** Download of Code Without Integrity Check - CWE-494
+- **Location:** `.github/workflows/docker.yml:13-25`, `.github/workflows/docker.yml:71-76`
+- **OWASP:** A06:2021 Vulnerable and Outdated Components
+- **Effort to Fix:** Quick
+
+**Evidence**
+
+```yml
+uses: actions/checkout@v4
+uses: docker/setup-buildx-action@v3
+uses: docker/login-action@v3
+uses: docker/build-push-action@v6
+```
+
+```yml
+ssh-keyscan ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+```
+
+**Impact Analysis**
+
+An upstream action retag or a MITM on the SSH host-key discovery path could tamper with the deployment workflow and expose deployment secrets.
+
+**Remediation**
+
+- Pin third-party GitHub Actions to full commit SHAs.
+- Preconfigure the VPS host key fingerprint instead of trusting runtime `ssh-keyscan`.
+
+---
+
+### MED-007: Dependency Audit Reports High and Moderate Advisories
+
+- **Severity:** Medium
+- **Type:** Vulnerable and Outdated Components - CWE-1104
+- **Location:** `package.json`, `yarn.lock`
+- **OWASP:** A06:2021 Vulnerable and Outdated Components
+- **Effort to Fix:** Moderate
+
+**Evidence**
+
+`yarn audit --groups dependencies` reported 43 advisories: 18 high, 24 moderate, and 1 low. Notable paths include:
+
+- `@aws-sdk/client-s3` transitive paths through `fast-xml-builder`
+- `mqtt > ws`
+- `next > postcss`
+- `axios`
+
+**Impact Analysis**
+
+The impact depends on reachable code paths, but the audit currently flags vulnerable dependency versions in runtime packages used for HTTP, S3/MinIO, MQTT/WebSocket, and Next.js build/runtime support.
+
+**Remediation**
+
+- Update direct dependencies and regenerate `yarn.lock`.
+- Prefer upgrading `@aws-sdk/*`, `mqtt`, `next`, and `axios` to versions whose transitive trees clear the advisories.
+- Rerun `yarn audit --groups dependencies` after dependency updates.
+
+---
+
+### MED-008: Rich Text Sanitizer Allows Arbitrary `iframe` Embeds
+
+- **Severity:** Medium
+- **Type:** Stored HTML Injection / Unsafe Embedding - CWE-79 / CWE-1021
+- **Location:** `src/components/form/rich-text-field.tsx:103-113`, `src/components/form/rich-text-field.tsx:208-217`
+- **OWASP:** A03:2021 Injection
+- **Effort to Fix:** Quick to Moderate
+
+**Evidence**
+
+```ts
+DOMPurify.sanitize(content, {
+  ADD_TAGS: ['iframe'],
+  ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling']
 });
 ```
 
-**Impact:** Access token returned in JSON response body, accessible to any client-side JavaScript including third-party scripts. Provides additional exfiltration vector beyond cookie theft.
+The rich text field explicitly permits `iframe` in stored editor content.
 
-**Remediation:** Return only session validity boolean or minimal user metadata. Access token should remain in httpOnly cookies only.
+**Impact Analysis**
+
+If this CMS content is rendered in a public application with a looser CSP or different sanitizer, arbitrary embeds can enable phishing, tracking, clickjacking-style UI deception, or stored XSS if render-time controls drift.
+
+**Remediation**
+
+- Prefer disallowing `iframe` entirely.
+- If embeds are required, allowlist trusted `src` origins and require `sandbox` and `referrerpolicy`.
+- Enforce equivalent sanitization server-side and at every render surface.
 
 ---
 
-### MED-008: Error Response Leakage — Validation Details in Production
+### MED-009: MinIO Client Uses Root Credentials Instead of Least-Privilege Service Credentials
 
-| Field             | Value                                     |
-| ----------------- | ----------------------------------------- |
-| **Severity**      | Medium                                    |
-| **Type**          | Information Exposure — CWE-209            |
-| **Location**      | Chunk upload init/presign/complete routes |
-| **OWASP**         | A05:2021 — Security Misconfiguration      |
-| **Effort to Fix** | Quick                                     |
+- **Severity:** Medium
+- **Type:** Excessive Privilege - CWE-250
+- **Location:** `src/lib/s3.ts:31-38`, `.github/workflows/docker.yml:94-96`
+- **OWASP:** A05:2021 Security Misconfiguration
+- **Effort to Fix:** Moderate
 
-**Evidence:**
+**Evidence**
 
 ```ts
-return NextResponse.json(
-  {
-    error: 'Invalid parameters',
-    details: z.treeifyError(parsed.error) // Detailed validation tree exposed
-  },
-  { status: 400 }
-);
+credentials: {
+  accessKeyId: process.env.MINIO_ROOT_USER as string,
+  secretAccessKey: process.env.MINIO_ROOT_PASSWORD as string
+}
 ```
 
-**Impact:** Attackers can use validation error details to map internal data structures, field names, and validation rules.
+The application uses MinIO root credentials for application object operations.
 
-**Remediation:** Return generic error messages in production. Log detailed errors server-side only. Conditionally include `details` based on `NODE_ENV`.
+**Impact Analysis**
 
----
+If the CMS runtime, upload routes, or deployment secrets are compromised, the attacker likely receives broad MinIO access instead of only the minimum bucket/prefix permissions needed for CMS media operations.
 
-### MED-009: Client Type Stored in localStorage
+**Remediation**
 
-| Field             | Value                                                             |
-| ----------------- | ----------------------------------------------------------------- |
-| **Severity**      | Medium                                                            |
-| **Type**          | Insecure Data Storage — CWE-922                                   |
-| **Location**      | `src/utils/http.util.ts:162-163`, `src/utils/storage.util.ts:3-6` |
-| **OWASP**         | A04:2021 — Insecure Design                                        |
-| **Effort to Fix** | Quick                                                             |
-
-**Evidence:**
-
-```ts
-clientType =
-  getData(storageKeys.X_CLIENT_TYPE) || envConfig.NEXT_PUBLIC_CLIENT_TYPE;
-```
-
-`getData()` reads from `localStorage`.
-
-**Impact:** XSS could modify client type to trigger different server-side behavior.
-
-**Remediation:** Use server-configured default as authoritative value. Do not allow client-side override.
+- Replace root credentials with scoped MinIO service accounts.
+- Restrict service credentials to the target bucket and upload prefixes.
+- Use separate credentials for upload, read, delete, and lifecycle operations when practical.
 
 ---
 
-## Low Findings
+### MED-010: Uploaded Video Content Is Not Validated After Storage
 
-All low findings have been resolved. See [Resolved Findings](#resolved-findings) section.
+- **Severity:** Medium
+- **Type:** Unrestricted File Upload - CWE-434
+- **Location:** `src/app/api/file/upload/video/chunk/_lib/validation.ts:60-64`, `src/app/api/file/upload/video/chunk/init/route.ts:38-48`, `src/components/form/upload-video-field.tsx:66`
+- **OWASP:** A05:2021 Security Misconfiguration
+- **Effort to Fix:** Moderate
 
----
+**Evidence**
 
-## Info Findings
+The upload flow validates client-supplied `mimeType` and object-name shape, but no post-upload media validation, transcoding gate, or quarantine step is visible in this repo.
 
-All info findings have been resolved. See [Resolved Findings](#resolved-findings) section.
+**Impact Analysis**
 
-## OWASP Top 10 Mapping
+A client can label arbitrary binary content as an allowed video type and store it under a video extension. Depending on how the media host serves files, this can create malware distribution, player parser, or content policy risk.
 
-| OWASP Category                                        | Findings                                                                                                             |
-| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| A01:2021 — Broken Access Control                      | HIGH-001, HIGH-002, ~~MED-003~~ ✅, MED-004, ~~LOW-001~~ ✅, ~~LOW-003~~ ✅                                          |
-| A02:2021 — Cryptographic Failures                     | ~~CRIT-001~~ ✅, CRIT-002, HIGH-005, MED-007                                                                         |
-| A03:2021 — Injection                                  | MED-002, MED-005, ~~LOW-005~~ ✅                                                                                     |
-| A04:2021 — Insecure Design                            | HIGH-004, MED-009, ~~LOW-004~~ ✅                                                                                    |
-| A05:2021 — Security Misconfiguration                  | HIGH-006, ~~MED-001~~ ✅, MED-008, ~~LOW-006~~ ✅, ~~LOW-007~~ ✅, ~~INFO-001~~ ✅, ~~INFO-002~~ ✅, ~~INFO-003~~ ✅ |
-| A07:2021 — Identification and Authentication Failures | HIGH-003, MED-006                                                                                                    |
+**Remediation**
 
-## OWASP API Security Top 10 Mapping
-
-| OWASP API Category                                          | Findings                    |
-| ----------------------------------------------------------- | --------------------------- |
-| API1:2023 — Broken Object Level Authorization               | ~~MED-003~~ ✅, MED-004     |
-| API2:2023 — Broken Authentication                           | HIGH-003, HIGH-005, MED-006 |
-| API3:2023 — Broken Object Property Level Authorization      | HIGH-002                    |
-| API4:2023 — Unrestricted Resource Consumption               | HIGH-003                    |
-| API6:2023 — Unrestricted Access to Sensitive Business Flows | HIGH-002                    |
-| API8:2023 — Security Misconfiguration                       | MED-001, MED-008, LOW-007   |
-| API9:2023 — Improper Inventory Management                   | INFO-002                    |
+- Quarantine newly completed objects until server-side media validation succeeds.
+- Validate container and codec with a trusted media tool such as `ffprobe`.
+- Only publish or attach the media URL after validation/transcoding succeeds.
 
 ---
 
-## Remediation Roadmap
+## Verified Current Hardening
 
-### Phase 1: Critical (Immediate — within 24 hours)
+- `src/app/api/auth/_lib/make-cookie-option.ts:4-9` sets `httpOnly`, `sameSite: 'lax'`, and `secure` outside development.
+- `src/app/api/auth/session/route.ts:39-42` sets `Cache-Control: no-store` on the session bootstrap response.
+- `src/components/form/rich-text-field.tsx:103-115` and `:208-217` sanitize TinyMCE content with DOMPurify.
+- `next.config.ts:24-47` applies HSTS, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, and CSP headers.
+- `Dockerfile:42-52` runs the container as a non-root user.
+- `src/app/api/file/upload/video/chunk/_lib/validation.ts:60-113` validates multipart request shape, allowed video MIME types, object-name format, upload ID shape, part range, duplicate parts, and sort order.
 
-- [x] Fix inverted `secure` cookie flag (CRIT-001) ✅
-- [ ] Remove MQTT credentials from client bundle (CRIT-002)
+---
 
-### Phase 2: High (Within 1 week)
+## Stale Claims Corrected From The Previous Audit
 
-- [ ] Add CSRF protection to all state-changing endpoints (HIGH-001)
-- [ ] Implement server-side permission enforcement (HIGH-002)
-  - Note: Auth token checks added to file routes; permission-level checks still needed
-- [ ] Add rate limiting to auth endpoints (HIGH-003)
-- [ ] Remove access token from Zustand store (HIGH-004)
-- [ ] Enable ESLint security rules (HIGH-006)
+- The prior audit understated the most severe issue: the current code does not verify JWT authenticity before using claims for internal route access control.
+- The prior audit referenced `src/app/api/file/upload/video/chunk/validation.ts`; the current validation module is `src/app/api/file/upload/video/chunk/_lib/validation.ts`.
+- The underlying conclusion about multipart abuse controls remains true, but request shape validation has since been added.
+- The prior audit's unresolved findings about token exposure, missing multipart permission checks, missing CSRF on logout/refresh, and MQTT credential exposure are still valid in current source.
 
-### Phase 3: Medium (Within 2 weeks)
+---
 
-- [ ] Add Content-Security-Policy header (MED-001)
-  - Note: Other security headers already added
-- [x] Sanitize TinyMCE output (MED-002)
-- [x] Add S3 ownership verification (MED-003)
-- [ ] Restrict presigned URL permissions (MED-004)
-- [ ] Validate MQTT messages (MED-005)
-- [ ] Implement refresh token family detection (MED-006)
-- [ ] Remove access token from session response (MED-007)
-- [ ] Sanitize error responses (MED-008)
-  - Note: `z.treeifyError()` details still exposed in chunk upload routes
-- [ ] Remove localStorage client type override (MED-009)
+## Limitations
 
-### Phase 4: Low/Info (Within 1 month)
-
-- [x] Add `rel="noopener noreferrer"` to external links (LOW-001) ✅
-- [x] Reduce presigned URL expiration (LOW-002) ✅
-- [x] Validate all redirect targets (LOW-003) ✅
-- [x] Refactor token refresh state management (LOW-004) ✅
-- [x] Escape regex metacharacters in route matching (LOW-005) ✅
-- [x] Remove DELETE-as-POST alias (LOW-006) ✅
-- [x] Remove deprecated XSS header (LOW-007) ✅
-- [x] Add Permissions-Policy header (INFO-001) ✅
-- [x] Update `.gitignore` (INFO-002) ✅
-- [x] Pin Docker base image (INFO-003) ✅
-
-### Completed Security Improvements
-
-- [x] Fix inverted `secure` cookie flag (CRIT-001)
-- [x] Remove `NEXT_PUBLIC_URL` from config (documentation/code alignment)
-- [x] Add auth token checks to all S3 file routes (delete, init, presign, complete, abort)
-- [x] Add Zod validation schemas for chunk upload operations
-- [x] Implement path traversal prevention in S3 key validation
-- [x] Enforce MIME type allowlist for video uploads
-- [x] Add security headers (X-Content-Type-Options, X-Frame-Options, HSTS, Referrer-Policy, Permissions-Policy)
-- [x] Fix open redirect via `isSafeInternalPath()` validation
-- [x] Gate auth queue logging behind dev-only check
-- [x] Remove debug console.log from subtitle list
-- [x] Remove deprecated `X-XSS-Protection` header (LOW-007)
-- [x] Update `.gitignore` for environment files (INFO-002)
-- [x] Pin Node.js base image to `20.11-alpine` (INFO-003)
-- [x] Add `rel="noopener noreferrer"` to external links (LOW-001)
-- [x] Reduce presigned URL expiration to 5 minutes (LOW-002)
-- [x] Validate redirect target before `window.location.href` (LOW-003)
-- [x] Reorder module state after `isClient` guard (LOW-004)
-- [x] Escape regex metacharacters in route matching (LOW-005)
-- [x] Remove DELETE-as-POST alias (LOW-006)
-- [x] Add Content-Security-Policy header (MED-001)
-- [x] Sanitize TinyMCE output with DOMPurify and restrict allowed elements (MED-002)
-- [x] Add S3 ownership verification via tagging (MED-003)
+- I did not read restricted files such as `.env`.
+- I ran `yarn audit --groups dependencies` with approved network access, but did not perform manual exploitability analysis for every transitive advisory.
+- I did not audit the downstream auth/API/media backends referenced by `NEXT_PUBLIC_AUTH_API_URL`, `NEXT_PUBLIC_API_URL`, and `NEXT_PUBLIC_API_MEDIA_URL`; this report covers the CMS repo only.

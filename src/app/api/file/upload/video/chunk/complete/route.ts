@@ -5,6 +5,10 @@ import { HttpStatusCode } from 'axios';
 import { logger } from '@/logger';
 import { getCookie, validateCsrfToken, csrfErrorResponse } from '@/utils';
 import { storageKeys } from '@/constants';
+import {
+  completeMultipartUploadSchema,
+  parseRequestBody
+} from '../_lib/validation';
 
 export async function POST(req: NextRequest) {
   if (!validateCsrfToken(req)) {
@@ -23,8 +27,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body = await req.json();
-  const { objectName, uploadId, parts } = body;
+  const parsedBody = await parseRequestBody(req, completeMultipartUploadSchema);
+
+  if (!parsedBody.success) {
+    return parsedBody.response;
+  }
+
+  const { objectName, uploadId, parts } = parsedBody.data;
 
   try {
     await s3Client.send(
@@ -33,7 +42,7 @@ export async function POST(req: NextRequest) {
         Key: objectName,
         UploadId: uploadId,
         MultipartUpload: {
-          Parts: parts.map((p: { partNumber: number; etag: string }) => ({
+          Parts: parts.map((p) => ({
             PartNumber: p.partNumber,
             ETag: p.etag
           }))

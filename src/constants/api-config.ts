@@ -15,21 +15,18 @@ const apiConfig = defineApiConfig({
         baseUrl: `/api/auth/login`,
         method: 'POST',
         headers: baseHeader,
-        isRequiredCsrfToken: true,
         isRequiredXClientType: true
       },
       refreshToken: {
         baseUrl: `/api/auth/refresh-token`,
         method: 'POST',
         headers: baseHeader,
-        isRequiredCsrfToken: true,
         isRequiredXClientType: true
       },
       logout: {
         baseUrl: `/api/auth/logout`,
         method: 'POST',
         headers: baseHeader,
-        isRequiredCsrfToken: true,
         isRequiredXClientType: true
       },
       session: {

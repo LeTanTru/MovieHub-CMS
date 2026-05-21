@@ -73,7 +73,11 @@ const useChunkUpload = () => {
           uploadId: string;
           objectName: string;
         }>(apiConfig.file.uploadChunkInit, {
-          body: { fileName: file.name, mimeType: file.type }
+          body: {
+            fileName: file.name,
+            fileSize: file.size,
+            mimeType: file.type
+          }
         });
 
         uploadId = initRes.uploadId;

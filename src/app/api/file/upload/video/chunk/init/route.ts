@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { s3Client, BUCKET_NAME } from '@/lib/s3';
+import { s3Client, BUCKET_NAME, UPLOAD_FOLDER, UPLOAD_PREFIX } from '@/lib/s3';
 import { CreateMultipartUploadCommand } from '@aws-sdk/client-s3';
 import { randomBytes } from 'crypto';
 import { logger } from '@/logger';
 import { HttpStatusCode } from 'axios';
 import { getCookie, validateCsrfToken, csrfErrorResponse } from '@/utils';
 import { storageKeys } from '@/constants';
+import {
+  getVideoExtensionFromMimeType,
+  initMultipartUploadSchema,
+  parseRequestBody
+} from '../_lib/validation';
 
 export async function POST(req: NextRequest) {
   if (!validateCsrfToken(req)) {
@@ -24,20 +29,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body = await req.json();
+  const parsedBody = await parseRequestBody(req, initMultipartUploadSchema);
 
-  const { mimeType } = body;
+  if (!parsedBody.success) {
+    return parsedBody.response;
+  }
+
+  const { mimeType } = parsedBody.data;
   const randomName = randomBytes(10).toString('hex');
-  const ext =
-    mimeType === 'video/quicktime'
-      ? 'mov'
-      : mimeType === 'video/webm'
-        ? 'webm'
-        : mimeType === 'video/ogg'
-          ? 'ogg'
-          : 'mp4';
-
-  const objectName = `${process.env.MINIO_UPLOAD_FOLDER}/${process.env.MINIO_UPLOAD_PREFIX}_${randomName}.${ext}`;
+  const ext = getVideoExtensionFromMimeType(mimeType);
+  const objectName = `${UPLOAD_FOLDER}/${UPLOAD_PREFIX}_${randomName}.${ext}`;
 
   try {
     const { UploadId } = await s3Client.send(

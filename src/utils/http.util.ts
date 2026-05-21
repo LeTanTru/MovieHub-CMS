@@ -158,9 +158,15 @@ export const sendRequest = async <T>(
   if (!ignoreAuth) {
     if (isClient) {
       accessToken = useAuthStore.getState().accessToken;
-      csrfToken = useAuthStore.getState().csrfToken;
     } else {
       accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
+    }
+  }
+
+  if (isRequiredCsrfToken) {
+    if (isClient) {
+      csrfToken = useAuthStore.getState().csrfToken;
+    } else {
       csrfToken = await getCookie(storageKeys.CSRF_TOKEN);
     }
   }

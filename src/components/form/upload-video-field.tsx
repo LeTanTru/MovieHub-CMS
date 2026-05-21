@@ -27,13 +27,12 @@ type UploadVideoFieldProps<T extends FieldValues> = {
   onUploadStart?: () => void;
   required?: boolean;
   className?: string;
-  maxSize?: number; // Max file size in bytes
-
+  maxSize?: number;
   uploadVideoFn: (
     file: File,
     onProgress: (progress: number) => void
   ) => Promise<string>;
-  deleteImageFn?: (url: string) => Promise<ApiResponse<any> | undefined>;
+  deleteImageFn?: (url: string) => Promise<ApiResponse<unknown> | undefined>;
 };
 
 export default function UploadVideoField<T extends FieldValues>({
@@ -67,21 +66,21 @@ export default function UploadVideoField<T extends FieldValues>({
   ] = useFileUpload({ accept: 'video/*' });
 
   const file = files[0]?.file as File | undefined;
-  // const previewUrl = files[0]?.preview;
   const fileId = files[0]?.id;
 
   const [uploading, setUploading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
+  const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
   const [sizeError, setSizeError] = useState<string>('');
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
 
   const prevFileId = useRef<string | null>(null);
+  const uploadStartTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!fileId || fileId === prevFileId.current) return;
 
     if (file) {
-      // Check file size if maxSize is specified
       if (maxSize && file.size > maxSize) {
         const maxSizeFormatted = formatBytes(maxSize);
         const fileSizeFormatted = formatBytes(file.size);
@@ -91,16 +90,34 @@ export default function UploadVideoField<T extends FieldValues>({
         clearFiles();
         return;
       }
+
       setSizeError('');
       startUpload(file);
     }
+
     prevFileId.current = fileId;
   }, [fileId, maxSize]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!uploading || !uploadStartTimeRef.current) return;
+
+    const interval = window.setInterval(() => {
+      if (!uploadStartTimeRef.current) return;
+
+      setElapsedSeconds(
+        Math.floor((Date.now() - uploadStartTimeRef.current) / 1000)
+      );
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [uploading]);
 
   const startUpload = async (file: File) => {
     try {
       setUploading(true);
       setProgress(0);
+      setElapsedSeconds(0);
+      uploadStartTimeRef.current = Date.now();
       onUploadStart?.();
 
       const url = await uploadVideoFn(file, setProgress);
@@ -111,6 +128,7 @@ export default function UploadVideoField<T extends FieldValues>({
       logger.error('[UPLOAD_VIDEO_ERROR]', error);
     } finally {
       setUploading(false);
+      uploadStartTimeRef.current = null;
     }
   };
 
@@ -122,10 +140,12 @@ export default function UploadVideoField<T extends FieldValues>({
     } catch (err) {
       logger.error('[DELETE_VIDEO_ERROR]', err);
     }
+
     fieldOnChange('');
     onChange?.('');
     clearFiles();
     setProgress(0);
+    setElapsedSeconds(0);
     setSizeError('');
     setConfirmRemoveOpen(false);
   };
@@ -194,6 +214,11 @@ export default function UploadVideoField<T extends FieldValues>({
           {file && (
             <span className='text-xs opacity-60'>{formatBytes(file.size)}</span>
           )}
+          {!uploading && elapsedSeconds > 0 && (
+            <span className='text-xs opacity-60'>
+              Thời gian tải lên: {elapsedSeconds}s
+            </span>
+          )}
           {maxSize && !file && !value && (
             <span
               className={cn('text-xs text-gray-300', {
@@ -225,15 +250,12 @@ export default function UploadVideoField<T extends FieldValues>({
         )}
       </div>
 
-      {/* {previewUrl && (
-        <video src={previewUrl} controls className='w-full rounded-md border' />
-      )} */}
-
       {uploading && (
         <div className='mt-2 flex items-center gap-2'>
           <div className='flex shrink-0 items-center gap-2'>
             <CircleLoading className='stroke-main-color size-4' />
-            {progress}% đang tải...
+            <span>{progress}% đang tải...</span>
+            <span className='text-xs opacity-70'>{elapsedSeconds}s</span>
           </div>
           <div className='h-2 w-full overflow-hidden rounded-full'>
             <div
