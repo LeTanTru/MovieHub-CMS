@@ -13,15 +13,8 @@ export const validateCsrfToken = (request: NextRequest): boolean => {
 };
 
 export const csrfErrorResponse = () => {
-  return new NextResponse(
-    JSON.stringify(
-      { result: false, message: 'CSRF token validation failed' },
-      null,
-      2
-    ),
-    {
-      status: 403,
-      headers: { 'Content-Type': 'application/json' }
-    }
+  return NextResponse.json(
+    { result: false, message: 'CSRF token validation failed' },
+    { status: 403 }
   );
 };

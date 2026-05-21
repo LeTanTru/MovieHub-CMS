@@ -22,22 +22,17 @@ export async function GET() {
     );
   }
 
-  return new NextResponse(
-    JSON.stringify(
-      {
-        result: true,
-        data: {
-          accessToken,
-          userKind,
-          csrfToken
-        }
-      },
-      null,
-      2
-    ),
+  return NextResponse.json(
+    {
+      result: true,
+      data: {
+        accessToken,
+        userKind,
+        csrfToken
+      }
+    },
     {
       headers: {
-        'Content-Type': 'application/json',
         'Cache-Control': 'no-store'
       }
     }

@@ -112,8 +112,7 @@ export const parseRequestBody = async <T>(
   req: NextRequest,
   schema: z.ZodSchema<T>
 ): Promise<
-  | { success: true; data: T }
-  | { success: false; response: NextResponse<string> }
+  { success: true; data: T } | { success: false; response: NextResponse }
 > => {
   const body = await req.json().catch(() => null);
 
@@ -122,19 +121,12 @@ export const parseRequestBody = async <T>(
   if (!parsed.success) {
     return {
       success: false,
-      response: new NextResponse(
-        JSON.stringify(
-          {
-            message: 'Invalid request payload',
-            errors: parsed.error.flatten().fieldErrors
-          },
-          null,
-          2
-        ),
+      response: NextResponse.json(
         {
-          status: HttpStatusCode.BadRequest,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          message: 'Invalid request payload',
+          errors: parsed.error.flatten().fieldErrors
+        },
+        { status: HttpStatusCode.BadRequest }
       )
     };
   }
