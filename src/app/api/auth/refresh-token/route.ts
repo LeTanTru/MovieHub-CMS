@@ -10,13 +10,7 @@ import {
 } from '@/constants';
 import { logger } from '@/logger';
 import { RefreshTokenResType } from '@/types';
-import {
-  getCookie,
-  http,
-  isAxiosError,
-  removeCookie,
-  setCookie
-} from '@/utils';
+import { getCookie, http, isAxiosError, setCookie } from '@/utils';
 import { HttpStatusCode } from 'axios';
 import { NextResponse } from 'next/server';
 
@@ -55,7 +49,6 @@ export async function POST() {
     }
 
     if (res.refresh_token) {
-      await removeCookie(storageKeys.REFRESH_TOKEN);
       await setCookie(
         storageKeys.REFRESH_TOKEN,
         res.refresh_token,
