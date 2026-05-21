@@ -17,16 +17,9 @@ export async function POST() {
           removeCookie(storageKeys.CSRF_TOKEN)
         ]);
 
-        return new NextResponse(
-          JSON.stringify(
-            { result: true, message: 'Logged out successfully' },
-            null,
-            2
-          ),
-          {
-            status: HttpStatusCode.Ok,
-            headers: { 'Content-Type': 'application/json' }
-          }
+        return NextResponse.json(
+          { result: true, message: 'Logged out successfully' },
+          { status: HttpStatusCode.Ok }
         );
       }
     } catch (e) {
@@ -39,38 +32,23 @@ export async function POST() {
       logger.error('[LOGOUT_ERROR]', response);
 
       if (response) {
-        return new NextResponse(
-          JSON.stringify({ result: false, ...response }, null, 2),
-          {
-            status: error.response?.status,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
+        return NextResponse.json(
+          { result: false, ...response },
+          { status: error.response?.status }
         );
       }
 
-      return new NextResponse(
-        JSON.stringify({ result: false, message: 'Logout failed' }, null, 2),
-        {
-          status: error.response?.status,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
+      return NextResponse.json(
+        { result: false, message: 'Logout failed' },
+        { status: error.response?.status }
       );
     }
 
     logger.error('[LOGOUT_ERROR]', error);
 
-    return new NextResponse(
-      JSON.stringify({ result: false, message: 'Logout failed' }, null, 2),
-      {
-        status: HttpStatusCode.InternalServerError,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
+    return NextResponse.json(
+      { result: false, message: 'Logout failed' },
+      { status: HttpStatusCode.InternalServerError }
     );
   }
 }

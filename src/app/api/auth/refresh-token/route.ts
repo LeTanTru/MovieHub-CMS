@@ -25,16 +25,9 @@ export async function POST() {
     const refresh_token = await getCookie(storageKeys.REFRESH_TOKEN);
 
     if (!refresh_token) {
-      return new NextResponse(
-        JSON.stringify(
-          { result: false, message: 'Refresh token is required' },
-          null,
-          2
-        ),
-        {
-          status: HttpStatusCode.BadRequest,
-          headers: { 'Content-Type': 'application/json' }
-        }
+      return NextResponse.json(
+        { result: false, message: 'Refresh token is required' },
+        { status: HttpStatusCode.BadRequest }
       );
     }
 
@@ -86,12 +79,9 @@ export async function POST() {
       makeCookieOption(CSRF_TOKEN_MAX_AGE)
     );
 
-    return new NextResponse(
-      JSON.stringify({ result: true, data: res }, null, 2),
-      {
-        status: HttpStatusCode.Ok,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { result: true, data: res },
+      { status: HttpStatusCode.Ok }
     );
   } catch (error) {
     if (isAxiosError(error)) {
@@ -100,40 +90,23 @@ export async function POST() {
       logger.error('[REFRESH_TOKEN_ERROR]', response);
 
       if (response) {
-        return new NextResponse(
-          JSON.stringify({ result: false, ...response }, null, 2),
-          {
-            status: error.response?.status,
-            headers: { 'Content-Type': 'application/json' }
-          }
+        return NextResponse.json(
+          { result: false, ...response },
+          { status: error.response?.status }
         );
       }
 
-      return new NextResponse(
-        JSON.stringify(
-          { result: false, message: 'Refresh token failed' },
-          null,
-          2
-        ),
-        {
-          status: error.response?.status,
-          headers: { 'Content-Type': 'application/json' }
-        }
+      return NextResponse.json(
+        { result: false, message: 'Refresh token failed' },
+        { status: error.response?.status }
       );
     }
 
     logger.error('[REFRESH_TOKEN_ERROR]', error);
 
-    return new NextResponse(
-      JSON.stringify(
-        { result: false, message: 'Refresh token failed' },
-        null,
-        2
-      ),
-      {
-        status: HttpStatusCode.InternalServerError,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { result: false, message: 'Refresh token failed' },
+      { status: HttpStatusCode.InternalServerError }
     );
   }
 }

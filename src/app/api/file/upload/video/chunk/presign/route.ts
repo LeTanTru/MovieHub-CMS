@@ -19,27 +19,17 @@ export async function POST(req: NextRequest) {
   const accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
 
   if (!accessToken) {
-    return new NextResponse(
-      JSON.stringify({ message: 'Unauthorized' }, null, 2),
-      {
-        status: HttpStatusCode.Unauthorized,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { message: 'Unauthorized' },
+      { status: HttpStatusCode.Unauthorized }
     );
   }
 
   if (!BUCKET_NAME) {
     logger.error('[PRESIGN_ERROR]', 'Missing BUCKET_NAME configuration');
-    return new NextResponse(
-      JSON.stringify(
-        { error: 'Server configuration error: Missing bucket name' },
-        null,
-        2
-      ),
-      {
-        status: HttpStatusCode.InternalServerError,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { error: 'Server configuration error: Missing bucket name' },
+      { status: HttpStatusCode.InternalServerError }
     );
   }
 
@@ -67,18 +57,12 @@ export async function POST(req: NextRequest) {
 
     logger.info(`[Presign] Success - Part ${partNumber}`);
 
-    return new NextResponse(JSON.stringify({ url }, null, 2), {
-      status: HttpStatusCode.Ok,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return NextResponse.json({ url }, { status: HttpStatusCode.Ok });
   } catch (error) {
     logger.error('[CREATE_PRESIGNED_URL_ERROR]', error);
-    return new NextResponse(
-      JSON.stringify({ message: 'Create presigned URL failed' }, null, 2),
-      {
-        status: HttpStatusCode.BadRequest,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { message: 'Create presigned URL failed' },
+      { status: HttpStatusCode.BadRequest }
     );
   }
 }

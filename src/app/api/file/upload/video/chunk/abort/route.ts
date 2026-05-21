@@ -18,12 +18,9 @@ export async function POST(req: NextRequest) {
   const accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
 
   if (!accessToken) {
-    return new NextResponse(
-      JSON.stringify({ message: 'Unauthorized' }, null, 2),
-      {
-        status: HttpStatusCode.Unauthorized,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { message: 'Unauthorized' },
+      { status: HttpStatusCode.Unauthorized }
     );
   }
 
@@ -44,25 +41,15 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    return new NextResponse(
-      JSON.stringify(
-        { message: 'Multipart upload aborted successfully' },
-        null,
-        2
-      ),
-      {
-        status: HttpStatusCode.Ok,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { message: 'Multipart upload aborted successfully' },
+      { status: HttpStatusCode.Ok }
     );
   } catch (error) {
     logger.error('[ABORT_MULTIPART_UPLOAD_ERROR]', error);
-    return new NextResponse(
-      JSON.stringify({ message: 'Abort multipart upload failed' }, null, 2),
-      {
-        status: HttpStatusCode.BadRequest,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { message: 'Abort multipart upload failed' },
+      { status: HttpStatusCode.BadRequest }
     );
   }
 }

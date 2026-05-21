@@ -19,28 +19,18 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     if (!body) {
-      return new NextResponse(
-        JSON.stringify({ result: false, message: 'Body is required' }, null, 2),
-        {
-          status: HttpStatusCode.BadRequest,
-          headers: { 'Content-Type': 'application/json' }
-        }
+      return NextResponse.json(
+        { result: false, message: 'Body is required' },
+        { status: HttpStatusCode.BadRequest }
       );
     }
 
     const { username, password } = body;
 
     if (!username || !password) {
-      return new NextResponse(
-        JSON.stringify(
-          { result: false, message: 'All fields are required' },
-          null,
-          2
-        ),
-        {
-          status: HttpStatusCode.BadRequest,
-          headers: { 'Content-Type': 'application/json' }
-        }
+      return NextResponse.json(
+        { result: false, message: 'All fields are required' },
+        { status: HttpStatusCode.BadRequest }
       );
     }
 
@@ -81,10 +71,7 @@ export async function POST(request: NextRequest) {
       )
     ]);
 
-    return new NextResponse(
-      JSON.stringify({ result: true, data: res }, null, 2),
-      { headers: { 'Content-Type': 'application/json' } }
-    );
+    return NextResponse.json({ result: true, data: res });
   } catch (error) {
     if (isAxiosError(error)) {
       const response = error.response?.data;
@@ -92,32 +79,23 @@ export async function POST(request: NextRequest) {
       logger.error('[LOGIN_ERROR]', response);
 
       if (response) {
-        return new NextResponse(
-          JSON.stringify({ result: false, ...response }, null, 2),
-          {
-            status: error.response?.status,
-            headers: { 'Content-Type': 'application/json' }
-          }
+        return NextResponse.json(
+          { result: false, ...response },
+          { status: error.response?.status }
         );
       }
 
-      return new NextResponse(
-        JSON.stringify({ result: false, message: 'Login failed' }, null, 2),
-        {
-          status: error.response?.status,
-          headers: { 'Content-Type': 'application/json' }
-        }
+      return NextResponse.json(
+        { result: false, message: 'Login failed' },
+        { status: error.response?.status }
       );
     }
 
     logger.error('[LOGIN_ERROR]', error);
 
-    return new NextResponse(
-      JSON.stringify({ result: false, message: 'Login failed' }, null, 2),
-      {
-        status: HttpStatusCode.InternalServerError,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { result: false, message: 'Login failed' },
+      { status: HttpStatusCode.InternalServerError }
     );
   }
 }

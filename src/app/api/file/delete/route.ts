@@ -20,12 +20,9 @@ export async function DELETE(req: NextRequest) {
   const accessToken = await getCookie(storageKeys.ACCESS_TOKEN);
 
   if (!accessToken) {
-    return new NextResponse(
-      JSON.stringify({ message: 'Unauthorized' }, null, 2),
-      {
-        status: HttpStatusCode.Unauthorized,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { message: 'Unauthorized' },
+      { status: HttpStatusCode.Unauthorized }
     );
   }
 
@@ -37,22 +34,19 @@ export async function DELETE(req: NextRequest) {
       userPermissions: permissionCodes
     })
   ) {
-    return new NextResponse(JSON.stringify({ message: 'Forbidden' }, null, 2), {
-      status: HttpStatusCode.Forbidden,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return NextResponse.json(
+      { message: 'Forbidden' },
+      { status: HttpStatusCode.Forbidden }
+    );
   }
 
   try {
     const { objectName } = await req.json();
 
     if (!objectName) {
-      return new NextResponse(
-        JSON.stringify({ message: 'Missing objectName parameter' }, null, 2),
-        {
-          status: HttpStatusCode.BadRequest,
-          headers: { 'Content-Type': 'application/json' }
-        }
+      return NextResponse.json(
+        { message: 'Missing objectName parameter' },
+        { status: HttpStatusCode.BadRequest }
       );
     }
 
@@ -69,25 +63,15 @@ export async function DELETE(req: NextRequest) {
       })
     );
 
-    return new NextResponse(
-      JSON.stringify(
-        { message: 'Object deleted successfully', objectName },
-        null,
-        2
-      ),
-      {
-        status: HttpStatusCode.Ok,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { message: 'Object deleted successfully', objectName },
+      { status: HttpStatusCode.Ok }
     );
   } catch (error) {
     logger.error('[DELETE_OBJECT_ERROR]', error);
-    return new NextResponse(
-      JSON.stringify({ message: 'Delete object failed' }, null, 2),
-      {
-        status: HttpStatusCode.InternalServerError,
-        headers: { 'Content-Type': 'application/json' }
-      }
+    return NextResponse.json(
+      { message: 'Delete object failed' },
+      { status: HttpStatusCode.InternalServerError }
     );
   }
 }
