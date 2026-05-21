@@ -138,6 +138,7 @@ export const sendRequest = async <T>(
     method,
     ignoreAuth,
     isRequiredXClientType,
+    isRequiredCsrfToken,
     isUpload
   } = apiConfig;
 
@@ -182,9 +183,7 @@ export const sendRequest = async <T>(
     baseHeader[storageKeys.X_CLIENT_TYPE] = clientType;
   }
 
-  const stateChangingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
-  const isRelativeUrl = baseUrl.startsWith('/') && !baseUrl.startsWith('//');
-  if (stateChangingMethods.includes(method) && csrfToken && isRelativeUrl) {
+  if (isRequiredCsrfToken && csrfToken) {
     baseHeader[storageKeys.X_CSRF_TOKEN] = csrfToken;
   }
 
