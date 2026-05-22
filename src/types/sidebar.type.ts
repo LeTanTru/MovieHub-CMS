@@ -2,6 +2,7 @@ type SidebarStoreState = {
   state: 'expanded' | 'collapsed';
   openMenus: Record<string, boolean>;
   lastOpenedMenu: string | null;
+  sidebarScrollY: number;
 };
 
 type SidebarStoreActions = {
@@ -9,6 +10,7 @@ type SidebarStoreActions = {
   setMenu: (key: string, open: boolean) => void;
   openLastMenu: () => void;
   setSidebarState: (state: 'expanded' | 'collapsed') => void;
+  setSidebarScrollY: (y: number) => void;
 };
 
 export type SidebarStateType = SidebarStoreState & SidebarStoreActions;

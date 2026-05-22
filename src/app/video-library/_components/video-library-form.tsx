@@ -485,7 +485,7 @@ export default function VideoLibraryForm() {
                           return filePath;
                         }}
                         deleteImageFn={videoManager.handleDeleteOnClick}
-                        maxSize={2 * 1024 * 1024 * 1024}
+                        maxSize={2 * 1024 * 1024 * 1024} // 2GB
                       />
                     )}
                   </Col>

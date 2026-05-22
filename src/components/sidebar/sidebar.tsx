@@ -16,7 +16,7 @@ import {
   useSidebar
 } from '@/components/ui/sidebar';
 import { logo, logoWithText } from '@/assets';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { cn } from '@/lib';
 import { AvatarField } from '@/components/form';
 import type { MenuItem } from '@/types';
@@ -26,6 +26,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getLastWord, renderImageUrl } from '@/utils';
 import { menuConfig } from '@/constants';
 import CollapsibleMenuItem from './collapsible-menu-item';
+import { route } from '@/routes';
 
 const AppSidebar = () => {
   const isMounted = useIsMounted();
@@ -33,6 +34,22 @@ const AppSidebar = () => {
   const { state } = useSidebar();
   const hasPermission = useValidatePermission();
   const openLastMenu = useSidebarStore((s) => s.openLastMenu);
+  const setSidebarScrollY = useSidebarStore((s) => s.setSidebarScrollY);
+  const sidebarContentRef = useRef<HTMLDivElement>(null);
+
+  // Restore the scroll position after the client has mounted
+  useEffect(() => {
+    if (!isMounted || !sidebarContentRef.current) return;
+    sidebarContentRef.current.scrollTop =
+      useSidebarStore.getState().sidebarScrollY;
+  }, [isMounted]);
+
+  const handleSidebarScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      setSidebarScrollY((e.currentTarget as HTMLDivElement).scrollTop);
+    },
+    [setSidebarScrollY]
+  );
 
   // handle open last opened menu when sidebar changed state from collapsed -> expanded
   useEffect(() => {
@@ -98,7 +115,7 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton className='h-full focus-visible:ring-0!' asChild>
               <Link
-                href='/'
+                href={route.home.path}
                 className='block! w-full! transition-all duration-200 ease-linear group-data-[collapsible=icon]:size-full! group-data-[collapsible=icon]:p-0! hover:bg-transparent!'
               >
                 {state === 'expanded' ? (
@@ -126,7 +143,11 @@ const AppSidebar = () => {
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent className='sidebar-content'>
+      <SidebarContent
+        ref={sidebarContentRef}
+        className='sidebar-content'
+        onScroll={handleSidebarScroll}
+      >
         <SidebarGroup className='p-0'>
           <SidebarGroupContent>
             <SidebarMenu>
