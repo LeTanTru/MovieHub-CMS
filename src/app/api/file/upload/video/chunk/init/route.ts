@@ -4,8 +4,14 @@ import { CreateMultipartUploadCommand } from '@aws-sdk/client-s3';
 import { randomBytes } from 'crypto';
 import { logger } from '@/logger';
 import { HttpStatusCode } from 'axios';
-import { getCookie, validateCsrfToken, csrfErrorResponse } from '@/utils';
-import { storageKeys } from '@/constants';
+import {
+  getCookie,
+  validateCsrfToken,
+  csrfErrorResponse,
+  decodeJwt,
+  validatePermission
+} from '@/utils';
+import { storageKeys, apiConfig } from '@/constants';
 import {
   getVideoExtensionFromMimeType,
   initMultipartUploadSchema,
@@ -23,6 +29,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { message: 'Unauthorized' },
       { status: HttpStatusCode.Unauthorized }
+    );
+  }
+
+  const permissionCodes = decodeJwt(accessToken)?.authorities || [];
+
+  if (
+    !validatePermission({
+      requiredPermissions: [apiConfig.file.uploadChunkInit.permissionCode],
+      userPermissions: permissionCodes
+    })
+  ) {
+    return NextResponse.json(
+      { message: 'Forbidden' },
+      { status: HttpStatusCode.Forbidden }
     );
   }
 

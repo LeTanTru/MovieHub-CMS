@@ -4,8 +4,14 @@ import { UploadPartCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { logger } from '@/logger';
 import { HttpStatusCode } from 'axios';
-import { getCookie, validateCsrfToken, csrfErrorResponse } from '@/utils';
-import { storageKeys } from '@/constants';
+import {
+  getCookie,
+  validateCsrfToken,
+  csrfErrorResponse,
+  decodeJwt,
+  validatePermission
+} from '@/utils';
+import { storageKeys, apiConfig } from '@/constants';
 import {
   parseRequestBody,
   objectNameSchema,
@@ -34,6 +40,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { message: 'Unauthorized' },
       { status: HttpStatusCode.Unauthorized }
+    );
+  }
+
+  const permissionCodes = decodeJwt(accessToken)?.authorities || [];
+
+  if (
+    !validatePermission({
+      requiredPermissions: [
+        apiConfig.file.uploadChunkPresignBatch.permissionCode
+      ],
+      userPermissions: permissionCodes
+    })
+  ) {
+    return NextResponse.json(
+      { message: 'Forbidden' },
+      { status: HttpStatusCode.Forbidden }
     );
   }
 

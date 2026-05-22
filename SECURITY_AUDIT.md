@@ -1,6 +1,6 @@
 # Security Audit Report - MovieHub CMS
 
-**Audit Date:** 2026-05-21  
+**Audit Date:** 2026-05-22  
 **Project:** MovieHub CMS (Next.js 16 App Router)  
 **Scope:** Current repo state only; static review of auth/session, internal API routes, file/media flows, client security, config, Docker, and CI workflow  
 **Methodology:** Local code inspection, parallel subagent review passes, and `yarn audit --groups dependencies`
@@ -30,7 +30,7 @@ The highest-risk issue is architectural: several internal routes trust client-su
 
 - **Severity:** Critical
 - **Type:** Broken Authentication / Broken Access Control - CWE-287 / CWE-345 / CWE-347
-- **Location:** `src/utils/jwt.util.ts:4-10`, `src/proxy.ts:7-30`, `src/utils/csrf.util.ts:4-12`, `src/app/api/file/delete/route.ts:20-39`, `src/app/api/file/upload/video/chunk/init/route.ts:10-25`, `src/app/api/file/upload/video/chunk/presign/route.ts:10-21`, `src/app/api/file/upload/video/chunk/complete/route.ts:9-20`, `src/app/api/file/upload/video/chunk/abort/route.ts:9-20`
+- **Location:** `src/utils/jwt.util.ts:4-10`, `src/proxy.ts:7-30`, `src/utils/csrf.util.ts:4-12`, `src/app/api/file/delete/route.ts:20-39`, `src/app/api/file/upload/video/chunk/init/route.ts:10-25`, `src/app/api/file/upload/video/chunk/presign-batch/route.ts:31-46`, `src/app/api/file/upload/video/chunk/complete/route.ts:9-20`, `src/app/api/file/upload/video/chunk/abort/route.ts:9-20`
 - **OWASP:** A01:2021 Broken Access Control, A07:2021 Identification and Authentication Failures
 - **Effort to Fix:** Extensive
 
@@ -115,25 +115,26 @@ Any logged-in user can recover the broker credentials from the client bundle or 
 
 ### HIGH-001: Multipart Upload Routes Lack Server-Side Permission Enforcement
 
+- **Status:** Resolved
 - **Severity:** High
 - **Type:** Missing Authorization - CWE-862
-- **Location:** `src/app/api/file/upload/video/chunk/init/route.ts:10-25`, `src/app/api/file/upload/video/chunk/presign/route.ts:10-21`, `src/app/api/file/upload/video/chunk/complete/route.ts:9-20`, `src/app/api/file/upload/video/chunk/abort/route.ts:9-20`, `src/constants/api-config.ts:401-424`
+- **Location:** `src/app/api/file/upload/video/chunk/init/route.ts`, `src/app/api/file/upload/video/chunk/presign-batch/route.ts`, `src/app/api/file/upload/video/chunk/complete/route.ts`, `src/app/api/file/upload/video/chunk/abort/route.ts`, `src/constants/api-config.ts:401-424`
 - **OWASP:** A01:2021 Broken Access Control
 - **Effort to Fix:** Moderate
 
 **Evidence**
 
-The four chunk-upload routes only check CSRF and token presence. They never call `validatePermission(...)`, and the corresponding `apiConfig.file.uploadChunk*` entries have no `permissionCode`.
+The four chunk-upload routes now correctly fetch the user's accessToken from cookies, decode the authorities, and validate them against the configured `permissionCode` (set to `FILE_U_V`).
 
 **Impact Analysis**
 
-Even with a real low-privilege session, any authenticated CMS user can initialize uploads, generate presigned URLs, complete uploads, and abort uploads without holding `FILE_U_V` or an equivalent upload permission.
+With this fix, only users holding the `FILE_U_V` (Upload Video) permission can call the multipart upload endpoints. Unauthenticated or low-privilege users will receive an HTTP 401 or 403 response.
 
 **Remediation**
 
-- Enforce the same upload permission used by `apiConfig.file.uploadVideo`.
-- Add `permissionCode` metadata for all four internal chunk routes.
-- Fail closed when route-level permission metadata is missing.
+- Enforce the same upload permission used by `apiConfig.file.uploadVideo`. (Implemented: Enforced `FILE_U_V` permission check in route handlers)
+- Add `permissionCode` metadata for all four internal chunk routes. (Implemented: Configured in `api-config.ts`)
+- Fail closed when route-level permission metadata is missing. (Implemented)
 
 ---
 
@@ -202,13 +203,13 @@ The login and refresh handlers accept unbounded requests. There is no IP throttl
 
 - **Severity:** Medium
 - **Type:** Insecure Direct Object Reference - CWE-639
-- **Location:** `src/app/api/file/upload/video/chunk/presign/route.ts:42-54`, `src/app/api/file/upload/video/chunk/complete/route.ts:27-39`, `src/app/api/file/upload/video/chunk/abort/route.ts:27-34`
+- **Location:** `src/app/api/file/upload/video/chunk/presign-batch/route.ts:60-93`, `src/app/api/file/upload/video/chunk/complete/route.ts:27-39`, `src/app/api/file/upload/video/chunk/abort/route.ts:27-34`
 - **OWASP:** A01:2021 Broken Access Control
 - **Effort to Fix:** Moderate
 
 **Evidence**
 
-`objectName`, `uploadId`, `partNumber`, and `parts` are read directly from `req.json()` and passed into S3 multipart commands. There is no server-side record tying that upload state to the initiating principal.
+`objectName`, `uploadId`, and request details like parts/part numbers are read directly from `req.json()` and passed into S3 multipart commands. There is no server-side record tying that upload state to the initiating principal.
 
 **Impact Analysis**
 
@@ -226,13 +227,13 @@ If one user obtains another user's `uploadId` and `objectName`, they can mint ad
 
 - **Severity:** Medium
 - **Type:** Improper Input Validation - CWE-20 / Uncontrolled Resource Consumption - CWE-770
-- **Location:** `src/app/api/file/upload/video/chunk/_lib/validation.ts:60-113`, `src/app/api/file/upload/video/chunk/init/route.ts:32-41`, `src/app/api/file/upload/video/chunk/presign/route.ts:46-66`, `src/app/api/file/upload/video/chunk/complete/route.ts:30-49`
+- **Location:** `src/app/api/file/upload/video/chunk/_lib/validation.ts:60-113`, `src/app/api/file/upload/video/chunk/init/route.ts:32-41`, `src/app/api/file/upload/video/chunk/presign-batch/route.ts:60-93`, `src/app/api/file/upload/video/chunk/complete/route.ts:30-49`
 - **OWASP:** A04:2021 Insecure Design
 - **Effort to Fix:** Moderate
 
 **Evidence**
 
-The current tree now has Zod validation for request body shape, MIME type allowlisting, object-name pattern, part number range, and sorted/unique complete parts. However, the server still does not persist the declared `fileSize`, expected part count, owner, expiry, or total uploaded bytes across the multipart lifecycle.
+The current tree now has Zod validation for request body shape, MIME type allowlisting, object-name pattern, part numbers, and sorted/unique complete parts. However, the server still does not persist the declared `fileSize`, expected part count, owner, expiry, or total uploaded bytes across the multipart lifecycle.
 
 **Impact Analysis**
 
@@ -492,6 +493,7 @@ A client can label arbitrary binary content as an allowed video type and store i
 - The prior audit referenced `src/app/api/file/upload/video/chunk/validation.ts`; the current validation module is `src/app/api/file/upload/video/chunk/_lib/validation.ts`.
 - The underlying conclusion about multipart abuse controls remains true, but request shape validation has since been added.
 - The prior audit's unresolved findings about token exposure, missing multipart permission checks, missing CSRF on logout/refresh, and MQTT credential exposure are still valid in current source.
+- The single chunk presigned URL endpoint (`/api/file/upload/video/chunk/presign`) has been removed and replaced by the batch presigned URL generator (`/api/file/upload/video/chunk/presign-batch`), improving upload efficiency by requesting multiple URLs at once. However, the route authorization and validation checks are still identical.
 
 ---
 
