@@ -31,16 +31,20 @@ const objectNamePattern = new RegExp(
   `^${escapedUploadFolder}/${escapedUploadPrefix}_[a-f0-9]{20}\\.(${allowedExtensions.join('|')})$`
 );
 
-const uploadIdSchema = z
+export const uploadIdSchema = z
   .string()
   .trim()
   .min(1)
   .max(MAX_UPLOAD_ID_LENGTH)
   .regex(/^[A-Za-z0-9+/=_-]+$/);
 
-const objectNameSchema = z.string().trim().min(1).regex(objectNamePattern);
+export const objectNameSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .regex(objectNamePattern);
 
-const partNumberSchema = z
+export const partNumberSchema = z
   .number()
   .int()
   .min(MIN_PART_NUMBER)
