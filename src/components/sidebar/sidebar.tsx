@@ -27,22 +27,28 @@ import { getLastWord, renderImageUrl } from '@/utils';
 import { menuConfig } from '@/constants';
 import { CollapsibleMenuItem } from './collapsible-menu-item';
 import { route } from '@/routes';
+import { useShallow } from 'zustand/react/shallow';
 
 export function AppSidebar() {
   const isMounted = useIsMounted();
   const { profile } = useAuth();
   const { state } = useSidebar();
   const hasPermission = useValidatePermission();
-  const openLastMenu = useSidebarStore((s) => s.openLastMenu);
-  const setSidebarScrollY = useSidebarStore((s) => s.setSidebarScrollY);
   const sidebarContentRef = useRef<HTMLDivElement>(null);
+
+  const { openLastMenu, setSidebarScrollY, sidebarScrollY } = useSidebarStore(
+    useShallow((s) => ({
+      openLastMenu: s.openLastMenu,
+      sidebarScrollY: s.sidebarScrollY,
+      setSidebarScrollY: s.setSidebarScrollY
+    }))
+  );
 
   // Restore the scroll position after the client has mounted
   useEffect(() => {
     if (!isMounted || !sidebarContentRef.current) return;
-    sidebarContentRef.current.scrollTop =
-      useSidebarStore.getState().sidebarScrollY;
-  }, [isMounted]);
+    sidebarContentRef.current.scrollTop = sidebarScrollY;
+  }, [isMounted, sidebarScrollY]);
 
   const handleSidebarScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
