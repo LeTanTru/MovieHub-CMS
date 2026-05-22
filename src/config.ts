@@ -34,6 +34,4 @@ if (!configProject.success) {
   throw new Error('Missing environment variables');
 }
 
-const envConfig = configProject.data;
-
-export default envConfig;
+export const envConfig = configProject.data;

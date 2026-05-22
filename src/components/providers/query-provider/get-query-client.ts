@@ -15,7 +15,7 @@ function makeQueryClient() {
 
 let browserQueryClient: QueryClient | null = null;
 
-export default function getQueryClient() {
+export const getQueryClient = () => {
   if (isServer) {
     return makeQueryClient();
   } else {
@@ -24,4 +24,4 @@ export default function getQueryClient() {
     }
     return browserQueryClient;
   }
-}
+};

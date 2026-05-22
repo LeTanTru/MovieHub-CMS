@@ -52,7 +52,7 @@ type ImageFieldProps = {
   zoomOnScroll?: boolean;
 } & HTMLAttributes<HTMLDivElement>;
 
-export default function ImageField({
+export const ImageField = ({
   src,
   alt = 'Image',
   size,
@@ -74,7 +74,7 @@ export default function ImageField({
   hoverIconClassName,
   zoomOnScroll = true,
   ...props
-}: ImageFieldProps) {
+}: ImageFieldProps) => {
   const isMounted = useIsMounted();
   const [open, setOpen] = useState<boolean>(false);
   const [scale, setScale] = useState<number>(1);
@@ -380,4 +380,4 @@ export default function ImageField({
       )}
     </>
   );
-}
+};

@@ -9,7 +9,7 @@ type UseImageStatusReturn = {
   isError: boolean;
 };
 
-const useImageStatus = (src?: string): UseImageStatusReturn => {
+export const useImageStatus = (src?: string): UseImageStatusReturn => {
   const [status, setStatus] = useState<ImageStatus>('loading');
 
   useEffect(() => {
@@ -49,5 +49,3 @@ const useImageStatus = (src?: string): UseImageStatusReturn => {
     isError: status === 'error'
   };
 };
-
-export default useImageStatus;

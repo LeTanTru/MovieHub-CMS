@@ -28,7 +28,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-export default function DropdownAvatar() {
+export const DropdownAvatar = () => {
   const navigate = useNavigate();
   const pathname = usePathname();
 
@@ -151,4 +151,4 @@ export default function DropdownAvatar() {
       </AnimatePresence>
     </div>
   );
-}
+};

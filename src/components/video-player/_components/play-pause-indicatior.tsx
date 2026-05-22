@@ -43,7 +43,7 @@ function indicatorReducer(
   }
 }
 
-export default function PlayPauseIndicator() {
+export const PlayPauseIndicator = () => {
   const isPaused = useMediaState('paused');
   const [{ showIndicator, lastAction }, dispatch] = useReducer(
     indicatorReducer,
@@ -89,4 +89,4 @@ export default function PlayPauseIndicator() {
       )}
     </AnimatePresence>
   );
-}
+};

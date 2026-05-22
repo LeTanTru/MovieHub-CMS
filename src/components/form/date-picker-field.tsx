@@ -47,7 +47,7 @@ type DatePickerFieldProps<T extends FieldValues> = {
   allowClear?: boolean;
 };
 
-export default function DatePickerField<T extends FieldValues>({
+export const DatePickerField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -60,7 +60,7 @@ export default function DatePickerField<T extends FieldValues>({
   placeholder,
   labelClassName,
   allowClear = false
-}: DatePickerFieldProps<T>) {
+}: DatePickerFieldProps<T>) => {
   const calendarLocale: Locale = vi;
   const [open, setOpen] = useState<boolean>(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -277,7 +277,7 @@ export default function DatePickerField<T extends FieldValues>({
       }}
     />
   );
-}
+};
 
 function CustomSelectDropdown(props: DropdownProps) {
   const { options, value, onChange } = props;

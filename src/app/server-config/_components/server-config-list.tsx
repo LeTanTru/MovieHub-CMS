@@ -26,7 +26,7 @@ import {
 import { notify } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
-export default function ServerConfigList() {
+export const ServerConfigList = () => {
   const { mutateAsync: changeStatusMutate } =
     useChangeServerConfigStatusMutation();
 
@@ -212,4 +212,4 @@ export default function ServerConfigList() {
       </ListPageWrapper>
     </PageWrapper>
   );
-}
+};

@@ -88,7 +88,7 @@ type VideoPlayerProps = Omit<
   hideVolumeIndicator?: boolean;
 };
 
-const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
+export const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
   function VideoPlayer(
     {
       auth,
@@ -262,8 +262,6 @@ const VideoPlayer = forwardRef<MediaPlayerInstance, VideoPlayerProps>(
 );
 
 VideoPlayer.displayName = 'VideoPlayer';
-
-export default VideoPlayer;
 
 function onProviderChange(
   provider: MediaProviderAdapter | null,

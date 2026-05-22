@@ -1,1 +1,1 @@
-export { default as VideoLibrarySubtitleList } from './video-library-subtitle-list';
+export { VideoLibrarySubtitleList } from './video-library-subtitle-list';

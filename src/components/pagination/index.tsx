@@ -1,1 +1,1 @@
-export { default as Pagination } from './pagination';
+export { Pagination } from './pagination';

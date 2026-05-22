@@ -1,4 +1,4 @@
-import apiConfig from '@/constants/api-config';
+import { apiConfig } from '@/constants/api-config';
 import {
   COLLECTION_TYPE_TOPIC,
   VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
@@ -13,7 +13,7 @@ import {
   UserRound
 } from 'lucide-react';
 
-const menuConfig: MenuItem[] = [
+export const menuConfig: MenuItem[] = [
   {
     key: 'user-management',
     label: 'Quản lý người dùng',
@@ -180,5 +180,3 @@ const menuConfig: MenuItem[] = [
     ]
   }
 ];
-
-export default menuConfig;

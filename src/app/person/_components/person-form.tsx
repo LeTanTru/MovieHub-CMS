@@ -44,7 +44,7 @@ import {
 import { useParams } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 
-export default function PersonForm() {
+export const PersonForm = () => {
   const { id } = useParams<{ id: string }>();
   const kind = getData(storageKeys.ACTIVE_TAB_PERSON_KIND);
 
@@ -274,4 +274,4 @@ export default function PersonForm() {
       </BaseForm>
     </PageWrapper>
   );
-}
+};

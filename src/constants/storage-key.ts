@@ -1,4 +1,4 @@
-const storageKeys = {
+export const storageKeys = {
   ACCESS_TOKEN: 'access_token',
   ACTIVE_GROUP_TAB: 'active_group_tab',
   ACTIVE_SETTING_TAB: 'active_setting_tab',
@@ -14,5 +14,3 @@ const storageKeys = {
   X_CLIENT_TYPE: 'X-Client-Type',
   X_CSRF_TOKEN: 'X-CSRF-Token'
 };
-
-export default storageKeys;

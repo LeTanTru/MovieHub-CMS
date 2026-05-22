@@ -32,7 +32,7 @@ import {
   AiOutlineEye,
   AiOutlineEyeInvisible
 } from 'react-icons/ai';
-import CommentForm from './comment-form';
+import { CommentForm } from './comment-form';
 import { m, AnimatePresence } from 'framer-motion';
 import { useAuth, useInfiniteListBase, useValidatePermission } from '@/hooks';
 import { DotLoading } from '@/components/loading';
@@ -74,7 +74,7 @@ type CommentItemProps = {
   targetParentId: string | null;
 };
 
-export default function CommentItem({
+export const CommentItem = ({
   comment,
   level,
   voteMap,
@@ -94,7 +94,7 @@ export default function CommentItem({
   editingComment,
   targetCommentId,
   targetParentId
-}: CommentItemProps) {
+}: CommentItemProps) => {
   const hasPermission = useValidatePermission();
 
   const isActiveParent = openParentIds.includes(comment.id);
@@ -646,7 +646,7 @@ export default function CommentItem({
       </div>
     </Element>
   );
-}
+};
 
 CommentItem.Skeleton = function () {
   return (

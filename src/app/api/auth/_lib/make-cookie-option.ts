@@ -1,4 +1,4 @@
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 import type { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 
 export const makeCookieOption = (maxAge: number): Partial<ResponseCookie> => ({

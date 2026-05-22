@@ -55,11 +55,11 @@ type MovieItemModalProps = {
   movieItem?: MovieItemResType | null;
 };
 
-export default function MovieItemModal({
+export const MovieItemModal = ({
   open,
   onClose,
   movieItem
-}: MovieItemModalProps) {
+}: MovieItemModalProps) => {
   const {
     searchParams: { type }
   } = useQueryParams<{ type: string }>();
@@ -445,4 +445,4 @@ export default function MovieItemModal({
       <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
-}
+};

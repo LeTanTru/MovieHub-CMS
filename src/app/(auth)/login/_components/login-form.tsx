@@ -20,7 +20,7 @@ import type { LoginBodyType } from '@/types';
 import { useAppContext } from '@/components/providers/app-provider';
 import { useShallow } from 'zustand/react/shallow';
 
-export default function LoginForm() {
+export const LoginForm = () => {
   const navigate = useNavigate();
 
   const firstActiveRoute = useFirstActiveRoute();
@@ -149,4 +149,4 @@ export default function LoginForm() {
       )}
     </BaseForm>
   );
-}
+};

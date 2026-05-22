@@ -1,7 +1,7 @@
 import type { AuthStoreType, ProfileResType } from '@/types';
 import { create } from 'zustand';
 
-const useAuthStore = create<AuthStoreType>((set) => ({
+export const useAuthStore = create<AuthStoreType>((set) => ({
   accessToken: null,
   csrfToken: null,
   profile: null,
@@ -20,5 +20,3 @@ const useAuthStore = create<AuthStoreType>((set) => ({
       userKind: null
     })
 }));
-
-export default useAuthStore;

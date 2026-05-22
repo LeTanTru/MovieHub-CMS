@@ -1,2 +1,2 @@
-export { default as MovieList } from './movie-list';
-export { default as MovieForm } from './movie-form';
+export { MovieList } from './movie-list';
+export { MovieForm } from './movie-form';

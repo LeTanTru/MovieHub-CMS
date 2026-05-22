@@ -11,9 +11,9 @@ import {
   PARENT_PREFIX_PARAM,
   statusOptions as defaultStatusOptions
 } from '@/constants';
-import useNavigate from '@/hooks/use-navigate';
-import useQueryParams from '@/hooks/use-query-params';
-import useValidatePermission from '@/hooks/use-validate-permission';
+import { useNavigate } from '@/hooks/use-navigate';
+import { useQueryParams } from '@/hooks/use-query-params';
+import { useValidatePermission } from '@/hooks/use-validate-permission';
 import { logger } from '@/logger';
 import type {
   ApiConfig,
@@ -137,7 +137,7 @@ const STATUS_COLOR_ALPHA = 80;
 const STATUS_BACKGROUND_ALPHA = 10;
 const INFINITE_SCROLL_THRESHOLD = 100;
 
-const useInfiniteListBase = <
+export const useInfiniteListBase = <
   T extends { id: string },
   S extends BaseSearchType
 >({
@@ -682,5 +682,3 @@ const useInfiniteListBase = <
     totalLeft
   };
 };
-
-export default useInfiniteListBase;

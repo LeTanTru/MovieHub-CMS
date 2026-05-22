@@ -1,6 +1,6 @@
 'use client';
 
-import MoviePersonModal from './movie-person-modal';
+import { MoviePersonModal } from './movie-person-modal';
 import { AvatarField, Button, InputField, ToolTip } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { HasPermission } from '@/components/has-permission';
@@ -34,7 +34,7 @@ import { z } from 'zod';
 
 type MoviePersonListProps = { kind: number };
 
-export default function MoviePersonList({ kind }: MoviePersonListProps) {
+export const MoviePersonList = ({ kind }: MoviePersonListProps) => {
   const { id: movieId } = useParams<{ id: string }>();
 
   const [selectedRow, setSelectedRow] = useState<string>('');
@@ -416,4 +416,4 @@ export default function MoviePersonList({ kind }: MoviePersonListProps) {
       />
     </>
   );
-}
+};

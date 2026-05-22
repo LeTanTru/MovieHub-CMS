@@ -22,7 +22,7 @@ import type {
 } from '@/types';
 import { notify } from '@/utils';
 
-export default function GroupList() {
+export const GroupList = () => {
   const { data, loading, handlers, pagination } = useListBase<
     GroupResType,
     GroupSearchType
@@ -131,4 +131,4 @@ export default function GroupList() {
       />
     </ListPageWrapper>
   );
-}
+};

@@ -1,5 +1,5 @@
 import { ProfileForm } from '@/app/profile/_components';
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 import { OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '@/constants';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import type { Metadata } from 'next';

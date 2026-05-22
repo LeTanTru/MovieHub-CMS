@@ -1,4 +1,4 @@
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 import { apiConfig, storageKeys } from '@/constants';
 import { logger } from '@/logger';
 import { route } from '@/routes';

@@ -33,7 +33,7 @@ import {
   YAxis
 } from 'recharts';
 
-export default function MovieDistribution() {
+export const MovieDistribution = () => {
   const [groupBy, setGroupBy] = useState<DistributionGroupBy>('type');
   const { data, isFetching } = useMovieDistributionQuery({
     params: { groupBy }
@@ -184,4 +184,4 @@ export default function MovieDistribution() {
       </div>
     </PageWrapper>
   );
-}
+};

@@ -1,1 +1,1 @@
-export { default as PermissionGuard } from './permission-guard';
+export { PermissionGuard } from './permission-guard';

@@ -2,7 +2,7 @@ import { useAuthStore } from '@/store';
 import { decodeJwt } from '@/utils';
 import { useShallow } from 'zustand/react/shallow';
 
-const useAuth = () => {
+export const useAuth = () => {
   const { accessToken, userKind, profile } = useAuthStore(
     useShallow((s) => ({
       accessToken: s.accessToken,
@@ -29,5 +29,3 @@ const useAuth = () => {
     permissionCode: permissionCode.map((pCode) => pCode)
   };
 };
-
-export default useAuth;

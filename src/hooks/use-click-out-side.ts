@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 
-const useClickOutside = <T extends HTMLElement>(onClickOutside: () => void) => {
+export const useClickOutside = <T extends HTMLElement>(
+  onClickOutside: () => void
+) => {
   const ref = useRef<T | null>(null);
 
   useEffect(() => {
@@ -32,5 +34,3 @@ const useClickOutside = <T extends HTMLElement>(onClickOutside: () => void) => {
 
   return ref;
 };
-
-export default useClickOutside;

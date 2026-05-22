@@ -23,11 +23,11 @@ import { Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import MediaQuery from 'react-responsive';
-import PermissionModal from './permission-modal';
+import { PermissionModal } from './permission-modal';
 import { invalidateQueries, notify } from '@/utils';
 import { logger } from '@/logger';
 
-export default function PermissionList() {
+export const PermissionList = () => {
   const { opened, open, close } = useDisclosure();
   const [selectedRow, setSelectedRow] = useState<PermissionResType | null>(
     null
@@ -222,4 +222,4 @@ export default function PermissionList() {
       />
     </>
   );
-}
+};

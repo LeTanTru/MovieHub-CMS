@@ -29,7 +29,7 @@ import { Badge } from '@/components/ui/badge';
 import { logger } from '@/logger';
 import { cn } from '@/lib';
 
-export default function AdminList() {
+export const AdminList = () => {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
     useChangeAccountStatusMutation();
 
@@ -224,4 +224,4 @@ export default function AdminList() {
       </ListPageWrapper>
     </PageWrapper>
   );
-}
+};

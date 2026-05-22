@@ -37,7 +37,7 @@ export const useAppContext = () => {
 
 type AppProviderProps = { children: ReactNode };
 
-export default function AppProvider({ children }: AppProviderProps) {
+export const AppProvider = ({ children }: AppProviderProps) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const {
@@ -104,4 +104,4 @@ export default function AppProvider({ children }: AppProviderProps) {
       </LazyMotion>
     </AppContext.Provider>
   );
-}
+};

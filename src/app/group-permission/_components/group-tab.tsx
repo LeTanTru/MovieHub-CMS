@@ -17,7 +17,7 @@ import {
 } from '@/constants';
 import { useIsMounted, useQueryParams } from '@/hooks';
 
-export default function GroupTab() {
+export const GroupTab = () => {
   const [activeTab, setActiveTab] = useState(
     getData(storageKeys.ACTIVE_GROUP_TAB) || TAB_GROUP
   );
@@ -77,4 +77,4 @@ export default function GroupTab() {
       </div>
     </PageWrapper>
   );
-}
+};

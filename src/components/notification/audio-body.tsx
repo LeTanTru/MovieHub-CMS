@@ -6,11 +6,11 @@ import { convertUTCToLocal, parseJSON, renderImageUrl, timeAgo } from '@/utils';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-export default function AudioBody({
+export const AudioBody = ({
   notification
 }: {
   notification: NotificationResType;
-}) {
+}) => {
   const body = useMemo(
     () => parseJSON<AudioNotificationType>(notification.body),
     [notification.body]
@@ -50,4 +50,4 @@ export default function AudioBody({
       </div>
     </Link>
   );
-}
+};

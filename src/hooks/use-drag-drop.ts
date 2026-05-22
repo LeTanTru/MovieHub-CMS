@@ -23,7 +23,7 @@ type UseDragDropType<T extends Record<string, any>> = {
   mappingData?: (record: T, index: number) => Record<string, any>;
 };
 
-const useDragDrop = <T extends Record<string, any>>({
+export const useDragDrop = <T extends Record<string, any>>({
   key,
   objectName,
   data,
@@ -124,5 +124,3 @@ const useDragDrop = <T extends Record<string, any>>({
     handleUpdate
   };
 };
-
-export default useDragDrop;

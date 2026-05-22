@@ -51,7 +51,7 @@ type Part = {
   etag: string;
 };
 
-const useChunkUpload = () => {
+export const useChunkUpload = () => {
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
 
@@ -181,5 +181,3 @@ const useChunkUpload = () => {
 
   return { upload, progress, uploading };
 };
-
-export default useChunkUpload;

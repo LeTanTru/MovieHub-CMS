@@ -1,1 +1,1 @@
-export { default as MqttProvider } from './mqtt-provider';
+export { MqttProvider } from './mqtt-provider';

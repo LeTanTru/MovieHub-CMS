@@ -2,7 +2,7 @@ import { cn } from '@/lib';
 
 type DotLoadingProps = { className?: string };
 
-export default function DotLoading({ className }: DotLoadingProps) {
+export const DotLoading = ({ className }: DotLoadingProps) => {
   return (
     <div
       className={cn(
@@ -15,4 +15,4 @@ export default function DotLoading({ className }: DotLoadingProps) {
       <div className='bg-main-color size-2 animate-bounce rounded-full' />
     </div>
   );
-}
+};

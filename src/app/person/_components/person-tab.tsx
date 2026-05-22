@@ -1,6 +1,6 @@
 'use client';
 
-import PersonList from './person-list';
+import { PersonList } from './person-list';
 import { PageWrapper } from '@/components/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -14,7 +14,7 @@ import { useIsMounted } from '@/hooks';
 import { getData, setData } from '@/utils';
 import { useEffect, useState } from 'react';
 
-export default function PersonTab() {
+export const PersonTab = () => {
   const defaultTab =
     getData(storageKeys.ACTIVE_TAB_PERSON_KIND) || TAB_PERSON_KIND_ACTOR;
   const [activeTab, setActiveTab] = useState(defaultTab);
@@ -77,4 +77,4 @@ export default function PersonTab() {
       </div>
     </PageWrapper>
   );
-}
+};

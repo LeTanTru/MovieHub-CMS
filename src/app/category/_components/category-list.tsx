@@ -1,6 +1,6 @@
 'use client';
 
-import CategoryModal from '@/app/category/_components/category-modal';
+import { CategoryModal } from '@/app/category/_components/category-modal';
 import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
@@ -19,7 +19,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 
-export default function CategoryList() {
+export const CategoryList = () => {
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryResType | null>(null);
   const { opened, open, close } = useDisclosure();
@@ -134,4 +134,4 @@ export default function CategoryList() {
       />
     </PageWrapper>
   );
-}
+};

@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/form';
 
 import type { Editor as TinyMCEEditor } from 'tinymce';
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 import dynamic from 'next/dynamic';
 import DOMPurify from 'dompurify';
 
@@ -44,7 +44,7 @@ type RichTextFieldProps<T extends FieldValues> = {
   formItemClassName?: string;
 };
 
-export default function RichTextField<T extends FieldValues>({
+export const RichTextField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -56,7 +56,7 @@ export default function RichTextField<T extends FieldValues>({
   height,
   labelClassName,
   formItemClassName
-}: RichTextFieldProps<T>) {
+}: RichTextFieldProps<T>) => {
   return (
     <FormField
       control={control}
@@ -229,4 +229,4 @@ export default function RichTextField<T extends FieldValues>({
       )}
     />
   );
-}
+};

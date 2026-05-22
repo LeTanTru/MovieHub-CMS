@@ -34,7 +34,7 @@ type DateRangePickerFieldProps<T extends FieldValues> = {
   disabled?: boolean;
 };
 
-export default function DateRangePickerField<T extends FieldValues>({
+export const DateRangePickerField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -45,7 +45,7 @@ export default function DateRangePickerField<T extends FieldValues>({
   format: dateFormat = 'dd/MM/yyyy',
   labelClassName,
   disabled
-}: DateRangePickerFieldProps<T>) {
+}: DateRangePickerFieldProps<T>) => {
   const calendarLocale: Locale = vi;
   return (
     <FormField
@@ -138,4 +138,4 @@ export default function DateRangePickerField<T extends FieldValues>({
       )}
     />
   );
-}
+};

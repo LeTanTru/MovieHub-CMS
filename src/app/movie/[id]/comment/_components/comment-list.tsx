@@ -1,6 +1,6 @@
 'use client';
 
-import CommentInput from './comment-input';
+import { CommentInput } from './comment-input';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { NoData } from '@/components/no-data';
 import {
@@ -23,7 +23,7 @@ import {
 import { route } from '@/routes';
 import type { CommentResType, CommentSearchType } from '@/types';
 import { useParams } from 'next/navigation';
-import CommentItem from './comment-item';
+import { CommentItem } from './comment-item';
 import { DotLoading } from '@/components/loading';
 import { Button } from '@/components/form';
 import { invalidateQueries, notify, renderListPageUrl } from '@/utils';
@@ -32,7 +32,7 @@ import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { logger } from '@/logger';
 
-export default function CommentList() {
+export const CommentList = () => {
   const { id: movieId } = useParams<{ id: string }>();
 
   const isMounted = useIsMounted();
@@ -246,4 +246,4 @@ export default function CommentList() {
       </ListPageWrapper>
     </PageWrapper>
   );
-}
+};

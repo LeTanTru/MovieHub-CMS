@@ -7,7 +7,7 @@ type NextButtonProps = {
   onClick: () => void;
 };
 
-export default function NextButton({ onClick }: NextButtonProps) {
+export const NextButton = ({ onClick }: NextButtonProps) => {
   const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -32,4 +32,4 @@ export default function NextButton({ onClick }: NextButtonProps) {
       </Tooltip.Content>
     </Tooltip.Root>
   );
-}
+};

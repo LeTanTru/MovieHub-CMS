@@ -1,1 +1,1 @@
-export { default as UserList } from './user-list';
+export { UserList } from './user-list';

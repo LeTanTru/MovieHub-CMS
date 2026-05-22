@@ -1,1 +1,1 @@
-export { default as SettingTab } from './setting-tab';
+export { SettingTab } from './setting-tab';

@@ -9,12 +9,12 @@ type NoDataProps = {
   height?: number;
 };
 
-export default function NoData({
+export const NoData = ({
   className,
   content = 'Không có dữ liệu',
   width = 200,
   height = 80
-}: NoDataProps) {
+}: NoDataProps) => {
   return (
     <div
       className={cn(
@@ -32,4 +32,4 @@ export default function NoData({
       <p>{content}</p>
     </div>
   );
-}
+};

@@ -23,7 +23,7 @@ type ColorPickerFieldProps<T extends FieldValues> = {
   formItemClassName?: string;
 };
 
-export default function ColorPickerField<T extends FieldValues>({
+export const ColorPickerField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -33,7 +33,7 @@ export default function ColorPickerField<T extends FieldValues>({
   required,
   labelClassName,
   formItemClassName
-}: ColorPickerFieldProps<T>) {
+}: ColorPickerFieldProps<T>) => {
   return (
     <FormField
       control={control}
@@ -89,4 +89,4 @@ export default function ColorPickerField<T extends FieldValues>({
       }}
     />
   );
-}
+};

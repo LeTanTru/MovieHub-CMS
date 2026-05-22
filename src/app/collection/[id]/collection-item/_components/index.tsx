@@ -1,1 +1,1 @@
-export { default as CollectionItemList } from './collection-item-list';
+export { CollectionItemList } from './collection-item-list';

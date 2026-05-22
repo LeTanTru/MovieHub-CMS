@@ -2,7 +2,7 @@
 
 import { Skeleton } from '@/components/ui/skeleton';
 
-function ListPageSkeleton() {
+export function ListPageSkeleton() {
   return (
     <div className='bg-list-page-wrapper min-h-[calc(100vh-190px)] rounded-lg'>
       <div className='bg-list-page-wrapper flex items-start justify-between rounded-tl-lg rounded-tr-lg p-4'>
@@ -66,5 +66,3 @@ function ListPageSkeleton() {
     </div>
   );
 }
-
-export default ListPageSkeleton;

@@ -6,11 +6,11 @@ type IntroRangeHighlightProps = {
   duration: number;
 };
 
-export default function TimeSliderHighlight({
+export const TimeSliderHighlight = ({
   start,
   end,
   duration
-}: IntroRangeHighlightProps) {
+}: IntroRangeHighlightProps) => {
   const left = (start / duration) * 100;
   const width = ((end - start) / duration) * 100;
   const styles = {
@@ -30,4 +30,4 @@ export default function TimeSliderHighlight({
       style={styles}
     />
   );
-}
+};

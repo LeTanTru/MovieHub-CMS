@@ -1,1 +1,1 @@
-export { default as NoData } from './no-data';
+export { NoData } from './no-data';

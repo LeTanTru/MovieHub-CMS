@@ -6,11 +6,11 @@ import { convertUTCToLocal, parseJSON, renderImageUrl, timeAgo } from '@/utils';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-export default function ConvertVideoBody({
+export const ConvertVideoBody = ({
   notification
 }: {
   notification: NotificationResType;
-}) {
+}) => {
   const body = useMemo(
     () => parseJSON<ConvertVideoNotificationType>(notification.body),
     [notification.body]
@@ -50,4 +50,4 @@ export default function ConvertVideoBody({
       </div>
     </Link>
   );
-}
+};

@@ -33,9 +33,9 @@ import type {
 import { generatePath, renderListPageUrl } from '@/utils';
 import { TbListDetails, TbPalette } from 'react-icons/tb';
 import { useState } from 'react';
-import StyleInfoModal from './style-info-modal';
+import { StyleInfoModal } from './style-info-modal';
 
-export default function CollectionList() {
+export const CollectionList = () => {
   const navigate = useNavigate();
   const { opened, open, close } = useDisclosure();
   const [selectedCollection, setSelectedCollection] =
@@ -294,4 +294,4 @@ export default function CollectionList() {
       )}
     </PageWrapper>
   );
-}
+};

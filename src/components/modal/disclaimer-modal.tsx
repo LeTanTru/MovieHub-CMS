@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { storageKeys } from '@/constants';
 import { useDisclosure, useIsMounted } from '@/hooks';
 import { getData, removeData, setData } from '@/utils';
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 
 const DISCLAIMER_TEXT = {
   title: 'Cảnh báo quan trọng',
@@ -24,7 +24,7 @@ const DISCLAIMER_TEXT = {
   agree: 'Tôi đã hiểu và đồng ý'
 };
 
-export default function DisclaimerModal() {
+export const DisclaimerModal = () => {
   const isMounted = useIsMounted();
 
   const { opened, close } = useDisclosure(
@@ -85,4 +85,4 @@ export default function DisclaimerModal() {
       </DialogContent>
     </Dialog>
   );
-}
+};

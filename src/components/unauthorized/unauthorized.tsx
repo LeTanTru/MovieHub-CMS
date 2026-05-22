@@ -1,7 +1,7 @@
 import { route } from '@/routes';
 import Link from 'next/link';
 
-export default function Unauthorized() {
+export const Unauthorized = () => {
   return (
     <div className='mt-20 flex flex-col items-center justify-center gap-4'>
       <svg
@@ -799,4 +799,4 @@ export default function Unauthorized() {
       </div>
     </div>
   );
-}
+};

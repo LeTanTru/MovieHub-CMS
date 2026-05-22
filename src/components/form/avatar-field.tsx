@@ -50,7 +50,7 @@ type AvatarFieldProps = {
 const AVATAR_SIZE_DEFAULT = 48;
 const AVATAR_PREVIEW_SIZE_DEFAULT = 200;
 
-export default function AvatarField({
+export const AvatarField = ({
   size = AVATAR_SIZE_DEFAULT,
   breakpoints,
   previewSize = AVATAR_PREVIEW_SIZE_DEFAULT,
@@ -68,7 +68,7 @@ export default function AvatarField({
   hoverIcon: HoverIcon = EyeIcon,
   hoverIconClassName,
   ...props
-}: AvatarFieldProps) {
+}: AvatarFieldProps) => {
   const isMounted = useIsMounted();
   const [open, setOpen] = useState<boolean>(false);
   const [scale, setScale] = useState<number>(1);
@@ -316,4 +316,4 @@ export default function AvatarField({
       )}
     </>
   );
-}
+};

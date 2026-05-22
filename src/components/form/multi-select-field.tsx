@@ -116,7 +116,7 @@ const measureVisibleCount = (
   return count;
 };
 
-export default function MultiSelectField<
+export const MultiSelectField = <
   TFieldValues extends FieldValues,
   TOption extends Record<string, any>
 >({
@@ -138,7 +138,7 @@ export default function MultiSelectField<
   disabled = false,
   onValueChange,
   isMultiLine = false
-}: MultiSelectFieldProps<TFieldValues, TOption>) {
+}: MultiSelectFieldProps<TFieldValues, TOption>) => {
   const [open, setOpen] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
@@ -459,4 +459,4 @@ export default function MultiSelectField<
       }}
     />
   );
-}
+};

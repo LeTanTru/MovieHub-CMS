@@ -1,2 +1,2 @@
-export { default as PersonForm } from './person-form';
-export { default as PersonTab } from './person-tab';
+export { PersonForm } from './person-form';
+export { PersonTab } from './person-tab';

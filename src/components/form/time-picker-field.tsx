@@ -36,7 +36,7 @@ type TimePickerFieldProps<T extends FieldValues> = {
   onChange?: (value: string) => void;
 };
 
-export default function TimePickerField<T extends FieldValues>({
+export const TimePickerField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -50,7 +50,7 @@ export default function TimePickerField<T extends FieldValues>({
   clearable = true,
   description,
   onChange
-}: TimePickerFieldProps<T>) {
+}: TimePickerFieldProps<T>) => {
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = Array.from({ length: 60 }, (_, i) => i);
   const seconds = Array.from({ length: 60 }, (_, i) => i);
@@ -323,7 +323,7 @@ export default function TimePickerField<T extends FieldValues>({
       }}
     />
   );
-}
+};
 
 function pad(n: number): string {
   return String(n).padStart(2, '0');

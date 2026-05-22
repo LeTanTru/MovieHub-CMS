@@ -10,12 +10,12 @@ type FieldSetProps = {
   className?: string;
 };
 
-export default function FieldSet({
+export const FieldSet = ({
   title,
   description,
   children,
   className = ''
-}: FieldSetProps) {
+}: FieldSetProps) => {
   return (
     <fieldset
       className={cn('mb-4 rounded-md border border-gray-200 p-4', className)}
@@ -33,4 +33,4 @@ export default function FieldSet({
       <div className='space-y-3'>{children}</div>
     </fieldset>
   );
-}
+};

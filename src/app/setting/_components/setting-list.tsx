@@ -1,6 +1,6 @@
 'use client';
 
-import SettingModal from './setting-modal';
+import { SettingModal } from './setting-modal';
 import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper } from '@/components/layout';
@@ -12,7 +12,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 
-export default function SettingList({ groupName }: { groupName: string }) {
+export const SettingList = ({ groupName }: { groupName: string }) => {
   const { opened, open, close } = useDisclosure();
   const [selectedSetting, setSelectedSetting] = useState<SettingResType | null>(
     null
@@ -155,4 +155,4 @@ export default function SettingList({ groupName }: { groupName: string }) {
       />
     </>
   );
-}
+};

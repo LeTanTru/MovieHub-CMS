@@ -40,7 +40,7 @@ function getValueByPath<T extends Record<string, any>>(
   return obj[path as keyof T];
 }
 
-export default function BaseTable<T extends Record<any, any>>({
+export const BaseTable = <T extends Record<any, any>>({
   columns,
   dataSource,
   rowKey = 'id',
@@ -48,7 +48,7 @@ export default function BaseTable<T extends Record<any, any>>({
   changePagination,
   loading,
   rowClassName
-}: BaseTableProps<T>) {
+}: BaseTableProps<T>) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollAtEnd, setScrollAtEnd] = useState(false);
   const { total } = pagination;
@@ -221,4 +221,4 @@ export default function BaseTable<T extends Record<any, any>>({
       </div>
     </div>
   );
-}
+};

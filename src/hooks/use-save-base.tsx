@@ -1,9 +1,9 @@
 import { Button, Col, Row } from '@/components/form';
 import { ConfirmModal } from '@/components/modal';
 import { QUERY_STALE_TIME, storageKeys } from '@/constants';
-import useDisclosure from '@/hooks/use-disclosure';
-import useNavigate from '@/hooks/use-navigate';
-import useQueryParams from '@/hooks/use-query-params';
+import { useDisclosure } from '@/hooks/use-disclosure';
+import { useNavigate } from '@/hooks/use-navigate';
+import { useQueryParams } from '@/hooks/use-query-params';
 import type { ApiConfig, ApiResponse, ErrorMaps } from '@/types';
 import {
   applyFormErrors,
@@ -41,7 +41,7 @@ type UseSaveBaseProps<R, T> = {
   override?: (handlers: HandlerType<T>) => HandlerType<T> | void;
 };
 
-const useSaveBase = <R extends FieldValues, T extends FieldValues>({
+export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
   apiConfig,
   options: {
     objectName = '',
@@ -330,5 +330,3 @@ const useSaveBase = <R extends FieldValues, T extends FieldValues>({
     onFormChange
   };
 };
-
-export default useSaveBase;

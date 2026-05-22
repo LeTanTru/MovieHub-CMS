@@ -1,15 +1,15 @@
 import { mqttCMDs } from '@/constants';
 import { NotificationResType } from '@/types';
-import AudioBody from './audio-body';
-import ConvertVideoBody from './convert-video-body';
-import ReplyCommentBody from './reply-comment-body';
-import VoteCommentBody from './vote-comment-body';
+import { AudioBody } from './audio-body';
+import { ConvertVideoBody } from './convert-video-body';
+import { ReplyCommentBody } from './reply-comment-body';
+import { VoteCommentBody } from './vote-comment-body';
 
-export default function NotificationBody({
+export const NotificationBody = ({
   notification
 }: {
   notification: NotificationResType;
-}) {
+}) => {
   switch (notification.cmd) {
     case mqttCMDs.DONE_CONVERT_AUDIO: {
       return <AudioBody notification={notification} />;
@@ -26,4 +26,4 @@ export default function NotificationBody({
     default:
       return null;
   }
-}
+};

@@ -1,6 +1,6 @@
 import { EmployeeForm } from '@/app/employee/_components';
 import { OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '@/constants';
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

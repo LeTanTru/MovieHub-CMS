@@ -55,7 +55,7 @@ function findRouteByPath(pathname: string): RouteItem | null {
   return null;
 }
 
-export default function PermissionGuard({ children }: PermissionGuardProps) {
+export const PermissionGuard = ({ children }: PermissionGuardProps) => {
   const { queryString } = useQueryParams();
   const navigate = useNavigate(false);
   const pathname = usePathname();
@@ -163,4 +163,4 @@ export default function PermissionGuard({ children }: PermissionGuardProps) {
   }
 
   return <>{children}</>;
-}
+};

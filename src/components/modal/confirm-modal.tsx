@@ -31,7 +31,7 @@ type ConfirmModalProps = {
   loading?: boolean;
 };
 
-export default function ConfirmModal({
+export const ConfirmModal = ({
   message,
   onConfirm,
   onCancel,
@@ -42,7 +42,7 @@ export default function ConfirmModal({
   open: controlledOpen,
   onOpenChange,
   loading
-}: ConfirmModalProps) {
+}: ConfirmModalProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
@@ -105,4 +105,4 @@ export default function ConfirmModal({
       </AlertDialogContent>
     </AlertDialog>
   );
-}
+};

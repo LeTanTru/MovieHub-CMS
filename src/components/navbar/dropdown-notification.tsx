@@ -22,11 +22,11 @@ import { Button } from '@/components/form';
 import { ConfirmModal } from '@/components/modal';
 import { invalidateQueries, notify } from '@/utils';
 import { logger } from '@/logger';
-import NotificationList from './notification-list';
+import { NotificationList } from './notification-list';
 
 const NOTIFICATION_BADGE_MAX_DISPLAY = 9;
 
-export default function DropdownNotification() {
+export const DropdownNotification = () => {
   const {
     opened: openedDropdown,
     toggle: toggleDropDown,
@@ -221,4 +221,4 @@ export default function DropdownNotification() {
       </AnimatePresence>
     </div>
   );
-}
+};

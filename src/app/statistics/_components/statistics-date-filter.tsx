@@ -17,11 +17,11 @@ const defaultValues: OverviewSearchType = {
   toDate: ''
 };
 
-export default function StatisticsDateFilter({
+export const StatisticsDateFilter = ({
   initialValues,
   onSubmit,
   onReset
-}: StatisticsDateFilterProps) {
+}: StatisticsDateFilterProps) => {
   return (
     <BaseForm<OverviewSearchType>
       defaultValues={defaultValues}
@@ -64,4 +64,4 @@ export default function StatisticsDateFilter({
       )}
     </BaseForm>
   );
-}
+};

@@ -1,4 +1,4 @@
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 
 export default function robots() {
   const baseUrl = envConfig.NEXT_PUBLIC_URL;

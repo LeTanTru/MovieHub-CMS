@@ -3,10 +3,10 @@
 import { Menu, usePlaybackRateOptions } from '@vidstack/react';
 import { OdometerIcon } from '@vidstack/react/icons';
 import { submenuClass } from './styles';
-import SubmenuButton from './submenu-button';
-import SpeedSlider from './speed-slider';
+import { SubmenuButton } from './submenu-button';
+import { SpeedSlider } from './speed-slider';
 
-export default function SpeedSubmenu() {
+export const SpeedSubmenu = () => {
   const options = usePlaybackRateOptions({
     rates: [
       0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85,
@@ -30,4 +30,4 @@ export default function SpeedSubmenu() {
       </Menu.Content>
     </Menu.Root>
   );
-}
+};

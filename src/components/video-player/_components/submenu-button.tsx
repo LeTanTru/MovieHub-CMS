@@ -11,12 +11,12 @@ type SubmenuButtonProps = {
   icon: ElementType;
 };
 
-export default function SubmenuButton({
+export const SubmenuButton = ({
   label,
   hint,
   icon: Icon,
   disabled
-}: SubmenuButtonProps) {
+}: SubmenuButtonProps) => {
   return (
     <Menu.Button
       className='parent left-0 z-10 flex w-full cursor-pointer items-center justify-start rounded-sm bg-black/60 p-2.5 ring-sky-400 outline-none select-none ring-inset aria-disabled:hidden data-[focus]:ring-[3px] data-[hocus]:bg-white/10 data-[open]:sticky data-[open]:-top-2.5'
@@ -29,4 +29,4 @@ export default function SubmenuButton({
       <ChevronRightIcon className='parent-data-[open]:hidden ml-0.5 size-[18px] text-sm text-white/50' />
     </Menu.Button>
   );
-}
+};

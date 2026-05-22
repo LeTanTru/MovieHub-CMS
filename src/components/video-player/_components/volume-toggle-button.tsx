@@ -3,7 +3,7 @@
 import { MuteButton, Tooltip, useMediaState } from '@vidstack/react';
 import { MuteIcon, VolumeHighIcon, VolumeLowIcon } from '@vidstack/react/icons';
 
-export default function VolumeToggleButton() {
+export const VolumeToggleButton = () => {
   const isMuted = useMediaState('muted');
   const volume = useMediaState('volume');
 
@@ -27,4 +27,4 @@ export default function VolumeToggleButton() {
       </Tooltip.Content>
     </Tooltip.Root>
   );
-}
+};

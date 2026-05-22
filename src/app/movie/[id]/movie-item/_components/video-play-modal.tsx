@@ -18,7 +18,7 @@ import {
   renderVttUrl
 } from '@/utils';
 import { VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL } from '@/constants';
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 
 type VideoPlayModalProps = {
   video: VideoLibraryResType;
@@ -26,11 +26,11 @@ type VideoPlayModalProps = {
   onClose: () => void;
 };
 
-export default function VideoPlayModal({
+export const VideoPlayModal = ({
   open,
   video,
   onClose
-}: VideoPlayModalProps) {
+}: VideoPlayModalProps) => {
   const accessToken = useAuthStore((s) => s.accessToken);
 
   return (
@@ -65,4 +65,4 @@ export default function VideoPlayModal({
       <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
-}
+};

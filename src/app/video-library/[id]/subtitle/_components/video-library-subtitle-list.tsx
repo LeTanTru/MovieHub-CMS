@@ -5,7 +5,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { List, ListItem } from '@/components/list';
 import { CircleLoading } from '@/components/loading';
 import { VideoPlayer } from '@/components/video-player';
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 import { apiConfig, objectNames, queryKeys } from '@/constants';
 import { useListBase, useQueryParams } from '@/hooks';
 import { useVideoLibraryQuery } from '@/queries';
@@ -25,7 +25,7 @@ import {
 } from '@/utils';
 import { useParams } from 'next/navigation';
 
-export default function VideoLibrarySubtitleList() {
+export const VideoLibrarySubtitleList = () => {
   const { id } = useParams<{ id: string }>();
   const accessToken = useAuthStore((s) => s.accessToken);
   const { data: videoLibrary, isLoading: loadingVideoLibrary } =
@@ -125,4 +125,4 @@ export default function VideoLibrarySubtitleList() {
       </ListPageWrapper>
     </PageWrapper>
   );
-}
+};
