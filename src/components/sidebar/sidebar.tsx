@@ -26,6 +26,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getLastWord, renderImageUrl } from '@/utils';
 import { menuConfig } from '@/constants';
 import CollapsibleMenuItem from './collapsible-menu-item';
+import { route } from '@/routes';
 
 const AppSidebar = () => {
   const isMounted = useIsMounted();
@@ -98,7 +99,7 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton className='h-full focus-visible:ring-0!' asChild>
               <Link
-                href='/'
+                href={route.home.path}
                 className='block! w-full! transition-all duration-200 ease-linear group-data-[collapsible=icon]:size-full! group-data-[collapsible=icon]:p-0! hover:bg-transparent!'
               >
                 {state === 'expanded' ? (
