@@ -62,7 +62,7 @@ import { logger } from '@/logger';
 import { useVideoLibraryStore } from '@/store';
 import { route } from '@/routes';
 
-export const VideoLibraryList = () => {
+export function VideoLibraryList() {
   const navigate = useNavigate();
   const {
     searchParams: { page, ...resetSearchParams },
@@ -468,4 +468,4 @@ export const VideoLibraryList = () => {
       )}
     </PageWrapper>
   );
-};
+}

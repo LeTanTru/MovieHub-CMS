@@ -31,7 +31,7 @@ type BaseFormProps<T extends Record<string, any>> = Omit<
   onFormChange?: (isFormChanged: boolean) => void;
 };
 
-export const BaseForm = <T extends Record<string, any>>({
+export function BaseForm<T extends Record<string, any>>({
   className,
   defaultValues,
   id,
@@ -43,7 +43,7 @@ export const BaseForm = <T extends Record<string, any>>({
   onSubmit,
   onFormChange,
   ...rest
-}: BaseFormProps<T>) => {
+}: BaseFormProps<T>) {
   const form = useForm<T>({
     resolver: zodResolver(schema),
     defaultValues,
@@ -86,4 +86,4 @@ export const BaseForm = <T extends Record<string, any>>({
       </form>
     </Form>
   );
-};
+}

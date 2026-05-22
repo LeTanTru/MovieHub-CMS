@@ -23,11 +23,7 @@ type CategoryModalProps = {
   onClose: () => void;
 };
 
-export const CategoryModal = ({
-  open,
-  category,
-  onClose
-}: CategoryModalProps) => {
+export function CategoryModal({ open, category, onClose }: CategoryModalProps) {
   const {
     data,
     loading,
@@ -133,4 +129,4 @@ export const CategoryModal = ({
       <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
-};
+}

@@ -18,7 +18,7 @@ type SettingsProps = {
   tooltipPlacement: TooltipPlacement;
 };
 
-export const SettingMenu = ({ placement, tooltipPlacement }: SettingsProps) => {
+export function SettingMenu({ placement, tooltipPlacement }: SettingsProps) {
   return (
     <Menu.Root className='parent'>
       <Tooltip.Root>
@@ -39,4 +39,4 @@ export const SettingMenu = ({ placement, tooltipPlacement }: SettingsProps) => {
       </Menu.Content>
     </Menu.Root>
   );
-};
+}

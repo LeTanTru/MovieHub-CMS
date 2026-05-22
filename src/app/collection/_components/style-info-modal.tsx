@@ -11,11 +11,11 @@ type StyleInfoModalProps = {
   style: StyleResType;
 };
 
-export const StyleInfoModal = ({
+export function StyleInfoModal({
   opened,
   onClose,
   style
-}: StyleInfoModalProps) => {
+}: StyleInfoModalProps) {
   return (
     <Modal
       open={opened}
@@ -81,4 +81,4 @@ export const StyleInfoModal = ({
       </Modal.Body>
     </Modal>
   );
-};
+}

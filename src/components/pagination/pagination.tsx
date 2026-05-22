@@ -14,11 +14,11 @@ type PaginationProps = {
   currentPage: number;
 };
 
-export const Pagination = ({
+export function Pagination({
   totalPages,
   changePagination,
   currentPage
-}: PaginationProps) => {
+}: PaginationProps) {
   if (!totalPages || totalPages <= 1) return null;
 
   const renderPage = (page: number) => {
@@ -124,4 +124,4 @@ export const Pagination = ({
       )}
     </div>
   );
-};
+}

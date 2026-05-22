@@ -15,7 +15,7 @@ import { route } from '@/routes';
 import { getData, setData, renderListPageUrl } from '@/utils';
 import { useEffect, useState } from 'react';
 
-export const PersonTab = () => {
+export function PersonTab() {
   const defaultTab =
     getData(storageKeys.ACTIVE_TAB_MOVIE_PERSON_KIND) ||
     TAB_MOVIE_PERSON_KIND_ACTOR;
@@ -99,4 +99,4 @@ export const PersonTab = () => {
       </div>
     </PageWrapper>
   );
-};
+}

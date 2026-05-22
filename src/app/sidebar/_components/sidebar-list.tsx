@@ -19,7 +19,7 @@ import type {
 import { convertUTCToLocal, notify, renderImageUrl } from '@/utils';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
-export const SidebarList = () => {
+export function SidebarList() {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusPending } =
     useChangeActiveSidebarMutation();
 
@@ -245,4 +245,4 @@ export const SidebarList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

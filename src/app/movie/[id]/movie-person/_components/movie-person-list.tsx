@@ -34,7 +34,7 @@ import { z } from 'zod';
 
 type MoviePersonListProps = { kind: number };
 
-export const MoviePersonList = ({ kind }: MoviePersonListProps) => {
+export function MoviePersonList({ kind }: MoviePersonListProps) {
   const { id: movieId } = useParams<{ id: string }>();
 
   const [selectedRow, setSelectedRow] = useState<string>('');
@@ -416,4 +416,4 @@ export const MoviePersonList = ({ kind }: MoviePersonListProps) => {
       />
     </>
   );
-};
+}

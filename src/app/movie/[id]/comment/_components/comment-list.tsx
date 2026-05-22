@@ -32,7 +32,7 @@ import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { logger } from '@/logger';
 
-export const CommentList = () => {
+export function CommentList() {
   const { id: movieId } = useParams<{ id: string }>();
 
   const isMounted = useIsMounted();
@@ -246,4 +246,4 @@ export const CommentList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

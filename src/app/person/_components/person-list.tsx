@@ -26,7 +26,7 @@ import { formatDate, getLastWord, notify, renderImageUrl } from '@/utils';
 
 type PersonListProps = { kind: number };
 
-export const PersonList = ({ kind }: PersonListProps) => {
+export function PersonList({ kind }: PersonListProps) {
   const { data, pagination, loading, handlers } = useListBase<
     PersonResType,
     PersonSearchType
@@ -175,4 +175,4 @@ export const PersonList = ({ kind }: PersonListProps) => {
       />
     </ListPageWrapper>
   );
-};
+}

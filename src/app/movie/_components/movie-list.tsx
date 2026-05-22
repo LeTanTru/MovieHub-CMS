@@ -39,7 +39,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { AiOutlineUser } from 'react-icons/ai';
 
-export const MovieList = () => {
+export function MovieList() {
   const navigate = useNavigate();
   const {
     searchParams: { page, ...resetSearchParams },
@@ -432,4 +432,4 @@ export const MovieList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

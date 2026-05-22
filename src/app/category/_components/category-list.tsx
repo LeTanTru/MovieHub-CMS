@@ -19,7 +19,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 
-export const CategoryList = () => {
+export function CategoryList() {
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryResType | null>(null);
   const { opened, open, close } = useDisclosure();
@@ -134,4 +134,4 @@ export const CategoryList = () => {
       />
     </PageWrapper>
   );
-};
+}

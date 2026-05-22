@@ -144,7 +144,7 @@ function SortableRow<T extends Record<any, any>>({
   );
 }
 
-export const DragDropTable = <T extends Record<any, any>>({
+export function DragDropTable<T extends Record<any, any>>({
   columns,
   dataSource = EMPTY_DATA_SOURCE as T[],
   rowKey = 'id',
@@ -153,7 +153,7 @@ export const DragDropTable = <T extends Record<any, any>>({
   onSelectRow,
   rowClassName,
   rowStyle
-}: DragDropTableProps<T>) => {
+}: DragDropTableProps<T>) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollAtEnd, setScrollAtEnd] = useState(false);
 
@@ -303,4 +303,4 @@ export const DragDropTable = <T extends Record<any, any>>({
       </div>
     </div>
   );
-};
+}

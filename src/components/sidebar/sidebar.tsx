@@ -28,7 +28,7 @@ import { menuConfig } from '@/constants';
 import { CollapsibleMenuItem } from './collapsible-menu-item';
 import { route } from '@/routes';
 
-export const AppSidebar = () => {
+export function AppSidebar() {
   const isMounted = useIsMounted();
   const { profile } = useAuth();
   const { state } = useSidebar();
@@ -210,4 +210,4 @@ export const AppSidebar = () => {
       </SidebarFooter>
     </Sidebar>
   );
-};
+}

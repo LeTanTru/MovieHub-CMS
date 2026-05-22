@@ -14,11 +14,11 @@ import {
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-export const VoteCommentBody = ({
+export function VoteCommentBody({
   notification
 }: {
   notification: NotificationResType;
-}) => {
+}) {
   const body = useMemo(
     () => parseJSON<VoteCommentNotificationType>(notification.body),
     [notification.body]
@@ -84,4 +84,4 @@ export const VoteCommentBody = ({
       </div>
     </Link>
   );
-};
+}

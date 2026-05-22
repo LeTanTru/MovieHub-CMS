@@ -22,12 +22,12 @@ type NotificationItemProps = {
   onItemClick?: (notification: NotificationResType) => void;
 };
 
-export const NotificationItem = ({
+export function NotificationItem({
   notification,
   canDelete = false,
   onDelete,
   onItemClick
-}: NotificationItemProps) => {
+}: NotificationItemProps) {
   return (
     <div
       role='button'
@@ -82,4 +82,4 @@ export const NotificationItem = ({
       )}
     </div>
   );
-};
+}

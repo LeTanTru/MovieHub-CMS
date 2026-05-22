@@ -12,7 +12,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 
-export const SettingList = ({ groupName }: { groupName: string }) => {
+export function SettingList({ groupName }: { groupName: string }) {
   const { opened, open, close } = useDisclosure();
   const [selectedSetting, setSelectedSetting] = useState<SettingResType | null>(
     null
@@ -155,4 +155,4 @@ export const SettingList = ({ groupName }: { groupName: string }) => {
       />
     </>
   );
-};
+}

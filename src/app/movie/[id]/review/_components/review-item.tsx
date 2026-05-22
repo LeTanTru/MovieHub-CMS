@@ -45,7 +45,7 @@ type ReviewItemProps = {
   onDelete: () => void;
 };
 
-export const ReviewItem = ({ review, onDelete }: ReviewItemProps) => {
+export function ReviewItem({ review, onDelete }: ReviewItemProps) {
   const hasPermission = useValidatePermission();
   const {
     mutateAsync: changeReviewStatusMutate,
@@ -256,7 +256,7 @@ export const ReviewItem = ({ review, onDelete }: ReviewItemProps) => {
       </div>
     </div>
   );
-};
+}
 
 ReviewItem.Skeleton = function () {
   return (

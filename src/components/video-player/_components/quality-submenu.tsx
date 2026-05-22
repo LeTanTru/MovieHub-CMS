@@ -7,7 +7,7 @@ import { submenuClass } from './styles';
 import { MenuRadio } from './menu-radio';
 import { SubmenuButton } from './submenu-button';
 
-export const QualitySubmenu = () => {
+export function QualitySubmenu() {
   const options = useVideoQualityOptions({ auto: true, sort: 'descending' });
 
   const currentQualityHeight = options.selectedQuality?.height;
@@ -36,4 +36,4 @@ export const QualitySubmenu = () => {
       </Menu.Content>
     </Menu.Root>
   );
-};
+}

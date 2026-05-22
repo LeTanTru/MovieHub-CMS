@@ -22,7 +22,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 type CollapsibleMenuItemProps = { item: MenuItem };
 
-export const CollapsibleMenuItem = ({ item }: CollapsibleMenuItemProps) => {
+export function CollapsibleMenuItem({ item }: CollapsibleMenuItemProps) {
   const pathname = usePathname();
   const { state } = useSidebar();
   const { serializeParams } = useQueryParams();
@@ -262,4 +262,4 @@ export const CollapsibleMenuItem = ({ item }: CollapsibleMenuItemProps) => {
       )}
     </>
   );
-};
+}

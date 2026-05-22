@@ -41,7 +41,7 @@ const defaultFilters: OverviewSearchType = {
   toDate: ''
 };
 
-export const Overview = () => {
+export function Overview() {
   const [filters, setFilters] = useState<OverviewSearchType>(defaultFilters);
 
   const params = useMemo(
@@ -253,4 +253,4 @@ export const Overview = () => {
       </div>
     </PageWrapper>
   );
-};
+}

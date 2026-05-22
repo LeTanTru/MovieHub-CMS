@@ -30,7 +30,7 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export const AppVersionForm = () => {
+export function AppVersionForm() {
   const { id } = useParams<{ id: string }>();
 
   const { mutateAsync: uploadFileMutate } = useUploadFileMutation();
@@ -233,4 +233,4 @@ export const AppVersionForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

@@ -27,7 +27,7 @@ type RadioGroupFieldProps<T extends FieldValues> = {
   disabled?: boolean;
 };
 
-export const RadioGroupField = <T extends FieldValues>({
+export function RadioGroupField<T extends FieldValues>({
   name,
   control,
   label,
@@ -40,7 +40,7 @@ export const RadioGroupField = <T extends FieldValues>({
   labelClassName,
   formItemClassName,
   disabled
-}: RadioGroupFieldProps<T>) => {
+}: RadioGroupFieldProps<T>) {
   return (
     <FormField
       control={control}
@@ -105,4 +105,4 @@ export const RadioGroupField = <T extends FieldValues>({
       )}
     />
   );
-};
+}

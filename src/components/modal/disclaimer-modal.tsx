@@ -24,7 +24,7 @@ const DISCLAIMER_TEXT = {
   agree: 'Tôi đã hiểu và đồng ý'
 };
 
-export const DisclaimerModal = () => {
+export function DisclaimerModal() {
   const isMounted = useIsMounted();
 
   const { opened, close } = useDisclosure(
@@ -85,4 +85,4 @@ export const DisclaimerModal = () => {
       </DialogContent>
     </Dialog>
   );
-};
+}

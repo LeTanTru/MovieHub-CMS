@@ -35,7 +35,7 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export const EmployeeForm = () => {
+export function EmployeeForm() {
   const { id } = useParams<{ id: string }>();
 
   const { data: groupListData } = useGroupListQuery({ size: MAX_PAGE_SIZE });
@@ -331,4 +331,4 @@ export const EmployeeForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

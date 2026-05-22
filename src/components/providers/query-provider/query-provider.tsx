@@ -7,7 +7,7 @@ import { useState, type ReactNode } from 'react';
 
 type QueryProviderProps = { children: ReactNode };
 
-export const QueryProvider = ({ children }: QueryProviderProps) => {
+export function QueryProvider({ children }: QueryProviderProps) {
   const [queryClient] = useState(() => getQueryClient());
 
   return (
@@ -18,4 +18,4 @@ export const QueryProvider = ({ children }: QueryProviderProps) => {
       )}
     </QueryClientProvider>
   );
-};
+}

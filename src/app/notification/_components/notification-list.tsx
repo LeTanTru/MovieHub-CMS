@@ -26,7 +26,7 @@ import { NotificationResType, NotificationSearchType } from '@/types';
 import { invalidateQueries, notify } from '@/utils';
 import { CheckCheck, Trash } from 'lucide-react';
 
-export const NotificationList = () => {
+export function NotificationList() {
   const {
     data: notificationList,
     loading,
@@ -215,4 +215,4 @@ export const NotificationList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

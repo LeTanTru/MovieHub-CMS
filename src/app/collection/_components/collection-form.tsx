@@ -47,7 +47,7 @@ import type { UseFormReturn } from 'react-hook-form';
 import { PlusIcon, X } from 'lucide-react';
 import { logger } from '@/logger';
 
-export const CollectionForm = () => {
+export function CollectionForm() {
   const navigate = useNavigate();
 
   const pathname = usePathname();
@@ -493,4 +493,4 @@ export const CollectionForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

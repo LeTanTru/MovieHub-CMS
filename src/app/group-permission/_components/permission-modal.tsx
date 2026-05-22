@@ -37,12 +37,12 @@ type PermissionModalProps = {
   onClose: () => void;
 };
 
-export const PermissionModal = ({
+export function PermissionModal({
   open,
   selectedRow,
   selectedGroupPermissionId,
   onClose
-}: PermissionModalProps) => {
+}: PermissionModalProps) {
   const {
     loading,
     isEditing,
@@ -221,4 +221,4 @@ export const PermissionModal = ({
       <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
-};
+}

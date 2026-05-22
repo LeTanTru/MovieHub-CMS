@@ -18,14 +18,14 @@ type ToolTipProps = {
   className?: string;
 };
 
-export const ToolTip = ({
+export function ToolTip({
   title,
   children,
   side = 'bottom',
   align = 'center',
   sideOffset = 4,
   className
-}: ToolTipProps) => {
+}: ToolTipProps) {
   return (
     <TooltipProvider>
       <Tooltip>
@@ -45,4 +45,4 @@ export const ToolTip = ({
       </Tooltip>
     </TooltipProvider>
   );
-};
+}

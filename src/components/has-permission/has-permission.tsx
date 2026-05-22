@@ -8,14 +8,14 @@ type HasPermissionProps = {
   requiredPermissions: string[];
 };
 
-export const HasPermission = ({
+export function HasPermission({
   children,
   requiredPermissions
-}: HasPermissionProps) => {
+}: HasPermissionProps) {
   const isMounted = useIsMounted();
   const hasPermission = useValidatePermission();
 
   if (!isMounted) return null;
 
   return hasPermission({ requiredPermissions }) ? children : null;
-};
+}

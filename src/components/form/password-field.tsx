@@ -51,7 +51,7 @@ const getStrengthText = (score: number): string => {
   return 'Mật khẩu mạnh';
 };
 
-export const PasswordField = <T extends FieldValues>({
+export function PasswordField<T extends FieldValues>({
   control,
   name,
   label,
@@ -65,7 +65,7 @@ export const PasswordField = <T extends FieldValues>({
   disabled,
   readOnly = false,
   showStrength = false
-}: PasswordFieldProps<T>) => {
+}: PasswordFieldProps<T>) {
   const id = useId();
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
@@ -235,4 +235,4 @@ export const PasswordField = <T extends FieldValues>({
       }}
     />
   );
-};
+}

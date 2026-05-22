@@ -25,7 +25,7 @@ import {
 } from '@/utils';
 import { useParams } from 'next/navigation';
 
-export const VideoLibrarySubtitleList = () => {
+export function VideoLibrarySubtitleList() {
   const { id } = useParams<{ id: string }>();
   const accessToken = useAuthStore((s) => s.accessToken);
   const { data: videoLibrary, isLoading: loadingVideoLibrary } =
@@ -125,4 +125,4 @@ export const VideoLibrarySubtitleList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

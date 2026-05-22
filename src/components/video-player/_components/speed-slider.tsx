@@ -2,7 +2,7 @@
 
 import { SpeedSlider as BaseSpeedSlider } from '@vidstack/react';
 
-export const SpeedSlider = () => {
+export function SpeedSlider() {
   return (
     <BaseSpeedSlider.Root
       className='group vds-slider relative inline-flex cursor-pointer touch-none items-center py-2.5 outline-none select-none aria-hidden:hidden'
@@ -18,4 +18,4 @@ export const SpeedSlider = () => {
       <BaseSpeedSlider.Thumb className='absolute top-1/2 left-[var(--slider-fill)] z-20 size-[15px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cacaca] bg-white opacity-0 ring-white/40 transition-opacity will-change-[left] group-data-[active]:opacity-100 group-data-[dragging]:ring-4' />
     </BaseSpeedSlider.Root>
   );
-};
+}

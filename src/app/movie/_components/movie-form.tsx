@@ -50,7 +50,7 @@ import {
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
-export const MovieForm = () => {
+export function MovieForm() {
   const { id } = useParams<{ id: string }>();
 
   const { data: categories, isLoading: categoryLoading } =
@@ -537,4 +537,4 @@ export const MovieForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

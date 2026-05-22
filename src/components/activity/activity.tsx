@@ -7,10 +7,10 @@ type ActivityProps = {
   children: ReactNode;
 };
 
-export const Activity = ({ visible, children }: ActivityProps) => {
+export function Activity({ visible, children }: ActivityProps) {
   return (
     <BaseActivity mode={visible ? 'visible' : 'hidden'}>
       {children}
     </BaseActivity>
   );
-};
+}

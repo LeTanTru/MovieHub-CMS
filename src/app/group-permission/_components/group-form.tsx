@@ -36,7 +36,7 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export const GroupForm = () => {
+export function GroupForm() {
   const { id } = useParams<{ id: string }>();
 
   const {
@@ -343,4 +343,4 @@ export const GroupForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

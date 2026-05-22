@@ -26,11 +26,7 @@ type VideoPlayModalProps = {
   onClose: () => void;
 };
 
-export const VideoPlayModal = ({
-  open,
-  video,
-  onClose
-}: VideoPlayModalProps) => {
+export function VideoPlayModal({ open, video, onClose }: VideoPlayModalProps) {
   const accessToken = useAuthStore((s) => s.accessToken);
 
   return (
@@ -65,4 +61,4 @@ export const VideoPlayModal = ({
       <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
-};
+}

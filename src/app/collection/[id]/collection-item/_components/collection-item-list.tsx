@@ -34,7 +34,7 @@ import { convertUTCToLocal, renderImageUrl, renderListPageUrl } from '@/utils';
 import { PlusIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
-export const CollectionItemList = () => {
+export function CollectionItemList() {
   const { id: collectionId } = useParams<{ id: string }>();
 
   const { searchParams, serializeParams, deprefixParams } =
@@ -278,4 +278,4 @@ export const CollectionItemList = () => {
       <CollectionItemModal open={opened} onClose={close} />
     </PageWrapper>
   );
-};
+}

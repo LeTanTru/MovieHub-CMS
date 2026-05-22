@@ -28,7 +28,7 @@ import type {
 import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
-export const EmployeeList = () => {
+export function EmployeeList() {
   const { data: groupListData } = useGroupListQuery({ size: MAX_PAGE_SIZE });
 
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
@@ -240,4 +240,4 @@ export const EmployeeList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

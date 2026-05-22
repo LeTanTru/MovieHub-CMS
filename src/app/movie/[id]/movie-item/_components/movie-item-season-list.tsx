@@ -47,7 +47,7 @@ import { IoCheckmarkDone } from 'react-icons/io5';
 import { useMarkLatestMovieItemMutation } from '@/queries';
 import { logger } from '@/logger';
 
-export const MovieItemSeasonList = () => {
+export function MovieItemSeasonList() {
   const navigate = useNavigate();
   const { id: movieId } = useParams<{ id: string }>();
   const { searchParams, serializeParams, deprefixParams, prefixParams } =
@@ -389,4 +389,4 @@ export const MovieItemSeasonList = () => {
       )}
     </PageWrapper>
   );
-};
+}

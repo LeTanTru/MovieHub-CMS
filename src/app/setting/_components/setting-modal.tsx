@@ -36,12 +36,12 @@ type SettingModalProps = {
   onClose: () => void;
 };
 
-export const SettingModal = ({
+export function SettingModal({
   open,
   setting,
   groupName,
   onClose
-}: SettingModalProps) => {
+}: SettingModalProps) {
   const { mutateAsync: uploadFileMutate } = useUploadFileMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
@@ -361,4 +361,4 @@ export const SettingModal = ({
       <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
-};
+}

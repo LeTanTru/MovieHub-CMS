@@ -7,7 +7,7 @@ import { MenuRadio } from './menu-radio';
 import { SubmenuButton } from './submenu-button';
 import { getLanguageLabel } from '@/utils';
 
-export const CaptionSubmenu = () => {
+export function CaptionSubmenu() {
   const options = useCaptionOptions(),
     hint = options.selectedTrack?.label ?? 'Tắt';
 
@@ -32,4 +32,4 @@ export const CaptionSubmenu = () => {
       </Menu.Content>
     </Menu.Root>
   );
-};
+}

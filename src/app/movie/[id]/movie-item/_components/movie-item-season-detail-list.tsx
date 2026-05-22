@@ -53,7 +53,7 @@ import { useMarkLatestMovieItemMutation } from '@/queries';
 import { IoCheckmarkDone } from 'react-icons/io5';
 import { logger } from '@/logger';
 
-export const MovieItemSeasonDetailList = () => {
+export function MovieItemSeasonDetailList() {
   const { id: movieId, movieItemId } = useParams<{
     id: string;
     movieItemId: string;
@@ -430,7 +430,7 @@ export const MovieItemSeasonDetailList = () => {
       )}
     </PageWrapper>
   );
-};
+}
 
 const getMovieTypeLabel = (type?: number | string) => {
   switch (Number(type)) {

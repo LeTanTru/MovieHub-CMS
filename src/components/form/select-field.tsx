@@ -77,7 +77,7 @@ const fuzzyMatch = (text: string, search: string) => {
   return new RegExp(pattern).test(t);
 };
 
-export const SelectField = <
+export function SelectField<
   TFieldValues extends FieldValues,
   TOption extends Record<string, any>
 >({
@@ -100,7 +100,7 @@ export const SelectField = <
   getValue = (opt) => opt.value,
   getPrefix = (opt) => opt.prefix,
   onValueChange
-}: SelectFieldProps<TFieldValues, TOption>) => {
+}: SelectFieldProps<TFieldValues, TOption>) {
   const [open, setOpen] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
@@ -322,4 +322,4 @@ export const SelectField = <
       }}
     />
   );
-};
+}

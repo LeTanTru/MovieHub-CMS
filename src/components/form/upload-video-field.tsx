@@ -35,7 +35,7 @@ type UploadVideoFieldProps<T extends FieldValues> = {
   deleteImageFn?: (url: string) => Promise<ApiResponse<unknown> | undefined>;
 };
 
-export const UploadVideoField = <T extends FieldValues>({
+export function UploadVideoField<T extends FieldValues>({
   control,
   name,
   label,
@@ -46,7 +46,7 @@ export const UploadVideoField = <T extends FieldValues>({
   maxSize,
   uploadVideoFn,
   deleteImageFn
-}: UploadVideoFieldProps<T>) => {
+}: UploadVideoFieldProps<T>) {
   const {
     field: { value, onChange: fieldOnChange },
     fieldState: { error }
@@ -281,4 +281,4 @@ export const UploadVideoField = <T extends FieldValues>({
       )}
     </>
   );
-};
+}

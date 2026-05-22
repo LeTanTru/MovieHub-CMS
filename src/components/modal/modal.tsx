@@ -64,7 +64,7 @@ type ConfirmProps = {
   className?: string;
 };
 
-export const Modal = ({
+export function Modal({
   children,
   open,
   onClose,
@@ -76,7 +76,7 @@ export const Modal = ({
     exit: { opacity: 0.5, scale: 0.85 }
   },
   ...rest
-}: ModalProps) => {
+}: ModalProps) {
   const isMounted = useIsMounted();
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -200,7 +200,7 @@ export const Modal = ({
     </AnimatePresence>,
     document.body
   );
-};
+}
 
 function Header({ children, className }: HeaderProps) {
   const { onClose } = useModal();

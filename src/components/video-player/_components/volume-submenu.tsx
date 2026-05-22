@@ -9,7 +9,7 @@ import {
   VolumeLowIcon
 } from '@vidstack/react/icons';
 
-export const VolumeSubmenu = () => {
+export function VolumeSubmenu() {
   const volume = useMediaState('volume');
   const currentVolume = Math.round(Number(volume ?? 0) * 100);
 
@@ -35,4 +35,4 @@ export const VolumeSubmenu = () => {
       </Menu.Content>
     </Menu.Root>
   );
-};
+}

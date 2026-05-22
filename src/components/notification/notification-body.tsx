@@ -5,11 +5,11 @@ import { ConvertVideoBody } from './convert-video-body';
 import { ReplyCommentBody } from './reply-comment-body';
 import { VoteCommentBody } from './vote-comment-body';
 
-export const NotificationBody = ({
+export function NotificationBody({
   notification
 }: {
   notification: NotificationResType;
-}) => {
+}) {
   switch (notification.cmd) {
     case mqttCMDs.DONE_CONVERT_AUDIO: {
       return <AudioBody notification={notification} />;
@@ -26,4 +26,4 @@ export const NotificationBody = ({
     default:
       return null;
   }
-};
+}

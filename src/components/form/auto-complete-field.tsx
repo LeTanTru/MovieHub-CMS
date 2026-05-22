@@ -85,7 +85,7 @@ const EMPTY_STATE_IMAGE_WIDTH = 120;
 const EMPTY_STATE_IMAGE_HEIGHT = 50;
 const HIGHLIGHTED_INDEX_NONE = -1;
 
-export const AutoCompleteField = <
+export function AutoCompleteField<
   TFieldValues extends FieldValues,
   TOption extends Record<string, any>
 >({
@@ -110,7 +110,7 @@ export const AutoCompleteField = <
   onValueChange,
   mappingData,
   renderOption
-}: AutoCompleteFieldProps<TFieldValues, TOption>) => {
+}: AutoCompleteFieldProps<TFieldValues, TOption>) {
   const [open, setOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
   const [debouncedSearch, setDebouncedSearch] = useState<string>('');
@@ -464,4 +464,4 @@ export const AutoCompleteField = <
       }}
     />
   );
-};
+}
