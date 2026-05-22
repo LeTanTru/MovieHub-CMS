@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
 
     const cspHeader = `
       default-src 'self';
-      script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ''} https://cdn.tiny.cloud https://tinymce-swart.vercel.app blob:;
+      script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ''} https://cdn.tiny.cloud https://tinymce-swart.vercel.app https://cdn.jsdelivr.net blob:;
       style-src 'self' 'unsafe-inline' https://tinymce-swart.vercel.app;
       img-src 'self' data: blob: https:;
       font-src 'self';
