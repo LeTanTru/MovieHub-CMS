@@ -402,13 +402,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `/api/file/upload/video/chunk/init`,
       method: 'POST',
       headers: baseHeader,
-      isRequiredCsrfToken: true,
-      isRequiredXClientType: true
-    },
-    uploadChunkPresign: {
-      baseUrl: `/api/file/upload/video/chunk/presign`,
-      method: 'POST',
-      headers: baseHeader,
+      permissionCode: 'FILE_U_V',
       isRequiredCsrfToken: true,
       isRequiredXClientType: true
     },
@@ -416,6 +410,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `/api/file/upload/video/chunk/presign-batch`,
       method: 'POST',
       headers: baseHeader,
+      permissionCode: 'FILE_U_V',
       isRequiredCsrfToken: true,
       isRequiredXClientType: true
     },
@@ -423,6 +418,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `/api/file/upload/video/chunk/complete`,
       method: 'POST',
       headers: baseHeader,
+      permissionCode: 'FILE_U_V',
       isRequiredCsrfToken: true,
       isRequiredXClientType: true
     },
@@ -430,6 +426,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `/api/file/upload/video/chunk/abort`,
       method: 'POST',
       headers: baseHeader,
+      permissionCode: 'FILE_U_V',
       isRequiredCsrfToken: true,
       isRequiredXClientType: true
     },

@@ -3,8 +3,14 @@ import { s3Client, BUCKET_NAME } from '@/lib/s3';
 import { CompleteMultipartUploadCommand } from '@aws-sdk/client-s3';
 import { HttpStatusCode } from 'axios';
 import { logger } from '@/logger';
-import { getCookie, validateCsrfToken, csrfErrorResponse } from '@/utils';
-import { storageKeys } from '@/constants';
+import {
+  getCookie,
+  validateCsrfToken,
+  csrfErrorResponse,
+  decodeJwt,
+  validatePermission
+} from '@/utils';
+import { storageKeys, apiConfig } from '@/constants';
 import {
   completeMultipartUploadSchema,
   parseRequestBody
@@ -21,6 +27,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { message: 'Unauthorized' },
       { status: HttpStatusCode.Unauthorized }
+    );
+  }
+
+  const permissionCodes = decodeJwt(accessToken)?.authorities || [];
+
+  if (
+    !validatePermission({
+      requiredPermissions: [apiConfig.file.uploadChunkComplete.permissionCode],
+      userPermissions: permissionCodes
+    })
+  ) {
+    return NextResponse.json(
+      { message: 'Forbidden' },
+      { status: HttpStatusCode.Forbidden }
     );
   }
 
