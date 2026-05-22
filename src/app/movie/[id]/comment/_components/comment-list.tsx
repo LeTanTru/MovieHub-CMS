@@ -26,7 +26,7 @@ import { useParams } from 'next/navigation';
 import CommentItem from './comment-item';
 import { DotLoading } from '@/components/loading';
 import { Button } from '@/components/form';
-import { invalidateQueries, notify } from '@/utils';
+import { invalidateQueries, notify, renderListPageUrl } from '@/utils';
 import { useCommentStore } from '@/store';
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -37,9 +37,10 @@ export default function CommentList() {
 
   const isMounted = useIsMounted();
 
-  const {
-    searchParams: { movieTitle }
-  } = useQueryParams<{ movieTitle: string }>();
+  const { searchParams, serializeParams, deprefixParams } =
+    useQueryParams<Record<string, string>>();
+  const parentParams = deprefixParams(searchParams);
+  const { movieTitle, parentPage, ...restSearchParams } = parentParams;
 
   const {
     targetCommentId,
@@ -93,7 +94,6 @@ export default function CommentList() {
       queryKey: queryKeys.COMMENT,
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId'],
-      excludeFromQueryFilter: ['movieTitle'],
       showNotify: false
     }
   });
@@ -200,7 +200,13 @@ export default function CommentList() {
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Phim', href: route.movie.getList.path },
+        {
+          label: 'Phim',
+          href: renderListPageUrl(
+            route.movie.getList.path,
+            serializeParams({ ...restSearchParams, page: parentPage })
+          )
+        },
         { label: movieTitle || 'Chi tiết' },
         { label: 'Bình luận' }
       ]}

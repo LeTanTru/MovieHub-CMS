@@ -42,8 +42,9 @@ export default function CollectionList() {
     useState<CollectionResType | null>(null);
 
   const {
-    searchParams: { type },
-    serializeParams
+    searchParams: { type, ...resetSearchParams },
+    serializeParams,
+    prefixParams
   } = useQueryParams<CollectionSearchType>();
 
   const collectionType = Number(type);
@@ -71,10 +72,13 @@ export default function CollectionList() {
                 generatePath(route.collectionItem.getList.path, {
                   id: record.id
                 }),
-                serializeParams({
-                  type: collectionType,
-                  collectionTitle: record.name
-                })
+                serializeParams(
+                  prefixParams({
+                    ...resetSearchParams,
+                    type: collectionType,
+                    collectionTitle: record.name
+                  })
+                )
               )
             );
           };

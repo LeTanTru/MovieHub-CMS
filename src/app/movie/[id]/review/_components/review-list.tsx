@@ -16,12 +16,14 @@ import type { ReviewResType, ReviewSearchType } from '@/types';
 import { useParams } from 'next/navigation';
 import ReviewItem from './review-item';
 import { useCallback } from 'react';
+import { renderListPageUrl } from '@/utils';
 
 export default function ReviewList() {
   const { id: movieId } = useParams<{ id: string }>();
-  const {
-    searchParams: { movieTitle }
-  } = useQueryParams<{ movieTitle: string }>();
+  const { searchParams, serializeParams, deprefixParams } =
+    useQueryParams<Record<string, string>>();
+  const parentParams = deprefixParams(searchParams);
+  const { movieTitle, parentPage, ...restSearchParams } = parentParams;
 
   const {
     data: reviewList,
@@ -38,7 +40,6 @@ export default function ReviewList() {
       queryKey: queryKeys.REVIEW,
       defaultFilters: { movieId },
       notShowFromSearchParams: ['movieId'],
-      excludeFromQueryFilter: ['movieTitle'],
       showNotify: false
     }
   });
@@ -57,7 +58,13 @@ export default function ReviewList() {
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Phim', href: route.movie.getList.path },
+        {
+          label: 'Phim',
+          href: renderListPageUrl(
+            route.movie.getList.path,
+            serializeParams({ ...restSearchParams, page: parentPage })
+          )
+        },
         { label: movieTitle || 'Chi tiết' },
         { label: 'Đánh giá' }
       ]}

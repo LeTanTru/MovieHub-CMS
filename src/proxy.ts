@@ -1,6 +1,8 @@
 import { storageKeys } from '@/constants';
 import { route } from '@/routes';
 import { NextRequest, NextResponse } from 'next/server';
+import { getFirstActiveRoute } from '@/utils/menu-config.util';
+import { decodeJwt } from '@/utils';
 
 const authPaths = ['/login'];
 
@@ -22,9 +24,15 @@ export function proxy(request: NextRequest) {
 
   // If logged in
   if (accessToken) {
-    // Access public page, redirect to home
-    if (authPaths.some((path) => pathname.startsWith(path))) {
-      return NextResponse.redirect(new URL(route.home.path, request.nextUrl));
+    const isAuthPath = authPaths.some((path) => pathname.startsWith(path));
+    const isHomePath = pathname === route.home.path;
+
+    if (isAuthPath || isHomePath) {
+      const decoded = decodeJwt(accessToken);
+      const authorities = decoded?.authorities || [];
+      const targetPath =
+        getFirstActiveRoute(authorities) || route.profile.savePage.path;
+      return NextResponse.redirect(new URL(targetPath, request.nextUrl));
     }
   }
   // If not logged in
