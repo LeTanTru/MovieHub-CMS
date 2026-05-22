@@ -139,3 +139,5 @@ export const SLIDER_DEFAULT_MAX = 100;
 export const COLOR_STATUS_ACTIVE = '#00c950';
 export const COLOR_STATUS_ERROR = '#dc3545';
 export const COLOR_STATUS_PENDING = '#ffc107';
+
+export const PARENT_PREFIX_PARAM = 'p_';

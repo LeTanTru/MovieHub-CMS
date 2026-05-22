@@ -12,7 +12,7 @@ import {
 } from '@/constants';
 import { useIsMounted, useQueryParams } from '@/hooks';
 import { route } from '@/routes';
-import { getData, setData } from '@/utils';
+import { getData, setData, renderListPageUrl } from '@/utils';
 import { useEffect, useState } from 'react';
 
 export default function PersonTab() {
@@ -23,9 +23,10 @@ export default function PersonTab() {
 
   const isMounted = useIsMounted();
 
-  const {
-    searchParams: { movieTitle }
-  } = useQueryParams<{ movieTitle: string }>();
+  const { searchParams, serializeParams, deprefixParams } =
+    useQueryParams<Record<string, string>>();
+  const parentParams = deprefixParams(searchParams);
+  const { movieTitle, parentPage, ...restSearchParams } = parentParams;
 
   const tabs = [
     {
@@ -61,7 +62,10 @@ export default function PersonTab() {
       breadcrumbs={[
         {
           label: 'Phim',
-          href: route.movie.getList.path
+          href: renderListPageUrl(
+            route.movie.getList.path,
+            serializeParams({ ...restSearchParams, page: parentPage })
+          )
         },
         {
           label: movieTitle ?? 'Chi tiết'

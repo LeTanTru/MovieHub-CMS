@@ -1,3 +1,4 @@
+import { PARENT_PREFIX_PARAM } from '@/constants';
 import useNavigate from '@/hooks/use-navigate';
 import { usePathname, useSearchParams } from 'next/navigation';
 
@@ -62,6 +63,26 @@ const useQueryParams = <S extends Record<string, any>>() => {
   const paramsObject = Object.fromEntries(searchParams.entries()) as Partial<S>;
   const queryString = serializeParams(paramsObject);
 
+  const prefixParams = (
+    params: Record<string, any>,
+    prefix = PARENT_PREFIX_PARAM
+  ): Record<string, any> => {
+    return Object.fromEntries(
+      Object.entries(params).map(([key, val]) => [`${prefix}${key}`, val])
+    );
+  };
+
+  const deprefixParams = (
+    params: Record<string, any>,
+    prefix = PARENT_PREFIX_PARAM
+  ): Record<string, any> => {
+    return Object.fromEntries(
+      Object.entries(params)
+        .filter(([key]) => key.startsWith(prefix))
+        .map(([key, val]) => [key.slice(prefix.length), val])
+    );
+  };
+
   return {
     queryString,
     searchParams: paramsObject,
@@ -69,7 +90,9 @@ const useQueryParams = <S extends Record<string, any>>() => {
     deserializeParams,
     getQueryParam,
     setQueryParam,
-    setQueryParams
+    setQueryParams,
+    prefixParams,
+    deprefixParams
   };
 };
 

@@ -64,7 +64,11 @@ import { route } from '@/routes';
 
 export default function VideoLibraryList() {
   const navigate = useNavigate();
-  const { serializeParams } = useQueryParams();
+  const {
+    searchParams: { page, ...resetSearchParams },
+    serializeParams,
+    prefixParams
+  } = useQueryParams<{ page?: string }>();
 
   const {
     opened: openedPlayModal,
@@ -149,9 +153,13 @@ export default function VideoLibraryList() {
                 generatePath(route.videoLibrary.subtitle.path, {
                   id: video.id
                 }),
-                serializeParams({
-                  name: video.name
-                })
+                serializeParams(
+                  prefixParams({
+                    ...resetSearchParams,
+                    videoName: video.name,
+                    parentPage: page
+                  })
+                )
               )
             );
           };

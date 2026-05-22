@@ -19,6 +19,7 @@ import {
   isMobileDevice,
   isTabletDevice,
   renderImageUrl,
+  renderListPageUrl,
   renderVideoUrl,
   renderVttUrl
 } from '@/utils';
@@ -27,13 +28,13 @@ import { useParams } from 'next/navigation';
 export default function VideoLibrarySubtitleList() {
   const { id } = useParams<{ id: string }>();
   const accessToken = useAuthStore((s) => s.accessToken);
-
   const { data: videoLibrary, isLoading: loadingVideoLibrary } =
     useVideoLibraryQuery(id);
 
-  const {
-    searchParams: { name }
-  } = useQueryParams<{ name: string }>();
+  const { searchParams, serializeParams, deprefixParams } =
+    useQueryParams<Record<string, string>>();
+  const parentParams = deprefixParams(searchParams);
+  const { videoName, parentPage, ...restSearchParams } = parentParams;
 
   const { data: subtitleList, loading } = useListBase<
     VideoLibrarySubtitleResType,
@@ -46,8 +47,7 @@ export default function VideoLibrarySubtitleList() {
       defaultFilters: {
         videoLibraryId: id
       },
-      notShowFromSearchParams: ['videoLibraryId'],
-      excludeFromQueryFilter: ['name']
+      notShowFromSearchParams: ['videoLibraryId']
     }
   });
 
@@ -56,12 +56,15 @@ export default function VideoLibrarySubtitleList() {
       breadcrumbs={[
         {
           label: 'Video',
-          href: route.videoLibrary.getList.path
+          href: renderListPageUrl(
+            route.videoLibrary.getList.path,
+            serializeParams({ ...restSearchParams, page: parentPage })
+          )
         },
-        ...(name
+        ...(videoName
           ? [
               {
-                label: name
+                label: videoName
               }
             ]
           : []),

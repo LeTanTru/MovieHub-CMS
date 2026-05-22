@@ -50,13 +50,10 @@ import { logger } from '@/logger';
 export default function MovieItemSeasonList() {
   const navigate = useNavigate();
   const { id: movieId } = useParams<{ id: string }>();
-  const {
-    searchParams: { type, movieTitle },
-    serializeParams
-  } = useQueryParams<{
-    type: string;
-    movieTitle: string;
-  }>();
+  const { searchParams, serializeParams, deprefixParams, prefixParams } =
+    useQueryParams<Record<string, string>>();
+  const parentParams = deprefixParams(searchParams);
+  const { type, movieTitle, parentPage, ...restSearchParams } = parentParams;
 
   const movieType = Number(type || 0);
 
@@ -85,7 +82,6 @@ export default function MovieItemSeasonList() {
     options: {
       queryKey: queryKeys.MOVIE_ITEM,
       objectName: objectNames.MOVIE_ITEM,
-      excludeFromQueryFilter: ['type', 'movieTitle'],
       defaultFilters: {
         movieId,
         kind: MOVIE_ITEM_KIND_SEASON
@@ -336,11 +332,15 @@ export default function MovieItemSeasonList() {
           id: movieId,
           parentId: record.id
         }),
-        serializeParams({
-          type,
-          movieTitle,
-          season: record.title
-        })
+        serializeParams(
+          prefixParams({
+            ...restSearchParams,
+            type,
+            movieTitle,
+            season: record.title,
+            parentPage
+          })
+        )
       )
     );
   };
@@ -348,7 +348,13 @@ export default function MovieItemSeasonList() {
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Phim', href: route.movie.getList.path },
+        {
+          label: 'Phim',
+          href: renderListPageUrl(
+            route.movie.getList.path,
+            serializeParams({ ...restSearchParams, page: parentPage })
+          )
+        },
         { label: movieTitle || 'Phần' }
       ]}
     >

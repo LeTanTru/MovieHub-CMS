@@ -37,13 +37,10 @@ import { useParams } from 'next/navigation';
 export default function CollectionItemList() {
   const { id: collectionId } = useParams<{ id: string }>();
 
-  const {
-    searchParams: { type, collectionTitle },
-    serializeParams
-  } = useQueryParams<{
-    type: number;
-    collectionTitle: string;
-  }>();
+  const { searchParams, serializeParams, deprefixParams } =
+    useQueryParams<Record<string, string>>();
+  const parentParams = deprefixParams(searchParams);
+  const { collectionTitle, ...restSearchParams } = parentParams;
 
   const { opened, open, close } = useDisclosure();
 
@@ -55,7 +52,6 @@ export default function CollectionItemList() {
     options: {
       queryKey: queryKeys.COLLECTION_ITEM,
       objectName: objectNames.MOVIE,
-      excludeFromQueryFilter: ['type', 'collectionTitle'],
       defaultFilters: { collectionId },
       notShowFromSearchParams: ['collectionId']
     },
@@ -256,7 +252,7 @@ export default function CollectionItemList() {
           label: 'Bộ sưu tập',
           href: renderListPageUrl(
             route.collection.getList.path,
-            serializeParams({ type })
+            serializeParams(restSearchParams)
           )
         },
         {

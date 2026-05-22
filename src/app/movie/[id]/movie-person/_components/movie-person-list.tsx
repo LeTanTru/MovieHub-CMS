@@ -62,8 +62,7 @@ export default function MoviePersonList({ kind }: MoviePersonListProps) {
           ? objectNames.PERSON_ACTOR
           : objectNames.PERSON_DIRECTOR,
       defaultFilters: { kind, movieId },
-      notShowFromSearchParams: ['kind', 'movieId'],
-      excludeFromQueryFilter: ['movieTitle']
+      notShowFromSearchParams: ['kind', 'movieId']
     },
     override: (handlers) => {
       handlers.additionalParams = () => ({

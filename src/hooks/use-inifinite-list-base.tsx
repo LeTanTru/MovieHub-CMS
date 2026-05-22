@@ -8,6 +8,7 @@ import {
   DEFAULT_TABLE_PAGE_SIZE,
   DEFAULT_TABLE_PAGE_START,
   FieldTypes,
+  PARENT_PREFIX_PARAM,
   statusOptions as defaultStatusOptions
 } from '@/constants';
 import useNavigate from '@/hooks/use-navigate';
@@ -41,6 +42,7 @@ import { usePathname } from 'next/navigation';
 import {
   type ReactNode,
   type UIEvent,
+  useCallback,
   useEffect,
   useMemo,
   useState
@@ -171,6 +173,18 @@ const useInfiniteListBase = <
     serializeParams
   } = useQueryParams<S>();
 
+  const isExcluded = useCallback(
+    (key: string) =>
+      excludeFromQueryFilter.includes(key) ||
+      key.startsWith(PARENT_PREFIX_PARAM),
+    [excludeFromQueryFilter]
+  );
+
+  const isShownInUrl = useCallback(
+    (key: string) => !notShowFromSearchParams.includes(key),
+    [notShowFromSearchParams]
+  );
+
   // Combined current params with default params
   const mergedSearchParams = useMemo(() => {
     return { ...defaultFilters, ...searchParams };
@@ -185,26 +199,52 @@ const useInfiniteListBase = <
           ? Number(mergedSearchParams.page) - 1
           : DEFAULT_TABLE_PAGE_START,
         size: pageSize
-      }).filter(([key]) => !excludeFromQueryFilter.includes(key))
+      }).filter(([key]) => !isExcluded(key))
     );
 
     return {
       ...filteredParams
     } as S;
-  }, [mergedSearchParams, pageSize, excludeFromQueryFilter]);
+  }, [mergedSearchParams, pageSize, isExcluded]);
 
-  // Clear undefined | null params
+  // Clear undefined | null params and remove excluded params
   useEffect(() => {
+    let hasChanges = false;
+    const newParams = { ...searchParams };
+
+    // 1. Add missing default filters
     Object.entries(defaultFilters).forEach(([key, value]) => {
-      if (
-        (searchParams[key as keyof S] === undefined ||
-          searchParams[key as keyof S] === null) &&
-        !notShowFromSearchParams.includes(key)
-      ) {
-        setQueryParam(key as keyof S, value as S[keyof S]);
+      const isMissing =
+        newParams[key as keyof S] === undefined ||
+        newParams[key as keyof S] === null;
+
+      if (isMissing && isShownInUrl(key)) {
+        newParams[key as keyof S] = value as S[keyof S];
+        hasChanges = true;
       }
     });
-  }, [defaultFilters, notShowFromSearchParams, searchParams, setQueryParam]);
+
+    // 2. Remove any params that are in notShowFromSearchParams
+    notShowFromSearchParams.forEach((key) => {
+      if (
+        newParams[key as keyof S] !== undefined &&
+        newParams[key as keyof S] !== null
+      ) {
+        delete newParams[key as keyof S];
+        hasChanges = true;
+      }
+    });
+
+    if (!hasChanges) return;
+
+    setQueryParams(newParams as Partial<S>);
+  }, [
+    defaultFilters,
+    isShownInUrl,
+    notShowFromSearchParams,
+    searchParams,
+    setQueryParams
+  ]);
 
   const additionalPathParams = () => ({});
 
@@ -302,15 +342,6 @@ const useInfiniteListBase = <
 
   const actionColumn = () => ({
     edit: (record: T, buttonProps?: Record<string, any>) => {
-      // if (
-      //   !apiConfig.update ||
-      //   !apiConfig.update.permissionCode ||
-      //   !hasPermission({
-      //     requiredPermissions: [apiConfig.update.permissionCode]
-      //   })
-      // )
-      //   return null;
-
       return (
         <ToolTip title={`Cập nhật ${objectName}`} sideOffset={0}>
           <span>
@@ -330,15 +361,6 @@ const useInfiniteListBase = <
       );
     },
     delete: (record: T, buttonProps?: Record<string, any>) => {
-      // if (
-      //   !apiConfig.delete ||
-      //   !apiConfig.delete.permissionCode ||
-      //   !hasPermission({
-      //     requiredPermissions: [apiConfig.delete.permissionCode]
-      //   })
-      // )
-      //   return null;
-
       return (
         <ToolTip title={`Xóa ${objectName}`} sideOffset={0}>
           <ConfirmModal
@@ -464,15 +486,11 @@ const useInfiniteListBase = <
 
   const changeQueryFilter = (filters: Partial<S>) => {
     const preservedParams = Object.fromEntries(
-      Object.entries(searchParams).filter(([key]) =>
-        excludeFromQueryFilter.includes(key)
-      )
+      Object.entries(searchParams).filter(([key]) => isExcluded(key))
     );
 
     const filteredValues = Object.fromEntries(
-      Object.entries(filters).filter(
-        ([key]) => !notShowFromSearchParams.includes(key)
-      )
+      Object.entries(filters).filter(([key]) => isShownInUrl(key))
     );
 
     setQueryParams({ ...filteredValues, ...preservedParams } as Partial<S>);
@@ -489,30 +507,32 @@ const useInfiniteListBase = <
     const mergedValues = {
       ...queryFilter,
       ...Object.fromEntries(
-        Object.entries(searchParams).map(([key, value]) => {
-          const field = searchFields.find((f) => f.key === key);
-          if (!field) return [key, value];
+        Object.entries(searchParams)
+          .filter(([key]) => !key.startsWith(PARENT_PREFIX_PARAM))
+          .map(([key, value]) => {
+            const field = searchFields.find((f) => f.key === key);
+            if (!field) return [key, value];
 
-          switch (field.type) {
-            case FieldTypes.NUMBER:
-              return [key, value ? Number(value) : undefined];
-            case FieldTypes.SELECT:
-            case FieldTypes.AUTO_COMPLETE: {
-              const option = field.options?.find(
-                (opt: any) => String(opt.value) === String(value)
-              );
-              return [key, option ? option.value : value];
+            switch (field.type) {
+              case FieldTypes.NUMBER:
+                return [key, value ? Number(value) : undefined];
+              case FieldTypes.SELECT:
+              case FieldTypes.AUTO_COMPLETE: {
+                const option = field.options?.find(
+                  (opt: any) => String(opt.value) === String(value)
+                );
+                return [key, option ? option.value : value];
+              }
+              case FieldTypes.MULTI_SELECT:
+                return [key, value?.split(',')];
+              case FieldTypes.DATE:
+                return [key, convertUTCToLocal(value)];
+              case FieldTypes.BOOLEAN:
+                return [key, Boolean(value)];
+              default:
+                return [key, value];
             }
-            case FieldTypes.MULTI_SELECT:
-              return [key, value?.split(',')];
-            case FieldTypes.DATE:
-              return [key, convertUTCToLocal(value)];
-            case FieldTypes.BOOLEAN:
-              return [key, Boolean(value)];
-            default:
-              return [key, value];
-          }
-        })
+          })
       )
     };
 
@@ -522,17 +542,13 @@ const useInfiniteListBase = <
     };
 
     const resetSearchValues = Object.fromEntries(
-      Object.entries(defaultFilters).filter(
-        ([key]) => !notShowFromSearchParams.includes(key)
-      )
+      Object.entries(defaultFilters).filter(([key]) => isShownInUrl(key))
     ) as Partial<S>;
 
     // Handle reset
     const handleSearchReset = () => {
       const preservedParams = Object.fromEntries(
-        Object.entries(searchParams).filter(([key]) =>
-          excludeFromQueryFilter.includes(key)
-        )
+        Object.entries(searchParams).filter(([key]) => isExcluded(key))
       );
 
       const resetParams = {

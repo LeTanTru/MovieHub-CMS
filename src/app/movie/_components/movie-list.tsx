@@ -41,7 +41,11 @@ import { AiOutlineUser } from 'react-icons/ai';
 
 export default function MovieList() {
   const navigate = useNavigate();
-  const { serializeParams } = useQueryParams();
+  const {
+    searchParams: { page, ...resetSearchParams },
+    serializeParams,
+    prefixParams
+  } = useQueryParams<{ page?: string }>();
 
   const { data: categoryListData } = useCategoryListQuery();
 
@@ -76,7 +80,13 @@ export default function MovieList() {
                 generatePath(route.moviePerson.getList.path, {
                   id: record.id
                 }),
-                serializeParams({ movieTitle: record.title })
+                serializeParams(
+                  prefixParams({
+                    ...resetSearchParams,
+                    movieTitle: record.title,
+                    parentPage: page
+                  })
+                )
               )
             );
           };
@@ -102,7 +112,13 @@ export default function MovieList() {
                 generatePath(route.comment.getList.path, {
                   id: record.id
                 }),
-                serializeParams({ movieTitle: record.title })
+                serializeParams(
+                  prefixParams({
+                    ...resetSearchParams,
+                    movieTitle: record.title,
+                    parentPage: page
+                  })
+                )
               )
             );
           };
@@ -128,7 +144,13 @@ export default function MovieList() {
                 generatePath(route.review.getList.path, {
                   id: record.id
                 }),
-                serializeParams({ movieTitle: record.title })
+                serializeParams(
+                  prefixParams({
+                    ...resetSearchParams,
+                    movieTitle: record.title,
+                    parentPage: page
+                  })
+                )
               )
             );
           };
@@ -191,7 +213,14 @@ export default function MovieList() {
           <Link
             href={`${generatePath(route.movieItem.getList.path, {
               id: record.id
-            })}?${serializeParams({ type: record.type, movieTitle: record.title })}`}
+            })}?${serializeParams(
+              prefixParams({
+                ...resetSearchParams,
+                type: record.type,
+                movieTitle: record.title,
+                parentPage: page
+              })
+            )}`}
             className={cn(
               'text-main-color line-clamp-1 block flex items-center gap-x-1 truncate',
               {

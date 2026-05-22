@@ -49,10 +49,11 @@ const refreshToken = async () => {
   if (data?.result && data?.data) {
     const newAccessToken = data.data.access_token;
     const userKind = data.data.user_kind;
+    const newCsrfToken = data.data.csrfToken;
     if (isClient) {
       useAuthStore.getState().setAccessToken(newAccessToken);
       useAuthStore.getState().setUserKind(String(userKind));
-      return newAccessToken;
+      useAuthStore.getState().setCsrfToken(newCsrfToken);
     }
     return newAccessToken;
   }
@@ -103,11 +104,15 @@ axiosInstance.interceptors.response.use(
         logger.error('[REFRESH_TOKEN_ERROR]', error);
         if (
           error instanceof AxiosError &&
-          error?.response?.status === HttpStatusCode.BadRequest &&
-          error?.response?.data?.message &&
-          error?.response?.data?.message?.includes('Invalid refresh token')
+          (error?.response?.status === HttpStatusCode.BadRequest ||
+            error?.response?.status === HttpStatusCode.Unauthorized ||
+            error?.response?.status === HttpStatusCode.Forbidden)
         ) {
-          await axiosInstance.post(apiConfig.api.auth.logout.baseUrl);
+          try {
+            await axiosInstance.post(apiConfig.api.auth.logout.baseUrl);
+          } catch (e) {
+            logger.error('[LOGOUT_ON_REFRESH_FAILED]', e);
+          }
           if (isClient) {
             useAuthStore.getState().clearState();
             const loginPath = route.login.path;

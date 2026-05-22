@@ -119,8 +119,7 @@ export default function CommentItem({
       defaultFilters: {
         parentId: comment.id
       },
-      notShowFromSearchParams: ['parentId'],
-      excludeFromQueryFilter: ['movieTitle']
+      notShowFromSearchParams: ['parentId']
     }
   });
 
