@@ -38,7 +38,7 @@ type UploadFileFieldProps<T extends FieldValues> = {
   deleteImageFn?: (url: string) => Promise<ApiResponse<any> | undefined>;
 };
 
-export default function UploadFileField<T extends FieldValues>({
+export const UploadFileField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -50,7 +50,7 @@ export default function UploadFileField<T extends FieldValues>({
   onUploadStart,
   uploadFileFn,
   deleteImageFn
-}: UploadFileFieldProps<T>) {
+}: UploadFileFieldProps<T>) => {
   const {
     field: { value, onChange: fieldOnChange },
     fieldState: { error }
@@ -263,4 +263,4 @@ export default function UploadFileField<T extends FieldValues>({
       )}
     </>
   );
-}
+};

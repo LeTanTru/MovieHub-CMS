@@ -1,6 +1,6 @@
 'use client';
 
-import VideoPlayModal from './video-play-modal';
+import { VideoPlayModal } from './video-play-modal';
 import { Button, ImageField, ToolTip } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
@@ -62,7 +62,7 @@ import { logger } from '@/logger';
 import { useVideoLibraryStore } from '@/store';
 import { route } from '@/routes';
 
-export default function VideoLibraryList() {
+export const VideoLibraryList = () => {
   const navigate = useNavigate();
   const {
     searchParams: { page, ...resetSearchParams },
@@ -468,4 +468,4 @@ export default function VideoLibraryList() {
       )}
     </PageWrapper>
   );
-}
+};

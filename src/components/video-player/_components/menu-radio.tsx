@@ -4,7 +4,7 @@ import {
   RadioButtonSelectedIcon
 } from '@vidstack/react/icons';
 
-export default function MenuRadio({ children, ...props }: Menu.RadioProps) {
+export const MenuRadio = ({ children, ...props }: Menu.RadioProps) => {
   return (
     <Menu.Radio
       className='ring-media-focus group relative flex w-full cursor-pointer items-center justify-start rounded-sm p-2.5 outline-none select-none data-[focus]:ring-[3px] data-[hocus]:bg-white/10'
@@ -15,4 +15,4 @@ export default function MenuRadio({ children, ...props }: Menu.RadioProps) {
       <span className='ml-2'>{children}</span>
     </Menu.Radio>
   );
-}
+};

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useDisclosure = (initial: boolean = false) => {
+export const useDisclosure = (initial: boolean = false) => {
   const [opened, setOpened] = useState<boolean>(initial);
 
   const open = () => setOpened(true);
@@ -9,5 +9,3 @@ const useDisclosure = (initial: boolean = false) => {
 
   return { opened, open, close, toggle };
 };
-
-export default useDisclosure;

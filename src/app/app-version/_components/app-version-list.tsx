@@ -21,7 +21,7 @@ import type {
 } from '@/types';
 import { convertUTCToLocal, notify } from '@/utils';
 
-export default function AppVersionList() {
+export const AppVersionList = () => {
   const { data, pagination, loading, handlers } = useListBase<
     AppVersionResType,
     AppVersionSearchType
@@ -151,4 +151,4 @@ export default function AppVersionList() {
       </ListPageWrapper>
     </PageWrapper>
   );
-}
+};

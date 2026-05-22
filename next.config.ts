@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 import createBundleAnalyzer from '@next/bundle-analyzer';
 import path from 'path';
-import envConfig from './src/config';
+import { envConfig } from '@/config';
 
 const nextConfig: NextConfig = {
   async headers() {

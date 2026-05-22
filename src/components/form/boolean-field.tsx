@@ -29,7 +29,7 @@ type BooleanFieldProps<T extends FieldValues> = {
   description?: string;
 };
 
-export default function BooleanField<T extends FieldValues>({
+export const BooleanField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -42,7 +42,7 @@ export default function BooleanField<T extends FieldValues>({
   thumbClassName,
   disabled,
   description
-}: BooleanFieldProps<T>) {
+}: BooleanFieldProps<T>) => {
   const id = useId();
 
   return (
@@ -119,4 +119,4 @@ export default function BooleanField<T extends FieldValues>({
       )}
     />
   );
-}
+};

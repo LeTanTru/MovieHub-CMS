@@ -23,7 +23,7 @@ import { invalidateQueries } from '@/utils';
 
 type CommentInputProps = { movieId: string };
 
-export default function CommentInput({ movieId }: CommentInputProps) {
+export const CommentInput = ({ movieId }: CommentInputProps) => {
   const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
 
   const pickerContainerRef = useRef<HTMLDivElement>(null);
@@ -183,4 +183,4 @@ export default function CommentInput({ movieId }: CommentInputProps) {
       }}
     </BaseForm>
   );
-}
+};

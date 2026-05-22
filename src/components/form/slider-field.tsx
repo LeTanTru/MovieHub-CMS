@@ -37,7 +37,7 @@ type SliderFieldProps<T extends FieldValues> = {
   markers?: (number | string)[];
 };
 
-export default function SliderField<T extends FieldValues>({
+export const SliderField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -57,7 +57,7 @@ export default function SliderField<T extends FieldValues>({
   showUnit = true,
   step = SLIDER_DEFAULT_STEP,
   markers
-}: SliderFieldProps<T>) {
+}: SliderFieldProps<T>) => {
   return (
     <FormField
       control={control}
@@ -141,4 +141,4 @@ export default function SliderField<T extends FieldValues>({
       }}
     />
   );
-}
+};

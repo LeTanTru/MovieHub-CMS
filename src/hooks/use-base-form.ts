@@ -6,7 +6,7 @@ import {
   useFormState
 } from 'react-hook-form';
 
-const useBaseForm = <T extends FieldValues>({
+export const useBaseForm = <T extends FieldValues>({
   schema,
   defaultValues,
   mode = 'onChange'
@@ -25,5 +25,3 @@ const useBaseForm = <T extends FieldValues>({
 
   return { ...form, formState };
 };
-
-export default useBaseForm;

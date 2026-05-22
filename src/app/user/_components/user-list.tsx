@@ -27,7 +27,7 @@ import type {
 import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
-export default function UserList() {
+export const UserList = () => {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
     useChangeUserStatusMutation();
 
@@ -203,4 +203,4 @@ export default function UserList() {
       </ListPageWrapper>
     </PageWrapper>
   );
-}
+};

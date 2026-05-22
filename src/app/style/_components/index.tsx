@@ -1,2 +1,2 @@
-export { default as StyleList } from './style-list';
-export { default as StyleForm } from './style-form';
+export { StyleList } from './style-list';
+export { StyleForm } from './style-form';

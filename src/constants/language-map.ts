@@ -1,4 +1,4 @@
-enum languageNameMap {
+export enum languageNameMap {
   Off = 'Tắt',
   English = 'Tiếng Anh',
   Vietnamese = 'Tiếng Việt',
@@ -15,5 +15,3 @@ enum languageNameMap {
   Arabic = 'Tiếng Ả Rập',
   Hindi = 'Tiếng Hindi'
 }
-
-export default languageNameMap;

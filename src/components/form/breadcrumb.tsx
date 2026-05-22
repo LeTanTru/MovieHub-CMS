@@ -14,10 +14,10 @@ import type { BreadcrumbProps } from '@/types';
 import { useIsMounted } from '@/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function Breadcrumb({
+export const Breadcrumb = ({
   items,
   separator = <BreadcrumbSeparator />
-}: BreadcrumbProps) {
+}: BreadcrumbProps) => {
   const isMounted = useIsMounted();
 
   const length = items.length;
@@ -73,4 +73,4 @@ export default function Breadcrumb({
       </BreadcrumbList>
     </OriginBreadcrumb>
   );
-}
+};

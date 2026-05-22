@@ -41,7 +41,7 @@ type TextAreaFieldProps<T extends FieldValues> = {
   formItemClassName?: string;
 } & TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-const TextAreaField = <T extends FieldValues>({
+export const TextAreaField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -137,5 +137,3 @@ const TextAreaField = <T extends FieldValues>({
     />
   );
 };
-
-export default TextAreaField;

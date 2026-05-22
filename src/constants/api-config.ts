@@ -1,4 +1,4 @@
-import AppConstants from '@/constants/app';
+import { AppConstants } from '@/constants/app';
 import type { ApiConfigGroup } from '@/types';
 
 const baseHeader = { 'Content-Type': 'application/json' };
@@ -8,7 +8,7 @@ const multipartHeader = {
 
 const defineApiConfig = <T extends ApiConfigGroup>(config: T) => config;
 
-const apiConfig = defineApiConfig({
+export const apiConfig = defineApiConfig({
   api: {
     auth: {
       login: {
@@ -1175,5 +1175,3 @@ const apiConfig = defineApiConfig({
     }
   }
 });
-
-export default apiConfig;

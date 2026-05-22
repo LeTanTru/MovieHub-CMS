@@ -56,7 +56,7 @@ const defaultDateFilters: OverviewSearchType = {
 
 const pageSize = 10;
 
-export default function TopMovies() {
+export const TopMovies = () => {
   const [dateFilters, setDateFilters] =
     useState<OverviewSearchType>(defaultDateFilters);
   const [sortBy, setSortBy] = useState<TopMoviesSortBy>('viewCount');
@@ -288,4 +288,4 @@ export default function TopMovies() {
       </div>
     </PageWrapper>
   );
-}
+};

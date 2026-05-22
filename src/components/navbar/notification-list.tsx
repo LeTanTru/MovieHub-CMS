@@ -17,13 +17,13 @@ type Props = {
   onItemClick?: () => void;
 };
 
-export default function NotificationList({
+export const NotificationList = ({
   notifications,
   canDelete,
   loading,
   onDelete,
   onItemClick
-}: Props) {
+}: Props) => {
   const { mutateAsync: updateReadNotificationMutate } =
     useUpdateReadNotificationMutation();
 
@@ -70,4 +70,4 @@ export default function NotificationList({
       ))}
     </List>
   );
-}
+};

@@ -45,7 +45,7 @@ type ButtonProps = ComponentProps<'button'> &
     iconClassName?: string;
   };
 
-export default function Button({
+export const Button = ({
   className,
   variant,
   size,
@@ -54,7 +54,7 @@ export default function Button({
   children,
   iconClassName,
   ...props
-}: ButtonProps) {
+}: ButtonProps) => {
   const Comp = asChild ? Slot : 'button';
 
   return (
@@ -74,4 +74,4 @@ export default function Button({
       )}
     </Comp>
   );
-}
+};

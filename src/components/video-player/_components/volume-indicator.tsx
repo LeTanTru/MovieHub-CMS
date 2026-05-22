@@ -30,7 +30,7 @@ function indicatorReducer(
   }
 }
 
-export default function VolumeIndicator() {
+export const VolumeIndicator = () => {
   const volume = useMediaState('volume');
   const [{ showIndicator }, dispatch] = useReducer(
     indicatorReducer,
@@ -74,4 +74,4 @@ export default function VolumeIndicator() {
       )}
     </AnimatePresence>
   );
-}
+};

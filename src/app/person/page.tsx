@@ -1,5 +1,5 @@
 import { PersonTab } from '@/app/person/_components';
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 import { OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '@/constants';
 import type { Metadata } from 'next';
 

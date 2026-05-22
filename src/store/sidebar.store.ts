@@ -1,7 +1,7 @@
 import type { SidebarStateType } from '@/types';
 import { create } from 'zustand';
 
-const useSidebarStore = create<SidebarStateType>((set) => ({
+export const useSidebarStore = create<SidebarStateType>((set) => ({
   state: 'expanded',
   openMenus: {},
   lastOpenedMenu: null,
@@ -40,5 +40,3 @@ const useSidebarStore = create<SidebarStateType>((set) => ({
 
   setSidebarScrollY: (y: number) => set({ sidebarScrollY: y })
 }));
-
-export default useSidebarStore;

@@ -1,1 +1,1 @@
-export { default as MovieDistribution } from './movie-distribution';
+export { MovieDistribution } from './movie-distribution';

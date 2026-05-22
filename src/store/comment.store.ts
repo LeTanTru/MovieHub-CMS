@@ -1,7 +1,7 @@
 import type { CommentStoreType } from '@/types';
 import { create } from 'zustand';
 
-const useCommentStore = create<CommentStoreType>((set) => ({
+export const useCommentStore = create<CommentStoreType>((set) => ({
   replyingComment: null,
   editingComment: null,
   openParentIds: [],
@@ -30,5 +30,3 @@ const useCommentStore = create<CommentStoreType>((set) => ({
 
   clearScrollTarget: () => set({ targetCommentId: null, targetParentId: null })
 }));
-
-export default useCommentStore;

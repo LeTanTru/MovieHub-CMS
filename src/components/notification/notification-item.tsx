@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/form';
 import { ConfirmModal } from '@/components/modal';
-import NotificationBody from './notification-body';
+import { NotificationBody } from './notification-body';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,12 +22,12 @@ type NotificationItemProps = {
   onItemClick?: (notification: NotificationResType) => void;
 };
 
-export default function NotificationItem({
+export const NotificationItem = ({
   notification,
   canDelete = false,
   onDelete,
   onItemClick
-}: NotificationItemProps) {
+}: NotificationItemProps) => {
   return (
     <div
       role='button'
@@ -82,4 +82,4 @@ export default function NotificationItem({
       )}
     </div>
   );
-}
+};

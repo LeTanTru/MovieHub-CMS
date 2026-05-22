@@ -4,10 +4,10 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { ToolTip } from '@/components/form';
 import { useShallow } from 'zustand/react/shallow';
 import { useSidebarStore } from '@/store';
-import DropdownAvatar from './dropdown-avatar';
-import DropdownNotification from './dropdown-notification';
+import { DropdownAvatar } from './dropdown-avatar';
+import { DropdownNotification } from './dropdown-notification';
 
-const Navbar = () => {
+export const Navbar = () => {
   const { state, setSidebarState } = useSidebarStore(
     useShallow((s) => ({ state: s.state, setSidebarState: s.setSidebarState }))
   );
@@ -43,5 +43,3 @@ const Navbar = () => {
     </nav>
   );
 };
-
-export default Navbar;

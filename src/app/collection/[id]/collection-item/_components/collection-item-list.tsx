@@ -1,6 +1,6 @@
 'use client';
 
-import CollectionItemModal from './collection-item-modal';
+import { CollectionItemModal } from './collection-item-modal';
 import { Button, ImageField } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
@@ -34,7 +34,7 @@ import { convertUTCToLocal, renderImageUrl, renderListPageUrl } from '@/utils';
 import { PlusIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
-export default function CollectionItemList() {
+export const CollectionItemList = () => {
   const { id: collectionId } = useParams<{ id: string }>();
 
   const { searchParams, serializeParams, deprefixParams } =
@@ -278,4 +278,4 @@ export default function CollectionItemList() {
       <CollectionItemModal open={opened} onClose={close} />
     </PageWrapper>
   );
-}
+};

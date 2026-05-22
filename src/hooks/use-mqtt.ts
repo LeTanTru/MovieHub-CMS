@@ -9,7 +9,7 @@ type UseMqttType<T> = {
   callback: (data: T) => void;
 };
 
-const useMqtt = <T>({ topic, cmd, callback }: UseMqttType<T>) => {
+export const useMqtt = <T>({ topic, cmd, callback }: UseMqttType<T>) => {
   const callbackRef = useRef(callback);
   callbackRef.current = callback;
   const client = getMqttClient();
@@ -48,5 +48,3 @@ const useMqtt = <T>({ topic, cmd, callback }: UseMqttType<T>) => {
     };
   }, [topic, cmd, client]);
 };
-
-export default useMqtt;

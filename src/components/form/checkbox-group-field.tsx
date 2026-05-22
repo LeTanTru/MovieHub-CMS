@@ -26,7 +26,7 @@ type CheckboxGroupFieldProps<T extends FieldValues> = {
   formItemClassName?: string;
 };
 
-export default function CheckboxGroupField<T extends FieldValues>({
+export const CheckboxGroupField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -37,7 +37,7 @@ export default function CheckboxGroupField<T extends FieldValues>({
   required,
   labelClassName,
   formItemClassName
-}: CheckboxGroupFieldProps<T>) {
+}: CheckboxGroupFieldProps<T>) => {
   return (
     <FormField
       control={control}
@@ -119,4 +119,4 @@ export default function CheckboxGroupField<T extends FieldValues>({
       }}
     />
   );
-}
+};

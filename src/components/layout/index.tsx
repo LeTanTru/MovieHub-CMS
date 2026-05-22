@@ -1,3 +1,3 @@
-export { default as PageWrapper } from './page-wrapper';
-export { default as SidebarLayout } from './sidebar';
-export { default as ListPageWrapper } from './list-page-wrapper';
+export { PageWrapper } from './page-wrapper';
+export { SidebarLayout } from './sidebar';
+export { ListPageWrapper } from './list-page-wrapper';

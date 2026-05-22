@@ -132,7 +132,7 @@ type UploadImageFieldProps<T extends FieldValues> = {
   deleteImageFn?: (url: string) => Promise<ApiResponse<any> | undefined>;
 };
 
-export default function UploadImageField<T extends FieldValues>({
+export const UploadImageField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -151,7 +151,7 @@ export default function UploadImageField<T extends FieldValues>({
   onChange,
   uploadImageFn,
   deleteImageFn
-}: UploadImageFieldProps<T>) {
+}: UploadImageFieldProps<T>) => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [shouldCrop, setShouldCrop] = useState<boolean>(
@@ -554,4 +554,4 @@ export default function UploadImageField<T extends FieldValues>({
       </Dialog>
     </>
   );
-}
+};

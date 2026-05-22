@@ -3,7 +3,7 @@
 import { Col, Row } from '@/components/form';
 import { Skeleton } from '@/components/ui/skeleton';
 
-function FormSkeleton() {
+export function FormSkeleton() {
   return (
     <div className='rounded-lg bg-white p-6'>
       <div className='mb-8 flex items-center gap-4'>
@@ -65,5 +65,3 @@ function FormSkeleton() {
     </div>
   );
 }
-
-export default FormSkeleton;

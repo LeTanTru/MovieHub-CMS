@@ -1,7 +1,7 @@
 import { useRouter } from 'next/navigation';
 import { useTopLoader } from 'nextjs-toploader';
 
-const useNavigate = (startLoader: boolean = true) => {
+export const useNavigate = (startLoader: boolean = true) => {
   const router = useRouter();
   const loading = useTopLoader();
 
@@ -40,5 +40,3 @@ const useNavigate = (startLoader: boolean = true) => {
 
   return { push, replace, prefetch, back, forward, refresh };
 };
-
-export default useNavigate;

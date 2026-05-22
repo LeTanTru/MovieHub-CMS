@@ -60,7 +60,7 @@ const parseFormattedNumber = (value: string): string => {
   return value.replace(/\./g, '').replace(',', '.');
 };
 
-function NumberField<T extends FieldValues>({
+export function NumberField<T extends FieldValues>({
   control,
   name,
   label,
@@ -171,5 +171,3 @@ function NumberField<T extends FieldValues>({
     />
   );
 }
-
-export default NumberField;

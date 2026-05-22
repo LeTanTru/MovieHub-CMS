@@ -6,7 +6,7 @@ import {
   PictureInPictureIcon
 } from '@vidstack/react/icons';
 
-export default function PiPToggleButton() {
+export const PiPToggleButton = () => {
   const isPiP = useMediaState('pictureInPicture');
   const isPiPSupported = useMediaState('canPictureInPicture');
 
@@ -28,4 +28,4 @@ export default function PiPToggleButton() {
       </Tooltip.Content>
     </Tooltip.Root>
   );
-}
+};

@@ -52,14 +52,14 @@ function buildDefaultValues<S extends FieldValues>(
   );
 }
 
-export default function SearchForm<S extends FieldValues>({
+export const SearchForm = <S extends FieldValues>({
   searchFields,
   schema,
   initialValues,
   resetValues,
   handleSearchSubmit,
   handleSearchReset
-}: SearchFormProps<S>) {
+}: SearchFormProps<S>) => {
   const defaultValues: z.infer<typeof schema> =
     buildDefaultValues(searchFields);
 
@@ -227,4 +227,4 @@ export default function SearchForm<S extends FieldValues>({
       {(form) => <>{renderField(searchFields, form)}</>}
     </BaseForm>
   );
-}
+};

@@ -1,6 +1,6 @@
 'use client';
 
-import GroupPermissionModal from './group-permission-modal';
+import { GroupPermissionModal } from './group-permission-modal';
 import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper } from '@/components/layout';
@@ -16,7 +16,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 
-export default function GroupPermissionList() {
+export const GroupPermissionList = () => {
   const { opened, open, close } = useDisclosure();
   const [selectedRow, setSelectedRow] = useState<GroupPermissionResType | null>(
     null
@@ -143,4 +143,4 @@ export default function GroupPermissionList() {
       />
     </>
   );
-}
+};

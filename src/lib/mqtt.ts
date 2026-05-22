@@ -1,4 +1,4 @@
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 import { logger } from '@/logger';
 import mqtt, { MqttClient } from 'mqtt';
 

@@ -9,7 +9,7 @@ import type { Column, StyleResType, StyleSearchType } from '@/types';
 import { notify, renderImageUrl } from '@/utils';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 
-export default function StyleList() {
+export const StyleList = () => {
   const { data, pagination, loading, handlers } = useListBase<
     StyleResType,
     StyleSearchType
@@ -112,4 +112,4 @@ export default function StyleList() {
       </ListPageWrapper>
     </PageWrapper>
   );
-}
+};

@@ -46,7 +46,7 @@ const toNumberIfPossible = (value: string): string | number => {
 
 const EMPTY_OPTIONS: string[] = [];
 
-export default function InputField<T extends FieldValues>({
+export const InputField = <T extends FieldValues>({
   control,
   name,
   label,
@@ -65,7 +65,7 @@ export default function InputField<T extends FieldValues>({
   onOptionSelect,
   ref,
   ...inputProps
-}: InputFieldProps<T>) {
+}: InputFieldProps<T>) => {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const [filteredOptions, setFilteredOptions] = useState<string[]>(options);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -228,4 +228,4 @@ export default function InputField<T extends FieldValues>({
       )}
     />
   );
-}
+};

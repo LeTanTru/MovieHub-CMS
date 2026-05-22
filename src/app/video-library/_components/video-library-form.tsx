@@ -52,9 +52,9 @@ const VideoPlayer = dynamic(
   () => import('@/components/video-player').then((mod) => mod.VideoPlayer),
   { ssr: false }
 );
-import envConfig from '@/config';
+import { envConfig } from '@/config';
 
-export default function VideoLibraryForm() {
+export const VideoLibraryForm = () => {
   const { id } = useParams<{ id: string }>();
   const accessToken = useAuthStore((s) => s.accessToken);
 
@@ -521,4 +521,4 @@ export default function VideoLibraryForm() {
       </BaseForm>
     </PageWrapper>
   );
-}
+};

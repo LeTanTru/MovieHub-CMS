@@ -14,11 +14,11 @@ import { useInfiniteListBase, useQueryParams } from '@/hooks';
 import { route } from '@/routes';
 import type { ReviewResType, ReviewSearchType } from '@/types';
 import { useParams } from 'next/navigation';
-import ReviewItem from './review-item';
+import { ReviewItem } from './review-item';
 import { useCallback } from 'react';
 import { renderListPageUrl } from '@/utils';
 
-export default function ReviewList() {
+export const ReviewList = () => {
   const { id: movieId } = useParams<{ id: string }>();
   const { searchParams, serializeParams, deprefixParams } =
     useQueryParams<Record<string, string>>();
@@ -106,4 +106,4 @@ export default function ReviewList() {
       </ListPageWrapper>
     </PageWrapper>
   );
-}
+};

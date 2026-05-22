@@ -1,6 +1,6 @@
 'use client';
 
-import TimeSliderHighlight from './time-slider-highlight';
+import { TimeSliderHighlight } from './time-slider-highlight';
 import { TimeSlider as BaseTimeSlider } from '@vidstack/react';
 
 type TimeSliderProps = {
@@ -11,13 +11,13 @@ type TimeSliderProps = {
   vttUrl: string;
 };
 
-export default function TimeSlider({
+export const TimeSlider = ({
   introStart,
   introEnd,
   outroStart,
   duration,
   vttUrl
-}: TimeSliderProps) {
+}: TimeSliderProps) => {
   return (
     <BaseTimeSlider.Root className='group relative mx-[7.5px] inline-flex h-10 w-full cursor-pointer touch-none items-center rounded outline-none select-none aria-hidden:hidden'>
       <BaseTimeSlider.Track className='relative z-0 h-1.25 w-full overflow-hidden rounded-sm bg-white/30 ring-sky-400 group-data-focus:ring-[3px]'>
@@ -57,4 +57,4 @@ export default function TimeSlider({
       <BaseTimeSlider.Thumb className='absolute top-1/2 left-(--slider-fill) z-20 size-3.75 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cacaca] bg-white opacity-0 ring-white/40 transition-opacity will-change-[left] group-data-active:opacity-100 group-data-dragging:ring-4' />
     </BaseTimeSlider.Root>
   );
-}
+};

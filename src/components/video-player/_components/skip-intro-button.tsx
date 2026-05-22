@@ -6,7 +6,7 @@ type SkipIntroButtonProps = {
   onClick?: () => void;
 };
 
-export default function SkipIntroButton({ onClick }: SkipIntroButtonProps) {
+export const SkipIntroButton = ({ onClick }: SkipIntroButtonProps) => {
   return (
     <Button
       type='button'
@@ -19,4 +19,4 @@ export default function SkipIntroButton({ onClick }: SkipIntroButtonProps) {
       Bỏ qua giới thiệu
     </Button>
   );
-}
+};

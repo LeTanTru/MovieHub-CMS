@@ -11,9 +11,9 @@ import {
   PARENT_PREFIX_PARAM,
   statusOptions as defaultStatusOptions
 } from '@/constants';
-import useNavigate from '@/hooks/use-navigate';
-import useQueryParams from '@/hooks/use-query-params';
-import useValidatePermission from '@/hooks/use-validate-permission';
+import { useNavigate } from '@/hooks/use-navigate';
+import { useQueryParams } from '@/hooks/use-query-params';
+import { useValidatePermission } from '@/hooks/use-validate-permission';
 import { logger } from '@/logger';
 import type {
   ApiConfig,
@@ -126,7 +126,10 @@ const TABLE_STATUS_COLUMN_WIDTH = 150;
 const STATUS_COLOR_ALPHA = 80;
 const STATUS_BACKGROUND_ALPHA = 10;
 
-const useListBase = <T extends { id: string }, S extends BaseSearchType>({
+export const useListBase = <
+  T extends { id: string },
+  S extends BaseSearchType
+>({
   apiConfig,
   options,
   override
@@ -636,5 +639,3 @@ const useListBase = <T extends { id: string }, S extends BaseSearchType>({
     totalElements
   };
 };
-
-export default useListBase;

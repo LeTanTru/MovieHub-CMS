@@ -30,13 +30,13 @@ type CommentFormProps = {
   onCancel?: () => void;
 };
 
-export default function CommentForm({
+export const CommentForm = ({
   parentId,
   movieId,
   defaultMention,
   onSubmitted,
   onCancel
-}: CommentFormProps) {
+}: CommentFormProps) => {
   const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
 
   const pickerContainerRef = useRef<HTMLDivElement>(null);
@@ -244,4 +244,4 @@ export default function CommentForm({
       }}
     </BaseForm>
   );
-}
+};

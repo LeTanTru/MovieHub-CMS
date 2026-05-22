@@ -1,6 +1,6 @@
 'use client';
 
-import MoviePersonList from './movie-person-list';
+import { MoviePersonList } from './movie-person-list';
 import { PageWrapper } from '@/components/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -15,7 +15,7 @@ import { route } from '@/routes';
 import { getData, setData, renderListPageUrl } from '@/utils';
 import { useEffect, useState } from 'react';
 
-export default function PersonTab() {
+export const PersonTab = () => {
   const defaultTab =
     getData(storageKeys.ACTIVE_TAB_MOVIE_PERSON_KIND) ||
     TAB_MOVIE_PERSON_KIND_ACTOR;
@@ -99,4 +99,4 @@ export default function PersonTab() {
       </div>
     </PageWrapper>
   );
-}
+};

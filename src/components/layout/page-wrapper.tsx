@@ -18,14 +18,14 @@ type PageWrapperProps = HTMLAttributes<HTMLElement> & {
   notFoundContent?: string;
 };
 
-export default function PageWrapper({
+export const PageWrapper = ({
   children,
   breadcrumbs,
   loading,
   notFound,
   notFoundContent,
   ...props
-}: PageWrapperProps) {
+}: PageWrapperProps) => {
   const scrollContainerId = props.id || 'page-wrapper-scroll-container';
   const firstRoutePath = useFirstActiveRoute();
   const fullBreadcrumbs: BreadcrumbType[] = [
@@ -57,4 +57,4 @@ export default function PageWrapper({
       <Footer />
     </main>
   );
-}
+};

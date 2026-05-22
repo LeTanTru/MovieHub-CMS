@@ -1,1 +1,1 @@
-export { default as ReviewList } from './review-list';
+export { ReviewList } from './review-list';

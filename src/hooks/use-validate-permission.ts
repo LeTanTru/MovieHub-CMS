@@ -1,7 +1,7 @@
-import useAuth from '@/hooks/use-auth';
+import { useAuth } from '@/hooks/use-auth';
 import { validatePermission } from '@/utils';
 
-const useValidatePermission = () => {
+export const useValidatePermission = () => {
   const { permissionCode } = useAuth();
   const hasPermission = ({
     requiredPermissions = [],
@@ -30,5 +30,3 @@ const useValidatePermission = () => {
   };
   return hasPermission;
 };
-
-export default useValidatePermission;

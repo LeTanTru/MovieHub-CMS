@@ -27,10 +27,10 @@ type CollectionItemModalProps = {
   onClose: () => void;
 };
 
-export default function CollectionItemModal({
+export const CollectionItemModal = ({
   open,
   onClose
-}: CollectionItemModalProps) {
+}: CollectionItemModalProps) => {
   const { id: collectionId } = useParams<{
     id: string;
   }>();
@@ -142,4 +142,4 @@ export default function CollectionItemModal({
       <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
-}
+};

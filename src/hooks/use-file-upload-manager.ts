@@ -17,7 +17,7 @@ type UseFileUploadManagerProps = {
   onOpen?: boolean;
 };
 
-const useFileUploadManager = ({
+export const useFileUploadManager = ({
   initialUrl = '',
   deleteFileMutate,
   isEditing,
@@ -209,5 +209,3 @@ const useFileUploadManager = ({
     getFilesToDeleteOnSubmit
   };
 };
-
-export default useFileUploadManager;

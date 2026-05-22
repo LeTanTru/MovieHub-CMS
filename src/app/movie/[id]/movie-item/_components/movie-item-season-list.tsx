@@ -1,7 +1,7 @@
 'use client';
 
-import VideoPlayModal from './video-play-modal';
-import MovieItemModal from './movie-item-modal';
+import { VideoPlayModal } from './video-play-modal';
+import { MovieItemModal } from './movie-item-modal';
 import { Button, ImageField, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
@@ -47,7 +47,7 @@ import { IoCheckmarkDone } from 'react-icons/io5';
 import { useMarkLatestMovieItemMutation } from '@/queries';
 import { logger } from '@/logger';
 
-export default function MovieItemSeasonList() {
+export const MovieItemSeasonList = () => {
   const navigate = useNavigate();
   const { id: movieId } = useParams<{ id: string }>();
   const { searchParams, serializeParams, deprefixParams, prefixParams } =
@@ -389,4 +389,4 @@ export default function MovieItemSeasonList() {
       )}
     </PageWrapper>
   );
-}
+};

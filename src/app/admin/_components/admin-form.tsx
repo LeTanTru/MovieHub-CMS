@@ -35,7 +35,7 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export default function AdminForm() {
+export const AdminForm = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: groupData } = useGroupListQuery({ kind: GROUP_KIND_ADMIN });
@@ -283,4 +283,4 @@ export default function AdminForm() {
       </BaseForm>
     </PageWrapper>
   );
-}
+};

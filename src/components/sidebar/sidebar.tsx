@@ -25,10 +25,10 @@ import { useAuth, useIsMounted, useValidatePermission } from '@/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getLastWord, renderImageUrl } from '@/utils';
 import { menuConfig } from '@/constants';
-import CollapsibleMenuItem from './collapsible-menu-item';
+import { CollapsibleMenuItem } from './collapsible-menu-item';
 import { route } from '@/routes';
 
-const AppSidebar = () => {
+export const AppSidebar = () => {
   const isMounted = useIsMounted();
   const { profile } = useAuth();
   const { state } = useSidebar();
@@ -211,5 +211,3 @@ const AppSidebar = () => {
     </Sidebar>
   );
 };
-
-export default AppSidebar;

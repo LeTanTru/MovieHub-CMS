@@ -1,1 +1,1 @@
-export { default as Activity } from './activity';
+export { Activity } from './activity';

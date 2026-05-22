@@ -44,16 +44,16 @@ import {
 import { PlayCircle, PlusIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
-import VideoPlayModal from './video-play-modal';
+import { VideoPlayModal } from './video-play-modal';
 import { HasPermission } from '@/components/has-permission';
-import MovieItemModal from './movie-item-modal';
+import { MovieItemModal } from './movie-item-modal';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { Badge } from '@/components/ui/badge';
 import { useMarkLatestMovieItemMutation } from '@/queries';
 import { IoCheckmarkDone } from 'react-icons/io5';
 import { logger } from '@/logger';
 
-export default function MovieItemSeasonDetailList() {
+export const MovieItemSeasonDetailList = () => {
   const { id: movieId, movieItemId } = useParams<{
     id: string;
     movieItemId: string;
@@ -430,7 +430,7 @@ export default function MovieItemSeasonDetailList() {
       )}
     </PageWrapper>
   );
-}
+};
 
 const getMovieTypeLabel = (type?: number | string) => {
   switch (Number(type)) {

@@ -10,9 +10,9 @@ import {
 import { useIsMounted } from '@/hooks';
 import { getData, setData } from '@/utils';
 import { useState } from 'react';
-import SettingList from './setting-list';
+import { SettingList } from './setting-list';
 
-export default function SettingTab() {
+export const SettingTab = () => {
   const defaultTab =
     getData(storageKeys.ACTIVE_SETTING_TAB) || TAB_SETTING_GENERAL;
 
@@ -70,4 +70,4 @@ export default function SettingTab() {
       </div>
     </PageWrapper>
   );
-}
+};

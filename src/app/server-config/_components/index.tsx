@@ -1,2 +1,2 @@
-export { default as ServerConfigForm } from './server-config-form';
-export { default as ServerConfigList } from './server-config-list';
+export { ServerConfigForm } from './server-config-form';
+export { ServerConfigList } from './server-config-list';

@@ -1,1 +1,1 @@
-export { default as StatisticsDateFilter } from './statistics-date-filter';
+export { StatisticsDateFilter } from './statistics-date-filter';

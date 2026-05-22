@@ -3,7 +3,7 @@
 import { SeekButton, Tooltip } from '@vidstack/react';
 import { SeekForward10Icon } from '@vidstack/react/icons';
 
-export default function SeekForwardButton() {
+export const SeekForwardButton = () => {
   return (
     <Tooltip.Root>
       <Tooltip.Trigger asChild>
@@ -16,4 +16,4 @@ export default function SeekForwardButton() {
       </Tooltip.Content>
     </Tooltip.Root>
   );
-}
+};
