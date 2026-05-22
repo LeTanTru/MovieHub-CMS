@@ -5,6 +5,7 @@ const useSidebarStore = create<SidebarStateType>((set) => ({
   state: 'expanded',
   openMenus: {},
   lastOpenedMenu: null,
+  sidebarScrollY: 0,
 
   toggleMenu: (key) =>
     set((state) => {
@@ -35,7 +36,9 @@ const useSidebarStore = create<SidebarStateType>((set) => ({
       }
     })),
 
-  setSidebarState: (state: 'expanded' | 'collapsed') => set({ state })
+  setSidebarState: (state: 'expanded' | 'collapsed') => set({ state }),
+
+  setSidebarScrollY: (y: number) => set({ sidebarScrollY: y })
 }));
 
 export default useSidebarStore;
