@@ -10,13 +10,7 @@ import {
 } from '@/constants';
 import { logger } from '@/logger';
 import { RefreshTokenResType } from '@/types';
-import {
-  getCookie,
-  http,
-  isAxiosError,
-  removeCookie,
-  setCookie
-} from '@/utils';
+import { getCookie, http, isAxiosError, setCookie } from '@/utils';
 import { HttpStatusCode } from 'axios';
 import { NextResponse } from 'next/server';
 
@@ -46,38 +40,33 @@ export async function POST() {
       }
     );
 
-    if (res.access_token) {
-      await setCookie(
-        storageKeys.ACCESS_TOKEN,
-        res.access_token,
-        makeCookieOption(ACCESS_TOKEN_MAX_AGE)
-      );
-    }
-
-    if (res.refresh_token) {
-      await removeCookie(storageKeys.REFRESH_TOKEN);
-      await setCookie(
-        storageKeys.REFRESH_TOKEN,
-        res.refresh_token,
-        makeCookieOption(REFRESH_TOKEN_MAX_AGE)
-      );
-    }
-
-    if (res.user_kind) {
-      await setCookie(
-        storageKeys.USER_KIND,
-        String(res.user_kind),
-        makeCookieOption(ACCESS_TOKEN_MAX_AGE)
-      );
-    }
-
+    const accessToken = res.access_token;
+    const refreshToken = res.refresh_token;
+    const userKind = res.user_kind;
     const csrfToken = generateCsrfToken();
 
-    await setCookie(
-      storageKeys.CSRF_TOKEN,
-      csrfToken,
-      makeCookieOption(CSRF_TOKEN_MAX_AGE)
-    );
+    await Promise.all([
+      setCookie(
+        storageKeys.ACCESS_TOKEN,
+        accessToken,
+        makeCookieOption(ACCESS_TOKEN_MAX_AGE)
+      ),
+      setCookie(
+        storageKeys.REFRESH_TOKEN,
+        refreshToken,
+        makeCookieOption(REFRESH_TOKEN_MAX_AGE)
+      ),
+      setCookie(
+        storageKeys.USER_KIND,
+        String(userKind),
+        makeCookieOption(ACCESS_TOKEN_MAX_AGE)
+      ),
+      setCookie(
+        storageKeys.CSRF_TOKEN,
+        csrfToken,
+        makeCookieOption(CSRF_TOKEN_MAX_AGE)
+      )
+    ]);
 
     return NextResponse.json(
       { result: true, data: res },

@@ -412,6 +412,13 @@ const apiConfig = defineApiConfig({
       isRequiredCsrfToken: true,
       isRequiredXClientType: true
     },
+    uploadChunkPresignBatch: {
+      baseUrl: `/api/file/upload/video/chunk/presign-batch`,
+      method: 'POST',
+      headers: baseHeader,
+      isRequiredCsrfToken: true,
+      isRequiredXClientType: true
+    },
     uploadChunkComplete: {
       baseUrl: `/api/file/upload/video/chunk/complete`,
       method: 'POST',
