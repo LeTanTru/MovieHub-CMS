@@ -4,7 +4,12 @@ import { Col, Row } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { List, ListItem } from '@/components/list';
 import { CircleLoading } from '@/components/loading';
-import { VideoPlayer } from '@/components/video-player';
+import dynamic from 'next/dynamic';
+
+const VideoPlayer = dynamic(
+  () => import('@/components/video-player').then((m) => m.VideoPlayer),
+  { ssr: false }
+);
 import { envConfig } from '@/config';
 import { apiConfig, objectNames, queryKeys } from '@/constants';
 import { useListBase, useQueryParams } from '@/hooks';
