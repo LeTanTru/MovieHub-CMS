@@ -1,6 +1,6 @@
 import { apiConfig, storageKeys } from '@/constants';
 import { logger } from '@/logger';
-import { ApiResponse } from '@/types';
+import { ApiResponseNoData } from '@/types';
 import { http, isAxiosError, removeCookie } from '@/utils';
 import { HttpStatusCode } from 'axios';
 import { NextResponse } from 'next/server';
@@ -8,7 +8,7 @@ import { NextResponse } from 'next/server';
 export async function POST() {
   try {
     try {
-      const res = await http.post<ApiResponse<any>>(apiConfig.auth.logout);
+      const res = await http.post<ApiResponseNoData>(apiConfig.auth.logout);
       if (res.result) {
         await Promise.all([
           removeCookie(storageKeys.ACCESS_TOKEN),

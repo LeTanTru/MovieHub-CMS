@@ -4,7 +4,12 @@ import { QUERY_STALE_TIME, storageKeys } from '@/constants';
 import { useDisclosure } from '@/hooks/use-disclosure';
 import { useNavigate } from '@/hooks/use-navigate';
 import { useQueryParams } from '@/hooks/use-query-params';
-import type { ApiConfig, ApiResponse, ErrorMaps } from '@/types';
+import type {
+  ApiConfig,
+  ApiResponse,
+  ApiResponseNoData,
+  ErrorMaps
+} from '@/types';
 import {
   applyFormErrors,
   http,
@@ -18,13 +23,13 @@ import { isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Save } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
-type HandlerType<T> = {
+type HandlerType = {
   // additionParams: () => { [key: string]: any };
   handleSubmitSuccess: () => void;
   handleSubmitError: (code: string) => void;
 };
 
-type UseSaveBaseProps<R, T> = {
+type UseSaveBaseProps = {
   apiConfig: {
     getById?: ApiConfig;
     create?: ApiConfig;
@@ -34,11 +39,11 @@ type UseSaveBaseProps<R, T> = {
     objectName: string;
     listPageUrl?: string;
     queryKey: string;
-    pathParams: { [key: string]: any };
+    pathParams: Record<string, unknown>;
     mode: 'create' | 'edit';
     showNotify?: boolean;
   };
-  override?: (handlers: HandlerType<T>) => HandlerType<T> | void;
+  override?: (handlers: HandlerType) => HandlerType | void;
 };
 
 export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
@@ -52,7 +57,7 @@ export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
     showNotify = true
   },
   override
-}: UseSaveBaseProps<R, T>) => {
+}: UseSaveBaseProps) => {
   const isCreate = mode === 'create';
   const navigate = useNavigate();
   const pendingHref = useRef<string | null>(null);
@@ -73,7 +78,7 @@ export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
             pathParams,
             signal
           })
-        : Promise.resolve({ data: undefined } as any),
+        : Promise.resolve({ data: undefined } as unknown as ApiResponse<R>),
     enabled: !isCreate,
     staleTime: QUERY_STALE_TIME
   });
@@ -84,20 +89,26 @@ export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
     mutationKey: [`create-${queryKey}`],
     mutationFn: (body: T) =>
       apiConfig.create
-        ? http.post<ApiResponse<any>>(apiConfig.create, {
+        ? http.post<ApiResponseNoData>(apiConfig.create, {
             body
           })
-        : Promise.resolve({ result: false, code: 'NO_API_CONFIG' } as any)
+        : Promise.resolve({
+            result: false,
+            code: 'NO_API_CONFIG'
+          } as unknown as ApiResponseNoData)
   });
 
   const updateMutation = useMutation({
     mutationKey: [`update-${queryKey}`],
     mutationFn: (body: T) =>
       apiConfig.update
-        ? http.put<ApiResponse<any>>(apiConfig.update, {
+        ? http.put<ApiResponseNoData>(apiConfig.update, {
             body
           })
-        : Promise.resolve({ result: false, code: 'NO_API_CONFIG' } as any)
+        : Promise.resolve({
+            result: false,
+            code: 'NO_API_CONFIG'
+          } as unknown as ApiResponseNoData)
   });
 
   const getBackPath = () => {
@@ -298,10 +309,10 @@ export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
     setIsFormChanged(false);
   };
 
-  const handleSubmitError = (code: string) => {};
+  const handleSubmitError = (_code: string) => {};
 
-  const extendableHandlers = (): HandlerType<T> => {
-    let handlers: HandlerType<T> = {
+  const extendableHandlers = (): HandlerType => {
+    let handlers: HandlerType = {
       handleSubmitSuccess,
       handleSubmitError
     };

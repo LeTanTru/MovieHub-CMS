@@ -14,7 +14,7 @@ import { useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import { groupPermissionSchema } from '@/schemaValidations';
 import {
-  ApiResponse,
+  ApiResponseNoData,
   GroupPermissionBodyType,
   GroupPermissionResType
 } from '@/types';
@@ -73,7 +73,7 @@ export function GroupPermissionModal({
     form: UseFormReturn<GroupPermissionBodyType>
   ) => {
     try {
-      const res: ApiResponse<any> = await handleSubmit(
+      const res: ApiResponseNoData = await handleSubmit(
         !isEditing ? values : { ...values, id: selectedRow?.id }
       );
       if (res.result) {

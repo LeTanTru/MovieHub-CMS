@@ -15,7 +15,7 @@ import { cn } from '@/lib';
 import { useFileUpload } from '@/hooks';
 import { CircleLoading } from '@/components/loading';
 import { logger } from '@/logger';
-import type { ApiResponse } from '@/types';
+import type { ApiResponseNoData } from '@/types';
 import { formatBytes } from '@/hooks/use-file-upload';
 import { ConfirmModal } from '@/components/modal';
 
@@ -35,7 +35,7 @@ type UploadFileFieldProps<T extends FieldValues> = {
     onProgress: (progress: number) => void
   ) => Promise<string>;
 
-  deleteImageFn?: (url: string) => Promise<ApiResponse<any> | undefined>;
+  deleteImageFn?: (url: string) => Promise<ApiResponseNoData | undefined>;
 };
 
 export function UploadFileField<T extends FieldValues>({

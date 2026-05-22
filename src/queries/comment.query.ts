@@ -1,6 +1,7 @@
 import { apiConfig, queryKeys } from '@/constants';
 import type {
   ApiResponse,
+  ApiResponseNoData,
   ChangeCommentStatusBodyType,
   CommentPinBodyType,
   CommentVoteBodyType,
@@ -28,7 +29,7 @@ export const useVoteCommentMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.VOTE_COMMENT],
     mutationFn: (body: CommentVoteBodyType) =>
-      http.put<ApiResponse<any>>(apiConfig.comment.vote, {
+      http.put<ApiResponseNoData>(apiConfig.comment.vote, {
         body
       })
   });
@@ -38,7 +39,7 @@ export const usePinCommentMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.PIN_COMMENT],
     mutationFn: (body: CommentPinBodyType) =>
-      http.put<ApiResponse<any>>(apiConfig.comment.pin, {
+      http.put<ApiResponseNoData>(apiConfig.comment.pin, {
         body
       })
   });
@@ -48,7 +49,7 @@ export const useChangeCommenStatusMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.CHANGE_COMMENT_STATUS],
     mutationFn: (body: ChangeCommentStatusBodyType) =>
-      http.put<ApiResponse<any>>(apiConfig.comment.changeStatus, {
+      http.put<ApiResponseNoData>(apiConfig.comment.changeStatus, {
         body
       })
   });

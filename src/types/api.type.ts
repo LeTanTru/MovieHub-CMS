@@ -18,9 +18,9 @@ export type ApiConfigGroup = {
 };
 
 export type Payload = {
-  params?: Record<string, any>;
+  params?: Record<string, unknown>;
   pathParams?: Record<string, string | number>;
-  body?: any;
+  body?: unknown;
   options?: AxiosRequestConfig;
   authorization?: string;
   signal?: AbortSignal;
@@ -28,6 +28,12 @@ export type Payload = {
 
 export type ApiResponse<T> = {
   data?: T;
+  message?: string;
+  result?: boolean;
+  code?: string;
+};
+
+export type ApiResponseNoData = {
   message?: string;
   result?: boolean;
   code?: string;

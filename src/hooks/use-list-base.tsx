@@ -17,8 +17,8 @@ import { useValidatePermission } from '@/hooks/use-validate-permission';
 import { logger } from '@/logger';
 import type {
   ApiConfig,
-  ApiResponse,
   ApiResponseList,
+  ApiResponseNoData,
   BaseSearchType,
   Column,
   OptionType,
@@ -48,26 +48,29 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   changePagination: (page: number) => void;
   renderActionColumn: (options?: {
     actions?: Record<'edit' | 'delete' | string, ActionCondition<T>>;
-    buttonProps?: Record<string, any>;
-    columnProps?: Record<string, any>;
+    buttonProps?: Record<string, unknown>;
+    columnProps?: Record<string, unknown>;
   }) => Column<T>;
   additionalParams: () => Partial<S>;
-  additionalPathParams: () => Record<string, any>;
-  additionalColumns: () => ReactNode | any;
-  renderAddButton: () => ReactNode | any;
+  additionalPathParams: () => Record<string, unknown>;
+  additionalColumns: () => Record<
+    string,
+    (record: T, buttonProps?: Record<string, unknown>) => ReactNode
+  >;
+  renderAddButton: () => ReactNode;
   renderSearchForm: ({
     searchFields,
     schema
   }: {
     searchFields: SearchFormProps<S>['searchFields'];
     schema: SearchFormProps<S>['schema'];
-  }) => ReactNode | any;
+  }) => ReactNode;
   renderStatusColumn: ({
     statusOptions,
     columnProps
   }?: {
     statusOptions?: OptionType[];
-    columnProps?: Record<string, any>;
+    columnProps?: Record<string, unknown>;
   }) => Column<T>;
   setQueryParam: (key: keyof S, value: S[keyof S] | null) => void;
   handleEditClick: (id: string) => void;
@@ -259,7 +262,7 @@ export const useListBase = <
   const deleteMutation = useMutation({
     mutationKey: [`delete-${queryKey}`],
     mutationFn: (id: string) =>
-      http.delete<ApiResponse<any>>(apiConfig.delete as ApiConfig, {
+      http.delete<ApiResponseNoData>(apiConfig.delete as ApiConfig, {
         pathParams: {
           id
         }
@@ -330,7 +333,7 @@ export const useListBase = <
   const additionalColumns = () => ({});
 
   const actionColumn = () => ({
-    edit: (record: T, buttonProps?: Record<string, any>) => {
+    edit: (record: T, buttonProps?: Record<string, unknown>) => {
       return (
         <ToolTip title={`Cập nhật ${objectName}`} sideOffset={0}>
           <span>
@@ -349,7 +352,7 @@ export const useListBase = <
         </ToolTip>
       );
     },
-    delete: (record: T, buttonProps?: Record<string, any>) => {
+    delete: (record: T, buttonProps?: Record<string, unknown>) => {
       return (
         <ToolTip title={`Xóa ${objectName}`} sideOffset={0}>
           <ConfirmModal
@@ -372,13 +375,13 @@ export const useListBase = <
 
   const renderActionColumn = (options?: {
     actions?: Record<'edit' | 'delete' | string, ActionCondition<T>>;
-    buttonProps?: Record<string, any>;
-    columnProps?: Record<string, any>;
+    buttonProps?: Record<string, unknown>;
+    columnProps?: Record<string, unknown>;
   }): Column<T> => {
     const extraColumns = handlers.additionalColumns?.() || {};
     const actionsObj: Record<
       string,
-      (record: T, buttonProps?: any) => ReactNode
+      (record: T, buttonProps?: Record<string, unknown>) => ReactNode
     > = { ...actionColumn(), ...extraColumns };
 
     return {
@@ -386,7 +389,7 @@ export const useListBase = <
       align: 'center' as const,
       width: TABLE_ACTION_COLUMN_WIDTH,
       ...options?.columnProps,
-      render: (_: any, record: T) => {
+      render: (_: unknown, record: T) => {
         if (!options?.actions) return null;
 
         const actions = Object.keys(options.actions).flatMap((key) => {
@@ -427,7 +430,7 @@ export const useListBase = <
 
   const renderStatusColumn = (options?: {
     statusOptions?: OptionType[];
-    columnProps?: Record<string, any>;
+    columnProps?: Record<string, unknown>;
   }): Column<T> => {
     return {
       title: 'Trạng thái',
@@ -508,7 +511,7 @@ export const useListBase = <
               case FieldTypes.SELECT:
               case FieldTypes.AUTO_COMPLETE: {
                 const option = field.options?.find(
-                  (opt: any) => String(opt.value) === String(value)
+                  (opt: OptionType) => String(opt.value) === String(value)
                 );
                 return [key, option ? option.value : value];
               }

@@ -41,7 +41,7 @@ import {
   useController
 } from 'react-hook-form';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import type { ApiResponse } from '@/types';
+import type { ApiResponse, ApiResponseNoData } from '@/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { CircleLoading } from '@/components/loading';
@@ -129,7 +129,7 @@ type UploadImageFieldProps<T extends FieldValues> = {
   avatar?: boolean;
   onChange?: (url: string) => void;
   uploadImageFn: (file: Blob) => Promise<string>;
-  deleteImageFn?: (url: string) => Promise<ApiResponse<any> | undefined>;
+  deleteImageFn?: (url: string) => Promise<ApiResponseNoData | undefined>;
 };
 
 export function UploadImageField<T extends FieldValues>({

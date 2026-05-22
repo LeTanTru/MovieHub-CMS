@@ -1,6 +1,7 @@
 import { apiConfig, queryKeys } from '@/constants';
 import type {
   ApiResponse,
+  ApiResponseNoData,
   LoginBodyType,
   LoginResType,
   SessionResType
@@ -32,6 +33,6 @@ export const useLoginMutation = () => {
 export const useLogoutMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.LOGOUT],
-    mutationFn: () => http.post<ApiResponse<any>>(apiConfig.api.auth.logout)
+    mutationFn: () => http.post<ApiResponseNoData>(apiConfig.api.auth.logout)
   });
 };
