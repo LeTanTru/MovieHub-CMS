@@ -12,8 +12,10 @@ import { Button } from '@/components/form';
 import { useEffect } from 'react';
 import { storageKeys } from '@/constants';
 import { useDisclosure, useIsMounted } from '@/hooks';
-import { getData, removeData, setData } from '@/utils';
+import { getData, setData } from '@/utils';
 import { envConfig } from '@/config';
+
+const DISCLAIMER_INTERVAL_MS = 2 * 60 * 60 * 1000;
 
 const DISCLAIMER_TEXT = {
   title: 'Cảnh báo quan trọng',
@@ -24,30 +26,40 @@ const DISCLAIMER_TEXT = {
   agree: 'Tôi đã hiểu và đồng ý'
 };
 
+const shouldShowDisclaimer = () => {
+  const lastAcknowledgedAt = Number(getData(storageKeys.DISCLAIMER_SHOWN) ?? 0);
+
+  if (!Number.isFinite(lastAcknowledgedAt) || lastAcknowledgedAt <= 0) {
+    return true;
+  }
+
+  return Date.now() - lastAcknowledgedAt >= DISCLAIMER_INTERVAL_MS;
+};
+
 export function DisclaimerModal() {
   const isMounted = useIsMounted();
-
-  const { opened, close } = useDisclosure(
-    getData(storageKeys.DISCLAIMER_SHOWN) !== 'true'
-  );
+  const { opened, open, close } = useDisclosure(false);
 
   const handleAgree = () => {
-    setData(storageKeys.DISCLAIMER_SHOWN, 'true');
+    setData(storageKeys.DISCLAIMER_SHOWN, Date.now().toString());
     close();
   };
 
   useEffect(() => {
-    const handleBeforeUnload = () => {
-      removeData(storageKeys.DISCLAIMER_SHOWN);
-    };
+    if (!isMounted || envConfig.NEXT_PUBLIC_NODE_ENV === 'development') {
+      close();
+      return;
+    }
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, []);
+    if (shouldShowDisclaimer()) {
+      open();
+      return;
+    }
+
+    close();
+  }, [close, isMounted, open]);
 
   if (!isMounted) return null;
-
-  if (envConfig.NEXT_PUBLIC_NODE_ENV === 'development') return null;
 
   return (
     <Dialog open={opened} onOpenChange={(open) => !open && close()}>
@@ -59,7 +71,7 @@ export function DisclaimerModal() {
       >
         <DialogHeader className='flex flex-col items-center gap-3 text-center'>
           <div className='flex size-14 shrink-0 items-center justify-center rounded-full bg-rose-500/10'>
-            <AlertTriangle className='size-7 text-rose-500' />
+            <AlertTriangle className='size-8 animate-pulse text-rose-500' />
           </div>
           <DialogTitle className='text-xl'>{DISCLAIMER_TEXT.title}</DialogTitle>
           <DialogDescription className='text-justify'>
