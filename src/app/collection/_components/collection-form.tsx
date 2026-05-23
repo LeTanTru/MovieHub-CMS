@@ -194,7 +194,11 @@ export function CollectionForm() {
       filter: JSON.stringify(cleanedFilter),
       colors: values.colors
     };
-    await handleSubmit(payload as any, form, collectionErrorMaps);
+    await handleSubmit(
+      payload as unknown as CollectionBodyType,
+      form,
+      collectionErrorMaps
+    );
   };
 
   const handleChangeType = (type: number) => {

@@ -20,7 +20,7 @@ import { z } from 'zod';
 
 function buildDefaultValues<S extends FieldValues>(
   searchFields: SearchFormProps<S>['searchFields']
-): Record<string, any> {
+): Record<string, unknown> {
   return searchFields.reduce(
     (acc, field) => {
       if (!field.key) return acc;
@@ -48,7 +48,7 @@ function buildDefaultValues<S extends FieldValues>(
       }
       return acc;
     },
-    {} as Record<string, any>
+    {} as Record<string, unknown>
   );
 }
 
@@ -60,11 +60,12 @@ export function SearchForm<S extends FieldValues>({
   handleSearchSubmit,
   handleSearchReset
 }: SearchFormProps<S>) {
-  const defaultValues: z.infer<typeof schema> =
-    buildDefaultValues(searchFields);
+  const defaultValues: z.infer<typeof schema> = buildDefaultValues(
+    searchFields
+  ) as z.infer<typeof schema>;
 
   const onSubmit = (values: z.infer<typeof schema>) => {
-    handleSearchSubmit(values);
+    handleSearchSubmit(values as Partial<S>);
   };
 
   const handleReset = (form: UseFormReturn<z.infer<typeof schema>>) => {
@@ -133,7 +134,7 @@ export function SearchForm<S extends FieldValues>({
                         control={form.control}
                         mappingData={
                           sf.mappingData as (
-                            option: Record<string, any>
+                            option: Record<string, unknown>
                           ) => AutoCompleteOption
                         }
                         name={sf.key as string}

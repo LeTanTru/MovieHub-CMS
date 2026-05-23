@@ -41,7 +41,7 @@ export function VideoLibrarySubtitleList() {
   const parentParams = deprefixParams(searchParams);
   const { videoName, parentPage, ...restSearchParams } = parentParams;
 
-  const { data: subtitleList, loading } = useListBase<
+  const { data: subtitleList } = useListBase<
     VideoLibrarySubtitleResType,
     VideoLibrarySubtitleSearchType
   >({
@@ -69,7 +69,7 @@ export function VideoLibrarySubtitleList() {
         ...(videoName
           ? [
               {
-                label: videoName
+                label: videoName as string
               }
             ]
           : []),

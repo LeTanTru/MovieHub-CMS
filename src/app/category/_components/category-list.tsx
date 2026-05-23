@@ -56,7 +56,10 @@ export function CategoryList() {
         );
       };
       handlers.additionalColumns = () => ({
-        edit: (record: CategoryResType, buttonProps?: Record<string, any>) => {
+        edit: (
+          record: CategoryResType,
+          buttonProps?: Record<string, unknown>
+        ) => {
           const handleUpdateCategory = (record: CategoryResType) => {
             setSelectedCategory(record);
             open();
@@ -87,11 +90,14 @@ export function CategoryList() {
     {
       title: 'Tên',
       dataIndex: 'name',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      )
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      }
     },
     handlers.renderActionColumn({
       actions: {

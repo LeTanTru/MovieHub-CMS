@@ -80,14 +80,17 @@ export function GroupForm() {
   }, [groupPermissionListData?.content]);
   const permissions = permissionListData?.content;
 
-  const groupedPermissions = (permissions || []).reduce((acc, permission) => {
-    const group = permission.groupPermission.name || 'Unknown';
-    if (!acc[group]) {
-      acc[group] = [];
-    }
-    acc[group].push(permission);
-    return acc;
-  }, {} as any);
+  const groupedPermissions = (permissions || []).reduce(
+    (acc, permission) => {
+      const group = permission.groupPermission.name || 'Unknown';
+      if (!acc[group]) {
+        acc[group] = [];
+      }
+      acc[group].push(permission);
+      return acc;
+    },
+    {} as Record<string, PermissionResType[]>
+  );
 
   (groupPermissions || []).forEach((group) => {
     if (!groupedPermissions[group.name]) {

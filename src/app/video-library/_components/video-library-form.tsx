@@ -409,9 +409,10 @@ export function VideoLibraryForm() {
                           vttUrl={
                             validatedVttUrl
                               ? renderVttUrl(
-                                  data.hostname,
+                                  data?.hostname ?? '',
                                   validatedVttUrl,
-                                  data.sourceType
+                                  data?.sourceType ??
+                                    VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
                                 )
                               : ''
                           }

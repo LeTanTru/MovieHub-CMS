@@ -56,7 +56,7 @@ export function GroupPermissionList() {
       handlers.additionalColumns = () => ({
         edit: (
           record: GroupPermissionResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleEditClick = (record: GroupPermissionResType) => {
             open();

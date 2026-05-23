@@ -8,5 +8,5 @@ export type MenuItem = {
   badge?: string | number;
   children?: MenuItem[];
   permissionCode?: string[];
-  query?: Record<string, any>;
+  query?: Record<string, string | number | boolean | null | undefined>;
 };

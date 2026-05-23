@@ -63,7 +63,7 @@ export function PersonList({ kind }: PersonListProps) {
       render: (value, record) => (
         <AvatarField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           alt={getLastWord(record.name)}
         />
       )
@@ -90,7 +90,8 @@ export function PersonList({ kind }: PersonListProps) {
     {
       title: 'Ngày sinh',
       dataIndex: 'dateOfBirth',
-      render: (value) => formatDate(value, DATE_FORMAT) || 'N/A',
+      render: (value) =>
+        formatDate(value as string | null, DATE_FORMAT) || 'N/A',
       align: 'center',
       width: 120
     },

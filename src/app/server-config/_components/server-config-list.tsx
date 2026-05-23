@@ -43,7 +43,7 @@ export function ServerConfigList() {
       handlers.additionalColumns = () => ({
         changeStatus: (
           record: ServerConfigResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleChangeStatus = async () => {
             await changeStatusMutate(
@@ -117,52 +117,67 @@ export function ServerConfigList() {
     {
       title: 'Tên',
       dataIndex: 'name',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      )
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      }
     },
     {
       title: 'Hostname',
       dataIndex: 'hostname',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      },
       align: 'center'
     },
     {
       title: 'IP',
       dataIndex: 'ip',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      },
       width: 150,
       align: 'center'
     },
     {
       title: 'Cổng',
       dataIndex: 'port',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      },
       width: 150,
       align: 'center'
     },
     {
       title: 'Máy chủ No.',
       dataIndex: 'serverNumber',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      },
       width: 150,
       align: 'center'
     },

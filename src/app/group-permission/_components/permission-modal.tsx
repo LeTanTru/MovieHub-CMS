@@ -56,7 +56,7 @@ export function PermissionModal({
       queryKey: queryKeys.PERMISSION,
       objectName: objectNames.PERMISSION,
       pathParams: {
-        id: selectedRow?.id
+        id: selectedRow?.id ?? ''
       },
       mode: selectedRow === null ? 'create' : 'edit'
     },

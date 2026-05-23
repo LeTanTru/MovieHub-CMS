@@ -44,7 +44,7 @@ import { emptyData } from '@/assets';
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { CircleLoading } from '@/components/loading';
 
-type AutoCompleteOption<T = any> = {
+type AutoCompleteOption<T = unknown> = {
   label: string;
   value: string | number;
   prefix?: ReactNode;
@@ -53,13 +53,13 @@ type AutoCompleteOption<T = any> = {
 
 type AutoCompleteFieldProps<
   TFieldValues extends FieldValues,
-  TOption extends Record<string, any>
+  TOption extends Record<string, unknown>
 > = {
   control: Control<TFieldValues>;
   name: FieldPath<TFieldValues>;
   label?: string;
   searchParams: (keyof TOption)[] | string[];
-  initialParams?: Record<string, any>;
+  initialParams?: Record<string, string | number | boolean | null | undefined>;
   placeholder?: string;
   description?: string;
   className?: string;
@@ -78,7 +78,10 @@ type AutoCompleteFieldProps<
   renderOption?: (option: AutoCompleteOption<TOption>) => ReactNode;
 };
 
-const EMPTY_INITIAL_PARAMS: Record<string, any> = {};
+const EMPTY_INITIAL_PARAMS: Record<
+  string,
+  string | number | boolean | null | undefined
+> = {};
 const AUTO_COMPLETE_DEBOUNCE_MS = 400;
 const POPOVER_SIDE_OFFSET = 8;
 const EMPTY_STATE_IMAGE_WIDTH = 120;
@@ -87,7 +90,7 @@ const HIGHLIGHTED_INDEX_NONE = -1;
 
 export function AutoCompleteField<
   TFieldValues extends FieldValues,
-  TOption extends Record<string, any>
+  TOption extends Record<string, unknown>
 >({
   control,
   name,
@@ -115,10 +118,9 @@ export function AutoCompleteField<
   const [search, setSearch] = useState<string>('');
   const [debouncedSearch, setDebouncedSearch] = useState<string>('');
   const [selectedOption, setSelectedOption] =
-    useState<AutoCompleteOption | null>(null);
-  const [initialOption, setInitialOption] = useState<AutoCompleteOption | null>(
-    null
-  );
+    useState<AutoCompleteOption<TOption> | null>(null);
+  const [initialOption, setInitialOption] =
+    useState<AutoCompleteOption<TOption> | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(
     HIGHLIGHTED_INDEX_NONE
   );
@@ -146,7 +148,10 @@ export function AutoCompleteField<
     queryFn: () => {
       const isSearching = debouncedSearch.trim() !== '';
 
-      const params: Record<string, any> = {
+      const params: Record<
+        string,
+        string | number | boolean | null | undefined
+      > = {
         page: DEFAULT_TABLE_PAGE_START,
         size:
           isSearching || fetchAll ? MAX_PAGE_SIZE : INITIAL_AUTO_COMPLETE_SIZE,
@@ -212,7 +217,7 @@ export function AutoCompleteField<
     selectedOption?.value
   ]);
 
-  const combinedOptions: AutoCompleteOption[] = useMemo(() => {
+  const combinedOptions: AutoCompleteOption<TOption>[] = useMemo(() => {
     const opts = options.filter((opt) => initialOption?.value !== opt.value);
     return initialOption ? [initialOption, ...opts] : opts;
   }, [options, initialOption]);

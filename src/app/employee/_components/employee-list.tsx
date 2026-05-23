@@ -47,7 +47,7 @@ export function EmployeeList() {
       handlers.additionalColumns = () => ({
         changeStatus: (
           record: EmployeeResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleChangeStatus = async (record: EmployeeResType) => {
             await changeStatusMutate(
@@ -119,7 +119,7 @@ export function EmployeeList() {
       render: (value, record) => (
         <AvatarField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           alt={getLastWord(record.fullName)}
         />
       )
@@ -127,7 +127,8 @@ export function EmployeeList() {
     {
       title: 'Tên',
       dataIndex: 'fullName',
-      render: (value, record) => {
+      render: (val, record) => {
+        const value = val as string;
         return (
           <div className='flex flex-col'>
             <span>{value}</span>
@@ -149,31 +150,40 @@ export function EmployeeList() {
       title: 'Tên đăng nhập',
       dataIndex: 'username',
       width: 220,
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      )
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      }
     },
     {
       title: 'Email',
       dataIndex: 'email',
       width: 220,
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      )
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      }
     },
     {
       title: 'Số điện thoại',
       dataIndex: 'phone',
       width: 150,
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      },
       align: 'center'
     },
     handlers.renderStatusColumn({ statusOptions: employeeStatusOptions }),

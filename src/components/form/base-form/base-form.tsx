@@ -10,14 +10,17 @@ import {
   type Ref,
   useEffect
 } from 'react';
+import type { ZodTypeAny, ZodType } from 'zod';
 import {
   type DefaultValues,
   useForm,
   type UseFormReturn,
-  useFormState
+  useFormState,
+  type FieldValues,
+  type Resolver
 } from 'react-hook-form';
 
-type BaseFormProps<T extends Record<string, any>> = Omit<
+type BaseFormProps<T extends FieldValues> = Omit<
   FormHTMLAttributes<HTMLFormElement>,
   'children' | 'onSubmit'
 > & {
@@ -25,13 +28,13 @@ type BaseFormProps<T extends Record<string, any>> = Omit<
   defaultValues: DefaultValues<T>;
   initialValues?: T;
   mode?: 'onBlur' | 'onChange' | 'onSubmit' | 'onTouched' | 'all';
-  schema: any;
+  schema: ZodTypeAny;
   children?: (methods: UseFormReturn<T>) => ReactNode;
   onSubmit: (values: T, form: UseFormReturn<T>) => Promise<void> | void;
   onFormChange?: (isFormChanged: boolean) => void;
 };
 
-export function BaseForm<T extends Record<string, any>>({
+export function BaseForm<T extends FieldValues>({
   className,
   defaultValues,
   id,
@@ -45,7 +48,9 @@ export function BaseForm<T extends Record<string, any>>({
   ...rest
 }: BaseFormProps<T>) {
   const form = useForm<T>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(
+      schema as unknown as ZodType<T, T>
+    ) as unknown as Resolver<T, unknown, T>,
     defaultValues,
     mode,
     shouldFocusError: false

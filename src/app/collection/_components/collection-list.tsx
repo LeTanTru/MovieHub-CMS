@@ -64,7 +64,7 @@ export function CollectionList() {
       handlers.additionalColumns = () => ({
         detail: (
           record: CollectionResType,
-          buttonProps: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleNavigate = () => {
             navigate.push(
@@ -102,7 +102,7 @@ export function CollectionList() {
         },
         styleInfo: (
           record: CollectionResType,
-          buttonProps: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           if (!(+collectionType === COLLECTION_TYPE_SECTION)) return null;
 
@@ -155,7 +155,9 @@ export function CollectionList() {
     {
       title: 'Tên',
       dataIndex: 'name',
-      render: (value) => <span className='whitespace-nowrap'>{value}</span>
+      render: (value) => (
+        <span className='whitespace-nowrap'>{value as string}</span>
+      )
     },
     {
       title: 'Màu',
@@ -167,12 +169,12 @@ export function CollectionList() {
           if (typeof value === 'string') {
             colors = JSON.parse(value);
           } else if (Array.isArray(value)) {
-            colors = value;
+            colors = value as string[];
           } else {
-            colors = [value];
+            colors = [value as string];
           }
-        } catch (error: any) {
-          colors = [value];
+        } catch (error) {
+          colors = [value as string];
           logger.error('[PARSE_COLOR_ERROR]', error);
         }
 
@@ -257,10 +259,13 @@ export function CollectionList() {
             placeholder: 'Thiết kế',
             type: FieldTypes.AUTO_COMPLETE,
             apiConfig: apiConfig.style.autoComplete,
-            mappingData: (item: StyleResType) => ({
-              label: item.name,
-              value: item.id.toString()
-            }),
+            mappingData: (item: unknown) => {
+              const style = item as StyleResType;
+              return {
+                label: style.name,
+                value: style.id.toString()
+              };
+            },
             searchParams: ['name']
           }
         ]

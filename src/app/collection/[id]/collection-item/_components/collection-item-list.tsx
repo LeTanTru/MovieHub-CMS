@@ -114,7 +114,7 @@ export function CollectionItemList() {
         return (
           <ImageField
             disablePreview={!value}
-            src={renderImageUrl(value)}
+            src={renderImageUrl(value as string)}
             aspect={2 / 3}
             previewAspect={2 / 3}
           />
@@ -130,7 +130,7 @@ export function CollectionItemList() {
         return (
           <ImageField
             disablePreview={!value}
-            src={renderImageUrl(value)}
+            src={renderImageUrl(value as string)}
             aspect={16 / 9}
             previewAspect={16 / 9}
           />
@@ -181,7 +181,8 @@ export function CollectionItemList() {
     {
       title: 'Ngày phát hành',
       dataIndex: ['movie', 'releaseDate'],
-      render: (value) => convertUTCToLocal(value, DATE_FORMAT) || 'N/A',
+      render: (value) =>
+        convertUTCToLocal(value as string, DATE_FORMAT) || 'N/A',
       align: 'center',
       width: 150
     },
@@ -256,7 +257,7 @@ export function CollectionItemList() {
           )
         },
         {
-          label: collectionTitle || 'Phim'
+          label: (collectionTitle as string) || 'Phim'
         }
       ]}
     >

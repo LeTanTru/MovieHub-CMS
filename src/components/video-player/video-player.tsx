@@ -186,7 +186,7 @@ export function VideoPlayer({
         <MediaProvider slot='media' className='cursor-pointer'>
           <Poster className='vds-poster' src={thumbnailUrl} />
           {textTracks?.map((track) => (
-            <Track {...(track as any)} key={track.src} />
+            <Track {...track} key={track.src} />
           ))}
         </MediaProvider>
         <DefaultQuality defaultQuality={defaultQuality} />

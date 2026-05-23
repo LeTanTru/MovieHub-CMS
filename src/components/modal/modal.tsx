@@ -8,13 +8,81 @@ import {
   createContext,
   useContext
 } from 'react';
-import { AnimatePresence, m, HTMLMotionProps } from 'framer-motion';
+import {
+  AnimatePresence,
+  m,
+  HTMLMotionProps,
+  MotionNodeAnimationOptions
+} from 'framer-motion';
 import { cn } from '@/lib';
 import { createPortal } from 'react-dom';
 import { useIsMounted } from '@/hooks';
 import { X, ChevronDown, Info } from 'lucide-react';
-import { BODY_SCROLL_LOCK_MARGIN } from '@/constants';
 import { Button } from '@/components/form';
+
+const SCROLLBAR_COMPENSATION_PX = 15;
+const SCROLL_BOTTOM_THRESHOLD_PX = 10;
+const SCROLL_DOWN_AMOUNT_PX = 200;
+const SCROLL_ARROW_ANIMATION_OFFSET_PX = 10;
+const MODAL_LOCK_ATTRIBUTE = 'data-modal-scroll-lock';
+
+let openModalCount = 0;
+let originalBodyOverflow = '';
+let originalBodyMarginRight = '';
+let originalHeaderPaddingRight: string | null = null;
+
+const lockScroll = () => {
+  if (typeof document === 'undefined') return;
+
+  openModalCount += 1;
+
+  if (openModalCount > 1) return;
+
+  const body = document.body;
+  const header = document.querySelector<HTMLElement>('.header');
+  const hasVerticalScroll =
+    document.documentElement.scrollHeight > window.innerHeight;
+
+  originalBodyOverflow = body.style.overflow;
+  originalBodyMarginRight = body.style.marginRight;
+
+  body.style.overflow = 'hidden';
+
+  if (hasVerticalScroll) {
+    body.style.marginRight = `${SCROLLBAR_COMPENSATION_PX}px`;
+
+    if (header && getComputedStyle(header).position === 'fixed') {
+      originalHeaderPaddingRight = header.style.paddingRight;
+      header.style.paddingRight = `${SCROLLBAR_COMPENSATION_PX}px`;
+      header.setAttribute(MODAL_LOCK_ATTRIBUTE, 'true');
+    }
+  } else {
+    originalHeaderPaddingRight = null;
+  }
+};
+
+const unlockScroll = () => {
+  if (typeof document === 'undefined' || openModalCount === 0) return;
+
+  openModalCount -= 1;
+
+  if (openModalCount > 0) return;
+
+  const body = document.body;
+  const header = document.querySelector<HTMLElement>('.header');
+
+  body.style.overflow = originalBodyOverflow;
+  body.style.marginRight = originalBodyMarginRight;
+
+  if (header?.getAttribute(MODAL_LOCK_ATTRIBUTE) === 'true') {
+    header.style.paddingRight = originalHeaderPaddingRight ?? '';
+    header.removeAttribute(MODAL_LOCK_ATTRIBUTE);
+  }
+
+  originalBodyOverflow = '';
+  originalBodyMarginRight = '';
+  originalHeaderPaddingRight = null;
+};
 
 type ModalContextType = {
   open: boolean;
@@ -40,11 +108,8 @@ type ModalProps = Omit<HTMLMotionProps<'div'>, 'title'> & {
   open: boolean;
   onClose: () => void;
   confirmOnClose?: boolean;
-  variants?: {
-    initial: Record<string, any>;
-    animate: Record<string, any>;
-    exit: Record<string, any>;
-  };
+  closeOnBackdrop?: boolean;
+  variants?: MotionNodeAnimationOptions;
 };
 
 type HeaderProps = {
@@ -70,6 +135,7 @@ export function Modal({
   onClose,
   className,
   confirmOnClose = false,
+  closeOnBackdrop = true,
   variants = {
     initial: { opacity: 0.5, scale: 0.85 },
     animate: { opacity: 1, scale: 1 },
@@ -83,37 +149,13 @@ export function Modal({
   useEffect(() => {
     if (!open) return;
 
-    const hasVerticalScroll =
-      document.documentElement.scrollHeight > window.innerHeight;
-
-    Object.assign(document.body.style, {
-      overflow: 'hidden',
-      marginRight: hasVerticalScroll ? `${BODY_SCROLL_LOCK_MARGIN}px` : ''
-    });
-
-    if (hasVerticalScroll) {
-      const header = document.querySelector('.header');
-      if (header && getComputedStyle(header).position === 'fixed') {
-        header.setAttribute(
-          'style',
-          `padding-right: ${BODY_SCROLL_LOCK_MARGIN}px`
-        );
-      }
-    }
+    lockScroll();
 
     return () => {
-      Object.assign(document.body.style, {
-        overflow: '',
-        marginRight: ''
-      });
-      const header = document.querySelector('.header');
-      if (header && getComputedStyle(header).position === 'fixed') {
-        (header as HTMLElement).style.paddingRight = '';
-      }
+      unlockScroll();
     };
   }, [open]);
 
-  // Reset confirmation dialog when modal closes
   useEffect(() => {
     if (!open) setShowConfirm(false);
   }, [open]);
@@ -176,7 +218,10 @@ export function Modal({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.1, ease: 'linear' }}
-              onClick={handleClose}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (closeOnBackdrop) handleClose();
+              }}
             >
               <m.div
                 className={cn(
@@ -236,7 +281,8 @@ function Body({ children, className, ref, scrollable }: BodyProps) {
       if (scrollRef.current) {
         const { scrollHeight, clientHeight, scrollTop } = scrollRef.current;
         const hasOverflow = scrollHeight > clientHeight;
-        const isAtBottom = scrollHeight - scrollTop <= clientHeight + 10;
+        const isAtBottom =
+          scrollHeight - scrollTop <= clientHeight + SCROLL_BOTTOM_THRESHOLD_PX;
         setShowScrollArrow(hasOverflow && !isAtBottom);
       }
     };
@@ -253,7 +299,10 @@ function Body({ children, className, ref, scrollable }: BodyProps) {
   }, [scrollable]);
 
   const handleScrollDown = () => {
-    scrollRef.current?.scrollBy({ top: 200, behavior: 'smooth' });
+    scrollRef.current?.scrollBy({
+      top: SCROLL_DOWN_AMOUNT_PX,
+      behavior: 'smooth'
+    });
   };
 
   return (
@@ -272,9 +321,9 @@ function Body({ children, className, ref, scrollable }: BodyProps) {
       <AnimatePresence>
         {scrollable && showScrollArrow && (
           <m.button
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -SCROLL_ARROW_ANIMATION_OFFSET_PX }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            exit={{ opacity: 0, y: -SCROLL_ARROW_ANIMATION_OFFSET_PX }}
             onClick={handleScrollDown}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className='absolute bottom-4 left-1/2 z-999 -translate-x-1/2 rounded-full p-2 text-white shadow-[0px_0px_10px_2px] shadow-gray-300'

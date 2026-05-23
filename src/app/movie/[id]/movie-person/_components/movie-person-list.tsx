@@ -83,7 +83,7 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
       handlers.additionalColumns = () => ({
         edit: (
           record: MoviePersonResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const isEditing = selectedRow === record.id;
 
@@ -233,7 +233,7 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
       render: (value, record) => (
         <AvatarField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           size={45}
           alt={getLastWord(record.person.name)}
         />
@@ -263,7 +263,7 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
           {
             title: 'Tên nhân vật',
             width: 500,
-            render: (_: any, record: MoviePersonResType) => {
+            render: (_: unknown, record: MoviePersonResType) => {
               const currentName = characterNames[record.id] || '';
 
               return (

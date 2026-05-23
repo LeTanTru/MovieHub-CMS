@@ -65,7 +65,7 @@ export function ReviewList() {
             serializeParams({ ...restSearchParams, page: parentPage })
           )
         },
-        { label: movieTitle || 'Chi tiết' },
+        { label: (movieTitle as string) || 'Chi tiết' },
         { label: 'Đánh giá' }
       ]}
     >

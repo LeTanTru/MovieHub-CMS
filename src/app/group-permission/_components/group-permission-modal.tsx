@@ -46,7 +46,7 @@ export function GroupPermissionModal({
       queryKey: queryKeys.GROUP_PERMISSION,
       objectName: objectNames.GROUP_PERMISSION,
       pathParams: {
-        id: selectedRow?.id
+        id: selectedRow?.id ?? ''
       },
       mode: selectedRow === null ? 'create' : 'edit'
     }

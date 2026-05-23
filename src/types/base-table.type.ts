@@ -7,7 +7,7 @@ export type Column<T> = {
   title: string;
   dataIndex?: keyof T | string[] | 'status';
   render?: (
-    value: any,
+    value: unknown,
     record: T,
     index: number,
     options?: { listeners: SyntheticListenerMap | undefined }
@@ -28,7 +28,7 @@ export type BaseTableProps<T> = {
   rowClassName?: (record: T, index: number) => string;
 };
 
-export type DragDropTableProps<T extends Record<any, any>> = {
+export type DragDropTableProps<T extends Record<string, unknown>> = {
   columns: Column<T>[];
   dataSource: T[];
   rowKey?: string;

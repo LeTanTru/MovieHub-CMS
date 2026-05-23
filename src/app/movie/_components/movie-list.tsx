@@ -73,7 +73,10 @@ export function MovieList() {
         }
       };
       handlers.additionalColumns = () => ({
-        person: (record: MovieResType, buttonProps?: Record<string, any>) => {
+        person: (
+          record: MovieResType,
+          buttonProps?: Record<string, unknown>
+        ) => {
           const handleNavigate = () => {
             navigate.push(
               renderListPageUrl(
@@ -105,7 +108,10 @@ export function MovieList() {
             </ToolTip>
           );
         },
-        comment: (record: MovieResType, buttonProps?: Record<string, any>) => {
+        comment: (
+          record: MovieResType,
+          buttonProps?: Record<string, unknown>
+        ) => {
           const handleNavigate = () => {
             navigate.push(
               renderListPageUrl(
@@ -137,7 +143,10 @@ export function MovieList() {
             </ToolTip>
           );
         },
-        review: (record: MovieResType, buttonProps?: Record<string, any>) => {
+        review: (
+          record: MovieResType,
+          buttonProps?: Record<string, unknown>
+        ) => {
           const handleNavigate = () => {
             navigate.push(
               renderListPageUrl(
@@ -183,7 +192,7 @@ export function MovieList() {
         return (
           <ImageField
             disablePreview={!value}
-            src={renderImageUrl(value)}
+            src={renderImageUrl(value as string)}
             aspect={2 / 3}
             previewAspect={2 / 3}
           />
@@ -199,7 +208,7 @@ export function MovieList() {
         return (
           <ImageField
             disablePreview={!value}
-            src={renderImageUrl(value)}
+            src={renderImageUrl(value as string)}
             aspect={16 / 9}
             previewAspect={16 / 9}
           />
@@ -260,7 +269,7 @@ export function MovieList() {
     {
       title: 'Ngày phát hành',
       dataIndex: 'releaseDate',
-      render: (value) => convertUTCToLocal(value) || 'N/A',
+      render: (value) => convertUTCToLocal(value as string | null) || 'N/A',
       align: 'center',
       width: 200
     },
@@ -303,12 +312,10 @@ export function MovieList() {
     {
       title: 'Quốc gia',
       dataIndex: 'country',
-      render: (value) => {
-        const label = countryOptions.find(
-          (country) => country.value === value
-        )?.label;
+      render: (val) => {
+        const value = val as string;
         return (
-          <span className='line-clamp-1 block truncate' title={label}>
+          <span className='line-clamp-1 block truncate' title={value}>
             {value || 'N/A'}
           </span>
         );

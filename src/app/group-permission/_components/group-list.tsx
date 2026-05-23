@@ -73,7 +73,8 @@ export function GroupList() {
     {
       title: 'Màu',
       dataIndex: 'color',
-      render: (value) => {
+      render: (val) => {
+        const value = val as string;
         return (
           <ToolTip title={value}>
             <Badge

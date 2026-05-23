@@ -75,11 +75,11 @@ export function CommentInput({ movieId }: CommentInputProps) {
   };
 
   useEffect(() => {
-    let picker: any;
+    let picker: (HTMLElement & { i18n?: unknown }) | null = null;
     let mounted = true;
 
-    const handleEmojiClick = (event: any) => {
-      const emoji = event.detail.unicode;
+    const handleEmojiClick = (event: Event) => {
+      const emoji = (event as CustomEvent<{ unicode: string }>).detail.unicode;
       if (formMethodsRef.current) {
         const currentValue = formMethodsRef.current.getValues('content') || '';
         formMethodsRef.current.setValue('content', currentValue + emoji, {
@@ -95,7 +95,7 @@ export function CommentInput({ movieId }: CommentInputProps) {
 
       if (!mounted) return;
 
-      picker = new Picker();
+      picker = new Picker() as HTMLElement & { i18n?: unknown };
       picker.i18n = vi;
       Object.assign(picker.style, {
         position: 'absolute',

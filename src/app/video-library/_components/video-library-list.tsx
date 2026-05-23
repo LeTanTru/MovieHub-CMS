@@ -119,7 +119,7 @@ export function VideoLibraryList() {
       handlers.additionalColumns = () => ({
         watchVideo: (
           record: VideoLibraryResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleOpenPlayModal = (video: VideoLibraryResType) => {
             setSelectedVideo(video);
@@ -145,7 +145,7 @@ export function VideoLibraryList() {
 
         editSubtitle: (
           record: VideoLibraryResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleEditSubtitle = (video: VideoLibraryResType) => {
             navigate.push(
@@ -186,7 +186,7 @@ export function VideoLibraryList() {
 
         retryProcess: (
           record: VideoLibraryResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleRetryProcess = async (record: VideoLibraryResType) => {
             await retryProcessMutate(
@@ -228,7 +228,7 @@ export function VideoLibraryList() {
 
         processAudio: (
           record: VideoLibraryResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleProcessAudio = async (record: VideoLibraryResType) => {
             await processAudioMutate(
@@ -302,7 +302,7 @@ export function VideoLibraryList() {
       render: (value) => (
         <ImageField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           aspect={16 / 9}
           previewAspect={16 / 9}
         />
@@ -311,18 +311,21 @@ export function VideoLibraryList() {
     {
       title: 'Tên',
       dataIndex: 'name',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      )
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      }
     },
     {
       title: 'Thời lượng',
       dataIndex: 'duration',
       render: (value) => (
         <span className='line-clamp-1 block truncate'>
-          {formatSecondsToHMS(value)}
+          {formatSecondsToHMS(value as number)}
         </span>
       ),
       width: 120,

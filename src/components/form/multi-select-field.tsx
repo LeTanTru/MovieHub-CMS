@@ -35,7 +35,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 type MultiSelectFieldProps<
   TFieldValues extends FieldValues,
-  TOption extends Record<string, any>
+  TOption extends Record<string, unknown>
 > = {
   control: Control<TFieldValues>;
   name: FieldPath<TFieldValues>;
@@ -74,11 +74,11 @@ const fuzzyMatch = (text: string, search: string) => {
   return new RegExp(pattern).test(t);
 };
 
-const measureVisibleCount = (
+const measureVisibleCount = <T,>(
   selectedValues: Array<string | number>,
-  options: any[],
-  getValue: (o: any) => string | number,
-  getLabel: (o: any) => string | number,
+  options: T[],
+  getValue: (o: T) => string | number,
+  getLabel: (o: T) => string | number,
   availableWidth: number
 ): number => {
   const measurer = document.createElement('div');
@@ -118,7 +118,7 @@ const measureVisibleCount = (
 
 export function MultiSelectField<
   TFieldValues extends FieldValues,
-  TOption extends Record<string, any>
+  TOption extends Record<string, unknown>
 >({
   control,
   name,
@@ -129,9 +129,9 @@ export function MultiSelectField<
   className,
   formItemClassName,
   required,
-  getLabel = (opt) => opt.label,
-  getValue = (opt) => opt.value,
-  getPrefix = (opt) => opt.prefix,
+  getLabel = (opt) => opt.label as string | number,
+  getValue = (opt) => opt.value as string | number,
+  getPrefix = (opt) => opt.prefix as ReactNode,
   searchText,
   notFoundContent = 'Không có kết quả nào',
   labelClassName,

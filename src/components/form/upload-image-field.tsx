@@ -41,7 +41,7 @@ import {
   useController
 } from 'react-hook-form';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import type { ApiResponse, ApiResponseNoData } from '@/types';
+import type { ApiResponseNoData } from '@/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { CircleLoading } from '@/components/loading';

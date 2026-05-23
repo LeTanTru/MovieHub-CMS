@@ -166,7 +166,7 @@ export function MovieForm() {
       originalTitle: data?.originalTitle ?? '',
       imdbId: data?.imdbId ?? '',
       posterUrl: data?.posterUrl ?? '',
-      releaseDate: convertUTCToLocal(data?.releaseDate) ?? '',
+      releaseDate: convertUTCToLocal(data?.releaseDate ?? null) ?? '',
       status: data?.status ?? STATUS_ACTIVE,
       thumbnailUrl: data?.thumbnailUrl ?? '',
       title: data?.title ?? '',

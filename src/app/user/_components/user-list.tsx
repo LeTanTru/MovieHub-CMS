@@ -44,7 +44,7 @@ export function UserList() {
       handlers.additionalColumns = () => ({
         changeStatus: (
           record: UserResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleChangeStatus = async (record: UserResType) => {
             await changeStatusMutate(
@@ -116,7 +116,7 @@ export function UserList() {
       render: (value, record) => (
         <AvatarField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           alt={getLastWord(record.fullName)}
         />
       )
@@ -124,31 +124,40 @@ export function UserList() {
     {
       title: 'Tên',
       dataIndex: 'fullName',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      )
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      }
     },
     {
       title: 'Email',
       dataIndex: 'email',
       width: 300,
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      )
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      }
     },
     {
       title: 'Số điện thoại',
       dataIndex: 'phone',
       width: 200,
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value || 'N/A'}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value || 'N/A'}
+          </span>
+        );
+      },
       align: 'center'
     },
     handlers.renderStatusColumn(),

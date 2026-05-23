@@ -68,7 +68,7 @@ export function PersonTab() {
           )
         },
         {
-          label: movieTitle ?? 'Chi tiết'
+          label: (movieTitle as string) ?? 'Chi tiết'
         },
         {
           label:

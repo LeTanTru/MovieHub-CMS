@@ -38,7 +38,7 @@ export function CategoryModal({ open, category, onClose }: CategoryModalProps) {
       queryKey: queryKeys.CATEGORY,
       objectName: objectNames.CATEGORY,
       pathParams: {
-        id: category?.id
+        id: category?.id ?? ''
       },
       mode: !category ? 'create' : 'edit'
     },

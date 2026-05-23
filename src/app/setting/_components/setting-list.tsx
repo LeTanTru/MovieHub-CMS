@@ -50,7 +50,10 @@ export function SettingList({ groupName }: { groupName: string }) {
         );
       };
       handlers.additionalColumns = () => ({
-        edit: (record: SettingResType, buttonProps?: Record<string, any>) => {
+        edit: (
+          record: SettingResType,
+          buttonProps?: Record<string, unknown>
+        ) => {
           const handleUpdateSetting = (record: SettingResType) => {
             setSelectedSetting(record);
             open();
@@ -81,42 +84,54 @@ export function SettingList({ groupName }: { groupName: string }) {
     {
       title: 'Tên',
       dataIndex: 'keyName',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      },
       width: 300
     },
     {
       title: 'Nhóm',
       dataIndex: 'groupName',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      },
       width: 200
     },
     {
       title: 'Kiểu dữ liệu',
       dataIndex: 'dataType',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      },
       width: 150,
       align: 'center'
     },
     {
       title: 'Giá trị',
       dataIndex: 'valueData',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      },
       align: 'left'
     },
     handlers.renderActionColumn({

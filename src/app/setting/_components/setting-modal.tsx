@@ -58,7 +58,7 @@ export function SettingModal({
       queryKey: queryKeys.SETTING,
       objectName: objectNames.SETTING,
       pathParams: {
-        id: setting?.id
+        id: setting?.id ?? ''
       },
       mode: !setting ? 'create' : 'edit'
     },

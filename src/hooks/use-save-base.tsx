@@ -39,7 +39,7 @@ type UseSaveBaseProps = {
     objectName: string;
     listPageUrl?: string;
     queryKey: string;
-    pathParams: Record<string, unknown>;
+    pathParams: Record<string, string | number | undefined | null>;
     mode: 'create' | 'edit';
     showNotify?: boolean;
   };
@@ -83,7 +83,7 @@ export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
     staleTime: QUERY_STALE_TIME
   });
 
-  const data: R = itemQuery.data?.data;
+  const data: R | undefined = itemQuery.data?.data;
 
   const createMutation = useMutation({
     mutationKey: [`create-${queryKey}`],
@@ -142,10 +142,12 @@ export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
             invalidateQueries([queryKey, `${queryKey}-list`]);
           } else {
             const code = res.code;
-            if (code && errorMaps?.[code] && form) {
-              applyFormErrors(form, code, errorMaps);
-            } else {
-              handlers.handleSubmitError(code);
+            if (code) {
+              if (errorMaps?.[code] && form) {
+                applyFormErrors(form, code, errorMaps);
+              } else {
+                handlers.handleSubmitError(code);
+              }
             }
           }
         },

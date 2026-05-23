@@ -52,7 +52,7 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
     columnProps?: Record<string, unknown>;
   }) => Column<T>;
   additionalParams: () => Partial<S>;
-  additionalPathParams: () => Record<string, unknown>;
+  additionalPathParams: () => Record<string, string | number>;
   additionalColumns: () => Record<
     string,
     (record: T, buttonProps?: Record<string, unknown>) => ReactNode
@@ -65,10 +65,7 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
     searchFields: SearchFormProps<S>['searchFields'];
     schema: SearchFormProps<S>['schema'];
   }) => ReactNode;
-  renderStatusColumn: ({
-    statusOptions,
-    columnProps
-  }?: {
+  renderStatusColumn: (options?: {
     statusOptions?: OptionType[];
     columnProps?: Record<string, unknown>;
   }) => Column<T>;

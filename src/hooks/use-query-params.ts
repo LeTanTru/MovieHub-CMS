@@ -2,7 +2,7 @@ import { PARENT_PREFIX_PARAM } from '@/constants';
 import { useNavigate } from '@/hooks/use-navigate';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-export const useQueryParams = <S extends Record<string, any>>() => {
+export const useQueryParams = <S extends Record<string, unknown>>() => {
   const navigate = useNavigate();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -35,15 +35,17 @@ export const useQueryParams = <S extends Record<string, any>>() => {
   };
 
   const setQueryParams = (newParams: Partial<S>) => {
-    const queryString = serializeParams(newParams as Record<string, any>);
+    const queryString = serializeParams(newParams as Record<string, unknown>);
     navigate.push(queryString ? `${pathname}?${queryString}` : pathname);
   };
 
-  const serializeParams = (obj: Record<string, any>) => {
+  const serializeParams = (obj: Record<string, unknown>) => {
     return Object.entries(obj)
       .filter(([_, v]) => v !== null && v !== undefined && v !== '')
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+      .map(
+        ([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`
+      )
       .join('&');
   };
 
@@ -64,18 +66,18 @@ export const useQueryParams = <S extends Record<string, any>>() => {
   const queryString = serializeParams(paramsObject);
 
   const prefixParams = (
-    params: Record<string, any>,
+    params: Record<string, unknown>,
     prefix = PARENT_PREFIX_PARAM
-  ): Record<string, any> => {
+  ): Record<string, unknown> => {
     return Object.fromEntries(
       Object.entries(params).map(([key, val]) => [`${prefix}${key}`, val])
     );
   };
 
   const deprefixParams = (
-    params: Record<string, any>,
+    params: Record<string, unknown>,
     prefix = PARENT_PREFIX_PARAM
-  ): Record<string, any> => {
+  ): Record<string, unknown> => {
     return Object.fromEntries(
       Object.entries(params)
         .filter(([key]) => key.startsWith(prefix))

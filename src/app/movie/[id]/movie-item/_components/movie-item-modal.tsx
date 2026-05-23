@@ -118,7 +118,7 @@ export function MovieItemModal({
       queryKey: queryKeys.MOVIE_ITEM,
       objectName,
       pathParams: {
-        id: movieItem?.id
+        id: movieItem?.id ?? ''
       },
       mode: !movieItem ? 'create' : 'edit'
     },
@@ -176,7 +176,7 @@ export function MovieItemModal({
       kind: data?.kind ?? kindOptions?.[0]?.value,
       label: data?.label ?? '',
       movieId: movieId,
-      releaseDate: convertUTCToLocal(data?.releaseDate) ?? '',
+      releaseDate: convertUTCToLocal(data?.releaseDate ?? null) ?? '',
       status: STATUS_ACTIVE,
       title: data?.title ?? '',
       parentId: parentId,
