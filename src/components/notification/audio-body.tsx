@@ -1,8 +1,15 @@
 import { ImageField } from '@/components/form';
+import { VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL } from '@/constants';
+import { useQueryParams } from '@/hooks';
 import { route } from '@/routes';
-import { useVideoLibraryStore } from '@/store';
 import { AudioNotificationType, NotificationResType } from '@/types';
-import { convertUTCToLocal, parseJSON, renderImageUrl, timeAgo } from '@/utils';
+import {
+  convertUTCToLocal,
+  parseJSON,
+  renderImageUrl,
+  renderListPageUrl,
+  timeAgo
+} from '@/utils';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
@@ -11,21 +18,23 @@ export function AudioBody({
 }: {
   notification: NotificationResType;
 }) {
+  const { serializeParams } = useQueryParams();
+
   const body = useMemo(
     () => parseJSON<AudioNotificationType>(notification.body),
     [notification.body]
   );
-  const setTargetVideoId = useVideoLibraryStore((s) => s.setTargetVideoId);
-
-  const handleClick = () => {
-    setTargetVideoId(body?.id || null);
-  };
 
   return (
     <Link
-      onClick={handleClick}
       className='flex flex-1 items-center justify-between gap-2 pl-1'
-      href={route.videoLibrary.getList.path}
+      href={renderListPageUrl(
+        route.videoLibrary.getList.path,
+        serializeParams({
+          sourceType: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
+          name: body?.name ?? ''
+        })
+      )}
     >
       <div className='relative w-20 shrink-0'>
         <ImageField

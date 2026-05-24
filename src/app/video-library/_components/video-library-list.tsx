@@ -15,7 +15,6 @@ import {
   queryKeys,
   MAX_PAGE_SIZE,
   DEFAULT_TABLE_PAGE_START,
-  DEFAULT_TABLE_PAGE_SIZE,
   objectNames,
   VIDEO_LIBRARY_STATE_ERROR,
   videoLibraryErrorReasons,
@@ -55,11 +54,10 @@ import {
   PlayCircle,
   ScissorsLineDashed
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import { FaCircleCheck, FaRotateRight } from 'react-icons/fa6';
 import { logger } from '@/logger';
-import { useVideoLibraryStore } from '@/store';
 import { route } from '@/routes';
 
 export function VideoLibraryList() {
@@ -77,8 +75,6 @@ export function VideoLibraryList() {
   } = useDisclosure();
 
   const [selectedVideo, setSelectedVideo] = useState<VideoLibraryResType>();
-  const targetVideoId = useVideoLibraryStore((s) => s.targetVideoId);
-  const setTargetVideoId = useVideoLibraryStore((s) => s.setTargetVideoId);
 
   const { data: serverConfigListData } = useServerConfigListQuery({
     page: DEFAULT_TABLE_PAGE_START,
@@ -260,8 +256,8 @@ export function VideoLibraryList() {
               <span>
                 <Button
                   disabled={
-                    (record.audioState === AUDIO_STATE_PROCESSING &&
-                      record.state === VIDEO_LIBRARY_STATE_COMPLETE) ||
+                    record.audioState === AUDIO_STATE_PROCESSING ||
+                    record.state !== VIDEO_LIBRARY_STATE_COMPLETE ||
                     isNoSpeech
                   }
                   onClick={() => handleProcessAudio(record)}
@@ -376,9 +372,7 @@ export function VideoLibraryList() {
             ]
           }),
         processAudio: (record) =>
-          record.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL &&
           record.audioState !== AUDIO_STATE_COMPLETE &&
-          record.state === VIDEO_LIBRARY_STATE_COMPLETE &&
           handlers.hasPermission({
             requiredPermissions: [
               apiConfig.videoLibrary.processAudio.permissionCode
@@ -423,25 +417,6 @@ export function VideoLibraryList() {
       }
     ];
 
-  // navigate to the page containing targetVideoId, then clear highlight after delay
-  useEffect(() => {
-    if (!targetVideoId || !data) return;
-
-    const index = data.findIndex((v) => v.id === targetVideoId);
-    if (index === -1) return;
-
-    const currentPage = pagination.current;
-    const pageSize = pagination.pageSize || DEFAULT_TABLE_PAGE_SIZE;
-    const targetPage = Math.floor(index / pageSize) + 1;
-
-    if (currentPage !== targetPage) {
-      handlers.changePagination(targetPage);
-    }
-
-    const timer = setTimeout(() => setTargetVideoId(null), 2500);
-    return () => clearTimeout(timer);
-  }, [setTargetVideoId, data, handlers, pagination, targetVideoId]);
-
   return (
     <PageWrapper breadcrumbs={[{ label: 'Video' }]}>
       <ListPageWrapper
@@ -458,9 +433,6 @@ export function VideoLibraryList() {
           pagination={pagination}
           loading={loading}
           changePagination={handlers.changePagination}
-          rowClassName={(record) =>
-            record.id === targetVideoId ? 'bg-main-color/10' : ''
-          }
         />
       </ListPageWrapper>
       {selectedVideo && (

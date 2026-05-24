@@ -129,6 +129,7 @@ export function MqttProvider() {
             [queryKeys.UNREAD_NOTIFICATION_COUNT],
             [queryKeys.NOTIFICATION_INFINITE]
           );
+          notify.success(data.title);
           break;
         }
       }

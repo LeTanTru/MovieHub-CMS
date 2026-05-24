@@ -32,7 +32,7 @@ import {
   MediaTimeUpdateEventDetail,
   MediaTimeUpdateEvent,
   Poster,
-  Track,
+  TextTrack,
   TrackProps
 } from '@vidstack/react';
 import {
@@ -44,6 +44,7 @@ import {
   createContext,
   useContext,
   useCallback,
+  useEffect,
   useRef,
   useState,
   ComponentProps,
@@ -185,10 +186,8 @@ export function VideoPlayer({
       >
         <MediaProvider slot='media' className='cursor-pointer'>
           <Poster className='vds-poster' src={thumbnailUrl} />
-          {textTracks?.map((track) => (
-            <Track {...track} key={track.src} />
-          ))}
         </MediaProvider>
+        <TextTrackSync textTracks={textTracks} playerRef={playerRef} />
         <DefaultQuality defaultQuality={defaultQuality} />
         <DefaultVideoLayout
           smallLayoutWhen={false}
@@ -256,6 +255,68 @@ export function VideoPlayer({
 }
 
 VideoPlayer.displayName = 'VideoPlayer';
+
+/**
+ * Imperatively syncs text tracks with the vidstack player instance.
+ * Using declarative `<Track>` components can cause duplicate registrations
+ * when the track list is updated during rapid successive re-renders
+ * (e.g., multiple query invalidations after subtitle translation).
+ */
+function TextTrackSync({
+  textTracks,
+  playerRef
+}: {
+  textTracks?: TrackProps[];
+  playerRef: React.RefObject<MediaPlayerInstance | null>;
+}) {
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player) return;
+
+    // Clear all existing sideloaded subtitle tracks
+    const existingTracks = [...player.textTracks];
+    for (const track of existingTracks) {
+      // Only remove tracks we manage (subtitles/captions added via src)
+      if (
+        (track.kind === 'subtitles' || track.kind === 'captions') &&
+        track.src
+      ) {
+        player.textTracks.remove(track);
+      }
+    }
+
+    // Add fresh tracks
+    if (textTracks?.length) {
+      for (const t of textTracks) {
+        const textTrack = new TextTrack({
+          src: t.src,
+          label: t.label,
+          language: t.language,
+          kind: (t.kind as 'subtitles' | 'captions') ?? 'subtitles',
+          type: t.type,
+          default: t.default
+        });
+        player.textTracks.add(textTrack);
+      }
+    }
+
+    return () => {
+      // Cleanup on unmount
+      if (!player) return;
+      const tracks = [...player.textTracks];
+      for (const track of tracks) {
+        if (
+          (track.kind === 'subtitles' || track.kind === 'captions') &&
+          track.src
+        ) {
+          player.textTracks.remove(track);
+        }
+      }
+    };
+  }, [textTracks, playerRef]);
+
+  return null;
+}
 
 function onProviderChange(
   provider: MediaProviderAdapter | null,

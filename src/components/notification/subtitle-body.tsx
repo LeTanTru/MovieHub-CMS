@@ -1,6 +1,15 @@
+import { ImageField } from '@/components/form';
+import { useQueryParams } from '@/hooks';
 import { route } from '@/routes';
 import { NotificationResType, SubtitleNotificationType } from '@/types';
-import { convertUTCToLocal, generatePath, parseJSON, timeAgo } from '@/utils';
+import {
+  convertUTCToLocal,
+  generatePath,
+  parseJSON,
+  renderImageUrl,
+  renderListPageUrl,
+  timeAgo
+} from '@/utils';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
@@ -9,6 +18,8 @@ export default function SubtitleBody({
 }: {
   notification: NotificationResType;
 }) {
+  const { serializeParams } = useQueryParams();
+
   const body = useMemo(
     () => parseJSON<SubtitleNotificationType>(notification.body),
     [notification.body]
@@ -17,10 +28,25 @@ export default function SubtitleBody({
   return (
     <Link
       className='flex flex-1 items-center justify-between gap-2 pl-1'
-      href={generatePath(route.videoLibrarySubtitle.getList.path, {
-        id: body?.videoLibraryId || ''
-      })}
+      href={renderListPageUrl(
+        generatePath(route.videoLibrarySubtitle.getList.path, {
+          id: body?.videoLibraryId || ''
+        }),
+        serializeParams({
+          p_sourceType: body?.sourceType,
+          p_videoName: body?.name
+        })
+      )}
     >
+      <div className='relative aspect-video w-20 shrink-0'>
+        <ImageField
+          src={renderImageUrl(body?.thumbnailUrl)}
+          alt={body?.name}
+          aspect={16 / 9}
+          disablePreview
+          className='h-full'
+        />
+      </div>
       <div className='flex flex-1 flex-col justify-between'>
         <div className='flex items-start gap-2'>
           <h3 className='font-medium' title={notification.title}>
