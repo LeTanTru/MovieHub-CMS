@@ -32,14 +32,14 @@ type MoviePersonModalProps = {
   onClose: () => void;
 };
 
-export const MoviePersonModal = ({
+export function MoviePersonModal({
   moviePersonList,
   kind,
   movieId,
   open,
   listQuery,
   onClose
-}: MoviePersonModalProps) => {
+}: MoviePersonModalProps) {
   const {
     mutateAsync: createMoviePersonMutate,
     isPending: createMoviePersonLoading
@@ -174,4 +174,4 @@ export const MoviePersonModal = ({
       <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
-};
+}

@@ -26,7 +26,7 @@ import { formatDate, getLastWord, notify, renderImageUrl } from '@/utils';
 
 type PersonListProps = { kind: number };
 
-export const PersonList = ({ kind }: PersonListProps) => {
+export function PersonList({ kind }: PersonListProps) {
   const { data, pagination, loading, handlers } = useListBase<
     PersonResType,
     PersonSearchType
@@ -63,7 +63,7 @@ export const PersonList = ({ kind }: PersonListProps) => {
       render: (value, record) => (
         <AvatarField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           alt={getLastWord(record.name)}
         />
       )
@@ -90,7 +90,8 @@ export const PersonList = ({ kind }: PersonListProps) => {
     {
       title: 'Ngày sinh',
       dataIndex: 'dateOfBirth',
-      render: (value) => formatDate(value, DATE_FORMAT) || 'N/A',
+      render: (value) =>
+        formatDate(value as string | null, DATE_FORMAT) || 'N/A',
       align: 'center',
       width: 120
     },
@@ -175,4 +176,4 @@ export const PersonList = ({ kind }: PersonListProps) => {
       />
     </ListPageWrapper>
   );
-};
+}

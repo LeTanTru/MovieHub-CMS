@@ -15,7 +15,13 @@ import Image from 'next/image';
 import { emptyData } from '@/assets';
 import { cn } from '@/lib';
 
-import { useState, useRef, useEffect, type CSSProperties } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  type CSSProperties,
+  type ReactNode
+} from 'react';
 import {
   DndContext,
   PointerSensor,
@@ -35,10 +41,10 @@ import { Grip } from 'lucide-react';
 import { m, AnimatePresence } from 'framer-motion';
 import { CircleLoading } from '@/components/loading';
 
-function getValueByPath<T extends Record<string, any>>(
+function getValueByPath<T extends Record<string, unknown>>(
   obj: T,
   path?: string | string[] | keyof T
-): any {
+): unknown {
   if (!obj || !path) return undefined;
 
   if (typeof path === 'string') {
@@ -48,16 +54,16 @@ function getValueByPath<T extends Record<string, any>>(
   if (Array.isArray(path)) {
     return path.reduce((acc, key) => {
       if (acc && typeof acc === 'object' && key in acc) {
-        return acc[key];
+        return (acc as Record<string, unknown>)[key];
       }
       return undefined;
-    }, obj as any);
+    }, obj as unknown);
   }
 
   return obj[path as keyof T];
 }
 
-type SortableRowProps<T extends Record<any, any>> = {
+type SortableRowProps<T extends Record<string, unknown>> = {
   row: T;
   rowIndex: number;
   columns: BaseTableProps<T>['columns'];
@@ -68,7 +74,7 @@ type SortableRowProps<T extends Record<any, any>> = {
   scrollAtEnd: boolean;
 };
 
-function SortableRow<T extends Record<any, any>>({
+function SortableRow<T extends Record<string, unknown>>({
   row,
   rowIndex,
   columns,
@@ -85,7 +91,10 @@ function SortableRow<T extends Record<any, any>>({
     transition,
     isDragging,
     setNodeRef
-  } = useSortable({ id: row[rowKey], animateLayoutChanges: () => false });
+  } = useSortable({
+    id: row[rowKey] as string | number,
+    animateLayoutChanges: () => false
+  });
 
   const style: CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -136,7 +145,7 @@ function SortableRow<T extends Record<any, any>>({
               rowIndex
             )
           ) : col.dataIndex ? (
-            getValueByPath(row, col.dataIndex)
+            (getValueByPath(row, col.dataIndex) as ReactNode)
           ) : null}
         </TableCell>
       ))}
@@ -144,7 +153,7 @@ function SortableRow<T extends Record<any, any>>({
   );
 }
 
-export const DragDropTable = <T extends Record<any, any>>({
+export function DragDropTable<T extends Record<string, unknown>>({
   columns,
   dataSource = EMPTY_DATA_SOURCE as T[],
   rowKey = 'id',
@@ -153,7 +162,7 @@ export const DragDropTable = <T extends Record<any, any>>({
   onSelectRow,
   rowClassName,
   rowStyle
-}: DragDropTableProps<T>) => {
+}: DragDropTableProps<T>) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollAtEnd, setScrollAtEnd] = useState(false);
 
@@ -245,7 +254,7 @@ export const DragDropTable = <T extends Record<any, any>>({
               <TableBody>
                 {dataSource.length > 0 ? (
                   <SortableContext
-                    items={dataSource.map((r) => r[rowKey])}
+                    items={dataSource.map((r) => r[rowKey] as string | number)}
                     strategy={verticalListSortingStrategy}
                   >
                     {dataSource.map((row, idx) => (
@@ -303,4 +312,4 @@ export const DragDropTable = <T extends Record<any, any>>({
       </div>
     </div>
   );
-};
+}

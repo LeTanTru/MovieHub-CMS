@@ -50,7 +50,7 @@ import {
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
-export const MovieForm = () => {
+export function MovieForm() {
   const { id } = useParams<{ id: string }>();
 
   const { data: categories, isLoading: categoryLoading } =
@@ -166,7 +166,7 @@ export const MovieForm = () => {
       originalTitle: data?.originalTitle ?? '',
       imdbId: data?.imdbId ?? '',
       posterUrl: data?.posterUrl ?? '',
-      releaseDate: convertUTCToLocal(data?.releaseDate) ?? '',
+      releaseDate: convertUTCToLocal(data?.releaseDate ?? null) ?? '',
       status: data?.status ?? STATUS_ACTIVE,
       thumbnailUrl: data?.thumbnailUrl ?? '',
       title: data?.title ?? '',
@@ -537,4 +537,4 @@ export const MovieForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

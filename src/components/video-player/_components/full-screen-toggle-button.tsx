@@ -3,7 +3,7 @@
 import { FullscreenButton, Tooltip, useMediaState } from '@vidstack/react';
 import { FullscreenExitIcon, FullscreenIcon } from '@vidstack/react/icons';
 
-export const FullscreenToggleButton = () => {
+export function FullscreenToggleButton() {
   const isFullscreen = useMediaState('fullscreen');
 
   return (
@@ -24,4 +24,4 @@ export const FullscreenToggleButton = () => {
       </Tooltip.Content>
     </Tooltip.Root>
   );
-};
+}

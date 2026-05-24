@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { logger } from '@/logger';
 import { UseMutateAsyncFunction } from '@tanstack/react-query';
-import { ApiResponse } from '@/types';
+import { ApiResponseNoData } from '@/types';
 
 type UseFileUploadManagerProps = {
   initialUrl?: string;
   deleteFileMutate: UseMutateAsyncFunction<
-    ApiResponse<any>,
+    ApiResponseNoData,
     Error,
     {
       filePath: string;

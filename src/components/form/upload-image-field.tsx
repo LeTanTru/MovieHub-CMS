@@ -41,7 +41,7 @@ import {
   useController
 } from 'react-hook-form';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import type { ApiResponse } from '@/types';
+import type { ApiResponseNoData } from '@/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { CircleLoading } from '@/components/loading';
@@ -129,10 +129,10 @@ type UploadImageFieldProps<T extends FieldValues> = {
   avatar?: boolean;
   onChange?: (url: string) => void;
   uploadImageFn: (file: Blob) => Promise<string>;
-  deleteImageFn?: (url: string) => Promise<ApiResponse<any> | undefined>;
+  deleteImageFn?: (url: string) => Promise<ApiResponseNoData | undefined>;
 };
 
-export const UploadImageField = <T extends FieldValues>({
+export function UploadImageField<T extends FieldValues>({
   control,
   name,
   label,
@@ -151,7 +151,7 @@ export const UploadImageField = <T extends FieldValues>({
   onChange,
   uploadImageFn,
   deleteImageFn
-}: UploadImageFieldProps<T>) => {
+}: UploadImageFieldProps<T>) {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [shouldCrop, setShouldCrop] = useState<boolean>(
@@ -554,4 +554,4 @@ export const UploadImageField = <T extends FieldValues>({
       </Dialog>
     </>
   );
-};
+}

@@ -30,13 +30,13 @@ type CommentFormProps = {
   onCancel?: () => void;
 };
 
-export const CommentForm = ({
+export function CommentForm({
   parentId,
   movieId,
   defaultMention,
   onSubmitted,
   onCancel
-}: CommentFormProps) => {
+}: CommentFormProps) {
   const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
 
   const pickerContainerRef = useRef<HTMLDivElement>(null);
@@ -76,7 +76,7 @@ export const CommentForm = ({
     options: {
       queryKey: queryKeys.COMMENT,
       objectName: objectNames.COMMENT,
-      pathParams: { id: editingComment?.id },
+      pathParams: { id: editingComment?.id ?? '' },
       mode: editingComment === null ? 'create' : 'edit',
       showNotify: false
     }
@@ -120,11 +120,11 @@ export const CommentForm = ({
   };
 
   useEffect(() => {
-    let picker: any;
+    let picker: (HTMLElement & { i18n?: unknown }) | null = null;
     let mounted = true;
 
-    const handleEmojiClick = (event: any) => {
-      const emoji = event.detail.unicode;
+    const handleEmojiClick = (event: Event) => {
+      const emoji = (event as CustomEvent<{ unicode: string }>).detail.unicode;
       if (formMethodsRef.current) {
         const currentValue = formMethodsRef.current.getValues('content') || '';
         formMethodsRef.current.setValue('content', currentValue + emoji, {
@@ -140,7 +140,7 @@ export const CommentForm = ({
 
       if (!mounted) return;
 
-      picker = new Picker();
+      picker = new Picker() as HTMLElement & { i18n?: unknown };
       picker.i18n = vi;
       Object.assign(picker.style, {
         position: 'absolute',
@@ -244,4 +244,4 @@ export const CommentForm = ({
       }}
     </BaseForm>
   );
-};
+}

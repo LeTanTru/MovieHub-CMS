@@ -25,7 +25,7 @@ import { getData, removeData, renderImageUrl } from '@/utils';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export const ProfileForm = () => {
+export function ProfileForm() {
   const navigate = useNavigate();
   const profile = useAuthStore((s) => s.profile);
 
@@ -185,4 +185,4 @@ export const ProfileForm = () => {
       )}
     </BaseForm>
   );
-};
+}

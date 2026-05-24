@@ -10,7 +10,7 @@ type SidebarLayoutProps = {
   children: ReactNode;
 };
 
-export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
+export function SidebarLayout({ children }: SidebarLayoutProps) {
   const state = useSidebarStore((s) => s.state);
   return (
     <SidebarProvider
@@ -29,4 +29,4 @@ export const SidebarLayout = ({ children }: SidebarLayoutProps) => {
       </div>
     </SidebarProvider>
   );
-};
+}

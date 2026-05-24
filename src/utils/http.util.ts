@@ -20,15 +20,15 @@ const TIME_OUT = 10000;
 
 let isRefreshing = false;
 let failedQueue: Array<{
-  resolve: (value?: any) => void;
-  reject: (error?: any) => void;
+  resolve: (value?: string | null) => void;
+  reject: (error: unknown) => void;
 }> = [];
 
 type RequestConfigWithRetry = InternalAxiosRequestConfig & {
   _retry?: boolean;
 };
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
@@ -199,7 +199,9 @@ export const sendRequest = async <T>(
   }
 
   Object.entries(pathParams).forEach(([key, value]) => {
-    baseUrl = baseUrl.replace(`:${key}`, value.toString());
+    if (value !== undefined && value !== null) {
+      baseUrl = baseUrl.replace(`:${key}`, value.toString());
+    }
   });
 
   try {
@@ -213,11 +215,12 @@ export const sendRequest = async <T>(
       ...options
     };
 
-    if (isUpload) {
+    if (isUpload && body && typeof body === 'object') {
       const formData = new FormData();
+      const bodyObj = body as Record<string, unknown>;
 
-      Object.keys(body).forEach((key) => {
-        const value = body[key];
+      Object.keys(bodyObj).forEach((key) => {
+        const value = bodyObj[key];
 
         if (value instanceof Blob) {
           let filename = 'upload';
@@ -230,8 +233,11 @@ export const sendRequest = async <T>(
           }
 
           formData.append(key, value, filename);
-        } else {
-          formData.append(key, value);
+        } else if (value !== null && value !== undefined) {
+          formData.append(
+            key,
+            typeof value === 'object' ? JSON.stringify(value) : String(value)
+          );
         }
       });
 
@@ -248,7 +254,7 @@ export const sendRequest = async <T>(
 
     const res: AxiosResponse = await axiosInstance.request<T>(axiosConfig);
     return res.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     const err = error as AxiosError;
     throw err;
   }

@@ -29,7 +29,7 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-export const ServerConfigForm = () => {
+export function ServerConfigForm() {
   const { id } = useParams<{ id: string }>();
 
   const {
@@ -203,4 +203,4 @@ export const ServerConfigForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

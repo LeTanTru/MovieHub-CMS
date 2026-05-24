@@ -26,7 +26,7 @@ import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 
-export const SidebarForm = () => {
+export function SidebarForm() {
   const { id } = useParams<{
     id: string;
   }>();
@@ -252,4 +252,4 @@ export const SidebarForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

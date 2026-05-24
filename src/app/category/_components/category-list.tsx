@@ -19,7 +19,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 
-export const CategoryList = () => {
+export function CategoryList() {
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryResType | null>(null);
   const { opened, open, close } = useDisclosure();
@@ -56,7 +56,10 @@ export const CategoryList = () => {
         );
       };
       handlers.additionalColumns = () => ({
-        edit: (record: CategoryResType, buttonProps?: Record<string, any>) => {
+        edit: (
+          record: CategoryResType,
+          buttonProps?: Record<string, unknown>
+        ) => {
           const handleUpdateCategory = (record: CategoryResType) => {
             setSelectedCategory(record);
             open();
@@ -87,11 +90,14 @@ export const CategoryList = () => {
     {
       title: 'Tên',
       dataIndex: 'name',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      )
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      }
     },
     handlers.renderActionColumn({
       actions: {
@@ -134,4 +140,4 @@ export const CategoryList = () => {
       />
     </PageWrapper>
   );
-};
+}

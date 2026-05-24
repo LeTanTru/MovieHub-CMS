@@ -30,14 +30,17 @@ export type SearchFormProps<S extends FieldValues> = {
     options?: OptionType[];
     submitOnChanged?: boolean;
     apiConfig?: ApiConfig;
-    mappingData?: (option: any) => AutoCompleteOption;
+    mappingData?: (option: unknown) => AutoCompleteOption;
     searchParams?: string[];
-    initialParams?: Record<string, any>;
+    initialParams?: Record<
+      string,
+      string | number | boolean | null | undefined
+    >;
     dateFormat?: string;
   }[];
   initialValues: Partial<S>;
   resetValues?: Partial<S>;
   schema: ZodObject;
-  handleSearchSubmit: (values: any) => void;
+  handleSearchSubmit: (values: Partial<S>) => void;
   handleSearchReset: () => void;
 };

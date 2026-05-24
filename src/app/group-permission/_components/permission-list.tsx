@@ -27,7 +27,7 @@ import { PermissionModal } from './permission-modal';
 import { invalidateQueries, notify } from '@/utils';
 import { logger } from '@/logger';
 
-export const PermissionList = () => {
+export function PermissionList() {
   const { opened, open, close } = useDisclosure();
   const [selectedRow, setSelectedRow] = useState<PermissionResType | null>(
     null
@@ -222,4 +222,4 @@ export const PermissionList = () => {
       />
     </>
   );
-};
+}

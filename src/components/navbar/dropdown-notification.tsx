@@ -26,7 +26,7 @@ import { NotificationList } from './notification-list';
 
 const NOTIFICATION_BADGE_MAX_DISPLAY = 9;
 
-export const DropdownNotification = () => {
+export function DropdownNotification() {
   const {
     opened: openedDropdown,
     toggle: toggleDropDown,
@@ -221,4 +221,4 @@ export const DropdownNotification = () => {
       </AnimatePresence>
     </div>
   );
-};
+}

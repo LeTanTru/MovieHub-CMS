@@ -7,7 +7,7 @@ type PreviousButtonProps = {
   onClick: () => void;
 };
 
-export const PreviousButton = ({ onClick }: PreviousButtonProps) => {
+export function PreviousButton({ onClick }: PreviousButtonProps) {
   const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -32,4 +32,4 @@ export const PreviousButton = ({ onClick }: PreviousButtonProps) => {
       </Tooltip.Content>
     </Tooltip.Root>
   );
-};
+}

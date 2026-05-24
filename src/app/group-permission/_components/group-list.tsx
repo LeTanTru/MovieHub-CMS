@@ -22,7 +22,7 @@ import type {
 } from '@/types';
 import { notify } from '@/utils';
 
-export const GroupList = () => {
+export function GroupList() {
   const { data, loading, handlers, pagination } = useListBase<
     GroupResType,
     GroupSearchType
@@ -73,7 +73,8 @@ export const GroupList = () => {
     {
       title: 'Màu',
       dataIndex: 'color',
-      render: (value) => {
+      render: (val) => {
+        const value = val as string;
         return (
           <ToolTip title={value}>
             <Badge
@@ -131,4 +132,4 @@ export const GroupList = () => {
       />
     </ListPageWrapper>
   );
-};
+}

@@ -1,7 +1,7 @@
 import { apiConfig, queryKeys } from '@/constants';
 import type {
-  ApiResponse,
   ApiResponseList,
+  ApiResponseNoData,
   PermissionResType,
   PermissionSearchType
 } from '@/types';
@@ -27,7 +27,7 @@ export const useDeletePermissionMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.PERMISSION_DELETE],
     mutationFn: (id: string) =>
-      http.delete<ApiResponse<any>>(apiConfig.permission.delete, {
+      http.delete<ApiResponseNoData>(apiConfig.permission.delete, {
         pathParams: {
           id
         }

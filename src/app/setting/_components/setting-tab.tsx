@@ -12,7 +12,7 @@ import { getData, setData } from '@/utils';
 import { useState } from 'react';
 import { SettingList } from './setting-list';
 
-export const SettingTab = () => {
+export function SettingTab() {
   const defaultTab =
     getData(storageKeys.ACTIVE_SETTING_TAB) || TAB_SETTING_GENERAL;
 
@@ -70,4 +70,4 @@ export const SettingTab = () => {
       </div>
     </PageWrapper>
   );
-};
+}

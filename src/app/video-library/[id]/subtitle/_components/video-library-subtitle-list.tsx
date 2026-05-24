@@ -4,7 +4,12 @@ import { Col, Row } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { List, ListItem } from '@/components/list';
 import { CircleLoading } from '@/components/loading';
-import { VideoPlayer } from '@/components/video-player';
+import dynamic from 'next/dynamic';
+
+const VideoPlayer = dynamic(
+  () => import('@/components/video-player').then((m) => m.VideoPlayer),
+  { ssr: false }
+);
 import { envConfig } from '@/config';
 import { apiConfig, objectNames, queryKeys } from '@/constants';
 import { useListBase, useQueryParams } from '@/hooks';
@@ -25,7 +30,7 @@ import {
 } from '@/utils';
 import { useParams } from 'next/navigation';
 
-export const VideoLibrarySubtitleList = () => {
+export function VideoLibrarySubtitleList() {
   const { id } = useParams<{ id: string }>();
   const accessToken = useAuthStore((s) => s.accessToken);
   const { data: videoLibrary, isLoading: loadingVideoLibrary } =
@@ -36,7 +41,7 @@ export const VideoLibrarySubtitleList = () => {
   const parentParams = deprefixParams(searchParams);
   const { videoName, parentPage, ...restSearchParams } = parentParams;
 
-  const { data: subtitleList, loading } = useListBase<
+  const { data: subtitleList } = useListBase<
     VideoLibrarySubtitleResType,
     VideoLibrarySubtitleSearchType
   >({
@@ -64,7 +69,7 @@ export const VideoLibrarySubtitleList = () => {
         ...(videoName
           ? [
               {
-                label: videoName
+                label: videoName as string
               }
             ]
           : []),
@@ -125,4 +130,4 @@ export const VideoLibrarySubtitleList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

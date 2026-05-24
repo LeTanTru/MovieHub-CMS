@@ -29,7 +29,7 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export const StyleForm = () => {
+export function StyleForm() {
   const { id } = useParams<{ id: string }>();
 
   const { mutateAsync: uploadImageMutate, isPending: uploadImageLoading } =
@@ -247,4 +247,4 @@ export const StyleForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

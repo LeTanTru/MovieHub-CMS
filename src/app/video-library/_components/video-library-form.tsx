@@ -54,7 +54,7 @@ const VideoPlayer = dynamic(
 );
 import { envConfig } from '@/config';
 
-export const VideoLibraryForm = () => {
+export function VideoLibraryForm() {
   const { id } = useParams<{ id: string }>();
   const accessToken = useAuthStore((s) => s.accessToken);
 
@@ -409,9 +409,10 @@ export const VideoLibraryForm = () => {
                           vttUrl={
                             validatedVttUrl
                               ? renderVttUrl(
-                                  data.hostname,
+                                  data?.hostname ?? '',
                                   validatedVttUrl,
-                                  data.sourceType
+                                  data?.sourceType ??
+                                    VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL
                                 )
                               : ''
                           }
@@ -521,4 +522,4 @@ export const VideoLibraryForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

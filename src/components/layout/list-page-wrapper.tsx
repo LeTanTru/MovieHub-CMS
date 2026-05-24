@@ -10,14 +10,14 @@ type ListPageWrapperProps = {
   additionButtons?: ReactNode[];
 };
 
-export const ListPageWrapper = ({
+export function ListPageWrapper({
   className,
   children,
   searchForm,
   addButton,
   reloadButton,
   additionButtons
-}: ListPageWrapperProps) => {
+}: ListPageWrapperProps) {
   const hasAddtionalButtons = !!additionButtons && additionButtons.length > 0;
 
   const showHeader =
@@ -58,4 +58,4 @@ export const ListPageWrapper = ({
       {children}
     </div>
   );
-};
+}

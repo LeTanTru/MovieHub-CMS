@@ -21,7 +21,7 @@ import type {
 } from '@/types';
 import { convertUTCToLocal, notify } from '@/utils';
 
-export const AppVersionList = () => {
+export function AppVersionList() {
   const { data, pagination, loading, handlers } = useListBase<
     AppVersionResType,
     AppVersionSearchType
@@ -45,8 +45,8 @@ export const AppVersionList = () => {
       title: 'Tên phiên bản',
       dataIndex: 'name',
       render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
+        <span className='line-clamp-1 block truncate' title={value as string}>
+          {value as string}
         </span>
       )
     },
@@ -56,9 +56,9 @@ export const AppVersionList = () => {
       render: (value) => (
         <span
           className='line-clamp-1 block truncate'
-          title={convertUTCToLocal(value)}
+          title={convertUTCToLocal(value as string)}
         >
-          {convertUTCToLocal(value)}
+          {convertUTCToLocal(value as string)}
         </span>
       ),
       width: 200,
@@ -68,8 +68,8 @@ export const AppVersionList = () => {
       title: 'Mã phiên bản',
       dataIndex: 'code',
       render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
+        <span className='line-clamp-1 block truncate' title={value as string}>
+          {value as string}
         </span>
       ),
       width: 150,
@@ -151,4 +151,4 @@ export const AppVersionList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

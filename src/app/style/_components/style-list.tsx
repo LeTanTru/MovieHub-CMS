@@ -9,7 +9,7 @@ import type { Column, StyleResType, StyleSearchType } from '@/types';
 import { notify, renderImageUrl } from '@/utils';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 
-export const StyleList = () => {
+export function StyleList() {
   const { data, pagination, loading, handlers } = useListBase<
     StyleResType,
     StyleSearchType
@@ -37,7 +37,7 @@ export const StyleList = () => {
       render: (value) => (
         <ImageField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           freeAspect
           freePreviewAspect
         />
@@ -51,7 +51,7 @@ export const StyleList = () => {
       render: (value) => (
         <ImageField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           freeAspect
           freePreviewAspect
         />
@@ -60,27 +60,33 @@ export const StyleList = () => {
     {
       title: 'Tên',
       dataIndex: 'name',
-      render: (value, record) => (
-        <div className='flex items-center gap-x-2'>
-          <span className='line-clamp-1 block truncate' title={value}>
-            {value}
-          </span>
-          {record.isDefault && (
-            <ToolTip title='Mặc định'>
-              <RiCheckboxCircleFill className='size-5 text-emerald-500' />
-            </ToolTip>
-          )}
-        </div>
-      )
+      render: (val, record) => {
+        const value = val as string;
+        return (
+          <div className='flex items-center gap-x-2'>
+            <span className='line-clamp-1 block truncate' title={value}>
+              {value}
+            </span>
+            {record.isDefault && (
+              <ToolTip title='Mặc định'>
+                <RiCheckboxCircleFill className='size-5 text-emerald-500' />
+              </ToolTip>
+            )}
+          </div>
+        );
+      }
     },
     {
       title: 'Loại',
       dataIndex: 'type',
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      },
       width: 120,
       align: 'center'
     },
@@ -112,4 +118,4 @@ export const StyleList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

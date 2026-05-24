@@ -74,7 +74,7 @@ type CommentItemProps = {
   targetParentId: string | null;
 };
 
-export const CommentItem = ({
+export function CommentItem({
   comment,
   level,
   voteMap,
@@ -94,7 +94,7 @@ export const CommentItem = ({
   editingComment,
   targetCommentId,
   targetParentId
-}: CommentItemProps) => {
+}: CommentItemProps) {
   const hasPermission = useValidatePermission();
 
   const isActiveParent = openParentIds.includes(comment.id);
@@ -646,7 +646,7 @@ export const CommentItem = ({
       </div>
     </Element>
   );
-};
+}
 
 CommentItem.Skeleton = function () {
   return (

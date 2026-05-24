@@ -47,7 +47,7 @@ import type { UseFormReturn } from 'react-hook-form';
 import { PlusIcon, X } from 'lucide-react';
 import { logger } from '@/logger';
 
-export const CollectionForm = () => {
+export function CollectionForm() {
   const navigate = useNavigate();
 
   const pathname = usePathname();
@@ -194,7 +194,11 @@ export const CollectionForm = () => {
       filter: JSON.stringify(cleanedFilter),
       colors: values.colors
     };
-    await handleSubmit(payload as any, form, collectionErrorMaps);
+    await handleSubmit(
+      payload as unknown as CollectionBodyType,
+      form,
+      collectionErrorMaps
+    );
   };
 
   const handleChangeType = (type: number) => {
@@ -493,4 +497,4 @@ export const CollectionForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

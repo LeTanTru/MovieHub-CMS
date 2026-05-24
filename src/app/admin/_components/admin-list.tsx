@@ -29,7 +29,7 @@ import { Badge } from '@/components/ui/badge';
 import { logger } from '@/logger';
 import { cn } from '@/lib';
 
-export const AdminList = () => {
+export function AdminList() {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
     useChangeAccountStatusMutation();
 
@@ -48,7 +48,7 @@ export const AdminList = () => {
       handlers.additionalColumns = () => ({
         changeStatus: (
           record: AccountAutoResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleChangeStatus = async (record: AccountAutoResType) => {
             await changeStatusMutate(
@@ -121,7 +121,7 @@ export const AdminList = () => {
         <AvatarField
           size={50}
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           alt={getLastWord(record.fullName)}
         />
       )
@@ -129,7 +129,8 @@ export const AdminList = () => {
     {
       title: 'Tên',
       dataIndex: 'fullName',
-      render: (value, record) => {
+      render: (val, record) => {
+        const value = val as string;
         return (
           <div className='flex flex-col'>
             <span>{value}</span>
@@ -151,21 +152,27 @@ export const AdminList = () => {
       title: 'Email',
       dataIndex: 'email',
       width: 300,
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      )
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      }
     },
     {
       title: 'Số điện thoại',
       dataIndex: 'phone',
       width: 200,
-      render: (value) => (
-        <span className='line-clamp-1' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1' title={value}>
+            {value}
+          </span>
+        );
+      },
       align: 'center'
     },
     handlers.renderStatusColumn(),
@@ -224,4 +231,4 @@ export const AdminList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

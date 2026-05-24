@@ -37,7 +37,7 @@ import {
 
 type SelectFieldProps<
   TFieldValues extends FieldValues,
-  TOption extends Record<string, any>
+  TOption extends Record<string, unknown>
 > = {
   control: Control<TFieldValues>;
   name: FieldPath<TFieldValues>;
@@ -77,9 +77,9 @@ const fuzzyMatch = (text: string, search: string) => {
   return new RegExp(pattern).test(t);
 };
 
-export const SelectField = <
+export function SelectField<
   TFieldValues extends FieldValues,
-  TOption extends Record<string, any>
+  TOption extends Record<string, unknown>
 >({
   control,
   name,
@@ -96,11 +96,11 @@ export const SelectField = <
   labelClassName,
   disabled = false,
   renderOption,
-  getLabel = (opt) => opt.label,
-  getValue = (opt) => opt.value,
-  getPrefix = (opt) => opt.prefix,
+  getLabel = (opt) => opt.label as string | number,
+  getValue = (opt) => opt.value as string | number,
+  getPrefix = (opt) => opt.prefix as ReactNode,
   onValueChange
-}: SelectFieldProps<TFieldValues, TOption>) => {
+}: SelectFieldProps<TFieldValues, TOption>) {
   const [open, setOpen] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
@@ -322,4 +322,4 @@ export const SelectField = <
       }}
     />
   );
-};
+}

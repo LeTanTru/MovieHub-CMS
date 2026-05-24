@@ -16,7 +16,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 
-export const GroupPermissionList = () => {
+export function GroupPermissionList() {
   const { opened, open, close } = useDisclosure();
   const [selectedRow, setSelectedRow] = useState<GroupPermissionResType | null>(
     null
@@ -56,7 +56,7 @@ export const GroupPermissionList = () => {
       handlers.additionalColumns = () => ({
         edit: (
           record: GroupPermissionResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleEditClick = (record: GroupPermissionResType) => {
             open();
@@ -143,4 +143,4 @@ export const GroupPermissionList = () => {
       />
     </>
   );
-};
+}

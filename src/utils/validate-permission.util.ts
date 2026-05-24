@@ -1,4 +1,4 @@
-export const ensureArray = (value: any) => {
+export const ensureArray = <T>(value: T | T[] | null | undefined): T[] => {
   if (value === null || value === undefined) {
     return [];
   }
@@ -37,7 +37,7 @@ export const validatePermission = ({
   separate?: boolean;
 }) => {
   if (ensureArray(excludeKind).length > 0) {
-    if (ensureArray(excludeKind).some((kind) => kind === userKind))
+    if (ensureArray(excludeKind).some((kind) => Number(kind) === userKind))
       return false;
   }
 

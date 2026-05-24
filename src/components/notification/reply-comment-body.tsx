@@ -14,11 +14,11 @@ import {
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-export const ReplyCommentBody = ({
+export function ReplyCommentBody({
   notification
 }: {
   notification: NotificationResType;
-}) => {
+}) {
   const body = useMemo(
     () => parseJSON<ReplyCommentNotificationType>(notification.body),
     [notification.body]
@@ -84,4 +84,4 @@ export const ReplyCommentBody = ({
       </div>
     </Link>
   );
-};
+}

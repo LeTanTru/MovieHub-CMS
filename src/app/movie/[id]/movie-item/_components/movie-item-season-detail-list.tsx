@@ -53,7 +53,7 @@ import { useMarkLatestMovieItemMutation } from '@/queries';
 import { IoCheckmarkDone } from 'react-icons/io5';
 import { logger } from '@/logger';
 
-export const MovieItemSeasonDetailList = () => {
+export function MovieItemSeasonDetailList() {
   const { id: movieId, movieItemId } = useParams<{
     id: string;
     movieItemId: string;
@@ -91,7 +91,7 @@ export const MovieItemSeasonDetailList = () => {
     apiConfig: apiConfig.movieItem,
     options: {
       queryKey: queryKeys.MOVIE_ITEM,
-      objectName: getMovieTypeLabel(type),
+      objectName: getMovieTypeLabel(type as string),
       defaultFilters: {
         movieId,
         parentId: movieItemId
@@ -108,7 +108,7 @@ export const MovieItemSeasonDetailList = () => {
         return {
           watchVideo: (
             record: MovieItemResType,
-            buttonProps?: Record<string, any>
+            buttonProps?: Record<string, unknown>
           ) => (
             <ToolTip title='Xem video' sideOffset={0}>
               <span>
@@ -129,7 +129,7 @@ export const MovieItemSeasonDetailList = () => {
           ),
           edit: (
             record: MovieItemResType,
-            buttonProps?: Record<string, any>
+            buttonProps?: Record<string, unknown>
           ) => {
             const handleEditMovieItem = (record: MovieItemResType) => {
               setMovieItem(record);
@@ -138,7 +138,7 @@ export const MovieItemSeasonDetailList = () => {
 
             return (
               <ToolTip
-                title={`Cập nhật ${getMovieTypeLabel(type)}`}
+                title={`Cập nhật ${getMovieTypeLabel(type as string)}`}
                 sideOffset={0}
               >
                 <span>
@@ -158,7 +158,7 @@ export const MovieItemSeasonDetailList = () => {
           },
           markLatest: (
             record: MovieItemResType,
-            buttonProps?: Record<string, any>
+            buttonProps?: Record<string, unknown>
           ) => {
             const handleMarkLatest = (record: MovieItemResType) => {
               markLatestMutate(record.id, {
@@ -234,7 +234,7 @@ export const MovieItemSeasonDetailList = () => {
     onDragEnd
   } = useDragDrop<MovieItemResType>({
     key: queryKeys.MOVIE_ITEM_LIST,
-    objectName: getMovieTypeLabel(type),
+    objectName: getMovieTypeLabel(type as string),
     data,
     apiConfig: apiConfig.movieItem.updateOrdering,
     sortField: 'ordering',
@@ -256,25 +256,25 @@ export const MovieItemSeasonDetailList = () => {
       render: (value) => (
         <ImageField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           aspect={16 / 9}
           previewAspect={16 / 9}
         />
       )
     },
     {
-      title: `Tiêu đề ${getMovieTypeLabel(type)}`,
+      title: `Tiêu đề ${getMovieTypeLabel(type as string)}`,
       dataIndex: 'title',
       render: (value, record) => (
         <span
           className={cn('line-clamp-1 block truncate', {
             italic: record.kind === MOVIE_ITEM_KIND_TRAILER
           })}
-          title={`${record.kind === MOVIE_ITEM_KIND_EPISODE ? `${record.label}. ` : ''}${value}`}
+          title={`${record.kind === MOVIE_ITEM_KIND_EPISODE ? `${record.label}. ` : ''}${value as string}`}
         >
           {record.kind === MOVIE_ITEM_KIND_EPISODE && `Tập ${record.label}. `}
           {record.kind === MOVIE_ITEM_KIND_TRAILER && `${record.label}: `}
-          {value}
+          {value as string}
           <span className='ml-2'>
             {record.isLatest && (
               <Badge
@@ -292,7 +292,7 @@ export const MovieItemSeasonDetailList = () => {
       title: 'Ngày phát hành',
       dataIndex: 'releaseDate',
       width: 250,
-      render: (value) => convertUTCToLocal(value) || 'N/A',
+      render: (value) => convertUTCToLocal(value as string | null) || 'N/A',
       align: 'center'
     },
     {
@@ -356,7 +356,10 @@ export const MovieItemSeasonDetailList = () => {
         );
 
   const searchFields: SearchFormProps<MovieItemSearchType>['searchFields'] = [
-    { key: 'title', placeholder: `Tiêu đề ${getMovieTypeLabel(type)}` },
+    {
+      key: 'title',
+      placeholder: `Tiêu đề ${getMovieTypeLabel(type as string)}`
+    },
     ...(kindOptions.length > 0
       ? [
           {
@@ -381,7 +384,7 @@ export const MovieItemSeasonDetailList = () => {
           )
         },
         {
-          label: movieTitle || 'Phần',
+          label: (movieTitle as string) || 'Phần',
           href: renderListPageUrl(
             generatePath(route.movieItem.getList.path, {
               id: movieId
@@ -397,7 +400,7 @@ export const MovieItemSeasonDetailList = () => {
           )
         },
         {
-          label: season || 'Chi tiết'
+          label: (season as string) || 'Chi tiết'
         }
       ]}
     >
@@ -430,7 +433,7 @@ export const MovieItemSeasonDetailList = () => {
       )}
     </PageWrapper>
   );
-};
+}
 
 const getMovieTypeLabel = (type?: number | string) => {
   switch (Number(type)) {

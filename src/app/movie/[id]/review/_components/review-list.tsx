@@ -18,7 +18,7 @@ import { ReviewItem } from './review-item';
 import { useCallback } from 'react';
 import { renderListPageUrl } from '@/utils';
 
-export const ReviewList = () => {
+export function ReviewList() {
   const { id: movieId } = useParams<{ id: string }>();
   const { searchParams, serializeParams, deprefixParams } =
     useQueryParams<Record<string, string>>();
@@ -65,7 +65,7 @@ export const ReviewList = () => {
             serializeParams({ ...restSearchParams, page: parentPage })
           )
         },
-        { label: movieTitle || 'Chi tiết' },
+        { label: (movieTitle as string) || 'Chi tiết' },
         { label: 'Đánh giá' }
       ]}
     >
@@ -106,4 +106,4 @@ export const ReviewList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

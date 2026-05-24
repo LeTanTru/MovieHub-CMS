@@ -6,7 +6,7 @@ import { useTheme } from 'next-themes';
 import { useIsMounted } from '@/hooks';
 import { AnimatePresence, m } from 'framer-motion';
 
-export const DarkModeToggle = () => {
+export function DarkModeToggle() {
   const { theme, setTheme } = useTheme();
   const isMounted = useIsMounted();
   const isDark = theme === 'dark';
@@ -50,4 +50,4 @@ export const DarkModeToggle = () => {
       </AnimatePresence>
     </Toggle>
   );
-};
+}

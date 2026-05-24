@@ -24,29 +24,29 @@ const routeMatcherCache: Array<{ pattern: RegExp; item: RouteItem }> = [];
 const createRouteRegex = (regexString: string) =>
   new RegExp(`^${regexString}$`);
 
-function buildRouteCache(obj: Record<string, any>) {
+function buildRouteCache(obj: Record<string, unknown>) {
   for (const key in obj) {
-    const item = obj[key];
-    if (item?.path) {
+    const item = obj[key] as Record<string, unknown> | null | undefined;
+    if (item && item.path && typeof item.path === 'string') {
       const regexString = item.path
         .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
         .replace(/:[^/]+/g, '[^/]+')
         .replace(/\//g, '\\/');
       routeMatcherCache.push({
         pattern: createRouteRegex(regexString),
-        item
+        item: item as unknown as RouteItem
       });
     }
-    if (item?.children) {
-      buildRouteCache(item.children);
+    if (item && item.children && typeof item.children === 'object') {
+      buildRouteCache(item.children as Record<string, unknown>);
     }
-    if (typeof item === 'object' && item !== obj) {
+    if (typeof item === 'object' && item !== null && item !== obj) {
       buildRouteCache(item);
     }
   }
 }
 
-buildRouteCache(route);
+buildRouteCache(route as unknown as Record<string, unknown>);
 
 function findRouteByPath(pathname: string): RouteItem | null {
   for (const { pattern, item } of routeMatcherCache) {
@@ -55,7 +55,7 @@ function findRouteByPath(pathname: string): RouteItem | null {
   return null;
 }
 
-export const PermissionGuard = ({ children }: PermissionGuardProps) => {
+export function PermissionGuard({ children }: PermissionGuardProps) {
   const { queryString } = useQueryParams();
   const navigate = useNavigate(false);
   const pathname = usePathname();
@@ -163,4 +163,4 @@ export const PermissionGuard = ({ children }: PermissionGuardProps) => {
   }
 
   return <>{children}</>;
-};
+}

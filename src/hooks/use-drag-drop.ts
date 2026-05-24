@@ -1,47 +1,50 @@
 import { logger } from '@/logger';
-import type { ApiConfig, ApiResponse, Column } from '@/types';
+import type { ApiConfig, ApiResponseNoData, Column } from '@/types';
 import { http, invalidateQueries, notify } from '@/utils';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useMutation } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 
-const sortColumn: Column<any> = {
+const sortColumn: Column<unknown> = {
   title: '#',
   key: 'sort',
   width: 50,
   align: 'center'
 };
 
-type UseDragDropType<T extends Record<string, any>> = {
+type UseDragDropType<T extends { id: string }> = {
   key: string;
   objectName: string;
   data: T[];
   apiConfig: ApiConfig;
   sortField?: keyof T;
   updateOnDragEnd?: boolean;
-  mappingData?: (record: T, index: number) => Record<string, any>;
+  mappingData?: (record: T, index: number) => Record<string, unknown>;
 };
 
-export const useDragDrop = <T extends Record<string, any>>({
+export const useDragDrop = <T extends { id: string }>({
   key,
   objectName,
   data,
   apiConfig,
-  sortField = 'ordering',
+  sortField = 'ordering' as keyof T,
   updateOnDragEnd,
   mappingData
 }: UseDragDropType<T>) => {
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const [sortedData, setSortedData] = useState<T[]>(
-    (data.length > 0 && data.sort((a, b) => a?.[sortField] - b?.[sortField])) ||
+    (data.length > 0 &&
+      data.sort(
+        (a, b) => (a?.[sortField] as number) - (b?.[sortField] as number)
+      )) ||
       []
   );
 
   const { mutateAsync, isPending } = useMutation({
     mutationKey: ['updateOrdering', apiConfig.baseUrl],
-    mutationFn: (body: any) =>
-      http.put<ApiResponse<any>>(apiConfig, {
+    mutationFn: (body: Record<string, unknown>[]) =>
+      http.put<ApiResponseNoData>(apiConfig, {
         body
       })
   });
@@ -50,12 +53,12 @@ export const useDragDrop = <T extends Record<string, any>>({
     async (dataOverride?: T[]) => {
       const finalData = dataOverride || sortedData;
 
-      let dataUpdate: Record<string, any>[] = [];
+      const dataUpdate: Record<string, unknown>[] = [];
 
       finalData.forEach((item, index) => {
-        let baseData = {
+        let baseData: Record<string, unknown> = {
           id: item.id,
-          [sortField]: index
+          [sortField as string]: index
         };
 
         if (typeof mappingData === 'function') {
@@ -116,7 +119,7 @@ export const useDragDrop = <T extends Record<string, any>>({
 
   return {
     isChanged,
-    sortColumn,
+    sortColumn: sortColumn as Column<T>,
     sortedData,
     loading: isPending,
     setIsChanged,

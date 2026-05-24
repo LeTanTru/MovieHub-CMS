@@ -14,7 +14,7 @@ import { useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import { groupPermissionSchema } from '@/schemaValidations';
 import {
-  ApiResponse,
+  ApiResponseNoData,
   GroupPermissionBodyType,
   GroupPermissionResType
 } from '@/types';
@@ -28,11 +28,11 @@ type GroupPermissionModalProps = {
   onClose: () => void;
 };
 
-export const GroupPermissionModal = ({
+export function GroupPermissionModal({
   open,
   selectedRow,
   onClose
-}: GroupPermissionModalProps) => {
+}: GroupPermissionModalProps) {
   const {
     loading,
     isEditing,
@@ -46,7 +46,7 @@ export const GroupPermissionModal = ({
       queryKey: queryKeys.GROUP_PERMISSION,
       objectName: objectNames.GROUP_PERMISSION,
       pathParams: {
-        id: selectedRow?.id
+        id: selectedRow?.id ?? ''
       },
       mode: selectedRow === null ? 'create' : 'edit'
     }
@@ -73,7 +73,7 @@ export const GroupPermissionModal = ({
     form: UseFormReturn<GroupPermissionBodyType>
   ) => {
     try {
-      const res: ApiResponse<any> = await handleSubmit(
+      const res: ApiResponseNoData = await handleSubmit(
         !isEditing ? values : { ...values, id: selectedRow?.id }
       );
       if (res.result) {
@@ -130,4 +130,4 @@ export const GroupPermissionModal = ({
       <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
-};
+}

@@ -37,12 +37,12 @@ type PermissionModalProps = {
   onClose: () => void;
 };
 
-export const PermissionModal = ({
+export function PermissionModal({
   open,
   selectedRow,
   selectedGroupPermissionId,
   onClose
-}: PermissionModalProps) => {
+}: PermissionModalProps) {
   const {
     loading,
     isEditing,
@@ -56,7 +56,7 @@ export const PermissionModal = ({
       queryKey: queryKeys.PERMISSION,
       objectName: objectNames.PERMISSION,
       pathParams: {
-        id: selectedRow?.id
+        id: selectedRow?.id ?? ''
       },
       mode: selectedRow === null ? 'create' : 'edit'
     },
@@ -221,4 +221,4 @@ export const PermissionModal = ({
       <Modal.Confirm message='Bạn có chắc chắn muốn hủy không ?' />
     </Modal>
   );
-};
+}

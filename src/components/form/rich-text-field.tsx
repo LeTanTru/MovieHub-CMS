@@ -44,7 +44,7 @@ type RichTextFieldProps<T extends FieldValues> = {
   formItemClassName?: string;
 };
 
-export const RichTextField = <T extends FieldValues>({
+export function RichTextField<T extends FieldValues>({
   control,
   name,
   label,
@@ -56,7 +56,7 @@ export const RichTextField = <T extends FieldValues>({
   height,
   labelClassName,
   formItemClassName
-}: RichTextFieldProps<T>) => {
+}: RichTextFieldProps<T>) {
   return (
     <FormField
       control={control}
@@ -229,4 +229,4 @@ export const RichTextField = <T extends FieldValues>({
       )}
     />
   );
-};
+}

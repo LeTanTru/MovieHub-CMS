@@ -7,7 +7,7 @@ import { useSidebarStore } from '@/store';
 import { DropdownAvatar } from './dropdown-avatar';
 import { DropdownNotification } from './dropdown-notification';
 
-export const Navbar = () => {
+export function Navbar() {
   const { state, setSidebarState } = useSidebarStore(
     useShallow((s) => ({ state: s.state, setSidebarState: s.setSidebarState }))
   );
@@ -42,4 +42,4 @@ export const Navbar = () => {
       </div>
     </nav>
   );
-};
+}

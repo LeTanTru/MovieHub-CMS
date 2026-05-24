@@ -3,7 +3,7 @@
 import { PlayButton, Tooltip, useMediaState } from '@vidstack/react';
 import { PauseIcon, PlayIcon } from '@vidstack/react/icons';
 
-export const PlayToggleButton = () => {
+export function PlayToggleButton() {
   const isPaused = useMediaState('paused');
   return (
     <Tooltip.Root>
@@ -21,4 +21,4 @@ export const PlayToggleButton = () => {
       </Tooltip.Content>
     </Tooltip.Root>
   );
-};
+}

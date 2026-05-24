@@ -28,7 +28,7 @@ import type {
 import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
-export const EmployeeList = () => {
+export function EmployeeList() {
   const { data: groupListData } = useGroupListQuery({ size: MAX_PAGE_SIZE });
 
   const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
@@ -47,7 +47,7 @@ export const EmployeeList = () => {
       handlers.additionalColumns = () => ({
         changeStatus: (
           record: EmployeeResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const handleChangeStatus = async (record: EmployeeResType) => {
             await changeStatusMutate(
@@ -119,7 +119,7 @@ export const EmployeeList = () => {
       render: (value, record) => (
         <AvatarField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           alt={getLastWord(record.fullName)}
         />
       )
@@ -127,7 +127,8 @@ export const EmployeeList = () => {
     {
       title: 'Tên',
       dataIndex: 'fullName',
-      render: (value, record) => {
+      render: (val, record) => {
+        const value = val as string;
         return (
           <div className='flex flex-col'>
             <span>{value}</span>
@@ -149,31 +150,40 @@ export const EmployeeList = () => {
       title: 'Tên đăng nhập',
       dataIndex: 'username',
       width: 220,
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      )
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      }
     },
     {
       title: 'Email',
       dataIndex: 'email',
       width: 220,
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      )
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      }
     },
     {
       title: 'Số điện thoại',
       dataIndex: 'phone',
       width: 150,
-      render: (value) => (
-        <span className='line-clamp-1 block truncate' title={value}>
-          {value}
-        </span>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <span className='line-clamp-1 block truncate' title={value}>
+            {value}
+          </span>
+        );
+      },
       align: 'center'
     },
     handlers.renderStatusColumn({ statusOptions: employeeStatusOptions }),
@@ -240,4 +250,4 @@ export const EmployeeList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

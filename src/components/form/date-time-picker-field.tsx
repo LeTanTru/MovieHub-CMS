@@ -49,7 +49,7 @@ type DateTimePickerFieldProps<T extends FieldValues> = {
   formItemClassName?: string;
 };
 
-export const DateTimePickerField = <T extends FieldValues>({
+export function DateTimePickerField<T extends FieldValues>({
   control,
   name,
   label,
@@ -62,7 +62,7 @@ export const DateTimePickerField = <T extends FieldValues>({
   className,
   formItemClassName,
   allowClear = false
-}: DateTimePickerFieldProps<T>) => {
+}: DateTimePickerFieldProps<T>) {
   const isMounted = useIsMounted();
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -408,7 +408,7 @@ export const DateTimePickerField = <T extends FieldValues>({
       }}
     />
   );
-};
+}
 
 function CustomSelectDropdown(props: DropdownProps) {
   const { options, value, onChange } = props;

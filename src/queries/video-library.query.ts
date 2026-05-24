@@ -1,6 +1,7 @@
 import { apiConfig, queryKeys } from '@/constants';
 import {
   ApiResponse,
+  ApiResponseNoData,
   ProcessAudioVideoLibraryBodyType,
   RetryProcessVideoLibraryBodyType,
   VideoLibraryResType
@@ -30,7 +31,7 @@ export const useRetryProcessVideoLibraryMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.RETRY_PROCESS_VIDEO_LIBRARY],
     mutationFn: (body: RetryProcessVideoLibraryBodyType) =>
-      http.put<ApiResponse<any>>(apiConfig.videoLibrary.retryProcess, {
+      http.put<ApiResponseNoData>(apiConfig.videoLibrary.retryProcess, {
         body
       })
   });
@@ -40,7 +41,7 @@ export const useProcessAudioVideoLibraryMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.PROCESS_AUDIO_VIDEO_LIBRARY],
     mutationFn: (body: ProcessAudioVideoLibraryBodyType) =>
-      http.put<ApiResponse<any>>(apiConfig.videoLibrary.processAudio, {
+      http.put<ApiResponseNoData>(apiConfig.videoLibrary.processAudio, {
         body
       })
   });

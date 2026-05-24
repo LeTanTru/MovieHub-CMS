@@ -9,7 +9,7 @@ import { NotificationResType } from '@/types';
 import { generateMqttTopic, invalidateQueries, notify } from '@/utils';
 import { useEffect } from 'react';
 
-export const MqttProvider = () => {
+export function MqttProvider() {
   const { profile } = useAuth();
   const client = getMqttClient();
 
@@ -124,4 +124,4 @@ export const MqttProvider = () => {
   });
 
   return null;
-};
+}

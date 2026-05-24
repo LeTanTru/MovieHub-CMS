@@ -6,11 +6,11 @@ type StarRatingProps = {
   size?: number;
 };
 
-export const StarRating = ({
+export function StarRating({
   value,
   showValue = true,
   size = 20
-}: StarRatingProps) => {
+}: StarRatingProps) {
   return (
     <div className='flex items-center gap-1'>
       <div className='stars [&>svg]:not-last:mr-0.5'>
@@ -42,4 +42,4 @@ export const StarRating = ({
       )}
     </div>
   );
-};
+}

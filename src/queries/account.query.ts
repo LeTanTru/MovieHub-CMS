@@ -1,5 +1,5 @@
 import { apiConfig, queryKeys } from '@/constants';
-import type { ApiResponse, ProfileResType } from '@/types';
+import type { ApiResponse, ApiResponseNoData, ProfileResType } from '@/types';
 import { http } from '@/utils';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -19,6 +19,6 @@ export const useChangeAccountStatusMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.CHANGE_ADMIN_STATUS],
     mutationFn: (body: { id: string; status: number }) =>
-      http.put<ApiResponse<any>>(apiConfig.account.changeStatus, { body })
+      http.put<ApiResponseNoData>(apiConfig.account.changeStatus, { body })
   });
 };

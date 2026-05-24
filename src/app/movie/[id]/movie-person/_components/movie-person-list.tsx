@@ -34,7 +34,7 @@ import { z } from 'zod';
 
 type MoviePersonListProps = { kind: number };
 
-export const MoviePersonList = ({ kind }: MoviePersonListProps) => {
+export function MoviePersonList({ kind }: MoviePersonListProps) {
   const { id: movieId } = useParams<{ id: string }>();
 
   const [selectedRow, setSelectedRow] = useState<string>('');
@@ -83,7 +83,7 @@ export const MoviePersonList = ({ kind }: MoviePersonListProps) => {
       handlers.additionalColumns = () => ({
         edit: (
           record: MoviePersonResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const isEditing = selectedRow === record.id;
 
@@ -233,7 +233,7 @@ export const MoviePersonList = ({ kind }: MoviePersonListProps) => {
       render: (value, record) => (
         <AvatarField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           size={45}
           alt={getLastWord(record.person.name)}
         />
@@ -263,7 +263,7 @@ export const MoviePersonList = ({ kind }: MoviePersonListProps) => {
           {
             title: 'Tên nhân vật',
             width: 500,
-            render: (_: any, record: MoviePersonResType) => {
+            render: (_: unknown, record: MoviePersonResType) => {
               const currentName = characterNames[record.id] || '';
 
               return (
@@ -416,4 +416,4 @@ export const MoviePersonList = ({ kind }: MoviePersonListProps) => {
       />
     </>
   );
-};
+}

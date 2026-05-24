@@ -19,7 +19,7 @@ import type {
 import { convertUTCToLocal, notify, renderImageUrl } from '@/utils';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
-export const SidebarList = () => {
+export function SidebarList() {
   const { mutateAsync: changeStatusMutate, isPending: changeStatusPending } =
     useChangeActiveSidebarMutation();
 
@@ -36,7 +36,7 @@ export const SidebarList = () => {
       handlers.additionalColumns = () => ({
         changeStatus: (
           record: MovieSidebarResType,
-          buttonProps?: Record<string, any>
+          buttonProps?: Record<string, unknown>
         ) => {
           const statusLabel = record.active ? 'Ẩn' : 'Hiện';
 
@@ -120,7 +120,7 @@ export const SidebarList = () => {
       render: (value) => (
         <ImageField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           aspect={16 / 9}
           previewAspect={16 / 9}
         />
@@ -134,7 +134,7 @@ export const SidebarList = () => {
       render: (value) => (
         <ImageField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           aspect={2 / 3}
           previewAspect={2 / 3}
         />
@@ -143,19 +143,22 @@ export const SidebarList = () => {
     {
       title: 'Phim',
       dataIndex: ['movie', 'title'],
-      render: (value, record) => (
-        <>
-          <span title={value} className='line-clamp-1 block truncate'>
-            {value}
-          </span>
-          <span
-            className='line-clamp-1 block truncate text-xs text-zinc-500'
-            title={record.movie.originalTitle}
-          >
-            {record.movie.originalTitle}
-          </span>
-        </>
-      )
+      render: (val, record) => {
+        const value = val as string;
+        return (
+          <>
+            <span title={value} className='line-clamp-1 block truncate'>
+              {value}
+            </span>
+            <span
+              className='line-clamp-1 block truncate text-xs text-zinc-500'
+              title={record.movie.originalTitle}
+            >
+              {record.movie.originalTitle}
+            </span>
+          </>
+        );
+      }
     },
     {
       title: 'Ngày phát hành',
@@ -171,14 +174,17 @@ export const SidebarList = () => {
     {
       title: 'Màu chủ đạo',
       dataIndex: ['mainColor'],
-      render: (value) => (
-        <ToolTip title={value}>
-          <div
-            className='mx-auto h-6 w-20 rounded'
-            style={{ background: value }}
-          ></div>
-        </ToolTip>
-      ),
+      render: (val) => {
+        const value = val as string;
+        return (
+          <ToolTip title={value}>
+            <div
+              className='mx-auto h-6 w-20 rounded'
+              style={{ background: value }}
+            ></div>
+          </ToolTip>
+        );
+      },
       width: 150,
       align: 'center'
     },
@@ -245,4 +251,4 @@ export const SidebarList = () => {
       </ListPageWrapper>
     </PageWrapper>
   );
-};
+}

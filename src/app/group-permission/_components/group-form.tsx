@@ -36,7 +36,7 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
-export const GroupForm = () => {
+export function GroupForm() {
   const { id } = useParams<{ id: string }>();
 
   const {
@@ -80,14 +80,17 @@ export const GroupForm = () => {
   }, [groupPermissionListData?.content]);
   const permissions = permissionListData?.content;
 
-  const groupedPermissions = (permissions || []).reduce((acc, permission) => {
-    const group = permission.groupPermission.name || 'Unknown';
-    if (!acc[group]) {
-      acc[group] = [];
-    }
-    acc[group].push(permission);
-    return acc;
-  }, {} as any);
+  const groupedPermissions = (permissions || []).reduce(
+    (acc, permission) => {
+      const group = permission.groupPermission.name || 'Unknown';
+      if (!acc[group]) {
+        acc[group] = [];
+      }
+      acc[group].push(permission);
+      return acc;
+    },
+    {} as Record<string, PermissionResType[]>
+  );
 
   (groupPermissions || []).forEach((group) => {
     if (!groupedPermissions[group.name]) {
@@ -343,4 +346,4 @@ export const GroupForm = () => {
       </BaseForm>
     </PageWrapper>
   );
-};
+}

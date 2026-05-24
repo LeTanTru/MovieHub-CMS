@@ -1,6 +1,7 @@
 import { apiConfig, queryKeys, uploadOptions } from '@/constants';
 import type {
   ApiResponse,
+  ApiResponseNoData,
   UploadFileResType,
   UploadImageResType
 } from '@/types';
@@ -72,7 +73,7 @@ export const useDeleteFileMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.DELETE_FILE],
     mutationFn: ({ filePath }: { filePath: string }) =>
-      http.post<ApiResponse<any>>(apiConfig.file.delete, {
+      http.post<ApiResponseNoData>(apiConfig.file.delete, {
         body: {
           filePath: filePath
         }
@@ -84,7 +85,7 @@ export const useDeleteObjectMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.DELETE_FILE],
     mutationFn: ({ filePath }: { filePath: string }) =>
-      http.post<ApiResponse<any>>(apiConfig.file.deleteObject, {
+      http.post<ApiResponseNoData>(apiConfig.file.deleteObject, {
         body: {
           objectName: filePath
         }

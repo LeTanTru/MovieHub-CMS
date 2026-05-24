@@ -47,7 +47,7 @@ import { IoCheckmarkDone } from 'react-icons/io5';
 import { useMarkLatestMovieItemMutation } from '@/queries';
 import { logger } from '@/logger';
 
-export const MovieItemSeasonList = () => {
+export function MovieItemSeasonList() {
   const navigate = useNavigate();
   const { id: movieId } = useParams<{ id: string }>();
   const { searchParams, serializeParams, deprefixParams, prefixParams } =
@@ -118,7 +118,7 @@ export const MovieItemSeasonList = () => {
         return {
           watchVideo: (
             record: MovieItemResType,
-            buttonProps?: Record<string, any>
+            buttonProps?: Record<string, unknown>
           ) => (
             <ToolTip title='Xem video' sideOffset={0}>
               <span>
@@ -139,7 +139,7 @@ export const MovieItemSeasonList = () => {
           ),
           edit: (
             record: MovieItemResType,
-            buttonProps?: Record<string, any>
+            buttonProps?: Record<string, unknown>
           ) => {
             const handleEditMovieItem = (record: MovieItemResType) => {
               setMovieItem(record);
@@ -165,7 +165,7 @@ export const MovieItemSeasonList = () => {
           },
           markLatest: (
             record: MovieItemResType,
-            buttonProps?: Record<string, any>
+            buttonProps?: Record<string, unknown>
           ) => {
             const handleMarkLatest = (record: MovieItemResType) => {
               markLatestMutate(record.id, {
@@ -244,7 +244,7 @@ export const MovieItemSeasonList = () => {
       render: (value) => (
         <ImageField
           disablePreview={!value}
-          src={renderImageUrl(value)}
+          src={renderImageUrl(value as string)}
           aspect={16 / 9}
           previewAspect={16 / 9}
         />
@@ -262,7 +262,7 @@ export const MovieItemSeasonList = () => {
             {record.kind === MOVIE_ITEM_KIND_SEASON && `Phần ${record.label}:`}
           </span>
           &nbsp;
-          <span>{value}</span>
+          <span>{value as string}</span>
           <span className='ml-2'>
             {record.isLatest && (
               <Badge
@@ -280,7 +280,7 @@ export const MovieItemSeasonList = () => {
       title: 'Ngày phát hành',
       dataIndex: 'releaseDate',
       width: 250,
-      render: (value) => convertUTCToLocal(value) || 'N/A',
+      render: (value) => convertUTCToLocal(value as string | null) || 'N/A',
       align: 'center'
     },
     ...(movieType === MOVIE_TYPE_SINGLE
@@ -355,7 +355,7 @@ export const MovieItemSeasonList = () => {
             serializeParams({ ...restSearchParams, page: parentPage })
           )
         },
-        { label: movieTitle || 'Phần' }
+        { label: (movieTitle as string) || 'Phần' }
       ]}
     >
       <ListPageWrapper
@@ -389,4 +389,4 @@ export const MovieItemSeasonList = () => {
       )}
     </PageWrapper>
   );
-};
+}

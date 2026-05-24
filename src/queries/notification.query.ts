@@ -1,6 +1,7 @@
 import { apiConfig, queryKeys } from '@/constants';
 import type {
   ApiResponse,
+  ApiResponseNoData,
   UnreadCountNotificationResType,
   UpdateReadNotificationBodyType
 } from '@/types';
@@ -23,7 +24,7 @@ export const useUpdateReadNotificationMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.UPDATE_READ_NOTIFICATION],
     mutationFn: (body: UpdateReadNotificationBodyType) =>
-      http.put<ApiResponse<any>>(apiConfig.notification.updateRead, {
+      http.put<ApiResponseNoData>(apiConfig.notification.updateRead, {
         body
       })
   });
@@ -32,7 +33,8 @@ export const useUpdateReadNotificationMutation = () => {
 export const useReadAllNotificationMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.READ_ALL_NOTIFICATION],
-    mutationFn: () => http.put<ApiResponse<any>>(apiConfig.notification.readAll)
+    mutationFn: () =>
+      http.put<ApiResponseNoData>(apiConfig.notification.readAll)
   });
 };
 
@@ -40,6 +42,6 @@ export const useDeleteAllNotificationMutation = () => {
   return useMutation({
     mutationKey: [queryKeys.DELETE_ALL_NOTIFICATION],
     mutationFn: () =>
-      http.delete<ApiResponse<any>>(apiConfig.notification.deleteAll)
+      http.delete<ApiResponseNoData>(apiConfig.notification.deleteAll)
   });
 };

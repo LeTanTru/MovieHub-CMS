@@ -23,7 +23,7 @@ import { invalidateQueries } from '@/utils';
 
 type CommentInputProps = { movieId: string };
 
-export const CommentInput = ({ movieId }: CommentInputProps) => {
+export function CommentInput({ movieId }: CommentInputProps) {
   const formMethodsRef = useRef<UseFormReturn<CommentBodyType> | null>(null);
 
   const pickerContainerRef = useRef<HTMLDivElement>(null);
@@ -75,11 +75,11 @@ export const CommentInput = ({ movieId }: CommentInputProps) => {
   };
 
   useEffect(() => {
-    let picker: any;
+    let picker: (HTMLElement & { i18n?: unknown }) | null = null;
     let mounted = true;
 
-    const handleEmojiClick = (event: any) => {
-      const emoji = event.detail.unicode;
+    const handleEmojiClick = (event: Event) => {
+      const emoji = (event as CustomEvent<{ unicode: string }>).detail.unicode;
       if (formMethodsRef.current) {
         const currentValue = formMethodsRef.current.getValues('content') || '';
         formMethodsRef.current.setValue('content', currentValue + emoji, {
@@ -95,7 +95,7 @@ export const CommentInput = ({ movieId }: CommentInputProps) => {
 
       if (!mounted) return;
 
-      picker = new Picker();
+      picker = new Picker() as HTMLElement & { i18n?: unknown };
       picker.i18n = vi;
       Object.assign(picker.style, {
         position: 'absolute',
@@ -183,4 +183,4 @@ export const CommentInput = ({ movieId }: CommentInputProps) => {
       }}
     </BaseForm>
   );
-};
+}

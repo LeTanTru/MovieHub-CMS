@@ -40,7 +40,7 @@ export type MovieResType = {
   seasons: {
     createdDate: string;
     description: string;
-    episodes: any[];
+    episodes: unknown[];
     id: string;
     kind: number;
     label: string;

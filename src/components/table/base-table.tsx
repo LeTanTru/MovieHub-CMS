@@ -15,13 +15,13 @@ import { emptyData } from '@/assets';
 import { cn } from '@/lib';
 import { CircleLoading } from '@/components/loading';
 import { m, AnimatePresence } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Pagination } from '@/components/pagination';
 
-function getValueByPath<T extends Record<string, any>>(
+function getValueByPath<T extends Record<string, unknown>>(
   obj: T,
   path?: string | string[] | keyof T
-): any {
+): unknown {
   if (!obj || !path) return undefined;
 
   if (typeof path === 'string') {
@@ -31,16 +31,16 @@ function getValueByPath<T extends Record<string, any>>(
   if (Array.isArray(path)) {
     return path.reduce((acc, key) => {
       if (acc && typeof acc === 'object' && key in acc) {
-        return acc[key];
+        return (acc as Record<string, unknown>)[key];
       }
       return undefined;
-    }, obj as any);
+    }, obj as unknown);
   }
 
   return obj[path as keyof T];
 }
 
-export const BaseTable = <T extends Record<any, any>>({
+export function BaseTable<T extends Record<string, unknown>>({
   columns,
   dataSource,
   rowKey = 'id',
@@ -48,7 +48,7 @@ export const BaseTable = <T extends Record<any, any>>({
   changePagination,
   loading,
   rowClassName
-}: BaseTableProps<T>) => {
+}: BaseTableProps<T>) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollAtEnd, setScrollAtEnd] = useState(false);
   const { total } = pagination;
@@ -165,7 +165,10 @@ export const BaseTable = <T extends Record<any, any>>({
                                   rowIndex
                                 )
                               : col.dataIndex
-                                ? getValueByPath(row, col.dataIndex)
+                                ? (getValueByPath(
+                                    row,
+                                    col.dataIndex
+                                  ) as ReactNode)
                                 : null}
                           </TableCell>
                         );
@@ -221,4 +224,4 @@ export const BaseTable = <T extends Record<any, any>>({
       </div>
     </div>
   );
-};
+}
