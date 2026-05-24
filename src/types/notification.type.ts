@@ -85,4 +85,7 @@ export type SubtitleNotificationType = {
   fileUrl: string;
   isDefault: boolean;
   state: number;
+  thumbnailUrl: string;
+  name: string;
+  sourceType: number;
 };

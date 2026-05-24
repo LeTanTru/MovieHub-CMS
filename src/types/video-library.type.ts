@@ -43,14 +43,3 @@ export type ProcessAudioVideoLibraryBodyType = z.infer<
 
 export type VideoLibrarySearchType = z.infer<typeof videoLibrarySearchSchema> &
   BaseSearchType;
-
-type VideoLibraryStoreState = {
-  targetVideoId: string | null;
-};
-
-type VideoLibraryStoreActions = {
-  setTargetVideoId: (id: string | null) => void;
-};
-
-export type VideoLibraryStoreType = VideoLibraryStoreState &
-  VideoLibraryStoreActions;

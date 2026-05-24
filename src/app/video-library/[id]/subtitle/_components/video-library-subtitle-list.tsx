@@ -118,24 +118,6 @@ export function VideoLibrarySubtitleList() {
     );
   };
 
-  // const textTracks: TrackProps[] = [
-  //   {
-  //     src: 'https://files.vidstack.io/sprite-fight/subs/english.vtt',
-  //     label: 'English',
-  //     language: 'en-US',
-  //     kind: 'subtitles',
-  //     type: 'vtt',
-  //     default: true
-  //   },
-  //   {
-  //     src: 'https://files.vidstack.io/sprite-fight/subs/spanish.vtt',
-  //     label: 'Spanish',
-  //     language: 'es-ES',
-  //     kind: 'subtitles',
-  //     type: 'vtt'
-  //   }
-  // ];
-
   const textTracks: TrackProps[] = videoLibrary
     ? subtitleList.flatMap((subtitle) =>
         subtitle.state === SUBTITLE_COMPLETE
