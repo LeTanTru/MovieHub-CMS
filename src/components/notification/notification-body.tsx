@@ -1,9 +1,10 @@
-import { mqttCMDs } from '@/constants';
-import { NotificationResType } from '@/types';
 import { AudioBody } from './audio-body';
 import { ConvertVideoBody } from './convert-video-body';
+import { mqttCMDs } from '@/constants';
+import { NotificationResType } from '@/types';
 import { ReplyCommentBody } from './reply-comment-body';
 import { VoteCommentBody } from './vote-comment-body';
+import SubtitleBody from './subtitle-body';
 
 export function NotificationBody({
   notification
@@ -13,6 +14,9 @@ export function NotificationBody({
   switch (notification.cmd) {
     case mqttCMDs.DONE_CONVERT_AUDIO: {
       return <AudioBody notification={notification} />;
+    }
+    case mqttCMDs.DONE_PROCESS_SUBTITLE: {
+      return <SubtitleBody notification={notification} />;
     }
     case mqttCMDs.DONE_CONVERT_VIDEO: {
       return <ConvertVideoBody notification={notification} />;

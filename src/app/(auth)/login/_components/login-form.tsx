@@ -5,11 +5,11 @@ import { Button, Col, InputField, PasswordField, Row } from '@/components/form';
 import { logger } from '@/logger';
 import { loginSchema } from '@/schemaValidations';
 import { logoWithText } from '@/assets';
-import { notify } from '@/utils';
+import { getData, isSafeInternalPath, notify, removeData } from '@/utils';
 import { route } from '@/routes';
-import { GROUP_KIND_ADMIN } from '@/constants';
+import { GROUP_KIND_ADMIN, storageKeys } from '@/constants';
 import { useAuthStore } from '@/store';
-import { useFirstActiveRoute, useNavigate } from '@/hooks';
+import { useFirstActiveRoute, useNavigate, useQueryParams } from '@/hooks';
 import {
   useEmployeeProfileQuery,
   useLoginMutation,
@@ -24,6 +24,7 @@ export function LoginForm() {
   const navigate = useNavigate();
 
   const firstActiveRoute = useFirstActiveRoute();
+  const { searchParams } = useQueryParams<{ redirect?: string }>();
 
   const { mutateAsync: loginMutate, isPending: loginLoading } =
     useLoginMutation();
@@ -69,7 +70,21 @@ export function LoginForm() {
 
           if (profile) {
             setProfile(profile);
-            navigate.push(firstActiveRoute ?? route.home.path);
+
+            const pathNoLogin =
+              searchParams.redirect || getData(storageKeys.PATH_NO_LOGIN);
+            let targetPath =
+              (isSafeInternalPath(pathNoLogin) &&
+              pathNoLogin !== route.home.path
+                ? pathNoLogin
+                : firstActiveRoute) || route.profile.savePage.path;
+
+            if (targetPath === route.home.path) {
+              targetPath = route.profile.savePage.path;
+            }
+
+            navigate.push(targetPath);
+            removeData(storageKeys.PATH_NO_LOGIN);
           }
           notify.success('Đăng nhập thành công');
         } else {
@@ -96,7 +111,7 @@ export function LoginForm() {
             <Col className='grid-c-12 grid-col-no-gutters items-center justify-center'>
               <div className='bg-sidebar/80 mx-auto flex w-full items-center justify-center rounded py-2'>
                 <Image
-                  src={logoWithText.src}
+                  src={logoWithText}
                   width={180}
                   height={50}
                   alt='MovieHub Logo'

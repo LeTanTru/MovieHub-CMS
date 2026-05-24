@@ -93,6 +93,7 @@ export function MqttProvider() {
     callback: (data) => {
       switch (data.cmd) {
         case mqttCMDs.DONE_CONVERT_VIDEO:
+        case mqttCMDs.DONE_CONVERT_AUDIO: {
           invalidateQueries(
             [queryKeys.UNREAD_NOTIFICATION_COUNT],
             [queryKeys.NOTIFICATION_INFINITE],
@@ -100,6 +101,16 @@ export function MqttProvider() {
           );
           notify.success(data.title);
           break;
+        }
+        case mqttCMDs.DONE_PROCESS_SUBTITLE: {
+          invalidateQueries(
+            [queryKeys.UNREAD_NOTIFICATION_COUNT],
+            [queryKeys.NOTIFICATION_INFINITE],
+            [queryKeys.VIDEO_LIBRARY_SUBTITLE_LIST]
+          );
+          notify.success(data.title);
+          break;
+        }
       }
     }
   });
@@ -113,12 +124,13 @@ export function MqttProvider() {
     callback: (data) => {
       switch (data.cmd) {
         case mqttCMDs.REPLY_COMMENT:
-        case mqttCMDs.VOTE_COMMENT:
+        case mqttCMDs.VOTE_COMMENT: {
           invalidateQueries(
             [queryKeys.UNREAD_NOTIFICATION_COUNT],
             [queryKeys.NOTIFICATION_INFINITE]
           );
           break;
+        }
       }
     }
   });

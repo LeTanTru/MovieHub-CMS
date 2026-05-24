@@ -13,5 +13,5 @@ export const videoLibrarySubtitleTranslateSchema = z.object({
 export const videoLibrarySubtitleSchema = z.object({
   id: z.string().nonempty('Bắt buộc'),
   isDefault: z.boolean().default(false),
-  language: z.string().nonempty('Bắt buộc')
+  label: z.string().nonempty('Bắt buộc')
 });

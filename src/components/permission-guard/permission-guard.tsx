@@ -7,7 +7,13 @@ import {
   useQueryParams
 } from '@/hooks';
 import { usePathname } from 'next/navigation';
-import { getData, removeData, setData, validatePermission } from '@/utils';
+import {
+  getData,
+  isSafeInternalPath,
+  removeData,
+  setData,
+  validatePermission
+} from '@/utils';
 import { type ReactNode, useEffect, useMemo } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
 import { Loader } from 'lucide-react';
@@ -56,7 +62,7 @@ function findRouteByPath(pathname: string): RouteItem | null {
 }
 
 export function PermissionGuard({ children }: PermissionGuardProps) {
-  const { queryString } = useQueryParams();
+  const { queryString, searchParams } = useQueryParams<{ redirect?: string }>();
   const navigate = useNavigate(false);
   const pathname = usePathname();
   const { permissionCode: userPermissions, isAuthenticated } = useAuth();
@@ -69,13 +75,6 @@ export function PermissionGuard({ children }: PermissionGuardProps) {
   const matchedRoute = useMemo(() => findRouteByPath(pathname), [pathname]);
 
   const isPublicRoute = matchedRoute?.auth === false;
-
-  const isSafeInternalPath = (path: unknown): path is string => {
-    if (typeof path !== 'string' || !path.startsWith('/')) return false;
-    if (path.startsWith('//')) return false;
-    if (/^(javascript|data|vbscript):/i.test(path)) return false;
-    return true;
-  };
 
   useEffect(() => {
     // non-existent route → show 404
@@ -101,7 +100,8 @@ export function PermissionGuard({ children }: PermissionGuardProps) {
     } else {
       // Authenticated + on home/login → redirect to first active route
       if (pathname === route.home.path || pathname === route.login.path) {
-        const pathNoLogin = getData(storageKeys.PATH_NO_LOGIN);
+        const pathNoLogin =
+          searchParams.redirect || getData(storageKeys.PATH_NO_LOGIN);
         let targetPath =
           (isSafeInternalPath(pathNoLogin) && pathNoLogin !== route.home.path
             ? pathNoLogin
@@ -126,6 +126,7 @@ export function PermissionGuard({ children }: PermissionGuardProps) {
     navigate,
     pathname,
     queryString,
+    searchParams,
     setLoading
   ]);
 

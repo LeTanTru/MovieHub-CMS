@@ -76,3 +76,13 @@ export type AudioNotificationType = {
   state: number;
   thumbnailUrl: string;
 };
+
+export type SubtitleNotificationType = {
+  videoLibraryId: string;
+  id: string;
+  language: string;
+  label: string;
+  fileUrl: string;
+  isDefault: boolean;
+  state: number;
+};

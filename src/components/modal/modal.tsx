@@ -20,7 +20,6 @@ import { useIsMounted } from '@/hooks';
 import { X, ChevronDown, Info } from 'lucide-react';
 import { Button } from '@/components/form';
 
-const SCROLLBAR_COMPENSATION_PX = 15;
 const SCROLL_BOTTOM_THRESHOLD_PX = 10;
 const SCROLL_DOWN_AMOUNT_PX = 200;
 const SCROLL_ARROW_ANIMATION_OFFSET_PX = 10;
@@ -30,6 +29,12 @@ let openModalCount = 0;
 let originalBodyOverflow = '';
 let originalBodyMarginRight = '';
 let originalHeaderPaddingRight: string | null = null;
+
+const getScrollbarCompensation = () => {
+  if (typeof window === 'undefined') return 0;
+
+  return window.innerWidth - document.documentElement.clientWidth;
+};
 
 const lockScroll = () => {
   if (typeof document === 'undefined') return;
@@ -42,6 +47,7 @@ const lockScroll = () => {
   const header = document.querySelector<HTMLElement>('.header');
   const hasVerticalScroll =
     document.documentElement.scrollHeight > window.innerHeight;
+  const scrollbarCompensation = getScrollbarCompensation();
 
   originalBodyOverflow = body.style.overflow;
   originalBodyMarginRight = body.style.marginRight;
@@ -49,11 +55,11 @@ const lockScroll = () => {
   body.style.overflow = 'hidden';
 
   if (hasVerticalScroll) {
-    body.style.marginRight = `${SCROLLBAR_COMPENSATION_PX}px`;
+    body.style.marginRight = `${scrollbarCompensation}px`;
 
     if (header && getComputedStyle(header).position === 'fixed') {
       originalHeaderPaddingRight = header.style.paddingRight;
-      header.style.paddingRight = `${SCROLLBAR_COMPENSATION_PX}px`;
+      header.style.paddingRight = `${scrollbarCompensation}px`;
       header.setAttribute(MODAL_LOCK_ATTRIBUTE, 'true');
     }
   } else {

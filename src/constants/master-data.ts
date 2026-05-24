@@ -208,7 +208,9 @@ export const queryKeys = {
   VIDEO_LIBRARY_LIST: 'video-library-list',
   VIDEO_LIBRARY: 'video-library',
   VOTE_COMMENT: 'vote-comment',
-  VIDEO_LIBRARY_SUBTITLE: 'video-library-subtitle'
+  VIDEO_LIBRARY_SUBTITLE: 'video-library-subtitle',
+  VIDEO_LIBRARY_SUBTITLE_LIST: 'video-library-subtitle-list',
+  VIDEO_LIBRARY_SUBTITLE_TRANSLATE: 'video-library-subtitle-translate'
 };
 
 export const userKindOptions = [
@@ -1680,6 +1682,7 @@ export const mqttTopics = {
 
 export const mqttCMDs = {
   DONE_CONVERT_AUDIO: 'CMD_DONE_CONVERT_AUDIO',
+  DONE_PROCESS_SUBTITLE: 'CMD_DONE_PROCESS_SUBTITLE',
   DONE_CONVERT_VIDEO: 'CMD_DONE_CONVERT_VIDEO',
   REPLY_COMMENT: 'CMD_REPLY_COMMENT',
   SEND_NOTIFICATION: 'CMD_SEND_NOTIFICATION',

@@ -126,7 +126,13 @@ export const route = defineRoute({
       permissionCode: [apiConfig.videoLibrarySubtitle.getList.permissionCode]
     }
   },
-
+  videoLibrarySubtitle: {
+    getList: {
+      path: '/video-library/:id/subtitle',
+      auth: true,
+      permissionCode: [apiConfig.videoLibrarySubtitle.getList.permissionCode]
+    }
+  },
   movie: {
     getList: {
       path: '/movie',

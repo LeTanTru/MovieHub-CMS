@@ -61,3 +61,10 @@ export const renderFileUrl = (url: string, isPublic?: boolean) => {
     ? url
     : `${isPublic ? AppConstants.publicContentUrl : AppConstants.contentRootUrl}${url}`;
 };
+
+export const isSafeInternalPath = (path: unknown): path is string => {
+  if (typeof path !== 'string' || !path.startsWith('/')) return false;
+  if (path.startsWith('//')) return false;
+  if (/^(javascript|data|vbscript):/i.test(path)) return false;
+  return true;
+};

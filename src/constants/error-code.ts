@@ -15,7 +15,8 @@ import type {
   ServerConfigBodyType,
   SettingBodyType,
   StyleBodyType,
-  VideoLibraryBodyType
+  VideoLibraryBodyType,
+  VideoLibrarySubtitleTranslateBodyType
 } from '@/types';
 
 export const ErrorCode = {
@@ -123,7 +124,11 @@ export const ErrorCode = {
 
   // === Setting error code ===
   SETTING_ERROR_NOT_FOUND: 'ERROR-SETTING-0000',
-  SETTING_ERROR_EXISTED_GROUP_NAME_AND_KEY_NAME: 'ERROR-SETTING-0001'
+  SETTING_ERROR_EXISTED_GROUP_NAME_AND_KEY_NAME: 'ERROR-SETTING-0001',
+
+  // === Video library subtitle error code ===
+  VIDEO_LIBRARY_SUBTITLE_ERROR_LANGUAGE_EXISTED:
+    'ERROR-VIDEO-LIBRARY-SUBTITLE-0002'
 };
 
 export const groupErrorMaps: ErrorMaps<GroupBodyType> = {
@@ -320,3 +325,16 @@ export const settingErrorMaps: ErrorMaps<SettingBodyType> = {
     ]
   ]
 };
+
+export const videoLibrarySubtitleErrorMaps: ErrorMaps<VideoLibrarySubtitleTranslateBodyType> =
+  {
+    [ErrorCode.VIDEO_LIBRARY_SUBTITLE_ERROR_LANGUAGE_EXISTED]: [
+      [
+        'language',
+        {
+          type: 'manual',
+          message: 'Ngôn ngữ đã tồn tại'
+        }
+      ]
+    ]
+  };
