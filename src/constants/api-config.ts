@@ -387,16 +387,14 @@ export const apiConfig = defineApiConfig({
       method: 'POST',
       headers: multipartHeader,
       permissionCode: 'FILE_U',
-      isUpload: true,
-      isRequiredXClientType: true
+      isUpload: true
     },
     uploadVideo: {
       baseUrl: `${AppConstants.mediaUrl}/v1/file/upload-video`,
       method: 'POST',
       headers: multipartHeader,
       permissionCode: 'FILE_U_V',
-      isUpload: true,
-      isRequiredXClientType: true
+      isUpload: true
     },
     uploadChunkInit: {
       baseUrl: `/api/file/upload/video/chunk/init`,
@@ -1035,7 +1033,7 @@ export const apiConfig = defineApiConfig({
     },
     translate: {
       baseUrl: `${AppConstants.apiUrl}/v1/video-library-subtitle/translate`,
-      method: 'PUT',
+      method: 'POST',
       headers: baseHeader,
       permissionCode: 'VID_L_S_T',
       isRequiredXClientType: true

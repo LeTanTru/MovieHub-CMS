@@ -215,7 +215,11 @@ export const sendRequest = async <T>(
       ...options
     };
 
-    if (isUpload && body && typeof body === 'object') {
+    if (isUpload && body instanceof FormData) {
+      axiosConfig.data = body;
+
+      delete axiosConfig.headers!['Content-Type'];
+    } else if (isUpload && body && typeof body === 'object') {
       const formData = new FormData();
       const bodyObj = body as Record<string, unknown>;
 

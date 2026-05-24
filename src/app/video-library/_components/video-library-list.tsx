@@ -376,6 +376,7 @@ export function VideoLibraryList() {
             ]
           }),
         processAudio: (record) =>
+          record.sourceType === VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL &&
           record.audioState !== AUDIO_STATE_COMPLETE &&
           record.state === VIDEO_LIBRARY_STATE_COMPLETE &&
           handlers.hasPermission({

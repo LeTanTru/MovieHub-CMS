@@ -24,10 +24,10 @@ export type VideoLibrarySubtitleSearchType = z.infer<
 > &
   BaseSearchType;
 
-export type VideoLibrarySubtitleTranslateType = z.infer<
+export type VideoLibrarySubtitleTranslateBodyType = z.infer<
   typeof videoLibrarySubtitleTranslateSchema
 >;
 
-export type VideoLibrarySubtitleType = z.infer<
+export type VideoLibrarySubtitleBodyType = z.infer<
   typeof videoLibrarySubtitleSchema
 >;

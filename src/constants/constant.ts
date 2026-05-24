@@ -141,3 +141,6 @@ export const COLOR_STATUS_ERROR = '#dc3545';
 export const COLOR_STATUS_PENDING = '#ffc107';
 
 export const PARENT_PREFIX_PARAM = 'p_';
+
+export const SUBTITLE_LOADING = 0;
+export const SUBTITLE_COMPLETE = 1;

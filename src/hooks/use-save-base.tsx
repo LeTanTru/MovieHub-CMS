@@ -139,7 +139,7 @@ export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
             if (listPageUrl) {
               navigate.push(getBackPath());
             }
-            invalidateQueries([queryKey, `${queryKey}-list`]);
+            invalidateQueries([queryKey], [`${queryKey}-list`]);
           } else {
             const code = res.code;
             if (code) {

@@ -15,4 +15,5 @@ export * from './server-config.query';
 export * from './sidebar.query';
 export * from './statistics.query';
 export * from './user.query';
+export * from './video-library-subtitle.query';
 export * from './video-library.query';

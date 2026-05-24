@@ -351,21 +351,23 @@ export const useListBase = <
     },
     delete: (record: T, buttonProps?: Record<string, unknown>) => {
       return (
-        <ToolTip title={`Xóa ${objectName}`} sideOffset={0}>
-          <ConfirmModal
-            message={`Bạn có chắc chắn muốn xóa ${objectName} này không ?`}
-            onConfirm={() => handleDeleteClick(record.id)}
-            trigger={
-              <Button
-                className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
-                variant='ghost'
-                {...buttonProps}
-              >
-                <AiOutlineDelete className='text-destructive size-4' />
-              </Button>
-            }
-          />
-        </ToolTip>
+        <ConfirmModal
+          message={`Bạn có chắc chắn muốn xóa ${objectName} này không ?`}
+          onConfirm={() => handleDeleteClick(record.id)}
+          trigger={
+            <span>
+              <ToolTip title={`Xóa ${objectName}`} sideOffset={0}>
+                <Button
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  variant='ghost'
+                  {...buttonProps}
+                >
+                  <AiOutlineDelete className='text-destructive size-4' />
+                </Button>
+              </ToolTip>
+            </span>
+          }
+        />
       );
     }
   });

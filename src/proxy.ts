@@ -13,9 +13,11 @@ export function proxy(request: NextRequest) {
 
   // If session is incomplete, clear all auth cookies and redirect to login
   if ((accessToken && !userKind) || (!accessToken && userKind)) {
-    const response = NextResponse.redirect(
-      new URL(route.login.path, request.nextUrl)
-    );
+    const loginUrl = new URL(route.login.path, request.nextUrl);
+    if (!authPaths.some((path) => pathname.startsWith(path))) {
+      loginUrl.searchParams.set('redirect', pathname + request.nextUrl.search);
+    }
+    const response = NextResponse.redirect(loginUrl);
     response.cookies.delete(storageKeys.ACCESS_TOKEN);
     response.cookies.delete(storageKeys.REFRESH_TOKEN);
     response.cookies.delete(storageKeys.USER_KIND);
@@ -39,7 +41,9 @@ export function proxy(request: NextRequest) {
   else {
     // Access private page, redirect to login
     if (!authPaths.some((path) => pathname.startsWith(path))) {
-      return NextResponse.redirect(new URL(route.login.path, request.nextUrl));
+      const loginUrl = new URL(route.login.path, request.nextUrl);
+      loginUrl.searchParams.set('redirect', pathname + request.nextUrl.search);
+      return NextResponse.redirect(loginUrl);
     }
   }
 

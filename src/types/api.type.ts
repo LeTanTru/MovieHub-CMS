@@ -20,7 +20,7 @@ export type ApiConfigGroup = {
 export type Payload = {
   params?: Record<string, unknown>;
   pathParams?: Record<string, string | number | undefined | null>;
-  body?: Record<string, unknown> | Record<string, unknown>[];
+  body?: unknown;
   options?: AxiosRequestConfig;
   authorization?: string;
   signal?: AbortSignal;
