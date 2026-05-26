@@ -16,6 +16,7 @@ import { redirect, unstable_rethrow } from 'next/navigation';
 
 const isClient = typeof window !== 'undefined';
 const axiosInstance = axios.create();
+const authAxios = axios.create();
 const TIME_OUT = 10000;
 
 let isRefreshing = false;
@@ -43,7 +44,13 @@ const processQueue = (error: unknown, token: string | null = null) => {
 };
 
 const refreshToken = async () => {
-  const res = await axiosInstance.post(apiConfig.api.auth.refreshToken.baseUrl);
+  const res = await authAxios.post(
+    apiConfig.api.auth.refreshToken.baseUrl,
+    null,
+    {
+      timeout: TIME_OUT
+    }
+  );
   const data = res.data;
 
   if (data?.result && data?.data) {
