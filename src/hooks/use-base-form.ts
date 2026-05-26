@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { ZodTypeAny, ZodType } from 'zod';
+import type { ZodType } from 'zod';
 import {
   DefaultValues,
   FieldValues,
@@ -13,7 +13,7 @@ export const useBaseForm = <T extends FieldValues>({
   defaultValues,
   mode = 'onChange'
 }: {
-  schema: ZodTypeAny;
+  schema: ZodType;
   defaultValues: DefaultValues<T>;
   mode?: 'onBlur' | 'onChange' | 'onSubmit' | 'onTouched' | 'all';
 }) => {
