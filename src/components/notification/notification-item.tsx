@@ -53,7 +53,12 @@ export function NotificationItem({
             className='border-none bg-transparent shadow-none'
             asChild
           >
-            <Button variant='outline' className='px-2!'>
+            <Button
+              variant='outline'
+              className='px-2!'
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
+            >
               <EllipsisVertical />
             </Button>
           </DropdownMenuTrigger>

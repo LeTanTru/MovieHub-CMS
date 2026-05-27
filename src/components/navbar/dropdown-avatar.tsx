@@ -15,6 +15,7 @@ import { useLogoutMutation } from '@/queries';
 import { route } from '@/routes';
 import { useAuthStore } from '@/store';
 import {
+  buildLoginRedirectPath,
   getLastWord,
   notify,
   removeData,
@@ -61,12 +62,12 @@ export function DropdownAvatar() {
         if (res.result) {
           notify.success('Đăng xuất thành công');
 
-          removeData([storageKeys.PATH_NO_LOGIN, storageKeys.PREVIOUS_PATH]);
+          removeData(storageKeys.PREVIOUS_PATH);
 
           removeQueries([queryKeys.PROFILE, queryKeys.EMPLOYEE_PROFILE]);
 
           clearState();
-          navigate.push(route.login.path);
+          navigate.push(buildLoginRedirectPath(pathname, queryString));
         } else {
           notify.error('Đăng xuất thất bại');
         }

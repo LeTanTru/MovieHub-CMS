@@ -1,4 +1,5 @@
 import { AppConstants, VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL } from '@/constants';
+import { route } from '@/routes';
 
 export const renderListPageUrl = (path: string, queryString?: string) => {
   if (queryString) {
@@ -67,4 +68,23 @@ export const isSafeInternalPath = (path: unknown): path is string => {
   if (path.startsWith('//')) return false;
   if (/^(javascript|data|vbscript):/i.test(path)) return false;
   return true;
+};
+
+export const buildLoginRedirectPath = (
+  pathname: string,
+  queryString?: string
+) => {
+  if (
+    !pathname ||
+    pathname === route.home.path ||
+    pathname === route.login.path
+  ) {
+    return route.login.path;
+  }
+
+  const redirectPath = queryString
+    ? `${pathname}?${queryString.startsWith('?') ? queryString.slice(1) : queryString}`
+    : pathname;
+  const params = new URLSearchParams({ redirect: redirectPath });
+  return `${route.login.path}?${params.toString()}`;
 };

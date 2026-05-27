@@ -10,7 +10,7 @@ export const useAuthStore = create<AuthStoreType>((set) => ({
   setAccessToken: (accessToken) => set({ accessToken }),
   setCsrfToken: (csrfToken) => set({ csrfToken }),
   setProfile: (profile: ProfileResType | null) => set({ profile }),
-  setUserKind: (userKind: string | null) => set({ userKind }),
+  setUserKind: (userKind: number | null) => set({ userKind }),
 
   clearState: () =>
     set({

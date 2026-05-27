@@ -6,11 +6,11 @@ export const storageKeys = {
   ACTIVE_TAB_PERSON_KIND: 'active_tab_person_kind',
   CSRF_TOKEN: 'csrf_token',
   DISCLAIMER_SHOWN: 'disclaimer_shown',
-  PATH_NO_LOGIN: 'path_no_login',
   PREVIOUS_PATH: 'previous_path',
   REFRESH_TOKEN: 'refresh_token',
   SELECTED_MOVIE_ITEM: 'selected_movie_item',
   USER_KIND: 'user_kind',
   X_CLIENT_TYPE: 'X-Client-Type',
-  X_CSRF_TOKEN: 'X-CSRF-Token'
+  X_CSRF_TOKEN: 'X-CSRF-Token',
+  X_URL: 'X-Url'
 };
