@@ -12,7 +12,7 @@ import {
   createContext,
   type ReactNode,
   useContext,
-  useEffect,
+  useLayoutEffect,
   useState
 } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -42,6 +42,7 @@ export function AppProvider({ children }: AppProviderProps) {
 
   const {
     accessToken,
+    profile: storedProfile,
     userKind,
     setAccessToken,
     setCsrfToken,
@@ -50,6 +51,7 @@ export function AppProvider({ children }: AppProviderProps) {
   } = useAuthStore(
     useShallow((s) => ({
       accessToken: s.accessToken,
+      profile: s.profile,
       userKind: s.userKind,
       setAccessToken: s.setAccessToken,
       setCsrfToken: s.setCsrfToken,
@@ -61,10 +63,7 @@ export function AppProvider({ children }: AppProviderProps) {
   const { data: session, isLoading: sessionLoading } = useSession();
 
   const { data: profileData, isLoading: profileLoading } = useProfileQuery(
-    !loading &&
-      !!accessToken &&
-      !!userKind &&
-      parseInt(userKind) === GROUP_KIND_ADMIN
+    !loading && !!accessToken && !!userKind && userKind === GROUP_KIND_ADMIN
   );
 
   const { data: employeeProfileData, isLoading: employeeProfileLoading } =
@@ -72,30 +71,44 @@ export function AppProvider({ children }: AppProviderProps) {
       !loading &&
         !!accessToken &&
         !!userKind &&
-        parseInt(userKind) === GROUP_KIND_EMPLOYEE
+        userKind === GROUP_KIND_EMPLOYEE
     );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (session) {
       setAccessToken(session.accessToken);
       setCsrfToken(session.csrfToken);
       setUserKind(session.userKind);
+
+      if (!session.accessToken || !session.userKind) {
+        setProfile(null);
+      }
     }
-  }, [session, setUserKind, setAccessToken, setCsrfToken]);
+  }, [session, setUserKind, setAccessToken, setCsrfToken, setProfile]);
 
   const profile = profileData || employeeProfileData;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (profile) {
       setProfile(profile);
     }
   }, [profile, setProfile]);
 
+  const isSessionHydrating = Boolean(
+    session?.accessToken && session?.userKind && (!accessToken || !userKind)
+  );
+  const isProfileHydrating = Boolean(profile && !storedProfile);
+
   return (
     <AppContext.Provider
       value={{
         loading:
-          loading || profileLoading || employeeProfileLoading || sessionLoading,
+          loading ||
+          sessionLoading ||
+          isSessionHydrating ||
+          profileLoading ||
+          employeeProfileLoading ||
+          isProfileHydrating,
         setLoading
       }}
     >

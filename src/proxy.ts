@@ -9,24 +9,14 @@ const authPaths = ['/login'];
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const accessToken = request.cookies.get(storageKeys.ACCESS_TOKEN)?.value;
-  const userKind = request.cookies.get(storageKeys.USER_KIND)?.value;
+  const refreshToken = request.cookies.get(storageKeys.REFRESH_TOKEN)?.value;
+  const isAuthPath = authPaths.some((path) => pathname.startsWith(path));
 
-  // If session is incomplete, clear all auth cookies and redirect to login
-  if ((accessToken && !userKind) || (!accessToken && userKind)) {
-    const loginUrl = new URL(route.login.path, request.nextUrl);
-    if (!authPaths.some((path) => pathname.startsWith(path))) {
-      loginUrl.searchParams.set('redirect', pathname + request.nextUrl.search);
-    }
-    const response = NextResponse.redirect(loginUrl);
-    response.cookies.delete(storageKeys.ACCESS_TOKEN);
-    response.cookies.delete(storageKeys.REFRESH_TOKEN);
-    response.cookies.delete(storageKeys.USER_KIND);
-    return response;
-  }
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(storageKeys.X_URL, request.url);
 
-  // If logged in
+  // If logged in, redirect to first route or profile page
   if (accessToken) {
-    const isAuthPath = authPaths.some((path) => pathname.startsWith(path));
     const isHomePath = pathname === route.home.path;
 
     if (isAuthPath || isHomePath) {
@@ -37,17 +27,21 @@ export function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL(targetPath, request.nextUrl));
     }
   }
-  // If not logged in
-  else {
+  // If not logged in, save entered path to params
+  else if (!refreshToken) {
     // Access private page, redirect to login
-    if (!authPaths.some((path) => pathname.startsWith(path))) {
+    if (!isAuthPath) {
       const loginUrl = new URL(route.login.path, request.nextUrl);
       loginUrl.searchParams.set('redirect', pathname + request.nextUrl.search);
       return NextResponse.redirect(loginUrl);
     }
   }
 
-  return NextResponse.next();
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders
+    }
+  });
 }
 
 export const config = {

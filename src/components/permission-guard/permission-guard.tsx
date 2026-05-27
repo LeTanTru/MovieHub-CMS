@@ -8,23 +8,19 @@ import {
 } from '@/hooks';
 import { usePathname } from 'next/navigation';
 import {
-  getData,
+  buildLoginRedirectPath,
   isSafeInternalPath,
-  removeData,
-  setData,
   validatePermission
 } from '@/utils';
 import { type ReactNode, useEffect, useMemo } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
 import { Loader } from 'lucide-react';
 import { route } from '@/routes';
-import { storageKeys } from '@/constants';
 import { useAppContext } from '@/components/providers/app-provider';
 import { RouteItem } from '@/types';
 
 type PermissionGuardProps = { children: ReactNode };
 
-// Precompiled flat route map — built once at module load
 const routeMatcherCache: Array<{ pattern: RegExp; item: RouteItem }> = [];
 
 const createRouteRegex = (regexString: string) =>
@@ -70,51 +66,36 @@ export function PermissionGuard({ children }: PermissionGuardProps) {
   const { loading, setLoading } = useAppContext();
 
   const firstActiveRoute = useFirstActiveRoute();
-
-  // Memoize matched route — only recomputes when pathname changes
   const matchedRoute = useMemo(() => findRouteByPath(pathname), [pathname]);
-
   const isPublicRoute = matchedRoute?.auth === false;
 
   useEffect(() => {
-    // non-existent route → show 404
     if (matchedRoute === null) return;
 
-    // loading or public route + not authenticated → show loading or login
     if (loading || (isPublicRoute && !isAuthenticated)) {
       setLoading(false);
       return;
     }
 
-    // Not authenticated → redirect to login with entered path
     if (!isAuthenticated) {
       if (pathname !== route.login.path) {
-        if (pathname !== route.home.path) {
-          setData(
-            storageKeys.PATH_NO_LOGIN,
-            queryString ? `${pathname}?${queryString}` : pathname
-          );
-        }
-        navigate.replace(route.login.path);
+        navigate.replace(buildLoginRedirectPath(pathname, queryString));
       }
-    } else {
-      // Authenticated + on home/login → redirect to first active route
-      if (pathname === route.home.path || pathname === route.login.path) {
-        const pathNoLogin =
-          searchParams.redirect || getData(storageKeys.PATH_NO_LOGIN);
-        let targetPath =
-          (isSafeInternalPath(pathNoLogin) && pathNoLogin !== route.home.path
-            ? pathNoLogin
-            : firstActiveRoute) || route.profile.savePage.path;
+    } else if (pathname === route.home.path || pathname === route.login.path) {
+      const requestedPath = searchParams.redirect;
+      let targetPath =
+        (isSafeInternalPath(requestedPath) &&
+        requestedPath !== route.home.path &&
+        requestedPath !== route.login.path
+          ? requestedPath
+          : firstActiveRoute) || route.profile.savePage.path;
 
-        if (targetPath === route.home.path) {
-          targetPath = route.profile.savePage.path;
-        }
+      if (targetPath === route.home.path) {
+        targetPath = route.profile.savePage.path;
+      }
 
-        if (pathname !== targetPath) {
-          navigate.replace(targetPath);
-          removeData(storageKeys.PATH_NO_LOGIN);
-        }
+      if (pathname !== targetPath) {
+        navigate.replace(targetPath);
       }
     }
   }, [
@@ -130,10 +111,8 @@ export function PermissionGuard({ children }: PermissionGuardProps) {
     setLoading
   ]);
 
-  // get route permission
   const requiredPermissions = matchedRoute?.permissionCode ?? [];
 
-  // check permission
   const hasPermission =
     requiredPermissions.length === 0 ||
     (!!matchedRoute &&
@@ -158,7 +137,6 @@ export function PermissionGuard({ children }: PermissionGuardProps) {
     );
   }
 
-  // check authorization
   if (!hasPermission && isAuthenticated) {
     return <Unauthorized />;
   }

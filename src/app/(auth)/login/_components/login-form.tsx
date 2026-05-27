@@ -5,37 +5,18 @@ import { Button, Col, InputField, PasswordField, Row } from '@/components/form';
 import { logger } from '@/logger';
 import { loginSchema } from '@/schemaValidations';
 import { logoWithText } from '@/assets';
-import { getData, isSafeInternalPath, notify, removeData } from '@/utils';
-import { route } from '@/routes';
-import { GROUP_KIND_ADMIN, storageKeys } from '@/constants';
+import { notify } from '@/utils';
 import { useAuthStore } from '@/store';
-import { useFirstActiveRoute, useNavigate, useQueryParams } from '@/hooks';
-import {
-  useEmployeeProfileQuery,
-  useLoginMutation,
-  useProfileQuery
-} from '@/queries';
+import { useLoginMutation } from '@/queries';
 import Image from 'next/image';
 import type { LoginBodyType } from '@/types';
-import { useAppContext } from '@/components/providers/app-provider';
 import { useShallow } from 'zustand/react/shallow';
 
 export function LoginForm() {
-  const navigate = useNavigate();
-
-  const firstActiveRoute = useFirstActiveRoute();
-  const { searchParams } = useQueryParams<{ redirect?: string }>();
-
   const { mutateAsync: loginMutate, isPending: loginLoading } =
     useLoginMutation();
 
-  const { refetch: getProfile, isLoading: profileLoading } = useProfileQuery();
-  const { refetch: getEmployeeProfile, isLoading: employeeProfileLoading } =
-    useEmployeeProfileQuery();
-
-  const { setLoading } = useAppContext();
-
-  const { setAccessToken, setUserKind, setProfile } = useAuthStore(
+  const { setAccessToken, setUserKind } = useAuthStore(
     useShallow((s) => {
       return {
         setAccessToken: s.setAccessToken,
@@ -59,33 +40,8 @@ export function LoginForm() {
           const userKind = res.data?.user_kind;
 
           setAccessToken(accessToken as string);
-          setUserKind(String(userKind));
+          setUserKind(userKind as number);
 
-          const profileQuery =
-            userKind === GROUP_KIND_ADMIN ? getProfile : getEmployeeProfile;
-          const profileData = await profileQuery();
-          const profile = profileData?.data;
-
-          setLoading(profileLoading || employeeProfileLoading);
-
-          if (profile) {
-            setProfile(profile);
-
-            const pathNoLogin =
-              searchParams.redirect || getData(storageKeys.PATH_NO_LOGIN);
-            let targetPath =
-              (isSafeInternalPath(pathNoLogin) &&
-              pathNoLogin !== route.home.path
-                ? pathNoLogin
-                : firstActiveRoute) || route.profile.savePage.path;
-
-            if (targetPath === route.home.path) {
-              targetPath = route.profile.savePage.path;
-            }
-
-            navigate.push(targetPath);
-            removeData(storageKeys.PATH_NO_LOGIN);
-          }
           notify.success('Đăng nhập thành công');
         } else {
           notify.error('Đăng nhập thất bại');

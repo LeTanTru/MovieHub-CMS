@@ -19,14 +19,14 @@ export type LoginResType = {
 export type SessionResType = {
   accessToken: string | null;
   csrfToken: string | null;
-  userKind: string | null;
+  userKind: number | null;
 };
 
 type AuthStoreState = {
   accessToken: string | null;
   csrfToken: string | null;
   profile: ProfileResType | null;
-  userKind: string | null;
+  userKind: number | null;
 };
 
 type AuthStoreActions = {
@@ -34,7 +34,7 @@ type AuthStoreActions = {
   setAccessToken: (token: string | null) => void;
   setCsrfToken: (token: string | null) => void;
   setProfile: (profile: ProfileResType | null) => void;
-  setUserKind: (kind: string | null) => void;
+  setUserKind: (kind: number | null) => void;
 };
 
 export type AuthStoreType = AuthStoreState & AuthStoreActions;

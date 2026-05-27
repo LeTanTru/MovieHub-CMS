@@ -6,7 +6,8 @@ import {
   apiConfig,
   CSRF_TOKEN_MAX_AGE,
   REFRESH_TOKEN_MAX_AGE,
-  storageKeys
+  storageKeys,
+  USER_KIND_MAX_AGE
 } from '@/constants';
 import { logger } from '@/logger';
 import { LoginResType } from '@/types';
@@ -47,12 +48,11 @@ export async function POST(request: NextRequest) {
     const refreshToken = res.refresh_token;
     const userKind = res.user_kind;
     const csrfToken = generateCsrfToken();
-
     await Promise.all([
       setCookie(
         storageKeys.ACCESS_TOKEN,
         accessToken,
-        makeCookieOption(ACCESS_TOKEN_MAX_AGE)
+        makeCookieOption(res.expires_in || ACCESS_TOKEN_MAX_AGE)
       ),
       setCookie(
         storageKeys.REFRESH_TOKEN,
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
       setCookie(
         storageKeys.USER_KIND,
         String(userKind),
-        makeCookieOption(ACCESS_TOKEN_MAX_AGE)
+        makeCookieOption(USER_KIND_MAX_AGE)
       ),
       setCookie(
         storageKeys.CSRF_TOKEN,

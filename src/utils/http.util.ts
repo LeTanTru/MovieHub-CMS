@@ -5,6 +5,7 @@ import { route } from '@/routes';
 import type { ApiConfig, Payload } from '@/types';
 import { useAuthStore } from '@/store';
 import { getCookie } from '@/utils';
+import { buildLoginRedirectPath } from './url.util';
 import axios, {
   AxiosError,
   HttpStatusCode,
@@ -59,7 +60,7 @@ const refreshToken = async () => {
     const newCsrfToken = data.data.csrfToken;
     if (isClient) {
       useAuthStore.getState().setAccessToken(newAccessToken);
-      useAuthStore.getState().setUserKind(String(userKind));
+      useAuthStore.getState().setUserKind(userKind);
       useAuthStore.getState().setCsrfToken(newCsrfToken);
     }
     return newAccessToken;
@@ -108,7 +109,14 @@ axiosInstance.interceptors.response.use(
         return axiosInstance.request(originalConfig);
       } catch (error) {
         unstable_rethrow(error);
-        logger.error('[REFRESH_TOKEN_ERROR]', error);
+        if (isAxiosError(error)) {
+          const response = error.response?.data;
+
+          logger.error('[REFRESH_TOKEN_ERROR]', response);
+        } else {
+          logger.error('[REFRESH_TOKEN_ERROR]', error);
+        }
+
         if (
           error instanceof AxiosError &&
           (error?.response?.status === HttpStatusCode.BadRequest ||
@@ -116,18 +124,37 @@ axiosInstance.interceptors.response.use(
             error?.response?.status === HttpStatusCode.Forbidden)
         ) {
           try {
-            await axiosInstance.post(apiConfig.api.auth.logout.baseUrl);
+            await authAxios.post(apiConfig.api.auth.logout.baseUrl);
           } catch (e) {
             logger.error('[LOGOUT_ON_REFRESH_FAILED]', e);
           }
           if (isClient) {
             useAuthStore.getState().clearState();
-            const loginPath = route.login.path;
-            if (typeof loginPath === 'string' && loginPath.startsWith('/')) {
-              window.location.href = loginPath;
-            }
+            const loginRedirectPath = buildLoginRedirectPath(
+              window.location.pathname,
+              window.location.search
+            );
+            window.location.href = new URL(
+              loginRedirectPath,
+              window.location.origin
+            ).toString();
           } else {
-            redirect(route.login.path);
+            let redirectUrl = route.login.path;
+            try {
+              const { headers } = await import('next/headers');
+              const headersList = await headers();
+              const reqUrl = headersList.get(storageKeys.X_URL);
+              if (reqUrl) {
+                const parsedUrl = new URL(reqUrl);
+                redirectUrl = buildLoginRedirectPath(
+                  parsedUrl.pathname,
+                  parsedUrl.search
+                );
+              }
+            } catch (e) {
+              logger.error('[SERVER_REDIRECT_ERROR]', e);
+            }
+            redirect(redirectUrl);
           }
         }
         processQueue(error, null);
@@ -266,8 +293,7 @@ export const sendRequest = async <T>(
     const res: AxiosResponse = await axiosInstance.request<T>(axiosConfig);
     return res.data;
   } catch (error: unknown) {
-    const err = error as AxiosError;
-    throw err;
+    throw error;
   }
 };
 
