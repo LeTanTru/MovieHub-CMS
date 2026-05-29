@@ -31,3 +31,23 @@ export type VideoLibrarySubtitleTranslateBodyType = z.infer<
 export type VideoLibrarySubtitleBodyType = z.infer<
   typeof videoLibrarySubtitleSchema
 >;
+
+export type SubtitleType = {
+  id: string;
+  start: string;
+  end: string;
+  text: string;
+};
+
+type VideoLibrarySubtitleState = {
+  currentTime: number;
+  subtitles: SubtitleType[];
+};
+
+type VideoLibrarySubtitleActions = {
+  setCurrentTime: (currentTime: number) => void;
+  setSubtitles: (subtitles: SubtitleType[]) => void;
+};
+
+export type VideoLibrarySubtitleStoreType = VideoLibrarySubtitleState &
+  VideoLibrarySubtitleActions;

@@ -1,7 +1,6 @@
 'use client';
 
-import { CheckIcon } from '@vidstack/react/icons';
-import { getLanguageLabel } from '@/utils';
+import { SettingsMenuIcon } from '@vidstack/react/icons';
 import { Menu, useVideoQualityOptions } from '@vidstack/react';
 import { submenuClass } from './styles';
 import { MenuRadio } from './menu-radio';
@@ -18,7 +17,7 @@ export function QualitySubmenu() {
 
   return (
     <Menu.Root>
-      <SubmenuButton label='Chất lượng' hint={hint} icon={CheckIcon} />
+      <SubmenuButton label='Chất lượng' hint={hint} icon={SettingsMenuIcon} />
 
       <Menu.Content className={submenuClass}>
         <Menu.RadioGroup
@@ -28,7 +27,7 @@ export function QualitySubmenu() {
           {options.map(
             ({ quality: _, label, value, bitrateText: __, select }) => (
               <MenuRadio value={value} onSelect={select} key={value}>
-                {getLanguageLabel(label)}
+                {label}
               </MenuRadio>
             )
           )}

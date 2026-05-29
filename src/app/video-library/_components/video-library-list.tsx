@@ -50,9 +50,9 @@ import {
 } from '@/utils';
 import {
   AudioLines,
+  ClosedCaption,
   LucideLoader,
-  PlayCircle,
-  ScissorsLineDashed
+  PlayCircle
 } from 'lucide-react';
 import { useState } from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
@@ -161,7 +161,7 @@ export function VideoLibraryList() {
           };
 
           return (
-            <ToolTip title='Chỉnh sửa phụ đề' sideOffset={0}>
+            <ToolTip title='Phụ đề' sideOffset={0}>
               <span>
                 <Button
                   disabled={
@@ -173,7 +173,7 @@ export function VideoLibraryList() {
                   variant='ghost'
                   {...buttonProps}
                 >
-                  <ScissorsLineDashed className='text-main-color size-4.5' />
+                  <ClosedCaption className='text-main-color size-4.5' />
                 </Button>
               </span>
             </ToolTip>

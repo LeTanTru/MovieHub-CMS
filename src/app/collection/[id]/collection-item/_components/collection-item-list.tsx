@@ -40,7 +40,7 @@ export function CollectionItemList() {
   const { searchParams, serializeParams, deprefixParams } =
     useQueryParams<Record<string, string>>();
   const parentParams = deprefixParams(searchParams);
-  const { collectionTitle, ...restSearchParams } = parentParams;
+  const { collectionTitle, ...restParentParams } = parentParams;
 
   const { opened, open, close } = useDisclosure();
 
@@ -253,7 +253,7 @@ export function CollectionItemList() {
           label: 'Bộ sưu tập',
           href: renderListPageUrl(
             route.collection.getList.path,
-            serializeParams(restSearchParams)
+            serializeParams(restParentParams)
           )
         },
         {

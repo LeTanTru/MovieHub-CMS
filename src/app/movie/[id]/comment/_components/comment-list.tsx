@@ -40,7 +40,7 @@ export function CommentList() {
   const { searchParams, serializeParams, deprefixParams } =
     useQueryParams<Record<string, string>>();
   const parentParams = deprefixParams(searchParams);
-  const { movieTitle, parentPage, ...restSearchParams } = parentParams;
+  const { movieTitle, parentPage, ...restParentParams } = parentParams;
 
   const {
     targetCommentId,
@@ -204,7 +204,7 @@ export function CommentList() {
           label: 'Phim',
           href: renderListPageUrl(
             route.movie.getList.path,
-            serializeParams({ ...restSearchParams, page: parentPage })
+            serializeParams({ ...restParentParams, page: parentPage })
           )
         },
         { label: (movieTitle as string) || 'Chi tiết' },

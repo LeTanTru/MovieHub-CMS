@@ -7,7 +7,7 @@ import { apiConfig, ErrorCode, objectNames, queryKeys } from '@/constants';
 import { useListBase } from '@/hooks';
 import type { Column, StyleResType, StyleSearchType } from '@/types';
 import { notify, renderImageUrl } from '@/utils';
-import { RiCheckboxCircleFill } from 'react-icons/ri';
+import { BadgeCheck } from 'lucide-react';
 
 export function StyleList() {
   const { data, pagination, loading, handlers } = useListBase<
@@ -69,7 +69,7 @@ export function StyleList() {
             </span>
             {record.isDefault && (
               <ToolTip title='Mặc định'>
-                <RiCheckboxCircleFill className='size-5 text-emerald-500' />
+                <BadgeCheck className='fill-main-color size-5 stroke-white' />
               </ToolTip>
             )}
           </div>

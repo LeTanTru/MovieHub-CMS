@@ -13,7 +13,7 @@ import {
   validatePermission
 } from '@/utils';
 import { type ReactNode, useEffect, useMemo } from 'react';
-import { Unauthorized } from '@/components/unauthorized';
+import { Forbidden } from '@/components/forbidden';
 import { Loader } from 'lucide-react';
 import { route } from '@/routes';
 import { useAppContext } from '@/components/providers/app-provider';
@@ -138,7 +138,7 @@ export function PermissionGuard({ children }: PermissionGuardProps) {
   }
 
   if (!hasPermission && isAuthenticated) {
-    return <Unauthorized />;
+    return <Forbidden />;
   }
 
   return <>{children}</>;
