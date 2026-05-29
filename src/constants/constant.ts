@@ -145,3 +145,5 @@ export const PARENT_PREFIX_PARAM = 'p_';
 
 export const SUBTITLE_LOADING = 0;
 export const SUBTITLE_COMPLETE = 1;
+
+export const SUBTITLE_DELIMITER = '-->';

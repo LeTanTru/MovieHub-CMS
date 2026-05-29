@@ -53,7 +53,7 @@ export function MovieItemSeasonList() {
   const { searchParams, serializeParams, deprefixParams, prefixParams } =
     useQueryParams<Record<string, string>>();
   const parentParams = deprefixParams(searchParams);
-  const { type, movieTitle, parentPage, ...restSearchParams } = parentParams;
+  const { type, movieTitle, parentPage, ...restParentParams } = parentParams;
 
   const movieType = Number(type || 0);
 
@@ -334,7 +334,7 @@ export function MovieItemSeasonList() {
         }),
         serializeParams(
           prefixParams({
-            ...restSearchParams,
+            ...restParentParams,
             type,
             movieTitle,
             season: record.title,
@@ -352,7 +352,7 @@ export function MovieItemSeasonList() {
           label: 'Phim',
           href: renderListPageUrl(
             route.movie.getList.path,
-            serializeParams({ ...restSearchParams, page: parentPage })
+            serializeParams({ ...restParentParams, page: parentPage })
           )
         },
         { label: (movieTitle as string) || 'Phần' }

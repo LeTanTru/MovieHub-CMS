@@ -20,8 +20,7 @@ export function LoginForm() {
     useShallow((s) => {
       return {
         setAccessToken: s.setAccessToken,
-        setUserKind: s.setUserKind,
-        setProfile: s.setProfile
+        setUserKind: s.setUserKind
       };
     })
   );

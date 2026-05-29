@@ -24,6 +24,7 @@ import {
   VolumeToggleButton
 } from './_components';
 import {
+  Gesture,
   isHLSProvider,
   MediaPlayer,
   MediaPlayerInstance,
@@ -187,9 +188,15 @@ export function VideoPlayer({
         <MediaProvider slot='media' className='cursor-pointer'>
           <Poster className='vds-poster' src={thumbnailUrl} />
         </MediaProvider>
+        <Gesture
+          className='pointer-events-auto absolute inset-0 z-0 block h-full w-full'
+          event='pointerup'
+          action='toggle:paused'
+        />
         <TextTrackSync textTracks={textTracks} playerRef={playerRef} />
         <DefaultQuality defaultQuality={defaultQuality} />
         <DefaultVideoLayout
+          noGestures={true}
           smallLayoutWhen={false}
           thumbnails={vttUrl}
           icons={defaultLayoutIcons}

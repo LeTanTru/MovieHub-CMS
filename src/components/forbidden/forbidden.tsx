@@ -1,7 +1,7 @@
 import { route } from '@/routes';
 import Link from 'next/link';
 
-export function Unauthorized() {
+export function Forbidden() {
   return (
     <div className='mt-20 flex flex-col items-center justify-center gap-4'>
       <svg

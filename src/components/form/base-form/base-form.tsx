@@ -10,7 +10,7 @@ import {
   type Ref,
   useEffect
 } from 'react';
-import type { ZodTypeAny, ZodType } from 'zod';
+import type { ZodObject, ZodType } from 'zod';
 import {
   type DefaultValues,
   useForm,
@@ -28,7 +28,7 @@ type BaseFormProps<T extends FieldValues> = Omit<
   defaultValues: DefaultValues<T>;
   initialValues?: T;
   mode?: 'onBlur' | 'onChange' | 'onSubmit' | 'onTouched' | 'all';
-  schema: ZodTypeAny;
+  schema: ZodObject;
   children?: (methods: UseFormReturn<T>) => ReactNode;
   onSubmit: (values: T, form: UseFormReturn<T>) => Promise<void> | void;
   onFormChange?: (isFormChanged: boolean) => void;

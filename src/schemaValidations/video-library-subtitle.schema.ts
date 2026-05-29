@@ -1,7 +1,8 @@
 import z from 'zod';
 
 export const videoLibrarySubtitleSearchSchema = z.object({
-  videoLibraryId: z.string().nonempty('Bắt buộc')
+  videoLibraryId: z.string().nonempty('Bắt buộc'),
+  language: z.string().optional().nullable()
 });
 
 export const videoLibrarySubtitleTranslateSchema = z.object({

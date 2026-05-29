@@ -1,4 +1,5 @@
-import { OptionType } from '@/types';
+import { SUBTITLE_DELIMITER } from '@/constants';
+import { OptionType, SubtitleType } from '@/types';
 
 export const getLastWord = (text: string): string => {
   const words = text.trim().split(/\s+/);
@@ -43,4 +44,25 @@ export const parseJSON = <T>(json: string): T | null => {
   } catch (_e) {
     return null;
   }
+};
+
+export const parseVttContent = (content: string) => {
+  const blocks = content.split('\n\n');
+  const subtitles: SubtitleType[] = [];
+
+  blocks.forEach((block) => {
+    if (block === 'WEBVTT') return;
+
+    const [id, timeline, text] = block.split('\n');
+    const [start, end] = timeline.split(SUBTITLE_DELIMITER);
+
+    subtitles.push({
+      id: id,
+      start,
+      end,
+      text
+    });
+  });
+
+  return subtitles;
 };

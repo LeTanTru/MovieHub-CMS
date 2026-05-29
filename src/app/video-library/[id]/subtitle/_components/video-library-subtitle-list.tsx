@@ -1,58 +1,50 @@
 'use client';
 
-import { Button, Col, Row, ToolTip } from '@/components/form';
+import { Button, ToolTip } from '@/components/form';
+import { HasPermission } from '@/components/has-permission';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
-import { List, ListItem } from '@/components/list';
-import { CircleLoading } from '@/components/loading';
-import dynamic from 'next/dynamic';
-
-const VideoPlayer = dynamic(
-  () => import('@/components/video-player').then((m) => m.VideoPlayer),
-  {
-    ssr: false,
-    loading: () => <CircleLoading className='stroke-main-color m-4' />
-  }
-);
-
-import { envConfig } from '@/config';
+import { BaseTable } from '@/components/table';
 import {
   apiConfig,
+  FieldTypes,
+  languageOptions,
   objectNames,
   queryKeys,
   SUBTITLE_COMPLETE,
   SUBTITLE_LOADING
 } from '@/constants';
-import { useDisclosure, useListBase, useQueryParams } from '@/hooks';
+import {
+  useDisclosure,
+  useListBase,
+  useNavigate,
+  useQueryParams
+} from '@/hooks';
 import { useVideoLibraryQuery } from '@/queries';
 import { route } from '@/routes';
-import { useAuthStore } from '@/store';
-import { useState } from 'react';
+import { videoLibrarySubtitleSearchSchema } from '@/schemaValidations';
 import { VideoLibrarySubtitleModal } from './video-library-subtitle-modal';
-import { VideoLibrarySubtitleTranslateModal } from './video-library-subtitle-translate-modal';
-import {
+import type {
+  Column,
+  SearchFormProps,
   VideoLibrarySubtitleResType,
   VideoLibrarySubtitleSearchType
 } from '@/types';
-import {
-  isMobileDevice,
-  isTabletDevice,
-  renderImageUrl,
-  renderListPageUrl,
-  renderVideoUrl,
-  renderVttUrl
-} from '@/utils';
+import { generatePath, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
-import { ConfirmModal } from '@/components/modal';
-import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
-import { BadgeCheck, PlusIcon } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
-import { HasPermission } from '@/components/has-permission';
-import { NoData } from '@/components/no-data';
-import { TrackProps } from '@vidstack/react';
+import {
+  PlusIcon,
+  BadgeCheck,
+  ScissorsLineDashed,
+  LucideLoader
+} from 'lucide-react';
+import { useState } from 'react';
+import { AiOutlineEdit } from 'react-icons/ai';
+import { FaCircleCheck } from 'react-icons/fa6';
 
 export function VideoLibrarySubtitleList() {
   const { id } = useParams<{ id: string }>();
-  const accessToken = useAuthStore((s) => s.accessToken);
+  const navigate = useNavigate();
+
   const { data: videoLibrary, isLoading: loadingVideoLibrary } =
     useVideoLibraryQuery(id);
 
@@ -60,22 +52,17 @@ export function VideoLibrarySubtitleList() {
     useState<VideoLibrarySubtitleResType | null>(null);
 
   const {
-    opened: openedEditModal,
-    open: openEditModal,
-    close: closeEditModal
-  } = useDisclosure();
-  const {
-    opened: openedTranslateModal,
-    open: openTranslateModal,
-    close: closeTranslateModal
+    opened: openedVideoSubtitleModal,
+    open: openVideoSubtitleModal,
+    close: closeVideoSubtitleModal
   } = useDisclosure();
 
   const { searchParams, serializeParams, deprefixParams } =
     useQueryParams<Record<string, string>>();
   const parentParams = deprefixParams(searchParams);
-  const { videoName, parentPage, ...restSearchParams } = parentParams;
+  const { videoName, parentPage, ...restParentParams } = parentParams;
 
-  const { data: subtitleList, handlers } = useListBase<
+  const { data, pagination, loading, handlers } = useListBase<
     VideoLibrarySubtitleResType,
     VideoLibrarySubtitleSearchType
   >({
@@ -87,57 +74,179 @@ export function VideoLibrarySubtitleList() {
         videoLibraryId: id
       },
       notShowFromSearchParams: ['videoLibraryId']
+    },
+    override: (handlers) => {
+      handlers.renderAddButton = () => {
+        const defaultSubtitle = data?.find((sub) => sub.isDefault);
+        return (
+          <HasPermission
+            requiredPermissions={[
+              apiConfig.videoLibrarySubtitle.translate.permissionCode
+            ]}
+          >
+            <Button
+              onClick={() => {
+                setSelectedSubtitle(null);
+                open();
+              }}
+              variant='primary'
+              disabled={!defaultSubtitle}
+            >
+              <PlusIcon />
+              Thêm mới
+            </Button>
+          </HasPermission>
+        );
+      };
+
+      handlers.additionalColumns = () => ({
+        edit: (
+          record: VideoLibrarySubtitleResType,
+          buttonProps?: Record<string, unknown>
+        ) => {
+          const handleUpdateSubtitle = (
+            subtitle: VideoLibrarySubtitleResType
+          ) => {
+            setSelectedSubtitle(subtitle);
+            openVideoSubtitleModal();
+          };
+
+          return (
+            <ToolTip
+              title={`Cập nhật phụ đề tiếng ${record.language}`}
+              sideOffset={0}
+            >
+              <span>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpdateSubtitle(record);
+                  }}
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  variant='ghost'
+                  {...buttonProps}
+                >
+                  <AiOutlineEdit className='text-main-color size-4' />
+                </Button>
+              </span>
+            </ToolTip>
+          );
+        },
+
+        editContent: (
+          record: VideoLibrarySubtitleResType,
+          buttonProps?: Record<string, unknown>
+        ) => {
+          const handleEditContent = (subtitle: VideoLibrarySubtitleResType) => {
+            navigate.push(
+              renderListPageUrl(
+                generatePath(route.videoLibrarySubtitle.editor.path, {
+                  id,
+                  subtitleId: subtitle.id
+                }),
+                serializeParams({
+                  ...searchParams,
+                  p_language: subtitle.language
+                })
+              )
+            );
+          };
+
+          return (
+            <ToolTip title='Chỉnh sửa nội dung' sideOffset={0}>
+              <span>
+                <Button
+                  disabled={record.state !== SUBTITLE_COMPLETE}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditContent(record);
+                  }}
+                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
+                  variant='ghost'
+                  {...buttonProps}
+                >
+                  <ScissorsLineDashed className='text-main-color size-4.5' />
+                </Button>
+              </span>
+            </ToolTip>
+          );
+        }
+      });
     }
   });
 
-  const canEdit = handlers.hasPermission({
-    requiredPermissions: [apiConfig.videoLibrarySubtitle.update.permissionCode]
-  });
-
-  const canDelete = handlers.hasPermission({
-    requiredPermissions: [apiConfig.videoLibrarySubtitle.delete.permissionCode]
-  });
-
-  const renderAddButton = () => {
-    const defaultSubtitle = subtitleList?.find((sub) => sub.isDefault);
-    return (
-      <HasPermission
-        requiredPermissions={[
-          apiConfig.videoLibrarySubtitle.translate.permissionCode
-        ]}
-      >
-        <Button
-          onClick={openTranslateModal}
-          variant='primary'
-          disabled={!defaultSubtitle}
-        >
-          <PlusIcon />
-          Thêm mới phụ đề
-        </Button>
-      </HasPermission>
-    );
-  };
-
-  const textTracks: TrackProps[] = videoLibrary
-    ? subtitleList.flatMap((subtitle) =>
-        subtitle.state === SUBTITLE_COMPLETE
-          ? [
-              {
-                src: renderVttUrl(
-                  videoLibrary.hostname,
-                  subtitle.fileUrl,
-                  videoLibrary.sourceType
-                ),
-                label: subtitle.label,
-                language: subtitle.language,
-                kind: 'subtitles',
-                type: 'vtt',
-                default: subtitle.isDefault
-              }
+  const columns: Column<VideoLibrarySubtitleResType>[] = [
+    {
+      title: 'Ngôn ngữ',
+      dataIndex: 'label',
+      render: (val, record) => {
+        const value = val as string;
+        return (
+          <div className='flex items-center gap-x-2'>
+            <span className='line-clamp-1 block truncate' title={value}>
+              {value}
+            </span>
+            {record.isDefault && (
+              <ToolTip title='Mặc định'>
+                <BadgeCheck className='fill-main-color size-5 stroke-white' />
+              </ToolTip>
+            )}
+          </div>
+        );
+      }
+    },
+    {
+      title: 'Tình trạng',
+      dataIndex: 'state',
+      width: 120,
+      align: 'center',
+      render: (val) =>
+        val === SUBTITLE_LOADING ? (
+          <ToolTip title='Đang xử lý'>
+            <div>
+              <LucideLoader className='mx-auto size-5 animate-spin' />
+            </div>
+          </ToolTip>
+        ) : (
+          <ToolTip title='Đã hoàn thành'>
+            <div>
+              <FaCircleCheck className='mx-auto size-5 text-emerald-500' />
+            </div>
+          </ToolTip>
+        )
+    },
+    handlers.renderActionColumn({
+      actions: {
+        editContent: (record) => record.state === SUBTITLE_COMPLETE,
+        edit: handlers.hasPermission({
+          requiredPermissions: [
+            apiConfig.videoLibrarySubtitle.update.permissionCode
+          ]
+        }),
+        delete: (record) =>
+          !record.isDefault &&
+          handlers.hasPermission({
+            requiredPermissions: [
+              apiConfig.videoLibrarySubtitle.delete.permissionCode
             ]
-          : []
-      )
-    : [];
+          })
+      },
+      columnProps: {
+        width: 150
+      }
+    })
+  ];
+
+  const searchFields: SearchFormProps<VideoLibrarySubtitleSearchType>['searchFields'] =
+    [
+      {
+        key: 'language',
+        placeholder: 'Ngôn ngữ',
+        type: FieldTypes.SELECT,
+        options: languageOptions,
+        submitOnChanged: true
+      }
+    ];
 
   return (
     <PageWrapper
@@ -146,7 +255,7 @@ export function VideoLibrarySubtitleList() {
           label: 'Video',
           href: renderListPageUrl(
             route.videoLibrary.getList.path,
-            serializeParams({ ...restSearchParams, page: parentPage })
+            serializeParams({ ...restParentParams, page: parentPage })
           )
         },
         ...(videoName
@@ -164,136 +273,26 @@ export function VideoLibrarySubtitleList() {
       notFoundContent='Không tìm thấy video'
     >
       <ListPageWrapper
-        addButton={renderAddButton()}
+        searchForm={handlers.renderSearchForm({
+          searchFields,
+          schema: videoLibrarySubtitleSearchSchema
+        })}
+        addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}
       >
-        <Row className='grid-row-no-gutters'>
-          <Col className='grid-c-9 grid-col-no-gutters'>
-            {loadingVideoLibrary ? (
-              <CircleLoading className='stroke-main-color m-4' />
-            ) : videoLibrary ? (
-              <VideoPlayer
-                auth={true}
-                src={renderVideoUrl(
-                  videoLibrary.hostname,
-                  videoLibrary.content,
-                  videoLibrary.sourceType
-                )}
-                token={accessToken || ''}
-                duration={videoLibrary.duration}
-                introEnd={videoLibrary.introEnd}
-                introStart={videoLibrary.introStart}
-                outroStart={videoLibrary.outroStart}
-                thumbnailUrl={renderImageUrl(videoLibrary.thumbnailUrl)}
-                vttUrl={renderVttUrl(
-                  videoLibrary.hostname,
-                  videoLibrary.vttUrl,
-                  videoLibrary.sourceType
-                )}
-                volume={
-                  envConfig.NEXT_PUBLIC_NODE_ENV === 'development'
-                    ? 0
-                    : isMobileDevice() || isTabletDevice()
-                      ? 1
-                      : 0.5
-                }
-                textTracks={textTracks}
-              />
-            ) : (
-              <p className='text-center'>Không tìm thấy video</p>
-            )}
-          </Col>
-          <Col className='grid-c-3 grid-col-no-gutters'>
-            <List>
-              {subtitleList.length === 0 ? (
-                <NoData />
-              ) : (
-                subtitleList.map((subtitle) => (
-                  <ListItem
-                    className='flex cursor-pointer items-center justify-between px-2 py-1 transition-colors duration-200 ease-linear hover:bg-zinc-100'
-                    key={subtitle.id}
-                  >
-                    <div className='flex items-center gap-2'>
-                      <span>
-                        {subtitle.label} ({subtitle.language})
-                      </span>
-                      {subtitle.isDefault && (
-                        <ToolTip title='Mặc định'>
-                          <BadgeCheck className='fill-main-color size-6 stroke-white' />
-                        </ToolTip>
-                      )}
-                      {subtitle.state === SUBTITLE_LOADING && (
-                        <CircleLoading className='stroke-main-color size-5' />
-                      )}
-                    </div>
-                    <div className='flex items-center justify-center'>
-                      {canEdit && (
-                        <ToolTip
-                          title={`Cập nhật phụ đề tiếng ${subtitle.language}`}
-                          sideOffset={0}
-                        >
-                          <span>
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedSubtitle(subtitle);
-                                openEditModal();
-                              }}
-                              className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
-                              variant='ghost'
-                            >
-                              <AiOutlineEdit className='text-main-color size-4' />
-                            </Button>
-                          </span>
-                        </ToolTip>
-                      )}
-                      {canEdit && (
-                        <Separator
-                          orientation='vertical'
-                          className='h-4! w-px!'
-                        />
-                      )}
-                      {canDelete && (
-                        <ConfirmModal
-                          message={`Bạn có chắc chắn muốn xóa phụ đề ${subtitle.language} này không ?`}
-                          onConfirm={() =>
-                            handlers.handleDeleteClick(subtitle.id)
-                          }
-                          trigger={
-                            <span>
-                              <ToolTip
-                                title={`Xoá phụ đề ${subtitle.language}`}
-                                sideOffset={0}
-                              >
-                                <Button
-                                  className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
-                                  variant='ghost'
-                                  disabled={subtitle.isDefault}
-                                >
-                                  <AiOutlineDelete className='text-destructive size-4' />
-                                </Button>
-                              </ToolTip>
-                            </span>
-                          }
-                        />
-                      )}
-                    </div>
-                  </ListItem>
-                ))
-              )}
-            </List>
-          </Col>
-        </Row>
+        <BaseTable
+          columns={columns}
+          dataSource={data || []}
+          pagination={pagination}
+          loading={loading}
+          changePagination={handlers.changePagination}
+        />
       </ListPageWrapper>
       <VideoLibrarySubtitleModal
-        open={openedEditModal}
-        onClose={closeEditModal}
+        open={openedVideoSubtitleModal}
+        onClose={closeVideoSubtitleModal}
         subtitle={selectedSubtitle}
-      />
-      <VideoLibrarySubtitleTranslateModal
-        open={openedTranslateModal}
-        defaultSubtitleId={subtitleList?.find((sub) => sub.isDefault)?.id || ''}
-        onClose={closeTranslateModal}
+        defaultSubtitleId={data?.find((sub) => sub.isDefault)?.id || ''}
       />
     </PageWrapper>
   );

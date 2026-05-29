@@ -124,6 +124,11 @@ export const route = defineRoute({
       path: '/video-library/:id/subtitle',
       auth: true,
       permissionCode: [apiConfig.videoLibrarySubtitle.getList.permissionCode]
+    },
+    subtitleSavePage: {
+      path: '/video-library/:id/subtitle/:subtitleId',
+      auth: true,
+      permissionCode: [apiConfig.videoLibrarySubtitle.update.permissionCode]
     }
   },
   videoLibrarySubtitle: {
@@ -131,6 +136,11 @@ export const route = defineRoute({
       path: '/video-library/:id/subtitle',
       auth: true,
       permissionCode: [apiConfig.videoLibrarySubtitle.getList.permissionCode]
+    },
+    editor: {
+      path: '/video-library/:id/subtitle/:subtitleId',
+      auth: true,
+      permissionCode: [apiConfig.videoLibrarySubtitle.update.permissionCode]
     }
   },
   movie: {
