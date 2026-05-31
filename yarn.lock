@@ -2436,6 +2436,18 @@
   dependencies:
     "@tanstack/query-core" "5.90.16"
 
+"@tanstack/react-virtual@^3.13.26":
+  version "3.13.26"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-virtual/-/react-virtual-3.13.26.tgz#1a0be9837ddc09c06868f9138fb792ab29fedc30"
+  integrity sha512-DosdgjOxCLahkn0o+ilmZYwEjo1glfMGuRT/j3PQ18yr5XqA8N/BCaL9IJ3B5TRl+nnzyK2IOFgAILwzN3a9xQ==
+  dependencies:
+    "@tanstack/virtual-core" "3.16.0"
+
+"@tanstack/virtual-core@3.16.0":
+  version "3.16.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/virtual-core/-/virtual-core-3.16.0.tgz#987bd975c1a486a38ff33eb0634f70436305570f"
+  integrity sha512-Er2N7q3WOiH6y2JLxsxNX+u2/sLqSsL0bxFgDjuiPiA7vKhZRm+IzcS17vRee3GNXr64UsesA5CAp9yTiIYw9A==
+
 "@tinymce/tinymce-react@^6.3.0":
   version "6.3.0"
   resolved "https://registry.npmjs.org/@tinymce/tinymce-react/-/tinymce-react-6.3.0.tgz"
@@ -6320,6 +6332,11 @@ util-deprecate@^1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
+
+uuid@^14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-14.0.0.tgz#0af883220163d264ffe0c084f6b8a89b9666966d"
+  integrity sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==
 
 victory-vendor@^37.0.2:
   version "37.3.6"

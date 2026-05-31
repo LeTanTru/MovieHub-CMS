@@ -1,13 +1,12 @@
 'use client';
 
+import { SubtitlePreviewPlayer } from './subtitle-preview-player';
 import { SubtitleTranscriptPanel } from './subtitle-transcript-panel';
 import { Col, Row } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { envConfig } from '@/config';
 import {
   apiConfig,
-  languageOptions,
   objectNames,
   queryKeys,
   SUBTITLE_COMPLETE
@@ -15,35 +14,16 @@ import {
 import { useListBase, useQueryParams } from '@/hooks';
 import { useVideoLibraryQuery } from '@/queries';
 import { route } from '@/routes';
-import { useAuthStore } from '@/store';
 import {
   VideoLibrarySubtitleResType,
   VideoLibrarySubtitleSearchType
 } from '@/types';
-import {
-  generatePath,
-  isMobileDevice,
-  isTabletDevice,
-  renderImageUrl,
-  renderListPageUrl,
-  renderVideoUrl,
-  renderVttUrl
-} from '@/utils';
+import { generatePath, renderListPageUrl, renderVttUrl } from '@/utils';
 import { TrackProps } from '@vidstack/react';
-import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-
-const VideoPlayer = dynamic(
-  () => import('@/components/video-player').then((m) => m.VideoPlayer),
-  {
-    ssr: false,
-    loading: () => <CircleLoading className='stroke-main-color m-4' />
-  }
-);
+import { useCallback, useRef, useState } from 'react';
 
 export function SubtitleEditor() {
-  const playerContainerRef = useRef<HTMLDivElement | null>(null);
   const [playerHeight, setPlayerHeight] = useState(0);
 
   const { id: videoLibraryId } = useParams<{
@@ -62,13 +42,8 @@ export function SubtitleEditor() {
     ...restParentParams
   } = parentParams;
 
-  const { p_language: _p_language, ...restSearchParams } = searchParams;
+  const { p_language, ...restSearchParams } = searchParams;
 
-  const languageLabel = languageOptions.find(
-    (lang) => lang.value === restSearchParams.language
-  )?.label;
-
-  const accessToken = useAuthStore((s) => s.accessToken);
   const { data: videoLibrary, isLoading: loadingVideoLibrary } =
     useVideoLibraryQuery(videoLibraryId);
 
@@ -87,9 +62,13 @@ export function SubtitleEditor() {
     }
   });
 
+  const targetSubtitle = subtitleList.find(
+    (subtitle) => subtitle.language === p_language
+  );
+
   const textTracks: TrackProps[] = videoLibrary
     ? subtitleList.flatMap((subtitle) =>
-        subtitle.state === SUBTITLE_COMPLETE
+        subtitle.state === SUBTITLE_COMPLETE && subtitle.language === p_language
           ? [
               {
                 src: renderVttUrl(
@@ -108,25 +87,24 @@ export function SubtitleEditor() {
       )
     : [];
 
-  useEffect(() => {
-    const element = playerContainerRef.current;
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const playerContainerRef = useCallback((node: HTMLDivElement | null) => {
+    if (resizeObserverRef.current) {
+      resizeObserverRef.current.disconnect();
+      resizeObserverRef.current = null;
+    }
 
-    if (!element) return;
+    if (node) {
+      const updateHeight = () => {
+        setPlayerHeight(node.getBoundingClientRect().height);
+      };
+      updateHeight();
 
-    const updateHeight = () => {
-      setPlayerHeight(element.getBoundingClientRect().height);
-    };
-
-    updateHeight();
-
-    const resizeObserver = new ResizeObserver(updateHeight);
-    resizeObserver.observe(element);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [loading, loadingVideoLibrary, videoLibrary]);
-
+      const resizeObserver = new ResizeObserver(updateHeight);
+      resizeObserver.observe(node);
+      resizeObserverRef.current = resizeObserver;
+    }
+  }, []);
   return (
     <PageWrapper
       breadcrumbs={[
@@ -145,7 +123,7 @@ export function SubtitleEditor() {
             ]
           : []),
         {
-          label: 'Phá»¥ Ä‘á»',
+          label: 'Phụ đề',
           href: renderListPageUrl(
             generatePath(route.videoLibrary.subtitle.path, {
               id: videoLibraryId
@@ -154,13 +132,13 @@ export function SubtitleEditor() {
           )
         },
         {
-          label: languageLabel
-            ? `Chá»‰nh sá»­a ná»™i dung ${languageLabel}`
-            : 'Chá»‰nh sá»­a ná»™i dung'
+          label: targetSubtitle
+            ? `Chỉnh sửa nội dung ${targetSubtitle.label}`
+            : 'Chỉnh sửa nội dung'
         }
       ]}
-      notFound={!videoLibrary && !loadingVideoLibrary}
-      notFoundContent='KhÃ´ng tÃ¬m tháº¥y video'
+      notFound={!videoLibrary || !targetSubtitle}
+      notFoundContent={`Không tìm thấy ${videoLibrary ? 'phụ đề' : 'video'}`}
     >
       <ListPageWrapper>
         <Row className='grid-row-no-gutters items-stretch'>
@@ -168,43 +146,17 @@ export function SubtitleEditor() {
             {loading || loadingVideoLibrary ? (
               <CircleLoading className='stroke-main-color m-4' />
             ) : videoLibrary ? (
-              <div ref={playerContainerRef} className='aspect-video w-full'>
-                <VideoPlayer
-                  auth={true}
-                  src={renderVideoUrl(
-                    videoLibrary.hostname,
-                    videoLibrary.content,
-                    videoLibrary.sourceType
-                  )}
-                  token={accessToken || ''}
-                  duration={videoLibrary.duration}
-                  introEnd={videoLibrary.introEnd}
-                  introStart={videoLibrary.introStart}
-                  outroStart={videoLibrary.outroStart}
-                  thumbnailUrl={renderImageUrl(videoLibrary.thumbnailUrl)}
-                  vttUrl={renderVttUrl(
-                    videoLibrary.hostname,
-                    videoLibrary.vttUrl,
-                    videoLibrary.sourceType
-                  )}
-                  volume={
-                    envConfig.NEXT_PUBLIC_NODE_ENV === 'development'
-                      ? 0
-                      : isMobileDevice() || isTabletDevice()
-                        ? 1
-                        : 0.5
-                  }
-                  textTracks={textTracks}
-                />
-              </div>
-            ) : (
-              <p className='text-center'>KhÃ´ng tÃ¬m tháº¥y video</p>
-            )}
+              <SubtitlePreviewPlayer
+                videoLibrary={videoLibrary}
+                playerContainerRef={playerContainerRef}
+                textTracks={textTracks}
+              />
+            ) : null}
           </Col>
           <Col className='grid-c-3 grid-col-no-gutters h-full'>
-            {subtitleList?.length && videoLibrary && (
+            {targetSubtitle && videoLibrary && (
               <SubtitleTranscriptPanel
-                subtitle={subtitleList[0]}
+                subtitle={targetSubtitle}
                 videoLibrary={videoLibrary}
                 height={playerHeight}
               />

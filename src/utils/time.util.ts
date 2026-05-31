@@ -4,7 +4,7 @@ export const timeToSeconds = (time: string): number => {
   const parts = time.split(':');
 
   if (parts.length !== 3) {
-    throw new Error('Định dạng thời gian phải là HH:mm:ss');
+    throw new Error('Invalid time format');
   }
 
   const [hours, minutes, seconds] = parts.map((p) => parseInt(p, 10));
@@ -19,7 +19,7 @@ export const timeToSeconds = (time: string): number => {
     seconds < 0 ||
     seconds >= 60
   ) {
-    throw new Error('Giá trị giờ, phút, giây không hợp lệ');
+    throw new Error('Invalid time format');
   }
 
   return hours * 3600 + minutes * 60 + seconds;
