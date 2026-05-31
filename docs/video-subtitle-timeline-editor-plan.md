@@ -1,171 +1,332 @@
-# Video Subtitle Timeline Editor Plan
+# Video Subtitle Transcript Editor - Implementation Plan
 
-## 1. Objective & Scope
+## Goal
 
-Build a subtitle-focused React timeline editor inside MovieHub CMS allowing editors to edit, adjust timings, zoom, validate, and preview subtitles against HLS video playback.
+Build a simplified subtitle editor at:
 
-- **In Scope:** Single-language cue workspace, zoom/pan ruler, drag-to-move and drag-to-resize cues, live `TextTrack` preview, transcript panel, validation, undo/redo, conflict-safe API save.
-- **Out of Scope:** Video cutting/rendering, multi-lane audio mixing, client-side waveform generation (post-MVP).
+`src/app/video-library/[id]/subtitle/[subtitleId]/page.tsx`
 
----
+The editor replaces the scrollable timeline/ruler UI with a video preview player on the left and a virtualized transcript panel on the right.
 
-## 2. Core Architecture Decisions
+## Core Features
 
-1. **Dedicated Workspace:** Opened in a dedicated editor workspace (`SubtitleModalEditor`) loaded on demand, keeping the main subtitle list page lightweight.
-2. **Custom Canvas-less Timeline:** Render cues as absolute DOM elements mapped to timeline pixels. Use pointer capture/events for move/resize timing instead of heavy dnd libraries.
-3. **State Boundaries:**
-   - **Server State (TanStack Query):** Handles original cue document fetch and save mutation.
-   - **Draft State (Zustand):** Handles editable cues list, active selection, undo/redo history, zoom level, and viewport scrolling.
-   - **Transient State (Refs + DOM):** Playhead position and pointer drag coordinates bypass React state and are painted imperatively to ensure high-performance playback.
-4. **Millisecond Base:** Store all timings in integer milliseconds (`startMs`, `endMs`) in the frontend and API; convert to seconds only at the player's `VTTCue` boundary.
-5. **Long-file Performance:** Virtualize the transcript list (`@tanstack/react-virtual`) and render only cues intersecting the visible timeline viewport (computed via binary search).
+- Preview player with live-updating draft subtitles.
+- Virtualized transcript panel for long subtitle files.
+- Real-time player time and duration sync into Zustand.
+- Active subtitle highlighting and auto-scroll.
+- Text, timestamp, and segment editing.
+- Undo and redo for text and structural changes.
+- Browser VTT export.
 
----
+## Status Legend
 
-## 3. WebVTT Client-side Parsing & Export
+- `DONE`: implemented in the current changes.
+- `PARTIAL`: current changes cover only part of the feature.
+- `TODO`: not implemented yet.
 
-Since there are no custom database endpoints for individual subtitle cues, all operations are done in-memory on the client side using the raw WebVTT file format.
+## Existing Reusable Assets
 
-### WebVTT Parsing Logic
-
-1. **Fetch:** Load the raw WebVTT file content from the subtitle's `fileUrl` using standard HTTP GET requests (e.g. `axios.get`).
-2. **Regex Parsing:** Parse the WebVTT text file line-by-line:
-   - Identify timestamps using regex matching `(\d{2}:)?\d{2}:\d{2}.\d{3} --> (\d{2}:)?\d{2}:\d{2}.\d{3}`.
-   - Convert matching timestamps (hours, minutes, seconds, milliseconds) into standard numeric seconds (e.g., `12.345`) for timeline mapping.
-   - Associate text blocks with parsed cues.
-
-### WebVTT Serializer & Browser Export
-
-1. **Compilation:** Convert the updated `SubtitleType[]` array from state back into standard WebVTT syntax:
-
-   ```text
-   WEBVTT
-
-   00:00:12.345 --> 00:00:15.678
-   Nội dung phụ đề 1
-
-   00:00:17.100 --> 00:00:21.450
-   Nội dung phụ đề 2
-   ```
-
-2. **Download Trigger:** Compile the WebVTT string into a browser `Blob`, generate an object URL, and trigger a download:
-   ```typescript
-   const blob = new Blob([vttString], { type: 'text/vtt;charset=utf-8' });
-   const url = URL.createObjectURL(blob);
-   const a = document.createElement('a');
-   a.href = url;
-   a.download = `${label || 'subtitle'}.vtt`;
-   a.click();
-   URL.revokeObjectURL(url);
-   ```
+| File / Symbol                                                                                | Role                                                                |
+| :------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ |
+| `src/utils/vtt-time.util.ts`                                                                 | Exports `vttTimeToMs`, `msToVttTime`, `msToPixel`, and `pixelToMs`. |
+| `src/components/video-player/video-player.tsx`                                               | Existing base player. Reuse this; do not create a duplicate player. |
+| `src/store/video-library-subtitle.store.ts`                                                  | Zustand store for subtitle editor state.                            |
+| `src/types/video-library-subtitle.type.ts`                                                   | Subtitle and subtitle-store typings.                                |
+| `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-editor.tsx`           | Editor shell.                                                       |
+| `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-preview-player.tsx`   | Preview player wrapper.                                             |
+| `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx` | Transcript panel and toolbar surface.                               |
 
 ---
 
-## 4. Key Components & Responsibilities
+## Feature 1 - VTT Draft Loading And Normalized State [DONE]
 
-| Component/Hook                 | File Path                                                                   | Responsibility                                                                                                         |
-| ------------------------------ | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `SubtitleModalEditor`          | `src/app/video-library/[id]/subtitle/_components/subtitle-modal-editor.tsx` | Editor workspace shell, handles loading state, parses VTT files, and handles the Save/Export buttons.                  |
-| `SubtitlePreviewPlayer`        | `src/app/video-library/_components/subtitle-preview-player.tsx`             | Wraps Vidstack `<VideoPlayer>` and dynamically updates an in-memory `TextTrack` with draft cues using native `VTTCue`. |
-| `SubtitleTimeline`             | `src/app/video-library/_components/subtitle-timeline.tsx`                   | Viewport container, manages zoom levels and horizontal scrolling canvas.                                               |
-| `TimeLineRuler`                | `src/app/video-library/_components/time-line-ruler.tsx`                     | Renders time graduation ticks and captures click/drag seeks.                                                           |
-| `TimelineLane`                 | `src/app/video-library/_components/timeline-lane.tsx`                       | Renders visible `<TimeLineSubtitleBlock>` components matching the current viewport.                                    |
-| `TimeLineSubtitleBlock`        | `src/app/video-library/_components/time-line-subtitle-block.tsx`            | Handles pointer drag handlers for moving (body drag) and resizing (edge drag).                                         |
-| `TimelinePlayHead`             | `src/app/video-library/_components/time-line-playhead.tsx`                  | Frame-synchronized vertical line representing the current time (painted imperatively).                                 |
-| `SubtitleTranscriptPanel`      | `src/app/video-library/_components/subtitle-transcript-panel.tsx`           | Virtualized list displaying searchable textareas for all cues.                                                         |
-| `usePlayerTimelineSync`        | `src/app/video-library/_hooks/use-player-timeline-sync.tsx`                 | Synchronizes playhead using `requestVideoFrameCallback` when playing.                                                  |
-| `useVideoLibrarySubtitleStore` | `src/store/video-library-subtitle.store.ts`                                 | Zustand store holding active `currentTime` and `subtitles` array.                                                      |
+### Purpose
 
-### Component Dependency Tree
+Fetch the selected `.vtt` subtitle file, parse it into a normalized in-memory draft, and initialize the editor store with clean timing data.
 
-```mermaid
-graph TD
-    %% Entry Point
-    Entry["[page.tsx] (Router Entry Point)"] --> SubtitleModalEditor["[subtitle-modal-editor.tsx] &lt;SubtitleModalEditor /&gt;"]
+### Current Status
 
-    %% Main Layout of Editor
-    SubtitleModalEditor --> SubtitlePreviewPlayer["[subtitle-preview-player.tsx] &lt;SubtitlePreviewPlayer /&gt;"]
-    SubtitleModalEditor --> SubtitleTimeline["[subtitle-timeline.tsx] &lt;SubtitleTimeline /&gt;"]
-    SubtitleModalEditor --> SubtitleTranscriptPanel["[subtitle-transcript-panel.tsx] &lt;SubtitleTranscriptPanel /&gt;"]
+- `DONE`: `src/utils/vtt-time.util.ts` exists.
+- `DONE`: `SubtitleType` includes `startMs` and `endMs`.
+- `DONE`: The subtitle store includes normalized draft state, selection, duration, and history stacks.
+- `DONE`: `setSubtitles(subtitles, { resetHistory: true })` resets history, future, and selection.
+- `DONE`: `parseVttContent` returns normalized subtitle drafts with millisecond timing fields.
+- `DONE`: `SubtitleTranscriptPanel` fetches the VTT file on render and calls `setSubtitles(parseVttContent(content), { resetHistory: true })`.
 
-    %% Timeline Children
-    SubtitleTimeline --> TimeLineRuler["[time-line-ruler.tsx] &lt;TimeLineRuler /&gt;"]
-    SubtitleTimeline --> TimelineLane["[timeline-lane.tsx] &lt;TimelineLane /&gt;"]
-    SubtitleTimeline --> TimelinePlayHead["[time-line-playhead.tsx] &lt;TimelinePlayHead /&gt;"]
+### Modify One By One
 
-    %% Timeline Lane Children
-    TimelineLane --> TimeLineSubtitleBlock["[time-line-subtitle-block.tsx] &lt;TimeLineSubtitleBlock /&gt;"]
+1. Types: `src/types/video-library-subtitle.type.ts`
+   - Add `startMs: number` and `endMs: number` to `SubtitleType`.
+   - Keep `start` and `end` as formatted strings in `hh:mm:ss.mmm` format.
+   - Add `durationMs`, `selectedSubtitleId`, `past`, and `future` to `VideoLibrarySubtitleState`.
+   - Add `setDurationMs`, `setSelectedSubtitleId`, `updateSubtitle`, `commitSubtitles`, `undo`, and `redo` to `VideoLibrarySubtitleActions`.
 
-    %% Hooks
-    SubtitlePreviewPlayer --> usePlayerTimelineSync["[use-player-timeline-sync.tsx] usePlayerTimelineSync()"]
+2. Store: `src/store/video-library-subtitle.store.ts`
+   - Initialize `durationMs`, `selectedSubtitleId`, `past`, and `future`.
+   - Update `setSubtitles(subtitles, { resetHistory: true })` so it clears history and selection when a new VTT file is loaded.
+   - Keep `setCurrentTime` lightweight because player events will call it frequently.
 
-    %% Shared Store (Zustand)
-    subgraph State Management
-        Store["[video-library-subtitle.store.ts] useVideoLibrarySubtitleStore"]
-    end
+3. Utils: `src/utils/text.util.ts`
+   - Update `parseVttContent` to parse cue timings with `vttTimeToMs`.
+   - Support multiline cue text.
+   - Generate stable local cue IDs.
+   - Ignore `WEBVTT`, cue indexes, and blank separator lines safely.
 
-    SubtitleModalEditor -.-> Store
-    SubtitlePreviewPlayer -.-> Store
-    SubtitleTimeline -.-> Store
-    SubtitleTranscriptPanel -.-> Store
-    TimeLineSubtitleBlock -.-> Store
-    TimeLineRuler -.-> Store
-    TimelinePlayHead -.-> Store
-```
+4. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
+   - Keep the VTT fetch here unless the editor shell later needs to own loading state.
+   - Call `setSubtitles(parsedSubtitles, { resetHistory: true })` after fetching.
+   - Handle fetch failures with the existing empty/not-found UI pattern.
+
+5. Styles/UI
+   - Keep loading and empty states inside the transcript panel.
+   - No separate stylesheet is needed; use existing Tailwind utility patterns.
+
+### Acceptance Checks
+
+- [x] Selected subtitle VTT file is fetched on page render.
+- [x] Parsed subtitles include `startMs` and `endMs`.
+- [x] Loading a new subtitle resets history, future, and selection.
+- [x] Multiline VTT cues remain multiline after parsing.
 
 ---
 
-## 5. Timeline Math & Interaction
+## Feature 2 - Preview Player Time Sync And Draft Captions [PARTIAL]
 
-### Conversion Formulas
+### Purpose
 
-- **Time to Position:** $x = timeInSeconds * pixelsPerSecond$
-- **Position to Time:** $timeInSeconds = \text{round}((x / pixelsPerSecond) * 1000) / 1000$ (rounded to millisecond precision)
+Reuse the existing video player, sync playback time and duration into the subtitle store, and render draft subtitle changes live on top of the video.
 
-### Clamping & Drag rules
+### Current Status
 
-- **Move:** Preserves cue duration; clamps within `[0, duration]`.
-- **Left Resize:** Clamps to `[0, end - MIN_DURATION_SEC]` (where `MIN_DURATION_SEC` = 0.1).
-- **Right Resize:** Clamps to `[start + MIN_DURATION_SEC, duration]`.
-- **Snapping:** Snaps drag times within a $0.08\text{s}$ (80ms) threshold to the playhead, adjacent cue borders, or a grid interval (default $0.1\text{s}$).
+- `DONE`: `SubtitleEditor` renders `SubtitlePreviewPlayer`.
+- `PARTIAL`: `SubtitlePreviewPlayer` wraps the existing dynamic `VideoPlayer`.
+- `TODO`: The wrapper is not `forwardRef`-based.
+- `TODO`: Player `currentTime` and `duration` are not synced into the store.
+- `TODO`: Draft subtitles are not converted into an in-memory `TextTrack`.
+
+### Modify One By One
+
+1. Types: `src/types/video-library-subtitle.type.ts`
+   - Ensure store state has `currentTime: number` and `durationMs: number`, both in milliseconds.
+   - Ensure actions include `setCurrentTime(currentTime: number)` and `setDurationMs(durationMs: number)`.
+
+2. Store: `src/store/video-library-subtitle.store.ts`
+   - Add `setDurationMs`.
+   - Keep time setters independent from history.
+
+3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-preview-player.tsx`
+   - Wrap the preview component with `forwardRef` if the base player instance requires ref access.
+   - Wire player time events to `setCurrentTime(currentTime * 1000)`.
+   - Wire duration events to `setDurationMs(duration * 1000)`.
+   - Create or reuse one programmatic text track labelled `[Draft Preview]`.
+   - Refresh draft cues whenever `subtitles` changes.
+
+4. Components: `src/components/video-player/video-player.tsx`
+   - Only modify this if the existing player does not expose the needed Vidstack events/ref.
+   - Preserve existing player behavior for other pages.
+
+5. Utils: `src/utils/vtt-time.util.ts`
+   - Use `startMs / 1000` and `endMs / 1000` when creating native `VTTCue` objects.
+
+6. Styles/UI
+   - Keep the existing player aspect-ratio wrapper.
+   - Prefer native subtitle rendering through `TextTrack`; add custom overlay styles only if native cues cannot satisfy preview needs.
+
+### Acceptance Checks
+
+- [ ] Store `currentTime` updates while the video plays.
+- [ ] Store `durationMs` updates when media metadata is available.
+- [ ] Edited subtitle text appears on the preview video without a page reload.
+- [ ] Existing regular text tracks still work.
 
 ---
 
-## 6. Implementation Checklist
+## Feature 3 - Transcript Virtualization, Active Row, And Inline Editing [PARTIAL]
 
-### Phase 0 — Existing Baseline & Player Hooking (Completed)
+### Purpose
 
-- [ ] Integrate Vidstack `<VideoPlayer>` with dynamic HLS and VTT track overlays
-- [ ] Setup baseline `useVideoEditorStore` holding `currentTime` and `subtitles`
-- [ ] Hook player track load events to parse active subtitle cues into state
+Render all subtitle segments in a performant transcript panel, highlight the active cue based on the current playhead, and allow direct editing of text and timestamps.
 
-### Phase 1 — Setup & VTT Loading
+### Current Status
 
-- [ ] Implement client-side WebVTT file fetcher and parser helper functions
-- [ ] Setup Zustand `video-library-subtitle.store` for in-memory cue draft state
-- [ ] Build editor workspace component (`SubtitleModalEditor`) with open/close triggers
-- [ ] Add unsaved changes confirmation modal guard
+- `DONE`: `SubtitleTranscriptPanel` uses `@tanstack/react-virtual`.
+- `DONE`: Rows show segment numbers and textarea fields.
+- `DONE`: Textarea changes update subtitle text in the store through `setSubtitles`.
+- `TODO`: Timestamp inputs are not implemented.
+- `TODO`: Textarea auto-height is not implemented.
+- `TODO`: Active row detection, orange highlight, and auto-scroll are not implemented.
+- `TODO`: Edits do not use `updateSubtitle`.
+- `TODO`: Blur/Enter does not commit history.
 
-### Phase 2 — Timeline Viewport & Zoom
+### Modify One By One
 
-- [ ] Build Math helper functions
-- [ ] Implement scrollable `TimelineViewport` & ResizeObserver width listener
-- [ ] Render timeline graduation ruler, snap settings, and zoom (in, out, fit)
-- [ ] Implement imperative `TimelinePlayhead` synced via `requestVideoFrameCallback`
+1. Types: `src/types/video-library-subtitle.type.ts`
+   - Ensure `SubtitleType` has editable `text`, `start`, `end`, `startMs`, and `endMs`.
+   - Use `Partial<SubtitleType>` for `updateSubtitle` patches.
 
-### Phase 3 — Editing & Live Preview
+2. Store: `src/store/video-library-subtitle.store.ts`
+   - Add `updateSubtitle(id, patch)` for per-row edits.
+   - Add `setSelectedSubtitleId(id)` for row selection.
+   - Add `commitSubtitles(previousSubtitles)` so text and timestamp edits can enter history on blur or Enter.
 
-- [ ] Add cue move and resize handlers via pointer event capture
-- [ ] Implement undo/redo command stack
-- [ ] Create `SubtitlePreviewPlayer` updating dynamic Vidstack preview track via native `VTTCue`
-- [ ] Add basic cue split, delete, add actions, and continuous validation
+3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
+   - Keep `useVirtualizer` with stable row keys from subtitle IDs.
+   - Compute `activeIndex` with `subtitles.findIndex((s) => s.startMs <= currentTime && currentTime <= s.endMs)`.
+   - Scroll to active row only when `activeIndex` changes.
+   - Add text editing through `updateSubtitle(id, { text })`.
+   - Add start/end timestamp inputs.
+   - When timestamp input changes, update both formatted time and millisecond fields.
+   - Capture a previous subtitle snapshot before editing and call `commitSubtitles(previousSnapshot)` on blur or Enter.
+   - Select the row when a user focuses or clicks inside it.
 
-### Phase 4 — Export & Virtualization
+4. Utils: `src/utils/vtt-time.util.ts`
+   - Use `vttTimeToMs` for timestamp input parsing.
+   - Use `msToVttTime` to normalize timestamp display after valid edits.
 
-- [ ] Build WebVTT compiler and wire "Export VTT" button to trigger file download
-- [ ] Integrate `@tanstack/react-virtual` for the transcript pane
-- [ ] Add binary-search filtering to timeline lane rendering for long-sub optimization
+5. Styles/UI
+   - Apply an orange active-row style: border, subtle background, and visible focus ring.
+   - Keep row heights stable enough for virtualization.
+   - Add textarea auto-height without causing layout thrash; call `rowVirtualizer.measure()` after height changes if needed.
+   - Keep timestamp inputs compact and readable inside the right panel.
 
-### Phase 5 — Enhancements
+### Acceptance Checks
 
-- [ ] Add cue merge, batch time shifting, text find & replace, and loop selection.
+- [x] Subtitle list renders inside a virtualized container.
+- [x] Textarea edits update subtitle text in the store.
+- [ ] Active subtitle row highlights when playback time enters its cue range.
+- [ ] Active subtitle row scrolls into view when the active cue changes.
+- [ ] Start/end inputs update `start`, `end`, `startMs`, and `endMs`.
+- [ ] Text and timestamp edits are committed to history on blur or Enter.
+
+---
+
+## Feature 4 - History, Segment Actions, And Keyboard Shortcuts [PARTIAL]
+
+### Purpose
+
+Support undo/redo and structural subtitle operations: add, split, delete, and row selection. Provide both toolbar buttons and global shortcuts.
+
+### Current Status
+
+- `DONE`: Store history stacks are implemented.
+- `DONE`: Store-level undo/redo actions are implemented.
+- `TODO`: Add, split, and delete actions are not implemented.
+- `TODO`: Global keyboard shortcuts are not registered.
+- `PARTIAL`: Transcript panel has a header area that can host toolbar controls.
+
+### Modify One By One
+
+1. Types: `src/types/video-library-subtitle.type.ts`
+   - Add `past: SubtitleType[][]` and `future: SubtitleType[][]`.
+   - Add action types for `undo`, `redo`, `commitSubtitles`, and `setSelectedSubtitleId`.
+   - Add dedicated action types for add/split/delete if these actions live in the store.
+
+2. Store: `src/store/video-library-subtitle.store.ts`
+   - Implement a 50-entry history limit.
+   - `commitSubtitles(previousSubtitles)` pushes previous state to `past` only when the list changed.
+   - `undo()` restores the latest `past` state and pushes current state to `future`.
+   - `redo()` restores the next `future` state and pushes current state to `past`.
+   - Add delete behavior that clears selection when the selected row is deleted.
+
+3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
+   - Add toolbar buttons for undo, redo, add, split, delete, and export.
+   - Disable undo/redo when their stacks are empty.
+   - Disable split/delete when no subtitle is selected.
+   - Add a new segment at the current player time.
+   - Split selected segment only when `currentTime` is inside the selected segment.
+   - Delete selected segment after pushing the current list into history.
+
+4. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-editor.tsx`
+   - Add a global `keydown` listener.
+   - `Ctrl+Z` / `Cmd+Z` triggers undo.
+   - `Ctrl+Shift+Z` / `Ctrl+Y` triggers redo.
+   - `Delete` / `Backspace` deletes the selected segment.
+   - Ignore shortcuts while focus is inside `input`, `textarea`, `select`, or `[contenteditable]`.
+
+5. Utils
+   - Add a small local helper for generating subtitle IDs if needed.
+   - Use `msToVttTime` when creating or splitting segments.
+
+6. Styles/UI
+   - Use existing `Button` and `ToolTip` components.
+   - Use lucide icons for toolbar actions.
+   - Show disabled states clearly.
+   - Keep toolbar controls compact because this panel is narrow.
+
+### Acceptance Checks
+
+- [ ] Undo and redo restore text edits.
+- [ ] Undo and redo restore timestamp edits.
+- [ ] Undo and redo restore add/split/delete operations.
+- [ ] Add creates a valid segment at the current player time.
+- [ ] Split creates two valid segments without overlap.
+- [ ] Delete removes the selected segment and clears selection.
+- [ ] Keyboard shortcuts work outside form fields and are ignored inside form fields.
+
+---
+
+## Feature 5 - VTT Export [PARTIAL]
+
+### Purpose
+
+Compile the edited in-memory subtitles into a valid WebVTT file and download it from the browser.
+
+### Current Status
+
+- `DONE`: Transcript panel has an Export button.
+- `DONE`: Export currently creates a Blob and downloads a `.vtt` file.
+- `PARTIAL`: Serializer still uses the old `start` and `end` fields directly.
+- `TODO`: Serializer does not sort by `startMs`.
+- `TODO`: Serializer does not guarantee normalized `hh:mm:ss.mmm` timestamps.
+
+### Modify One By One
+
+1. Types: `src/types/video-library-subtitle.type.ts`
+   - Export should consume the normalized `SubtitleType[]` shape with `startMs` and `endMs`.
+
+2. Utils: `src/utils/text.util.ts`
+   - Update `serializeVttContent(subtitles)` to sort by `startMs`.
+   - Use `msToVttTime(startMs)` and `msToVttTime(endMs)`.
+   - Preserve multiline cue text.
+   - Always include the `WEBVTT` header.
+
+3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
+   - Keep export button in the toolbar/header.
+   - Use `serializeVttContent(subtitles)` for the file content.
+   - Download as `${subtitle.language || 'subtitle'}.vtt`.
+   - Revoke the object URL after download.
+
+4. Styles/UI
+   - Keep the existing tooltip and download icon.
+   - Place export with the other toolbar actions once the toolbar is complete.
+
+### Acceptance Checks
+
+- [x] Export button triggers a client-side file download.
+- [ ] Exported file starts with `WEBVTT`.
+- [ ] Exported cues are sorted by `startMs`.
+- [ ] Exported timestamps are normalized as `hh:mm:ss.mmm`.
+- [ ] Multiline subtitle text remains multiline in the exported file.
+
+---
+
+## Final Verification Checklist
+
+### Functional
+
+- [x] Subtitles load from source files on page render.
+- [ ] Draft captions display dynamically on top of video.
+- [x] Subtitle list renders inside the `@tanstack/react-virtual` wrapper container.
+- [ ] Active subtitle segment highlights and auto-scrolls into view.
+- [x] Textarea edits update subtitle text in the store.
+- [ ] Timestamp edits update formatted and millisecond timing fields.
+- [ ] History is captured on blur or Enter.
+- [ ] Undo and redo revert edits and structural changes.
+- [x] VTT export button triggers a browser download.
+- [ ] VTT export uses sorted millisecond timings and normalized timestamps.
+- [ ] Global shortcuts execute properly and are ignored inside form fields.
+
+### Quality
+
+- [x] `yarn lint` passes as of 2026-05-31 with 1 warning in `src/components/form/multi-select-field.tsx`.
+- [ ] `yarn build` passes without compilation problems. Not verified during this comparison.

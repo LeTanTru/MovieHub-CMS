@@ -1,5 +1,17 @@
 import { SUBTITLE_DELIMITER } from '@/constants';
-import { OptionType, SubtitleType } from '@/types';
+import { logger } from '@/logger';
+import type { OptionType, SubtitleType } from '@/types';
+import { msToVttTime, vttTimeToMs } from '@/utils/vtt-time.util';
+
+const VTT_HEADER_PATTERN = /^\uFEFF?WEBVTT(?:\s.*)?$/i;
+const VTT_METADATA_BLOCK_PATTERN = /^(NOTE(?:\s.*)?|STYLE|REGION)$/i;
+const VTT_TIME_PATTERN = /^(?:\d{2,}:)?\d{2}:\d{2}\.\d{1,3}$/;
+
+const createSubtitleId = (
+  index: number,
+  startMs: number,
+  endMs: number
+): string => `subtitle-${index}-${startMs}-${endMs}`;
 
 export const getLastWord = (text: string): string => {
   const words = text.trim().split(/\s+/);
@@ -41,28 +53,103 @@ export const parseSelectOptions = (options?: null | string): OptionType[] => {
 export const parseJSON = <T>(json: string): T | null => {
   try {
     return JSON.parse(json) as T;
-  } catch (_e) {
+  } catch (error) {
+    logger.error('[PARSE_JSON_ERROR]', error);
     return null;
   }
 };
 
-export const parseVttContent = (content: string) => {
-  const blocks = content.split('\n\n');
+export const parseVttContent = (content: string): SubtitleType[] => {
+  const lines = content.replace(/^\uFEFF/, '').split(/\r?\n/);
   const subtitles: SubtitleType[] = [];
+  let i = 0;
 
-  blocks.forEach((block) => {
-    if (block === 'WEBVTT') return;
+  while (i < lines.length) {
+    const line = lines[i].trim();
 
-    const [id, timeline, text] = block.split('\n');
-    const [start, end] = timeline.split(SUBTITLE_DELIMITER);
+    if (!line || VTT_HEADER_PATTERN.test(line)) {
+      i++;
+      continue;
+    }
+
+    if (VTT_METADATA_BLOCK_PATTERN.test(line)) {
+      i++;
+      while (i < lines.length && lines[i].trim() !== '') i++;
+      continue;
+    }
+
+    let timeline = line;
+
+    if (
+      !timeline.includes(SUBTITLE_DELIMITER) &&
+      i + 1 < lines.length &&
+      lines[i + 1].includes(SUBTITLE_DELIMITER)
+    ) {
+      i++;
+      timeline = lines[i].trim();
+    }
+
+    if (!timeline.includes(SUBTITLE_DELIMITER)) {
+      i++;
+      continue;
+    }
+
+    const [startTime = '', endTimeWithSettings = ''] =
+      timeline.split(SUBTITLE_DELIMITER);
+    const start = startTime.trim();
+    const end = endTimeWithSettings.trim().split(/\s+/)[0] || '';
+
+    if (!VTT_TIME_PATTERN.test(start) || !VTT_TIME_PATTERN.test(end)) {
+      i++;
+      continue;
+    }
+
+    const startMs = vttTimeToMs(start);
+    const endMs = vttTimeToMs(end);
+
+    if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) {
+      i++;
+      continue;
+    }
+
+    i++;
+
+    const textLines: string[] = [];
+
+    while (
+      i < lines.length &&
+      lines[i].trim() !== '' &&
+      !lines[i].includes(SUBTITLE_DELIMITER)
+    ) {
+      textLines.push(lines[i]);
+      i++;
+    }
+
+    const subtitleIndex = subtitles.length;
 
     subtitles.push({
-      id: id,
-      start,
-      end,
-      text
+      id: createSubtitleId(subtitleIndex, startMs, endMs),
+      start: msToVttTime(startMs),
+      end: msToVttTime(endMs),
+      startMs,
+      endMs,
+      text: textLines.join('\n')
     });
-  });
+  }
 
   return subtitles;
+};
+
+export const serializeVttContent = (subtitles: SubtitleType[]): string => {
+  // Add WEBVTT header
+  const lines = ['WEBVTT', ''];
+
+  subtitles.forEach((subtitle) => {
+    lines.push(subtitle.id);
+    lines.push(`${subtitle.start} ${SUBTITLE_DELIMITER} ${subtitle.end}`);
+    lines.push(subtitle.text);
+    lines.push('');
+  });
+
+  return lines.join('\n');
 };
