@@ -5,12 +5,7 @@ import { SubtitleTranscriptPanel } from './subtitle-transcript-panel';
 import { Col, Row } from '@/components/form';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import {
-  apiConfig,
-  objectNames,
-  queryKeys,
-  SUBTITLE_COMPLETE
-} from '@/constants';
+import { apiConfig, objectNames, queryKeys } from '@/constants';
 import { useListBase, useQueryParams } from '@/hooks';
 import { useVideoLibraryQuery } from '@/queries';
 import { route } from '@/routes';
@@ -18,8 +13,7 @@ import {
   VideoLibrarySubtitleResType,
   VideoLibrarySubtitleSearchType
 } from '@/types';
-import { generatePath, renderListPageUrl, renderVttUrl } from '@/utils';
-import { TrackProps } from '@vidstack/react';
+import { generatePath, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useCallback, useRef, useState } from 'react';
 
@@ -66,27 +60,6 @@ export function SubtitleEditor() {
     (subtitle) => subtitle.language === p_language
   );
 
-  const textTracks: TrackProps[] = videoLibrary
-    ? subtitleList.flatMap((subtitle) =>
-        subtitle.state === SUBTITLE_COMPLETE && subtitle.language === p_language
-          ? [
-              {
-                src: renderVttUrl(
-                  videoLibrary.hostname,
-                  subtitle.fileUrl,
-                  videoLibrary.sourceType
-                ),
-                label: subtitle.label,
-                language: subtitle.language,
-                kind: 'subtitles',
-                type: 'vtt',
-                default: subtitle.isDefault
-              }
-            ]
-          : []
-      )
-    : [];
-
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const playerContainerRef = useCallback((node: HTMLDivElement | null) => {
     if (resizeObserverRef.current) {
@@ -105,6 +78,7 @@ export function SubtitleEditor() {
       resizeObserverRef.current = resizeObserver;
     }
   }, []);
+
   return (
     <PageWrapper
       breadcrumbs={[
@@ -145,11 +119,10 @@ export function SubtitleEditor() {
           <Col className='grid-c-9 grid-col-no-gutters'>
             {loading || loadingVideoLibrary ? (
               <CircleLoading className='stroke-main-color m-4' />
-            ) : videoLibrary ? (
+            ) : videoLibrary && targetSubtitle ? (
               <SubtitlePreviewPlayer
                 videoLibrary={videoLibrary}
                 playerContainerRef={playerContainerRef}
-                textTracks={textTracks}
               />
             ) : null}
           </Col>

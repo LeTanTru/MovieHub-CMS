@@ -276,23 +276,17 @@ function TextTrackSync({
   textTracks?: TrackProps[];
   playerRef: React.RefObject<MediaPlayerInstance | null>;
 }) {
+  const addedTracksRef = useRef<TextTrack[]>([]);
+
   useEffect(() => {
     const player = playerRef.current;
     if (!player) return;
 
-    // Clear all existing sideloaded subtitle tracks
-    const existingTracks = [...player.textTracks];
-    for (const track of existingTracks) {
-      // Only remove tracks we manage (subtitles/captions added via src)
-      if (
-        (track.kind === 'subtitles' || track.kind === 'captions') &&
-        track.src
-      ) {
-        player.textTracks.remove(track);
-      }
+    for (const track of addedTracksRef.current) {
+      player.textTracks.remove(track);
     }
+    addedTracksRef.current = [];
 
-    // Add fresh tracks
     if (textTracks?.length) {
       for (const t of textTracks) {
         const textTrack = new TextTrack({
@@ -304,21 +298,15 @@ function TextTrackSync({
           default: t.default
         });
         player.textTracks.add(textTrack);
+        addedTracksRef.current.push(textTrack);
       }
     }
 
     return () => {
-      // Cleanup on unmount
-      if (!player) return;
-      const tracks = [...player.textTracks];
-      for (const track of tracks) {
-        if (
-          (track.kind === 'subtitles' || track.kind === 'captions') &&
-          track.src
-        ) {
-          player.textTracks.remove(track);
-        }
+      for (const track of addedTracksRef.current) {
+        player.textTracks.remove(track);
       }
+      addedTracksRef.current = [];
     };
   }, [textTracks, playerRef]);
 

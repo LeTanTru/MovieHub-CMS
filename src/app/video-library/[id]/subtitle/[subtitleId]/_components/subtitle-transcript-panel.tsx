@@ -16,6 +16,8 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { Button, ToolTip } from '@/components/form';
 import { logger } from '@/logger';
 import { Download } from 'lucide-react';
+import { useClickOutside } from '@/hooks';
+import { cn } from '@/lib';
 
 type SubtitleTranscriptPanelProps = {
   height?: number;
@@ -28,13 +30,31 @@ export function SubtitleTranscriptPanel({
   videoLibrary,
   subtitle
 }: SubtitleTranscriptPanelProps) {
-  const parentRef = useRef<HTMLDivElement | null>(null);
-
-  const { subtitles, setSubtitles } = useVideoLibrarySubtitleStore(
+  const {
+    currentTime,
+    subtitles,
+    setSelectedSubtitleId,
+    setSubtitles,
+    updateSubtitle
+  } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
+      currentTime: s.currentTime,
+      subtitles: s.subtitles,
+      setSelectedSubtitleId: s.setSelectedSubtitleId,
       setSubtitles: s.setSubtitles,
-      subtitles: s.subtitles
+      updateSubtitle: s.updateSubtitle
     }))
+  );
+
+  const parentRef = useClickOutside<HTMLDivElement>(() =>
+    setSelectedSubtitleId(undefined)
+  );
+
+  const previousActiveIndexRef = useRef<number | null>(null);
+
+  const activeIndex = subtitles.findIndex(
+    (subtitle) =>
+      subtitle.startTime <= currentTime && currentTime < subtitle.endTime
   );
 
   const rowVirtualizer = useVirtualizer({
@@ -44,6 +64,31 @@ export function SubtitleTranscriptPanel({
     estimateSize: () => 180,
     overscan: 8
   });
+
+  useEffect(() => {
+    if (activeIndex < 0 || activeIndex === previousActiveIndexRef.current) {
+      return;
+    }
+
+    previousActiveIndexRef.current = activeIndex;
+
+    const activeElement = document.activeElement;
+    const isEditingInsidePanel =
+      activeElement instanceof Element &&
+      parentRef.current?.contains(activeElement) &&
+      activeElement.matches('input, textarea');
+
+    if (isEditingInsidePanel) return;
+
+    const offset = rowVirtualizer.getOffsetForIndex(activeIndex, 'center')?.[0];
+
+    if (typeof offset !== 'number') return;
+
+    parentRef.current?.scrollTo({
+      top: offset,
+      behavior: 'smooth'
+    });
+  }, [activeIndex, rowVirtualizer, parentRef]);
 
   useEffect(() => {
     let isActive = true;
@@ -92,15 +137,8 @@ export function SubtitleTranscriptPanel({
     e: ChangeEvent<HTMLTextAreaElement>,
     targetSubtitle: SubtitleType
   ) => {
-    const newSubtitle = [...subtitles];
-
-    const targetIndex = newSubtitle.findIndex(
-      (sub) => sub.id === targetSubtitle.id
-    );
-    if (targetIndex === -1) return;
-
-    newSubtitle[targetIndex].text = e.target.value;
-    setSubtitles(newSubtitle);
+    setSelectedSubtitleId(targetSubtitle.id);
+    updateSubtitle(targetSubtitle.id, { text: e.target.value });
   };
 
   const handleExport = () => {
@@ -158,6 +196,7 @@ export function SubtitleTranscriptPanel({
               width={150}
               title='Không có phụ đề'
               icon={emptyData.src}
+              className='m-0'
             />
           </div>
         ) : (
@@ -168,54 +207,65 @@ export function SubtitleTranscriptPanel({
               position: 'relative'
             }}
           >
-            {rowVirtualizer.getVirtualItems().map((row) => (
-              <div
-                key={row.key}
-                data-index={row.index}
-                ref={rowVirtualizer.measureElement}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  transform: `translateY(${row.start}px)`,
-                  padding: '8px'
-                }}
-              >
-                <m.div
-                  className='rounded-md bg-white p-2 shadow-[0_0_4px_1px_rgba(0,0,0,0.1)]'
-                  whileHover={{
-                    translateY: -2,
-                    boxShadow: '0 0 6px 1px rgba(0,0,0,0.15)'
-                  }}
-                  transition={{
-                    duration: 0.2,
-                    ease: 'linear'
+            {rowVirtualizer.getVirtualItems().map((row) => {
+              const subtitle = subtitles[row.index];
+              const isActive =
+                subtitle.startTime <= currentTime &&
+                currentTime < subtitle.endTime;
+
+              return (
+                <div
+                  key={row.key}
+                  data-index={row.index}
+                  ref={rowVirtualizer.measureElement}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    transform: `translateY(${row.start}px)`,
+                    padding: '8px'
                   }}
                 >
-                  <div className='mb-1.5 flex items-center gap-2'>
-                    <span className='flex h-5 min-w-7 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white'>
-                      {row.index + 1}
-                    </span>
-                    <div className='flex w-full items-center gap-1 text-xs'>
-                      <span>{subtitles[row.index].start.trim()}</span>
-                      <div className='h-px flex-1 bg-zinc-400'></div>
-                      <span>{subtitles[row.index].end.trim()}</span>
+                  <m.div
+                    className={cn(
+                      'rounded-md p-2 shadow-[0_0_4px_1px_rgba(0,0,0,0.1)] transition-colors duration-200 ease-linear',
+                      {
+                        'border-main-color border-2 border-solid': isActive
+                      }
+                    )}
+                    whileHover={{
+                      translateY: -2,
+                      boxShadow: '0 0 6px 1px rgba(0,0,0,0.15)'
+                    }}
+                    transition={{
+                      duration: 0.2,
+                      ease: 'linear'
+                    }}
+                  >
+                    <div className='mb-1.5 flex items-center gap-2'>
+                      <span className='flex h-5 min-w-7 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white'>
+                        {row.index + 1}
+                      </span>
+                      <div className='flex w-full items-center gap-1 text-xs'>
+                        <span>{subtitle.start.trim()}</span>
+                        <div className='h-px flex-1 bg-zinc-400'></div>
+                        <span>{subtitle.end.trim()}</span>
+                      </div>
                     </div>
-                  </div>
 
-                  <textarea
-                    className='focus-visible:ring-main-color w-full resize-none rounded-md border bg-transparent p-1 text-sm text-zinc-700 transition-all duration-200 ease-linear outline-none focus-visible:ring-2'
-                    value={subtitles[row.index].text}
-                    rows={4}
-                    onChange={(e) =>
-                      handleVttContentChange(e, subtitles[row.index])
-                    }
-                    spellCheck={false}
-                  />
-                </m.div>
-              </div>
-            ))}
+                    <textarea
+                      className='focus-visible:ring-main-color w-full resize-none rounded-md border bg-transparent p-1 text-sm text-zinc-700 transition-all duration-200 ease-linear outline-none focus-visible:ring-2'
+                      value={subtitle.text}
+                      rows={4}
+                      onFocus={() => setSelectedSubtitleId(subtitle.id)}
+                      onChange={(e) => handleVttContentChange(e, subtitle)}
+                      spellCheck={false}
+                    />
+                  </m.div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

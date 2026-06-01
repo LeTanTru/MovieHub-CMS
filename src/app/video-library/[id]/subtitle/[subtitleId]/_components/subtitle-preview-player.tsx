@@ -2,7 +2,7 @@
 
 import { CircleLoading } from '@/components/loading';
 import { envConfig } from '@/config';
-import { useAuthStore } from '@/store';
+import { useAuthStore, useVideoLibrarySubtitleStore } from '@/store';
 import { VideoLibraryResType } from '@/types';
 import {
   isMobileDevice,
@@ -11,8 +11,10 @@ import {
   renderVideoUrl,
   renderVttUrl
 } from '@/utils';
-import { TrackProps } from '@vidstack/react';
+import { MediaPlayerInstance } from '@vidstack/react';
 import dynamic from 'next/dynamic';
+import { useEffect, useRef } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 const VideoPlayer = dynamic(
   () => import('@/components/video-player').then((m) => m.VideoPlayer),
@@ -24,20 +26,49 @@ const VideoPlayer = dynamic(
 
 type SubtitlePreviewPlayerProps = {
   videoLibrary: VideoLibraryResType;
-  textTracks: TrackProps[];
   playerContainerRef: React.Ref<HTMLDivElement>;
 };
 
 export function SubtitlePreviewPlayer({
   videoLibrary,
-  textTracks,
   playerContainerRef
 }: SubtitlePreviewPlayerProps) {
+  const playerRef = useRef<MediaPlayerInstance | null>(null);
+
   const accessToken = useAuthStore((s) => s.accessToken);
 
+  const { currentTime, selectedSubtitleId, subtitles, setCurrentTime } =
+    useVideoLibrarySubtitleStore(
+      useShallow((s) => ({
+        currentTime: s.currentTime,
+        selectedSubtitleId: s.selectedSubtitleId,
+        subtitles: s.subtitles,
+        setCurrentTime: s.setCurrentTime
+      }))
+    );
+
+  const activeSubtile = subtitles.find(
+    (subtitle) =>
+      currentTime >= subtitle.startTime && currentTime <= subtitle.endTime
+  );
+
+  const selectedSubtitle = selectedSubtitleId
+    ? subtitles.find((subtitle) => subtitle.id === selectedSubtitleId)
+    : undefined;
+
+  const previewSubtitle = selectedSubtitle ?? activeSubtile;
+
+  useEffect(() => {
+    if (!playerRef.current || !selectedSubtitle) return;
+
+    playerRef.current.currentTime = selectedSubtitle.startTime;
+    playerRef.current.pause();
+  }, [selectedSubtitle]);
+
   return (
-    <div ref={playerContainerRef} className='aspect-video w-full'>
+    <div ref={playerContainerRef} className='relative aspect-video w-full'>
       <VideoPlayer
+        ref={playerRef}
         auth={true}
         src={renderVideoUrl(
           videoLibrary.hostname,
@@ -62,8 +93,16 @@ export function SubtitlePreviewPlayer({
               ? 1
               : 0.5
         }
-        textTracks={textTracks}
+        onTimeUpdate={(detail) => setCurrentTime(detail.currentTime)}
       />
+
+      {previewSubtitle?.text ? (
+        <div className='pointer-events-none absolute right-6 bottom-16 left-6 z-10 flex justify-center text-center'>
+          <p className='max-w-[90%] px-3 py-1.5 text-lg whitespace-pre-line text-white'>
+            {previewSubtitle.text}
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }

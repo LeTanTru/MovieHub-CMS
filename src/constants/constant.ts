@@ -147,3 +147,8 @@ export const SUBTITLE_LOADING = 0;
 export const SUBTITLE_COMPLETE = 1;
 
 export const SUBTITLE_DELIMITER = '-->';
+
+export const HOURS_TO_SECOND = 60 * 60;
+export const MINUTES_TO_SECOND = 60;
+export const SECONDS_TO_SECOND = 1;
+export const MILLISECOND = 1_000;

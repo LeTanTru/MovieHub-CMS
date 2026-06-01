@@ -34,17 +34,17 @@ export type VideoLibrarySubtitleBodyType = z.infer<
 
 export type SubtitleType = {
   id: string;
-  start: string;
-  end: string;
+  start: string; // hh:mm:ss
+  end: string; // hh:mm:ss
   text: string;
-  startMs: number;
-  endMs: number;
+  startTime: number; // seconds
+  endTime: number; // seconds
 };
 
 type VideoLibrarySubtitleState = {
-  currentTime: number;
+  currentTime: number; // seconds
   subtitles: SubtitleType[];
-  durationMs: number;
+  duration: number; // seconds
   selectedSubtitleId?: string;
   past: SubtitleType[][];
   future: SubtitleType[][];
@@ -56,7 +56,7 @@ type VideoLibrarySubtitleActions = {
     subtitles: SubtitleType[],
     options?: { resetHistory?: boolean }
   ) => void;
-  setDurationMs: (durationMs: number) => void;
+  setDuration: (duration: number) => void;
   setSelectedSubtitleId: (id?: string) => void;
   updateSubtitle: (id: string, patch: Partial<SubtitleType>) => void;
   commitSubtitles: (previousSubtitles: SubtitleType[]) => void;
