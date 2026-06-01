@@ -7,3 +7,14 @@
   border: none;
   border-radius: 0;
 }
+
+[data-part='cue-display'] {
+  font-size: 20px;
+  background: transparent !important;
+
+  & [data-part='cue'] {
+    --cue-bg-color: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+}

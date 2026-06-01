@@ -1,7 +1,7 @@
 import { SUBTITLE_DELIMITER } from '@/constants';
 import { logger } from '@/logger';
 import type { OptionType, SubtitleType } from '@/types';
-import { msToVttTime, vttTimeToMs } from '@/utils/vtt-time.util';
+import { vttTimeToSecond } from '@/utils/vtt-time.util';
 
 const VTT_HEADER_PATTERN = /^\uFEFF?WEBVTT(?:\s.*)?$/i;
 const VTT_METADATA_BLOCK_PATTERN = /^(NOTE(?:\s.*)?|STYLE|REGION)$/i;
@@ -9,9 +9,9 @@ const VTT_TIME_PATTERN = /^(?:\d{2,}:)?\d{2}:\d{2}\.\d{1,3}$/;
 
 const createSubtitleId = (
   index: number,
-  startMs: number,
-  endMs: number
-): string => `subtitle-${index}-${startMs}-${endMs}`;
+  startTime: number,
+  endTime: number
+): string => `subtitle-${index}-${startTime}-${endTime}`;
 
 export const getLastWord = (text: string): string => {
   const words = text.trim().split(/\s+/);
@@ -94,20 +94,20 @@ export const parseVttContent = (content: string): SubtitleType[] => {
       continue;
     }
 
-    const [startTime = '', endTimeWithSettings = ''] =
+    const [startTimeStr = '', endTimeStr = ''] =
       timeline.split(SUBTITLE_DELIMITER);
-    const start = startTime.trim();
-    const end = endTimeWithSettings.trim().split(/\s+/)[0] || '';
+    const start = startTimeStr.trim();
+    const end = endTimeStr.trim().split(/\s+/)[0] || '';
 
     if (!VTT_TIME_PATTERN.test(start) || !VTT_TIME_PATTERN.test(end)) {
       i++;
       continue;
     }
 
-    const startMs = vttTimeToMs(start);
-    const endMs = vttTimeToMs(end);
+    const startTime = vttTimeToSecond(start);
+    const endTime = vttTimeToSecond(end);
 
-    if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) {
+    if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) {
       i++;
       continue;
     }
@@ -128,11 +128,11 @@ export const parseVttContent = (content: string): SubtitleType[] => {
     const subtitleIndex = subtitles.length;
 
     subtitles.push({
-      id: createSubtitleId(subtitleIndex, startMs, endMs),
-      start: msToVttTime(startMs),
-      end: msToVttTime(endMs),
-      startMs,
-      endMs,
+      id: createSubtitleId(subtitleIndex, startTime, endTime),
+      start,
+      end,
+      startTime,
+      endTime,
       text: textLines.join('\n')
     });
   }

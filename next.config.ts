@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
       img-src 'self' data: blob: https:;
       font-src 'self';
       media-src 'self' blob: https:;
-      connect-src 'self' https: wss:;
+      connect-src 'self' https: wss: blob:;
       worker-src 'self' blob:;
       frame-ancestors 'none';
     `

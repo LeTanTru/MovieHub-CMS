@@ -1,25 +1,35 @@
-const HOURS_TO_MS = 60 * 60 * 1000;
-const MINUTES_TO_MS = 60 * 1000;
-const SECONDS_TO_MS = 1000;
+import {
+  HOURS_TO_SECOND,
+  MILLISECOND,
+  MINUTES_TO_SECOND,
+  SECONDS_TO_SECOND
+} from '@/constants';
 
-export const vttTimeToMs = (vttTime: string): number => {
+export const vttTimeToSecond = (vttTime: string): number => {
   const [time = '0:0', milliseconds = '0'] = vttTime.trim().split('.');
   const parts = time.split(':').map(Number);
   const [hours, minutes, seconds] =
     parts.length === 3 ? parts : [0, parts[0] || 0, parts[1] || 0];
 
   return (
-    ((hours * 60 + minutes) * 60 + seconds) * 1000 +
-    Number(milliseconds.padEnd(3, '0').slice(0, 3))
+    hours * HOURS_TO_SECOND +
+    minutes * MINUTES_TO_SECOND +
+    seconds * SECONDS_TO_SECOND +
+    Number(milliseconds.padEnd(3, '0').slice(0, 3)) / MILLISECOND
   );
 };
 
-export const msToVttTime = (ms: number): string => {
-  const safeMs = Math.max(0, Math.round(ms));
-  const hours = Math.floor(safeMs / HOURS_TO_MS);
-  const minutes = Math.floor((safeMs % HOURS_TO_MS) / MINUTES_TO_MS);
-  const seconds = Math.floor((safeMs % MINUTES_TO_MS) / SECONDS_TO_MS);
-  const milliseconds = safeMs % SECONDS_TO_MS;
+export const secondToVttTime = (second: number): string => {
+  const safeMillisecond = Math.max(0, Math.round(second * MILLISECOND));
+  const hours = Math.floor(safeMillisecond / (HOURS_TO_SECOND * MILLISECOND));
+  const minutes = Math.floor(
+    (safeMillisecond % (HOURS_TO_SECOND * MILLISECOND)) /
+      (MINUTES_TO_SECOND * MILLISECOND)
+  );
+  const seconds = Math.floor(
+    (safeMillisecond % (MINUTES_TO_SECOND * MILLISECOND)) / MILLISECOND
+  );
+  const milliseconds = safeMillisecond % MILLISECOND;
 
   return `${hours.toString().padStart(2, '0')}:${minutes
     .toString()

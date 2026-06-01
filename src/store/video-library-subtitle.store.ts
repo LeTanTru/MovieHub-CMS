@@ -18,14 +18,14 @@ const keepSelectedSubtitle = (
 export const useVideoLibrarySubtitleStore =
   create<VideoLibrarySubtitleStoreType>((set, get) => ({
     currentTime: 0,
-    durationMs: 0,
+    duration: 0,
     subtitles: [],
     selectedSubtitleId: undefined,
     past: [],
     future: [],
 
     setCurrentTime: (currentTime) => set({ currentTime }),
-    setDurationMs: (durationMs) => set({ durationMs }),
+    setDuration: (duration) => set({ duration }),
     setSubtitles: (subtitles, options) =>
       set(
         options?.resetHistory
