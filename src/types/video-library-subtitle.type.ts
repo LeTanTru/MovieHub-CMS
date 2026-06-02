@@ -44,24 +44,14 @@ export type SubtitleType = {
 type VideoLibrarySubtitleState = {
   currentTime: number; // seconds
   subtitles: SubtitleType[];
-  duration: number; // seconds
-  selectedSubtitleId?: string;
-  past: SubtitleType[][];
-  future: SubtitleType[][];
+  selectedSubtitleId: string | null;
 };
 
 type VideoLibrarySubtitleActions = {
   setCurrentTime: (currentTime: number) => void;
-  setSubtitles: (
-    subtitles: SubtitleType[],
-    options?: { resetHistory?: boolean }
-  ) => void;
-  setDuration: (duration: number) => void;
-  setSelectedSubtitleId: (id?: string) => void;
+  setSubtitles: (subtitles: SubtitleType[]) => void;
+  setSelectedSubtitleId: (id: string | null) => void;
   updateSubtitle: (id: string, patch: Partial<SubtitleType>) => void;
-  commitSubtitles: (previousSubtitles: SubtitleType[]) => void;
-  undo: () => void;
-  redo: () => void;
 };
 
 export type VideoLibrarySubtitleStoreType = VideoLibrarySubtitleState &

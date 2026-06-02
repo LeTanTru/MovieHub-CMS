@@ -57,7 +57,7 @@ export function SubtitleTranscriptPanel({
   );
 
   const parentRef = useClickOutside<HTMLDivElement>(() =>
-    setSelectedSubtitleId(undefined)
+    setSelectedSubtitleId(null)
   );
 
   const scrollingRef = useRef<number>(-1);
@@ -131,13 +131,15 @@ export function SubtitleTranscriptPanel({
 
         const content = await res.text();
 
-        setSubtitles(parseVttContent(content), { resetHistory: true });
+        setSelectedSubtitleId(null);
+        setSubtitles(parseVttContent(content));
       } catch (error) {
         if (controller.signal.aborted) return;
 
         logger.error('[GET_VTT_CONTENT_ERROR]', error);
 
-        setSubtitles([], { resetHistory: true });
+        setSelectedSubtitleId(null);
+        setSubtitles([]);
       }
     };
 
@@ -148,6 +150,7 @@ export function SubtitleTranscriptPanel({
     };
   }, [
     setSubtitles,
+    setSelectedSubtitleId,
     subtitle.fileUrl,
     videoLibrary.hostname,
     videoLibrary.sourceType

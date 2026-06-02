@@ -12,10 +12,9 @@ The editor replaces the scrollable timeline/ruler UI with a video preview player
 
 - Preview player with live-updating draft subtitles.
 - Virtualized transcript panel for long subtitle files.
-- Real-time player time and duration sync into Zustand.
+- Real-time player time sync into Zustand.
 - Active subtitle highlighting and auto-scroll.
 - Text, timestamp, and segment editing.
-- Undo and redo for text and structural changes.
 - Browser VTT export.
 
 ## Status Legend
@@ -46,20 +45,21 @@ Fetch the selected `.vtt` subtitle file, parse it into a normalized in-memory dr
 
 ### Implementation Shape
 
-Feature 1 owns only loading and normalizing subtitle draft data. It should not depend on the preview player, transcript row UI, undo/redo buttons, timestamp inputs, or export behavior. Keep the draft model seconds-based throughout this feature:
+Feature 1 owns only loading and normalizing subtitle draft data. It should not depend on the preview player, transcript row UI, timestamp inputs, segment actions, or export behavior. Keep the draft model seconds-based throughout this feature:
 
 - `start` and `end`: display strings from the VTT file, for example `00:01:05.250`.
 - `startTime` and `endTime`: numeric seconds used by playback sync and active-row lookup.
-- `currentTime` and `duration`: numeric seconds in the Zustand store.
+- `currentTime`: numeric seconds in the Zustand store.
 
 ### Current Status
 
 - `DONE`: `src/utils/vtt-time.util.ts` exists.
 - `DONE`: `SubtitleType` includes `startTime` and `endTime` in seconds.
-- `DONE`: The subtitle store includes normalized draft state, selection, duration, and history stacks.
-- `DONE`: `setSubtitles(subtitles, { resetHistory: true })` resets history, future, and selection.
+- `DONE`: The subtitle store includes normalized draft state and selection.
+- `DONE`: `setSubtitles(subtitles)` replaces draft subtitle state.
+- `DONE`: `SubtitleTranscriptPanel` clears selection explicitly with `setSelectedSubtitleId(undefined)` when a new subtitle file is loaded or loading fails.
 - `DONE`: `parseVttContent` returns normalized subtitle drafts with second-based timing fields.
-- `DONE`: `SubtitleTranscriptPanel` fetches the VTT file on render and calls `setSubtitles(parseVttContent(content), { resetHistory: true })`.
+- `DONE`: `SubtitleTranscriptPanel` fetches the VTT file on render and calls `setSubtitles(parseVttContent(content))`.
 - `DONE`: `SubtitleTranscriptPanel` uses `AbortController` to cancel stale VTT fetches during unmounts or subtitle changes.
 
 ### Modify One By One
@@ -67,15 +67,14 @@ Feature 1 owns only loading and normalizing subtitle draft data. It should not d
 1. Types: `src/types/video-library-subtitle.type.ts`
    - Add `startTime: number` and `endTime: number` to `SubtitleType`.
    - Keep `start` and `end` as formatted VTT strings. Accept both `hh:mm:ss.mmm` and `mm:ss.mmm` from source files if `vttTimeToSecond` supports both, but normalize new generated values with `secondToVttTime`.
-   - Add `duration`, `selectedSubtitleId`, `past`, and `future` to `VideoLibrarySubtitleState`.
-   - Add `setDuration`, `setSelectedSubtitleId`, `updateSubtitle`, `commitSubtitles`, `undo`, and `redo` to `VideoLibrarySubtitleActions`.
+   - Add `selectedSubtitleId` to `VideoLibrarySubtitleState`.
+   - Add `setSubtitles`, `setSelectedSubtitleId`, and `updateSubtitle` to `VideoLibrarySubtitleActions`.
 
 2. Store: `src/store/video-library-subtitle.store.ts`
-   - Initialize `duration`, `selectedSubtitleId`, `past`, and `future`.
-   - Update `setSubtitles(subtitles, { resetHistory: true })` so it clears history and selection when a new VTT file is loaded.
-   - Keep `setSubtitles(subtitles)` available for replacing draft state without resetting history when later features need cancel/restore behavior.
+   - Initialize `selectedSubtitleId`.
+   - Keep `setSubtitles(subtitles)` as a simple draft-state replacement action.
+   - Clear selection explicitly with `setSelectedSubtitleId(undefined)` when replacing the draft after loading a new VTT file.
    - Keep `setCurrentTime` lightweight because player events will call it frequently.
-   - Keep history state in the store even if Feature 1 does not expose undo/redo UI yet; later features will use it.
 
 3. Utils: `src/utils/text.util.ts`
    - Update `parseVttContent` to parse cue timings with `vttTimeToSecond`.
@@ -92,9 +91,9 @@ Feature 1 owns only loading and normalizing subtitle draft data. It should not d
    - Build the URL with `renderVttUrl(videoLibrary.hostname, subtitle.fileUrl, videoLibrary.sourceType)`.
    - Fetch inside `useEffect` with `AbortController`.
    - Pass `{ signal: controller.signal }` to `fetch`.
-   - Call `setSubtitles(parseVttContent(content), { resetHistory: true })` after a successful fetch.
+   - Call `setSelectedSubtitleId(undefined)` and then `setSubtitles(parseVttContent(content))` after a successful fetch.
    - In `catch`, return early when `controller.signal.aborted` is true.
-   - For real fetch or parse failures, log with `logger.error('[GET_VTT_CONTENT_ERROR]', error)` and call `setSubtitles([], { resetHistory: true })`.
+   - For real fetch or parse failures, log with `logger.error('[GET_VTT_CONTENT_ERROR]', error)`, call `setSelectedSubtitleId(undefined)`, and call `setSubtitles([])`.
    - Abort the request in the effect cleanup.
 
 5. Styles/UI
@@ -105,7 +104,7 @@ Feature 1 owns only loading and normalizing subtitle draft data. It should not d
 
 - [x] Selected subtitle VTT file is fetched on page render.
 - [x] Parsed subtitles include `startTime` and `endTime`.
-- [x] Loading a new subtitle resets history, future, and selection.
+- [x] Loading a new subtitle resets selection and replaces draft subtitles.
 - [x] Multiline VTT cues remain multiline after parsing.
 - [x] Stale VTT fetches are cancelled on cleanup and do not overwrite newer draft state.
 
@@ -145,13 +144,13 @@ The data flow is:
 ### Modify One By One
 
 1. Types: `src/types/video-library-subtitle.type.ts`
-   - Store state currently uses seconds: `currentTime: number` and `duration: number`.
+   - Store state currently uses seconds: `currentTime: number`.
    - Subtitle cue timing currently uses seconds: `startTime: number` and `endTime: number`.
-   - Actions currently include `setCurrentTime(currentTime: number)` and `setDuration(duration: number)`.
+   - Actions currently include `setCurrentTime(currentTime: number)`.
 
 2. Store: `src/store/video-library-subtitle.store.ts`
-   - `setDuration` exists for later duration-aware editing features, but Feature 2 does not call it.
-   - Keep time setters independent from history.
+   - Keep `setCurrentTime` lightweight because playback can call it frequently.
+   - Keep video duration outside the subtitle store; duration-aware editing can receive `videoLibrary.duration` from the component that owns the video data.
 
 3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-preview-player.tsx`
    - Import `useVideoLibrarySubtitleStore`, `useShallow`, `useEffect`, and `useRef`.
@@ -193,7 +192,7 @@ The data flow is:
 - Empty subtitle list should render no draft overlay.
 - Invalid cue ranges should not crash the preview; the active cue lookup should naturally ignore cues where the current time is not inside the cue range.
 - Multiline cue text must remain multiline in the overlay.
-- `setCurrentTime` fires frequently, so do not put history updates, serialization, or expensive work inside the time-update handler.
+- `setCurrentTime` fires frequently, so do not put serialization or expensive work inside the time-update handler.
 - Selected-row preview intentionally overrides active-playhead preview until the row selection is cleared.
 - Editing a selected row should update the overlay text live without repeatedly seeking the player back to the row start.
 - At exact cue boundaries, the previous cue should stop at `endTime` and the next cue should begin at its own `startTime`; use `< endTime`, not `<= endTime`.
@@ -222,7 +221,8 @@ Feature 3 owns the transcript panel editing experience. It should keep the same 
 
 - `subtitle.start` and `subtitle.end`: editable display strings.
 - `subtitle.startTime` and `subtitle.endTime`: numeric seconds used for validation, preview sync, active-row lookup, and export.
-- `currentTime` and `duration`: numeric seconds from the store.
+- `currentTime`: numeric seconds from the store.
+- `videoLibrary.duration`: numeric seconds from loaded video data, used for timestamp validation when available.
 
 Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this feature unless the whole subtitle model is migrated. The current project uses `vttTimeToSecond` and `secondToVttTime`.
 
@@ -232,10 +232,10 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 - `DONE`: Rows show segment numbers and textarea fields.
 - `DONE`: Textarea changes update subtitle text in the store through `updateSubtitle`.
 - `DONE`: Active row detection and auto-scroll are implemented.
-- `TODO`: Timestamp inputs are not implemented.
-- `TODO`: Textarea auto-height is not implemented.
-- `TODO`: Strong active-row and selected-row styling is not implemented.
-- `TODO`: Blur/Enter does not commit history.
+- `TODO`: Timestamp inputs are not implemented; rows currently render read-only start/end text.
+- `TODO`: Textarea auto-height is not implemented; textareas use fixed `rows={4}`.
+- `PARTIAL`: Active and selected rows use the same ring style; separate active/selected styling is not implemented.
+- `TODO`: Blur/Enter edit finalization and Escape snapshot restore are not implemented.
 
 ### Modify One By One
 
@@ -253,13 +253,12 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 2. Store: `src/store/video-library-subtitle.store.ts`
    - Confirm `updateSubtitle(id, patch)` exists for per-row edits.
    - Confirm `setSelectedSubtitleId(id)` exists for row selection.
-   - Confirm `commitSubtitles(previousSubtitles)` exists so text and timestamp edits can enter history on blur or Enter.
-   - Confirm `setSubtitles(previousSnapshot)` can restore an edit snapshot on Escape without resetting history.
-   - Do not call `commitSubtitles` inside `updateSubtitle`; commits should happen only when the user finishes an editing action.
+   - Confirm `setSubtitles(previousSnapshot)` can restore an edit snapshot on Escape.
+   - Do not add history actions for Feature 3.
 
 3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
    - Keep `useVirtualizer` with stable row keys from subtitle IDs.
-   - Select `currentTime`, `selectedSubtitleId`, `subtitles`, `setSelectedSubtitleId`, `setSubtitles`, `updateSubtitle`, and `commitSubtitles` from the store with `useShallow`.
+   - Select `currentTime`, `selectedSubtitleId`, `subtitles`, `setSelectedSubtitleId`, `setSubtitles`, and `updateSubtitle` from the store with `useShallow`.
    - Compute `activeIndex` with `subtitles.findIndex((s) => s.startTime <= currentTime && currentTime < s.endTime)`.
    - Keep `activeIndex` as `-1` when no cue matches.
    - Use `useRef<number>(-1)` or `useRef<number | null>(null)` to remember the previous active index.
@@ -283,15 +282,14 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
      - `endTime > startTime`.
      - If `duration > 0`, require `startTime < duration` and `endTime <= duration`.
      - Recommended non-overlap rule: `previous.endTime <= startTime` and `endTime <= next.startTime` when neighboring cues exist.
-     - If a timestamp would violate these rules, keep the local input visible while focused, but do not commit it to history.
+     - If a timestamp would violate these rules, keep the local input visible while focused, but do not apply it to the store.
    - Capture a previous subtitle snapshot before editing:
      - Add `const editSnapshotRef = useRef<SubtitleType[] | null>(null)`.
      - On the first `onFocus` or `onPointerDown` for an edit session, store `structuredClone(subtitles)` if `editSnapshotRef.current` is null.
-     - On blur, call `commitSubtitles(editSnapshotRef.current)` only if the field is valid, then clear the ref.
-     - On Enter in timestamp inputs, normalize, commit, clear the ref, and blur the input.
-     - On `Ctrl+Enter` or `Cmd+Enter` in the textarea, commit and blur the textarea.
+     - On blur, normalize valid timestamp values, restore invalid timestamp values, then clear the ref.
+     - On Enter in timestamp inputs, normalize, clear the ref, and blur the input.
+     - On `Ctrl+Enter` or `Cmd+Enter` in the textarea, clear the ref and blur the textarea.
      - On Escape, restore the previous snapshot with `setSubtitles(previousSnapshot)` and clear the ref.
-   - Avoid committing no-op edits; `commitSubtitles` already compares snapshots, so pass the previous snapshot and let the store ignore unchanged drafts.
    - Handle keyboard editing inside fields:
      - `Enter` in timestamp inputs commits the edit and blurs the input.
      - `Enter` in textarea should keep normal multiline behavior unless `Ctrl+Enter` / `Cmd+Enter` is chosen as the commit shortcut.
@@ -342,7 +340,6 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 - Timestamp edits should never leave a row with `endTime <= startTime`.
 - Invalid partial timestamp input should be editable while focused and restored on blur if it never becomes valid.
 - Timestamp normalization should not change cue timing except for rounding to milliseconds through `secondToVttTime`.
-- History commits should not happen for no-op edits.
 - Escape cancel should not erase unrelated edits made after the snapshot by another action; this editor is single-user local state, so a simple snapshot restore is acceptable.
 - Textarea Enter should continue inserting a newline; use `Ctrl+Enter` or `Cmd+Enter` for commit.
 - Auto-scroll should resume after the user leaves the currently edited input.
@@ -357,85 +354,70 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 - [ ] Start/end inputs update `start`, `end`, `startTime`, and `endTime`.
 - [ ] Invalid timestamp input is editable while focused and restored if still invalid on blur.
 - [ ] Valid timestamp input normalizes with `secondToVttTime` on blur or Enter.
-- [ ] Text and timestamp edits are committed to history on blur or Enter.
+- [ ] Text and timestamp edits finalize on blur or Enter.
 - [ ] Escape restores the edit snapshot and clears local timestamp drafts.
 - [ ] Textarea auto-height works for one-line and multiline cues without breaking virtualization.
 
 ---
 
-## Feature 4 - History, Segment Actions, And Keyboard Shortcuts [PARTIAL]
+## Feature 4 - Add And Delete Segments [TODO]
 
 ### Purpose
 
-Support undo/redo and structural subtitle operations: add, split, delete, and row selection. Provide both toolbar buttons and global shortcuts.
+Support structural subtitle operations for adding a new segment and deleting the selected segment. No history actions or global keyboard shortcuts are required for this feature.
 
 ### Current Status
 
-- `DONE`: Store history stacks are implemented.
-- `DONE`: Store-level undo/redo actions are implemented.
-- `TODO`: Add, split, and delete actions are not implemented.
-- `TODO`: Global keyboard shortcuts are not registered.
-- `PARTIAL`: Transcript panel has a header area that can host toolbar controls.
+- `TODO`: Add and delete actions are not implemented.
+- `PARTIAL`: Transcript panel toolbar exists, but currently only contains export.
 
 ### Modify One By One
 
 1. Types: `src/types/video-library-subtitle.type.ts`
-   - Add `past: SubtitleType[][]` and `future: SubtitleType[][]`.
-   - Add action types for `undo`, `redo`, `commitSubtitles`, and `setSelectedSubtitleId`.
-   - Add dedicated action types for add/split/delete if these actions live in the store.
+   - Add dedicated action types if add/delete live in the store:
+     - `addSubtitleAt(currentTime: number, duration?: number): void`.
+     - `deleteSelectedSubtitle(): void`.
 
 2. Store: `src/store/video-library-subtitle.store.ts`
-   - Implement a 50-entry history limit.
-   - `commitSubtitles(previousSubtitles)` pushes previous state to `past` only when the list changed.
-   - `undo()` restores the latest `past` state and pushes current state to `future`.
-   - `redo()` restores the next `future` state and pushes current state to `past`.
-   - Prefer implementing structural actions in the store so toolbar buttons and keyboard shortcuts share one behavior:
-     - `addSubtitleAt(currentTimeMs)`.
-     - `splitSelectedSubtitle(currentTimeMs)`.
+   - Prefer implementing structural actions in the store so toolbar buttons share one behavior:
+     - `addSubtitleAt(currentTime, duration)`.
      - `deleteSelectedSubtitle()`.
-   - Each structural action should:
-     - Capture the current `subtitles` before changing anything.
-     - Apply the mutation.
-     - Push the previous list into history using the same 50-entry limit.
-     - Clear `future`.
+   - Each structural action should apply the mutation directly to the current draft subtitle list.
    - Add delete behavior that clears selection when the selected row is deleted.
    - Keep selection predictable:
      - Add should select the newly created segment.
-     - Split should select the second segment.
      - Delete should select the next segment if one exists, otherwise the previous segment, otherwise clear selection.
+   - Add behavior:
+     - Use seconds, not milliseconds.
+     - Default new cue duration: `2` seconds.
+     - Create a local ID such as `subtitle-${Date.now()}-${Math.random().toString(36).slice(2)}`.
+     - If `duration > 0`, clamp the new cue end to `duration`.
+     - If the playhead is inside an existing cue, insert the new cue after that cue using the existing cue end as the start.
+     - Otherwise start the new cue at `currentTime`.
+     - Avoid overlap with the next cue by clamping the new cue end to `next.startTime` when needed.
+     - If clamping would make `endTime <= startTime`, use a small fallback duration only if it does not overlap; otherwise do not add.
+     - Set `start` and `end` with `secondToVttTime(startTime)` and `secondToVttTime(endTime)`.
+     - Use empty `text` for the new cue.
 
 3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
-   - Add toolbar buttons for undo, redo, add, split, delete, and export.
-   - Disable undo/redo when their stacks are empty.
-   - Disable split/delete when no subtitle is selected.
-   - Disable split when `currentTime` is not strictly inside the selected segment.
+   - Add toolbar buttons for add, delete, and export.
    - Disable delete when there are no subtitles or no selection.
-   - Sync `videoLibrary.duration` into the subtitle store with `setDuration(videoLibrary.duration)` before implementing duration-aware add/split/delete behavior.
+   - Disable add when `duration > 0` and `currentTime >= duration`.
    - Add a new segment at the current player time:
-     - Use `currentTime` from the store, in milliseconds.
-     - Default duration: 2000ms.
-     - If duration is known, clamp the end to `durationMs`.
+     - Use `currentTime` from the store, in seconds.
+     - Default duration: `2` seconds.
+     - If duration is known, clamp the end to `duration`.
      - If the new segment would overlap the next cue, end it before the next cue starts.
      - If the playhead is inside an existing cue, insert after that cue or create a short cue after the selected cue; choose one behavior and keep it consistent.
-   - Split selected segment only when `selected.startMs < currentTime < selected.endMs`.
-   - Split result:
-     - First cue keeps the old start and gets `endMs = currentTime`.
-     - Second cue gets `startMs = currentTime` and keeps the old end.
-     - Split text can be duplicated into both cues for simplicity, or divided at the nearest whitespace if you want a smarter edit. Document whichever behavior you choose.
-   - Delete selected segment through the store action after pushing the current list into history.
+   - Delete selected segment through the store action.
 
 4. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-editor.tsx`
-   - Add a global `keydown` listener.
-   - `Ctrl+Z` / `Cmd+Z` triggers undo.
-   - `Ctrl+Shift+Z` / `Ctrl+Y` triggers redo.
-   - `Delete` / `Backspace` deletes the selected segment.
-   - Ignore shortcuts while focus is inside `input`, `textarea`, `select`, or `[contenteditable]`.
-   - Also ignore shortcuts while a modal, menu, or combobox has focus if those components expose a recognizable role such as `role='dialog'`, `role='menu'`, or `role='combobox'`.
-   - Call `event.preventDefault()` only when the editor actually handles the shortcut.
+   - No global keyboard shortcuts are required for this feature.
+   - Keep add/delete available from toolbar buttons only.
 
 5. Utils
    - Add a small local helper for generating subtitle IDs if needed.
-   - Use `msToVttTime` when creating or splitting segments.
+   - Use `secondToVttTime` when creating segments.
    - Suggested ID helper: `subtitle-${Date.now()}-${Math.random().toString(36).slice(2)}`.
    - Keep this helper local to the subtitle store or transcript panel unless another module needs it.
 
@@ -445,31 +427,23 @@ Support undo/redo and structural subtitle operations: add, split, delete, and ro
    - Show disabled states clearly.
    - Keep toolbar controls compact because this panel is narrow.
    - Suggested lucide icons:
-     - Undo: `Undo2`.
-     - Redo: `Redo2`.
      - Add: `Plus`.
-     - Split: `Split`.
      - Delete: `Trash2`.
      - Export: `Download`.
-   - Toolbar order: undo, redo, separator, add, split, delete, separator, export.
+   - Toolbar order: add, delete, separator, export.
 
 ### Edge Cases
 
-- Do not let split create zero-length cues.
-- Do not let add create cues beyond `durationMs` when duration is available.
-- Undo/redo should preserve selection when the selected ID still exists.
-- Keyboard delete should not run while typing inside a field.
-- Structural edits should use one history entry per user action.
+- Do not let add create zero-length cues.
+- Do not let add create cues beyond `duration` when duration is available.
+- Do not let add overlap the next cue.
+- Delete should do nothing when no subtitle is selected.
 
 ### Acceptance Checks
 
-- [ ] Undo and redo restore text edits.
-- [ ] Undo and redo restore timestamp edits.
-- [ ] Undo and redo restore add/split/delete operations.
 - [ ] Add creates a valid segment at the current player time.
-- [ ] Split creates two valid segments without overlap.
 - [ ] Delete removes the selected segment and clears selection.
-- [ ] Keyboard shortcuts work outside form fields and are ignored inside form fields.
+- [ ] Add/delete controls are disabled when the action cannot run.
 
 ---
 
@@ -523,7 +497,7 @@ Compile the edited in-memory subtitles into a valid WebVTT file and download it 
 
 ### Edge Cases
 
-- Export should work after undo/redo.
+- Export should work after text, timestamp, add, and delete edits.
 - Export should work after timestamp edits even if formatted `start` and `end` strings are stale, because it uses `startTime` and `endTime`.
 - Export should not mutate the current subtitle order in the store; sort a copied array.
 - The downloaded file should end with a newline for better compatibility with subtitle tools.
@@ -549,13 +523,11 @@ Compile the edited in-memory subtitles into a valid WebVTT file and download it 
 - [x] Active subtitle segment highlights and auto-scrolls into view.
 - [x] Textarea edits update subtitle text in the store.
 - [ ] Timestamp edits update formatted and second-based timing fields.
-- [ ] History is captured on blur or Enter.
-- [ ] Undo and redo revert edits and structural changes.
 - [x] VTT export button triggers a browser download.
 - [x] VTT export uses sorted second-based timings and normalized timestamps.
-- [ ] Global shortcuts execute properly and are ignored inside form fields.
+- [ ] Add/delete toolbar actions execute properly and keep selection predictable.
 
 ### Quality
 
-- [x] `yarn lint` passes as of 2026-05-31 with 1 warning in `src/components/form/multi-select-field.tsx`.
-- [ ] `yarn build` passes without compilation problems. Not verified during this comparison.
+- [x] `yarn lint` passes as of 2026-06-02 with 1 existing warning in `src/components/form/multi-select-field.tsx`.
+- [x] `yarn next build` passes as of 2026-06-02. `yarn build` requires `.next` to be unlocked because its prebuild step deletes `.next`.
