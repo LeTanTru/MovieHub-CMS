@@ -73,6 +73,7 @@ export function SubtitleList({ rowVirtualizer }: SubtitleListProps) {
               subtitle={subtitle}
               onVttChange={handleVttContentChange}
               setSelectedSubtitleId={setSelectedSubtitleId}
+              onTimeChange={updateSubtitle}
             />
           </div>
         );

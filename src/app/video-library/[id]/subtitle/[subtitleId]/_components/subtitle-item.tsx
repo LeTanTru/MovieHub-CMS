@@ -15,6 +15,7 @@ type SubtitleItemProps = {
     e: ChangeEvent<HTMLTextAreaElement>,
     targetSubtitle: SubtitleType
   ) => void;
+  onTimeChange: (id: string, patch: Partial<SubtitleType>) => void;
 };
 
 export function SubtitleItem({
@@ -23,7 +24,8 @@ export function SubtitleItem({
   subtitle,
   rowIndex,
   setSelectedSubtitleId,
-  onVttChange
+  onVttChange,
+  onTimeChange
 }: SubtitleItemProps) {
   const startValue = subtitle.start.trim();
   const endValue = subtitle.end.trim();
