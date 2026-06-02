@@ -9,10 +9,14 @@ import {
   VideoLibrarySubtitleResType
 } from '@/types';
 import { parseVttContent, renderVttUrl, serializeVttContent } from '@/utils';
-import { ChangeEvent, useEffect, useRef } from 'react';
+import { ChangeEvent, useCallback, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { m } from 'framer-motion';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import {
+  elementScroll,
+  useVirtualizer,
+  VirtualizerOptions
+} from '@tanstack/react-virtual';
 import { Button, ToolTip } from '@/components/form';
 import { logger } from '@/logger';
 import { Download } from 'lucide-react';
@@ -24,6 +28,10 @@ type SubtitleTranscriptPanelProps = {
   videoLibrary: VideoLibraryResType;
   subtitle: VideoLibrarySubtitleResType;
 };
+
+function easeInOutQuint(t: number) {
+  return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
+}
 
 export function SubtitleTranscriptPanel({
   height,
@@ -50,48 +58,59 @@ export function SubtitleTranscriptPanel({
     setSelectedSubtitleId(undefined)
   );
 
-  const previousActiveIndexRef = useRef<number | null>(null);
+  const scrollingRef = useRef<number>(-1);
 
-  const activeIndex = subtitles.findIndex(
-    (subtitle) =>
-      subtitle.startTime <= currentTime && currentTime < subtitle.endTime
-  );
+  const activeIndexRef = useRef<number>(-1);
+
+  const scrollToFn: VirtualizerOptions<HTMLDivElement, Element>['scrollToFn'] =
+    useCallback(
+      (offset, canSmooth, instance) => {
+        const duration = 500;
+        const start = parentRef.current?.scrollTop || 0;
+        const startTime = (scrollingRef.current = Date.now());
+
+        const run = () => {
+          if (scrollingRef.current !== startTime) return;
+          const now = Date.now();
+          const elapsed = now - startTime;
+          const progress = easeInOutQuint(Math.min(elapsed / duration, 1));
+          const interpolated = start + (offset - start) * progress;
+
+          if (elapsed < duration) {
+            elementScroll(interpolated, canSmooth, instance);
+            requestAnimationFrame(run);
+          } else {
+            elementScroll(interpolated, canSmooth, instance);
+          }
+        };
+
+        requestAnimationFrame(run);
+      },
+      [parentRef]
+    );
 
   const rowVirtualizer = useVirtualizer({
     count: subtitles.length,
     getScrollElement: () => parentRef.current,
     getItemKey: (index) => subtitles[index].id,
     estimateSize: () => 180,
-    overscan: 8
+    overscan: 8,
+    scrollToFn
   });
 
   useEffect(() => {
-    if (activeIndex < 0 || activeIndex === previousActiveIndexRef.current) {
-      return;
+    const activeIndex = subtitles.findIndex(
+      (s) => s.startTime <= currentTime && currentTime < s.endTime
+    );
+
+    if (activeIndex !== -1 && activeIndex !== activeIndexRef.current) {
+      activeIndexRef.current = activeIndex;
+      rowVirtualizer.scrollToIndex(activeIndex, { align: 'center' });
     }
-
-    previousActiveIndexRef.current = activeIndex;
-
-    const activeElement = document.activeElement;
-    const isEditingInsidePanel =
-      activeElement instanceof Element &&
-      parentRef.current?.contains(activeElement) &&
-      activeElement.matches('input, textarea');
-
-    if (isEditingInsidePanel) return;
-
-    const offset = rowVirtualizer.getOffsetForIndex(activeIndex, 'center')?.[0];
-
-    if (typeof offset !== 'number') return;
-
-    parentRef.current?.scrollTo({
-      top: offset,
-      behavior: 'smooth'
-    });
-  }, [activeIndex, rowVirtualizer, parentRef]);
+  }, [currentTime, subtitles, rowVirtualizer]);
 
   useEffect(() => {
-    let isActive = true;
+    const controller = new AbortController();
 
     const getVttContent = async () => {
       try {
@@ -100,7 +119,8 @@ export function SubtitleTranscriptPanel({
             videoLibrary.hostname,
             subtitle.fileUrl,
             videoLibrary.sourceType
-          )
+          ),
+          { signal: controller.signal }
         );
 
         if (!res.ok) {
@@ -109,22 +129,20 @@ export function SubtitleTranscriptPanel({
 
         const content = await res.text();
 
-        if (isActive) {
-          setSubtitles(parseVttContent(content), { resetHistory: true });
-        }
+        setSubtitles(parseVttContent(content), { resetHistory: true });
       } catch (error) {
+        if (controller.signal.aborted) return;
+
         logger.error('[GET_VTT_CONTENT_ERROR]', error);
 
-        if (isActive) {
-          setSubtitles([], { resetHistory: true });
-        }
+        setSubtitles([], { resetHistory: true });
       }
     };
 
     getVttContent();
 
     return () => {
-      isActive = false;
+      controller.abort();
     };
   }, [
     setSubtitles,
