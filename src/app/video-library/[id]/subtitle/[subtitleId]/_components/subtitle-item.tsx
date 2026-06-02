@@ -46,7 +46,7 @@ export function SubtitleItem({
     >
       <div className='mb-1.5 flex items-center gap-2'>
         <span className='flex h-5 min-w-7 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white'>
-          {rowIndex + 1}
+          {rowIndex}
         </span>
         <div className='flex w-full items-center gap-1 text-xs'>
           <span>{subtitle.start.trim()}</span>

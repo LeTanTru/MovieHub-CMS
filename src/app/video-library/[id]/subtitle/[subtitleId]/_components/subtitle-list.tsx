@@ -47,9 +47,9 @@ export function SubtitleList({ rowVirtualizer }: SubtitleListProps) {
       {rowVirtualizer.getVirtualItems().map((row) => {
         const subtitle = subtitles[row.index];
         const isActive =
-          (subtitle.startTime <= currentTime &&
-            currentTime < subtitle.endTime) ||
-          selectedSubtitleId === subtitle.id;
+          subtitle.startTime <= currentTime && currentTime < subtitle.endTime;
+
+        const isSelected = selectedSubtitleId === subtitle.id;
 
         return (
           <div
@@ -66,7 +66,7 @@ export function SubtitleList({ rowVirtualizer }: SubtitleListProps) {
             }}
           >
             <SubtitleItem
-              isActive={isActive}
+              isActive={isActive || isSelected}
               key={subtitle.id}
               rowIndex={row.index + 1}
               subtitle={subtitle}
