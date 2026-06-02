@@ -66,7 +66,8 @@ export function SubtitleList({ rowVirtualizer }: SubtitleListProps) {
             }}
           >
             <SubtitleItem
-              isActive={isActive || isSelected}
+              isActive={isActive}
+              isSelected={isSelected}
               key={subtitle.id}
               rowIndex={row.index + 1}
               subtitle={subtitle}

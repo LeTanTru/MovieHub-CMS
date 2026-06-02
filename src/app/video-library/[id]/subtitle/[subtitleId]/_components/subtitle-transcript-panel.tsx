@@ -4,7 +4,7 @@ import { emptyData } from '@/assets';
 import { NotFound } from '@/components/not-found';
 import { useVideoLibrarySubtitleStore } from '@/store';
 import { VideoLibraryResType, VideoLibrarySubtitleResType } from '@/types';
-import { parseVttContent, renderVttUrl, serializeVttContent } from '@/utils';
+import { parseVttContent, renderVttUrl } from '@/utils';
 import { useCallback, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
@@ -12,16 +12,15 @@ import {
   useVirtualizer,
   VirtualizerOptions
 } from '@tanstack/react-virtual';
-import { Button, ToolTip } from '@/components/form';
 import { logger } from '@/logger';
-import { Download } from 'lucide-react';
 import { useClickOutside } from '@/hooks';
 import { SubtitleList } from './subtitle-list';
+import { SubtitleHeader } from './subtitle-header';
 
 type SubtitleTranscriptPanelProps = {
   height?: number;
   videoLibrary: VideoLibraryResType;
-  subtitle: VideoLibrarySubtitleResType;
+  videoSubtitle: VideoLibrarySubtitleResType;
 };
 
 function easeInOutQuint(t: number) {
@@ -31,7 +30,7 @@ function easeInOutQuint(t: number) {
 export function SubtitleTranscriptPanel({
   height,
   videoLibrary,
-  subtitle
+  videoSubtitle
 }: SubtitleTranscriptPanelProps) {
   const { currentTime, subtitles, setSelectedSubtitleId, setSubtitles } =
     useVideoLibrarySubtitleStore(
@@ -106,7 +105,7 @@ export function SubtitleTranscriptPanel({
         const res = await fetch(
           renderVttUrl(
             videoLibrary.hostname,
-            subtitle.fileUrl,
+            videoSubtitle.fileUrl,
             videoLibrary.sourceType
           ),
           { signal: controller.signal }
@@ -138,65 +137,17 @@ export function SubtitleTranscriptPanel({
   }, [
     setSubtitles,
     setSelectedSubtitleId,
-    subtitle.fileUrl,
+    videoSubtitle.fileUrl,
     videoLibrary.hostname,
     videoLibrary.sourceType
   ]);
-
-  const canExport = subtitles.some(
-    (subtitle) =>
-      Number.isFinite(subtitle.startTime) &&
-      Number.isFinite(subtitle.endTime) &&
-      subtitle.endTime > subtitle.startTime
-  );
-
-  const handleExport = () => {
-    if (!canExport) return;
-
-    const content = serializeVttContent(subtitles);
-
-    const blob = new Blob([content], { type: 'text/vtt' });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${subtitle.language || 'subtitle'}.vtt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    URL.revokeObjectURL(url);
-  };
 
   return (
     <div
       className='flex h-full flex-col overflow-hidden border-l border-gray-200 bg-gray-50'
       style={height ? { height } : undefined}
     >
-      <div className='flex shrink-0 items-center justify-between border-b border-gray-200 p-1'>
-        <div className='flex items-center gap-2'>
-          <span className='font-semibold tracking-widest uppercase'>
-            Phụ đề
-          </span>
-          <span className='rounded-full bg-slate-800 px-2 py-0.5 text-xs font-medium text-white tabular-nums'>
-            {subtitles.length} phân đoạn
-          </span>
-        </div>
-
-        <ToolTip title={`Xuất file phụ đề ${subtitle.label}`} side='bottom'>
-          <Button
-            onClick={handleExport}
-            disabled={!canExport}
-            variant='ghost'
-            className='hover:bg-transparent'
-          >
-            <Download
-              size={16}
-              className='transition-all duration-200 ease-linear hover:text-gray-400'
-            />
-          </Button>
-        </ToolTip>
-      </div>
+      <SubtitleHeader subtitles={subtitles} videoSubtitle={videoSubtitle} />
 
       <div
         ref={parentRef}

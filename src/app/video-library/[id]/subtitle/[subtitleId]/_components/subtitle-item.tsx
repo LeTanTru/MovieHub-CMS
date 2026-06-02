@@ -7,6 +7,7 @@ import { ChangeEvent } from 'react';
 
 type SubtitleItemProps = {
   isActive: boolean;
+  isSelected: boolean;
   subtitle: SubtitleType;
   rowIndex: number;
   setSelectedSubtitleId: (id: string | null) => void;
@@ -18,6 +19,7 @@ type SubtitleItemProps = {
 
 export function SubtitleItem({
   isActive,
+  isSelected,
   subtitle,
   rowIndex,
   setSelectedSubtitleId,
@@ -28,7 +30,7 @@ export function SubtitleItem({
       className={cn(
         'rounded-md p-2 shadow-[0_0_4px_1px_rgba(0,0,0,0.1)] transition-colors duration-200 ease-linear',
         {
-          'ring-main-color ring-2': isActive
+          'ring-main-color ring-2': isActive || isSelected
         }
       )}
       whileHover={{
@@ -39,7 +41,7 @@ export function SubtitleItem({
         ease: 'linear'
       }}
       onClick={() => {
-        if (isActive) return;
+        if (isSelected) return;
 
         setSelectedSubtitleId(subtitle.id);
       }}

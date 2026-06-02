@@ -56,7 +56,7 @@ export function SubtitleEditor() {
     }
   });
 
-  const targetSubtitle = subtitleList.find(
+  const videoSubtitle = subtitleList.find(
     (subtitle) => subtitle.language === p_language
   );
 
@@ -106,12 +106,12 @@ export function SubtitleEditor() {
           )
         },
         {
-          label: targetSubtitle
-            ? `Chỉnh sửa nội dung ${targetSubtitle.label}`
+          label: videoSubtitle
+            ? `Chỉnh sửa nội dung ${videoSubtitle.label}`
             : 'Chỉnh sửa nội dung'
         }
       ]}
-      notFound={!videoLibrary || !targetSubtitle}
+      notFound={!videoLibrary || !videoSubtitle}
       notFoundContent={`Không tìm thấy ${videoLibrary ? 'phụ đề' : 'video'}`}
     >
       <ListPageWrapper>
@@ -119,7 +119,7 @@ export function SubtitleEditor() {
           <Col className='grid-c-9 grid-col-no-gutters'>
             {loading || loadingVideoLibrary ? (
               <CircleLoading className='stroke-main-color m-4' />
-            ) : videoLibrary && targetSubtitle ? (
+            ) : videoLibrary && videoSubtitle ? (
               <SubtitlePreviewPlayer
                 videoLibrary={videoLibrary}
                 playerContainerRef={playerContainerRef}
@@ -127,9 +127,9 @@ export function SubtitleEditor() {
             ) : null}
           </Col>
           <Col className='grid-c-3 grid-col-no-gutters h-full'>
-            {targetSubtitle && videoLibrary && (
+            {videoSubtitle && videoLibrary && (
               <SubtitleTranscriptPanel
-                subtitle={targetSubtitle}
+                videoSubtitle={videoSubtitle}
                 videoLibrary={videoLibrary}
                 height={playerHeight}
               />
