@@ -44,6 +44,14 @@ The editor replaces the scrollable timeline/ruler UI with a video preview player
 
 Fetch the selected `.vtt` subtitle file, parse it into a normalized in-memory draft, and initialize the editor store with clean timing data.
 
+### Implementation Shape
+
+Feature 1 owns only loading and normalizing subtitle draft data. It should not depend on the preview player, transcript row UI, undo/redo buttons, timestamp inputs, or export behavior. Keep the draft model seconds-based throughout this feature:
+
+- `start` and `end`: display strings from the VTT file, for example `00:01:05.250`.
+- `startTime` and `endTime`: numeric seconds used by playback sync and active-row lookup.
+- `currentTime` and `duration`: numeric seconds in the Zustand store.
+
 ### Current Status
 
 - `DONE`: `src/utils/vtt-time.util.ts` exists.
@@ -52,30 +60,42 @@ Fetch the selected `.vtt` subtitle file, parse it into a normalized in-memory dr
 - `DONE`: `setSubtitles(subtitles, { resetHistory: true })` resets history, future, and selection.
 - `DONE`: `parseVttContent` returns normalized subtitle drafts with second-based timing fields.
 - `DONE`: `SubtitleTranscriptPanel` fetches the VTT file on render and calls `setSubtitles(parseVttContent(content), { resetHistory: true })`.
+- `DONE`: `SubtitleTranscriptPanel` uses `AbortController` to cancel stale VTT fetches during unmounts or subtitle changes.
 
 ### Modify One By One
 
 1. Types: `src/types/video-library-subtitle.type.ts`
    - Add `startTime: number` and `endTime: number` to `SubtitleType`.
-   - Keep `start` and `end` as formatted strings in `hh:mm:ss.mmm` format.
+   - Keep `start` and `end` as formatted VTT strings. Accept both `hh:mm:ss.mmm` and `mm:ss.mmm` from source files if `vttTimeToSecond` supports both, but normalize new generated values with `secondToVttTime`.
    - Add `duration`, `selectedSubtitleId`, `past`, and `future` to `VideoLibrarySubtitleState`.
    - Add `setDuration`, `setSelectedSubtitleId`, `updateSubtitle`, `commitSubtitles`, `undo`, and `redo` to `VideoLibrarySubtitleActions`.
 
 2. Store: `src/store/video-library-subtitle.store.ts`
    - Initialize `duration`, `selectedSubtitleId`, `past`, and `future`.
    - Update `setSubtitles(subtitles, { resetHistory: true })` so it clears history and selection when a new VTT file is loaded.
+   - Keep `setSubtitles(subtitles)` available for replacing draft state without resetting history when later features need cancel/restore behavior.
    - Keep `setCurrentTime` lightweight because player events will call it frequently.
+   - Keep history state in the store even if Feature 1 does not expose undo/redo UI yet; later features will use it.
 
 3. Utils: `src/utils/text.util.ts`
    - Update `parseVttContent` to parse cue timings with `vttTimeToSecond`.
    - Support multiline cue text.
    - Generate stable local cue IDs.
    - Ignore `WEBVTT`, cue indexes, and blank separator lines safely.
+   - Ignore metadata blocks such as `NOTE`, `STYLE`, and `REGION` without treating them as cues.
+   - Ignore cue settings after the end timestamp, for example `align:start position:0%`.
+   - Skip invalid cues instead of throwing. A malformed cue should not prevent later valid cues from loading.
+   - Preserve text lines exactly except for line-ending normalization.
 
 4. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
    - Keep the VTT fetch here unless the editor shell later needs to own loading state.
-   - Call `setSubtitles(parsedSubtitles, { resetHistory: true })` after fetching.
-   - Handle fetch failures with the existing empty/not-found UI pattern.
+   - Build the URL with `renderVttUrl(videoLibrary.hostname, subtitle.fileUrl, videoLibrary.sourceType)`.
+   - Fetch inside `useEffect` with `AbortController`.
+   - Pass `{ signal: controller.signal }` to `fetch`.
+   - Call `setSubtitles(parseVttContent(content), { resetHistory: true })` after a successful fetch.
+   - In `catch`, return early when `controller.signal.aborted` is true.
+   - For real fetch or parse failures, log with `logger.error('[GET_VTT_CONTENT_ERROR]', error)` and call `setSubtitles([], { resetHistory: true })`.
+   - Abort the request in the effect cleanup.
 
 5. Styles/UI
    - Keep loading and empty states inside the transcript panel.
@@ -87,6 +107,7 @@ Fetch the selected `.vtt` subtitle file, parse it into a normalized in-memory dr
 - [x] Parsed subtitles include `startTime` and `endTime`.
 - [x] Loading a new subtitle resets history, future, and selection.
 - [x] Multiline VTT cues remain multiline after parsing.
+- [x] Stale VTT fetches are cancelled on cleanup and do not overwrite newer draft state.
 
 ---
 
@@ -95,6 +116,18 @@ Fetch the selected `.vtt` subtitle file, parse it into a normalized in-memory dr
 ### Purpose
 
 Reuse the existing video player, sync playback time into the subtitle store, and render draft subtitle changes live on top of the video.
+
+### Implementation Shape
+
+Feature 2 owns the preview side of the editor. It should reuse the shared `VideoPlayer`, keep Vidstack integration generic, and render draft captions with a local overlay instead of repeatedly registering edited subtitle drafts as native text tracks.
+
+The data flow is:
+
+1. `SubtitleEditor` renders `SubtitlePreviewPlayer` and `SubtitleTranscriptPanel` from the same route state.
+2. `SubtitleTranscriptPanel` loads parsed subtitle drafts into `useVideoLibrarySubtitleStore`.
+3. `SubtitlePreviewPlayer` reads `subtitles`, `selectedSubtitleId`, and `currentTime` from the store.
+4. `VideoPlayer.onTimeUpdate` writes `detail.currentTime` into `setCurrentTime`.
+5. The preview overlay renders `selectedSubtitle ?? activeSubtitle`.
 
 ### Current Status
 
@@ -105,6 +138,8 @@ Reuse the existing video player, sync playback time into the subtitle store, and
 - `DONE`: Draft subtitle text is rendered live over the video with a custom overlay.
 - `DONE`: Selecting a transcript row seeks the preview player to that segment start and pauses playback.
 - `DONE`: When a transcript row is selected, the overlay shows the selected subtitle; otherwise it shows the active subtitle for the current playhead.
+- `DONE`: Active subtitle lookup uses `currentTime >= startTime && currentTime < endTime`, matching the transcript active-row rule.
+- `DONE`: Row selection seeking depends on the selected ID and selected start time, so text edits do not repeatedly seek the player.
 - Draft subtitles are not registered as Vidstack `TextTrack` entries because updating Blob-backed tracks on every edit caused duplicate caption-menu keys such as `:subtitles-[draft preview] tiếng việt`.
 
 ### Modify One By One
@@ -123,15 +158,17 @@ Reuse the existing video player, sync playback time into the subtitle store, and
    - Select `currentTime`, `selectedSubtitleId`, `subtitles`, and `setCurrentTime` from the store.
    - Pass `onTimeUpdate={(detail) => setCurrentTime(detail.currentTime)}` to `VideoPlayer`.
    - Keep a `MediaPlayerInstance` ref so selected transcript rows can seek the player.
+   - Resolve `selectedSubtitle` by finding the row whose `id` equals `selectedSubtitleId`.
+   - Resolve `activeSubtitle` from normalized timing with `subtitles.find((s) => currentTime >= s.startTime && currentTime < s.endTime)`.
+   - Resolve the preview cue as `selectedSubtitle ?? activeSubtitle`.
    - When `selectedSubtitleId` resolves to a subtitle, set `playerRef.current.currentTime = selectedSubtitle.startTime` and pause playback.
+   - Make the seek effect depend on `selectedSubtitleId` and `selectedSubtitle?.startTime`, not the whole `selectedSubtitle` object. This avoids re-seeking while the user edits the selected subtitle text.
    - Do not generate a Blob VTT URL for every subtitle edit.
    - Do not pass the draft subtitle list to `VideoPlayer` through `textTracks`; Vidstack's caption menu can retain old track entries and emit duplicate React key warnings.
-   - Find the active draft cue directly from normalized state:
-     - `subtitles.find((s) => currentTime >= s.startTime && currentTime <= s.endTime)`.
-   - Resolve the preview cue as `selectedSubtitle ?? activeSubtitle`.
    - Render the preview cue as an absolutely positioned overlay inside the same aspect-ratio wrapper as the player.
    - Use `whitespace-pre-line` so multiline subtitle text previews correctly.
    - Use `pointer-events-none` on the overlay so it does not block player controls.
+   - Render nothing when there is no preview cue or the preview cue has empty text.
    - Keep `textTracks` out of the editor preview while draft overlay mode is active.
 
 4. Components: `src/components/video-player/video-player.tsx`
@@ -147,6 +184,8 @@ Reuse the existing video player, sync playback time into the subtitle store, and
    - Keep the existing player aspect-ratio wrapper.
    - Use a custom overlay for draft preview because Blob-backed Vidstack tracks caused duplicate caption-menu entries during frequent edits.
    - Keep the overlay visually close to native captions: centered near the bottom, readable contrast, no controls or instructional text.
+   - Put the overlay inside the player wrapper with `absolute right-6 bottom-16 left-6 z-10`.
+   - Keep the caption text centered and multiline-safe with `text-center` and `whitespace-pre-line`.
    - Do not add visible instructional text to the player.
 
 ### Edge Cases
@@ -156,6 +195,8 @@ Reuse the existing video player, sync playback time into the subtitle store, and
 - Multiline cue text must remain multiline in the overlay.
 - `setCurrentTime` fires frequently, so do not put history updates, serialization, or expensive work inside the time-update handler.
 - Selected-row preview intentionally overrides active-playhead preview until the row selection is cleared.
+- Editing a selected row should update the overlay text live without repeatedly seeking the player back to the row start.
+- At exact cue boundaries, the previous cue should stop at `endTime` and the next cue should begin at its own `startTime`; use `< endTime`, not `<= endTime`.
 - If regular server-side subtitle tracks are needed in the editor later, reintroduce them separately from the draft preview so the draft overlay does not compete with Vidstack's caption menu.
 
 ### Acceptance Checks
@@ -165,6 +206,7 @@ Reuse the existing video player, sync playback time into the subtitle store, and
 - [x] Selecting a transcript row seeks and pauses the preview player at that subtitle start time.
 - [x] Draft preview does not create duplicate Vidstack caption-menu entries.
 - [x] Existing regular text track support is preserved in the shared `VideoPlayer`; no current non-editor call sites pass `textTracks`.
+- [x] Editing selected subtitle text updates the overlay without causing repeated seek/pause loops.
 
 ---
 
@@ -442,9 +484,9 @@ Compile the edited in-memory subtitles into a valid WebVTT file and download it 
 ### Functional
 
 - [x] Subtitles load from source files on page render.
-- [ ] Draft captions display dynamically on top of video.
+- [x] Draft captions display dynamically on top of video.
 - [x] Subtitle list renders inside the `@tanstack/react-virtual` wrapper container.
-- [ ] Active subtitle segment highlights and auto-scrolls into view.
+- [x] Active subtitle segment highlights and auto-scrolls into view.
 - [x] Textarea edits update subtitle text in the store.
 - [ ] Timestamp edits update formatted and millisecond timing fields.
 - [ ] History is captured on blur or Enter.

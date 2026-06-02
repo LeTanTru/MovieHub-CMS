@@ -47,23 +47,24 @@ export function SubtitlePreviewPlayer({
       }))
     );
 
-  const activeSubtile = subtitles.find(
+  const activeSubtitle = subtitles.find(
     (subtitle) =>
-      currentTime >= subtitle.startTime && currentTime <= subtitle.endTime
+      currentTime >= subtitle.startTime && currentTime < subtitle.endTime
   );
 
   const selectedSubtitle = selectedSubtitleId
     ? subtitles.find((subtitle) => subtitle.id === selectedSubtitleId)
     : undefined;
+  const selectedSubtitleStartTime = selectedSubtitle?.startTime;
 
-  const previewSubtitle = selectedSubtitle ?? activeSubtile;
+  const previewSubtitle = selectedSubtitle ?? activeSubtitle;
 
   useEffect(() => {
-    if (!playerRef.current || !selectedSubtitle) return;
+    if (!playerRef.current || selectedSubtitleStartTime === undefined) return;
 
-    playerRef.current.currentTime = selectedSubtitle.startTime;
+    playerRef.current.currentTime = selectedSubtitleStartTime;
     playerRef.current.pause();
-  }, [selectedSubtitle]);
+  }, [selectedSubtitleId, selectedSubtitleStartTime]);
 
   return (
     <div ref={playerContainerRef} className='relative aspect-video w-full'>
