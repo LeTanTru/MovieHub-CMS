@@ -216,6 +216,16 @@ The data flow is:
 
 Render all subtitle segments in a performant transcript panel, highlight the active cue based on the current playhead, and allow direct editing of text and timestamps.
 
+### Implementation Shape
+
+Feature 3 owns the transcript panel editing experience. It should keep the same normalized seconds-based model introduced in Feature 1:
+
+- `subtitle.start` and `subtitle.end`: editable display strings.
+- `subtitle.startTime` and `subtitle.endTime`: numeric seconds used for validation, preview sync, active-row lookup, and export.
+- `currentTime` and `duration`: numeric seconds from the store.
+
+Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this feature unless the whole subtitle model is migrated. The current project uses `vttTimeToSecond` and `secondToVttTime`.
+
 ### Current Status
 
 - `DONE`: `SubtitleTranscriptPanel` uses `@tanstack/react-virtual`.
@@ -224,62 +234,101 @@ Render all subtitle segments in a performant transcript panel, highlight the act
 - `DONE`: Active row detection and auto-scroll are implemented.
 - `TODO`: Timestamp inputs are not implemented.
 - `TODO`: Textarea auto-height is not implemented.
-- `TODO`: Orange active-row styling is not implemented.
+- `TODO`: Strong active-row and selected-row styling is not implemented.
 - `TODO`: Blur/Enter does not commit history.
 
 ### Modify One By One
 
 1. Types: `src/types/video-library-subtitle.type.ts`
-   - Ensure `SubtitleType` has editable `text`, `start`, `end`, `startMs`, and `endMs`.
-   - Use `Partial<SubtitleType>` for `updateSubtitle` patches.
+   - Keep `SubtitleType` as:
+     - `id: string`.
+     - `start: string`.
+     - `end: string`.
+     - `text: string`.
+     - `startTime: number`.
+     - `endTime: number`.
+   - Keep `updateSubtitle(id, patch)` typed as `Partial<SubtitleType>`.
+   - No new type fields are required for Feature 3.
 
 2. Store: `src/store/video-library-subtitle.store.ts`
-   - Add `updateSubtitle(id, patch)` for per-row edits.
-   - Add `setSelectedSubtitleId(id)` for row selection.
-   - Add `commitSubtitles(previousSubtitles)` so text and timestamp edits can enter history on blur or Enter.
+   - Confirm `updateSubtitle(id, patch)` exists for per-row edits.
+   - Confirm `setSelectedSubtitleId(id)` exists for row selection.
+   - Confirm `commitSubtitles(previousSubtitles)` exists so text and timestamp edits can enter history on blur or Enter.
+   - Confirm `setSubtitles(previousSnapshot)` can restore an edit snapshot on Escape without resetting history.
+   - Do not call `commitSubtitles` inside `updateSubtitle`; commits should happen only when the user finishes an editing action.
 
 3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
    - Keep `useVirtualizer` with stable row keys from subtitle IDs.
-   - Select `currentTime`, `selectedSubtitleId`, `setSelectedSubtitleId`, `updateSubtitle`, and `commitSubtitles` from the store with `useShallow`.
-   - Compute `activeIndex` with `subtitles.findIndex((s) => s.startMs <= currentTime && currentTime < s.endMs)`.
+   - Select `currentTime`, `selectedSubtitleId`, `subtitles`, `setSelectedSubtitleId`, `setSubtitles`, `updateSubtitle`, and `commitSubtitles` from the store with `useShallow`.
+   - Compute `activeIndex` with `subtitles.findIndex((s) => s.startTime <= currentTime && currentTime < s.endTime)`.
    - Keep `activeIndex` as `-1` when no cue matches.
-   - Use a `useRef<number | null>` to remember the previous active index.
+   - Use `useRef<number>(-1)` or `useRef<number | null>(null)` to remember the previous active index.
    - In an effect, call `rowVirtualizer.scrollToIndex(activeIndex, { align: 'center' })` only when:
      - `activeIndex >= 0`.
      - `activeIndex !== previousActiveIndexRef.current`.
      - The user is not currently focused inside an `input` or `textarea` in the transcript panel.
    - Add text editing through `updateSubtitle(id, { text })`; do not call `setSubtitles` for per-row edits.
+   - Select the row when a user focuses, clicks, or pointer-downs inside it with `setSelectedSubtitleId(subtitle.id)`.
    - Add compact start/end timestamp inputs:
      - Use controlled values from `subtitle.start` and `subtitle.end`.
-     - Accept `hh:mm:ss.mmm` and `mm:ss.mmm` if `vttTimeToMs` supports both.
-     - On valid change, update both fields: `{ start, startMs }` or `{ end, endMs }`.
-     - Normalize the displayed string with `msToVttTime(ms)` on blur.
-     - Do not update the store on invalid input unless you also keep local input state; the simplest path is to reject invalid values and leave the previous store value.
+     - Use plain `<input>` elements or existing form input components if they fit this compact row layout.
+     - Accept `hh:mm:ss.mmm` and `mm:ss.mmm` because `vttTimeToSecond` supports both.
+     - For a valid start edit, call `updateSubtitle(id, { start: nextValue, startTime: vttTimeToSecond(nextValue) })`.
+     - For a valid end edit, call `updateSubtitle(id, { end: nextValue, endTime: vttTimeToSecond(nextValue) })`.
+     - Normalize the displayed string with `secondToVttTime(timeInSeconds)` on blur or Enter.
+     - If input is invalid, keep local input state so the user can finish typing; do not immediately overwrite their partial value from the store.
+     - On blur, if the local value is invalid, restore the last valid store value.
    - Enforce basic timestamp validity before committing:
-     - `startMs >= 0`.
-     - `endMs > startMs`.
-     - Optionally clamp `endMs` to `durationMs` when duration is known.
-     - Avoid overlap with neighboring cues if the product expects non-overlapping subtitles.
+     - `startTime >= 0`.
+     - `endTime > startTime`.
+     - If `duration > 0`, require `startTime < duration` and `endTime <= duration`.
+     - Recommended non-overlap rule: `previous.endTime <= startTime` and `endTime <= next.startTime` when neighboring cues exist.
+     - If a timestamp would violate these rules, keep the local input visible while focused, but do not commit it to history.
    - Capture a previous subtitle snapshot before editing:
-     - Store `structuredClone(subtitles)` in a ref on `onFocus` or `onPointerDown` if the ref is empty.
-     - On blur or Enter, call `commitSubtitles(previousSnapshotRef.current)` and clear the ref.
+     - Add `const editSnapshotRef = useRef<SubtitleType[] | null>(null)`.
+     - On the first `onFocus` or `onPointerDown` for an edit session, store `structuredClone(subtitles)` if `editSnapshotRef.current` is null.
+     - On blur, call `commitSubtitles(editSnapshotRef.current)` only if the field is valid, then clear the ref.
+     - On Enter in timestamp inputs, normalize, commit, clear the ref, and blur the input.
+     - On `Ctrl+Enter` or `Cmd+Enter` in the textarea, commit and blur the textarea.
      - On Escape, restore the previous snapshot with `setSubtitles(previousSnapshot)` and clear the ref.
-   - Select the row when a user focuses or clicks inside it with `setSelectedSubtitleId(subtitle.id)`.
+   - Avoid committing no-op edits; `commitSubtitles` already compares snapshots, so pass the previous snapshot and let the store ignore unchanged drafts.
    - Handle keyboard editing inside fields:
      - `Enter` in timestamp inputs commits the edit and blurs the input.
      - `Enter` in textarea should keep normal multiline behavior unless `Ctrl+Enter` / `Cmd+Enter` is chosen as the commit shortcut.
      - `Escape` cancels the active edit from the captured snapshot.
+   - Add local timestamp draft state:
+     - Keep an object keyed by subtitle ID and field, for example `{ [id]: { start?: string; end?: string } }`.
+     - Display `draftValue ?? subtitle.start` and `draftValue ?? subtitle.end`.
+     - Clear the field draft after successful normalization or Escape.
+     - This prevents partial values like `00:01:` from being rejected before the user finishes typing.
+   - Make active-row auto-scroll editing-safe:
+     - Check `const activeElement = document.activeElement`.
+     - Treat editing as active when `parentRef.current?.contains(activeElement)` and `activeElement.matches('input, textarea')`.
+     - Return early from auto-scroll while editing.
+   - Keep virtual row measuring stable:
+     - Continue passing `ref={rowVirtualizer.measureElement}` to each virtual row wrapper.
+     - If textarea height changes, call `rowVirtualizer.measure()` after the DOM height update.
 
 4. Utils: `src/utils/vtt-time.util.ts`
-   - Use `vttTimeToMs` for timestamp input parsing.
-   - Use `msToVttTime` to normalize timestamp display after valid edits.
+   - Use `vttTimeToSecond` for timestamp input parsing.
+   - Use `secondToVttTime` to normalize timestamp display after valid edits.
+   - Keep all timestamp edit calculations in seconds.
+   - If validation needs a helper, add a small local function in the transcript panel first:
+     - `parseTimestampInput(value): number | null`.
+     - Return `null` for invalid or non-finite values.
 
 5. Styles/UI
-   - Apply an orange active-row style: border, subtle background, and visible focus ring.
-   - Apply a separate selected-row style if `selectedSubtitleId` differs from the active playback row.
+   - Apply a strong active-row style: visible ring, subtle warm background, and clear border.
+   - Apply a separate selected-row style, for example a neutral border/ring, when `selectedSubtitleId` differs from the active playback row.
+   - If a row is both selected and active, active styling should win.
    - Keep row heights stable enough for virtualization.
    - Add textarea auto-height without causing layout thrash; call `rowVirtualizer.measure()` after height changes if needed.
    - Keep timestamp inputs compact and readable inside the right panel.
+   - Suggested row layout:
+     - Top row: segment index, start input, divider, end input.
+     - Body: auto-height textarea.
+   - Timestamp inputs should have monospace/tabular numeric styling so values do not jump while editing.
+   - Invalid timestamp input should show a clear border color while focused, but do not add bulky helper text inside every row.
    - Textarea auto-height implementation detail:
      - Keep `resize-none`.
      - On mount/change, set `textarea.style.height = 'auto'`, then `textarea.style.height = textarea.scrollHeight + 'px'`.
@@ -290,9 +339,13 @@ Render all subtitle segments in a performant transcript panel, highlight the act
 
 - Active-row auto-scroll should not fight the user while they are editing text or timestamps.
 - If virtual rows are dynamically measured, test rows with one line and many lines of subtitle text.
-- Timestamp edits should never leave a row with `endMs <= startMs`.
+- Timestamp edits should never leave a row with `endTime <= startTime`.
+- Invalid partial timestamp input should be editable while focused and restored on blur if it never becomes valid.
+- Timestamp normalization should not change cue timing except for rounding to milliseconds through `secondToVttTime`.
 - History commits should not happen for no-op edits.
 - Escape cancel should not erase unrelated edits made after the snapshot by another action; this editor is single-user local state, so a simple snapshot restore is acceptable.
+- Textarea Enter should continue inserting a newline; use `Ctrl+Enter` or `Cmd+Enter` for commit.
+- Auto-scroll should resume after the user leaves the currently edited input.
 
 ### Acceptance Checks
 
@@ -300,8 +353,13 @@ Render all subtitle segments in a performant transcript panel, highlight the act
 - [x] Textarea edits update subtitle text in the store.
 - [x] Active subtitle row highlights when playback time enters its cue range.
 - [x] Active subtitle row scrolls into view when the active cue changes.
-- [ ] Start/end inputs update `start`, `end`, `startMs`, and `endMs`.
+- [ ] Active subtitle row does not auto-scroll while a transcript input or textarea is focused.
+- [ ] Start/end inputs update `start`, `end`, `startTime`, and `endTime`.
+- [ ] Invalid timestamp input is editable while focused and restored if still invalid on blur.
+- [ ] Valid timestamp input normalizes with `secondToVttTime` on blur or Enter.
 - [ ] Text and timestamp edits are committed to history on blur or Enter.
+- [ ] Escape restores the edit snapshot and clears local timestamp drafts.
+- [ ] Textarea auto-height works for one-line and multiline cues without breaking virtualization.
 
 ---
 
@@ -415,7 +473,7 @@ Support undo/redo and structural subtitle operations: add, split, delete, and ro
 
 ---
 
-## Feature 5 - VTT Export [PARTIAL]
+## Feature 5 - VTT Export [DONE]
 
 ### Purpose
 
@@ -425,27 +483,28 @@ Compile the edited in-memory subtitles into a valid WebVTT file and download it 
 
 - `DONE`: Transcript panel has an Export button.
 - `DONE`: Export currently creates a Blob and downloads a `.vtt` file.
-- `PARTIAL`: Serializer still uses the old `start` and `end` fields directly.
-- `TODO`: Serializer does not sort by `startMs`.
-- `TODO`: Serializer does not guarantee normalized `hh:mm:ss.mmm` timestamps.
+- `DONE`: Serializer uses normalized `startTime` and `endTime` fields.
+- `DONE`: Serializer sorts by `startTime` without mutating store order.
+- `DONE`: Serializer guarantees normalized `hh:mm:ss.mmm` timestamps with `secondToVttTime`.
+- `DONE`: Export is disabled when there are no valid cues.
 
 ### Modify One By One
 
 1. Types: `src/types/video-library-subtitle.type.ts`
-   - Export should consume the normalized `SubtitleType[]` shape with `startMs` and `endMs`.
+   - Export consumes the normalized `SubtitleType[]` shape with `startTime` and `endTime`.
 
 2. Utils: `src/utils/text.util.ts`
-   - Update `serializeVttContent(subtitles)` to sort by `startMs`.
-   - Use `msToVttTime(startMs)` and `msToVttTime(endMs)`.
+   - Update `serializeVttContent(subtitles)` to sort by `startTime`.
+   - Use `secondToVttTime(startTime)` and `secondToVttTime(endTime)`.
    - Preserve multiline cue text.
    - Always include the `WEBVTT` header.
    - Filter or skip invalid cues before writing:
      - Skip cues with missing text only if blank captions are not allowed by product requirements.
-     - Always skip cues where `!Number.isFinite(startMs)`, `!Number.isFinite(endMs)`, or `endMs <= startMs`.
+     - Always skip cues where `!Number.isFinite(startTime)`, `!Number.isFinite(endTime)`, or `endTime <= startTime`.
    - Serializer shape:
      - Start with `['WEBVTT', '']`.
-     - For each sorted valid cue, push an optional numeric cue index or stable cue ID.
-     - Push `${msToVttTime(startMs)} --> ${msToVttTime(endMs)}`.
+     - For each sorted valid cue, push a numeric cue index.
+     - Push `${secondToVttTime(startTime)} --> ${secondToVttTime(endTime)}`.
      - Push `subtitle.text` exactly as stored so multiline text remains multiline.
      - Push a blank line after each cue.
    - Prefer numeric cue indexes in exported files if backend cue IDs are editor-only implementation details.
@@ -456,7 +515,7 @@ Compile the edited in-memory subtitles into a valid WebVTT file and download it 
    - Download as `${subtitle.language || 'subtitle'}.vtt`.
    - Revoke the object URL after download.
    - Disable export when there are no valid cues.
-   - If the current edit has an uncommitted snapshot, commit or normalize it before export so the downloaded file matches the visible editor state.
+   - If Feature 3 later adds local timestamp drafts, commit, normalize, or reject those drafts before export so the downloaded file matches the visible editor state.
 
 4. Styles/UI
    - Keep the existing tooltip and download icon.
@@ -465,17 +524,18 @@ Compile the edited in-memory subtitles into a valid WebVTT file and download it 
 ### Edge Cases
 
 - Export should work after undo/redo.
-- Export should work after timestamp edits even if formatted `start` and `end` strings are stale, because it uses `startMs` and `endMs`.
+- Export should work after timestamp edits even if formatted `start` and `end` strings are stale, because it uses `startTime` and `endTime`.
 - Export should not mutate the current subtitle order in the store; sort a copied array.
 - The downloaded file should end with a newline for better compatibility with subtitle tools.
 
 ### Acceptance Checks
 
 - [x] Export button triggers a client-side file download.
-- [ ] Exported file starts with `WEBVTT`.
-- [ ] Exported cues are sorted by `startMs`.
-- [ ] Exported timestamps are normalized as `hh:mm:ss.mmm`.
-- [ ] Multiline subtitle text remains multiline in the exported file.
+- [x] Exported file starts with `WEBVTT`.
+- [x] Exported cues are sorted by `startTime`.
+- [x] Exported timestamps are normalized as `hh:mm:ss.mmm`.
+- [x] Multiline subtitle text remains multiline in the exported file.
+- [x] Export button is disabled when there are no valid cues.
 
 ---
 
@@ -488,11 +548,11 @@ Compile the edited in-memory subtitles into a valid WebVTT file and download it 
 - [x] Subtitle list renders inside the `@tanstack/react-virtual` wrapper container.
 - [x] Active subtitle segment highlights and auto-scrolls into view.
 - [x] Textarea edits update subtitle text in the store.
-- [ ] Timestamp edits update formatted and millisecond timing fields.
+- [ ] Timestamp edits update formatted and second-based timing fields.
 - [ ] History is captured on blur or Enter.
 - [ ] Undo and redo revert edits and structural changes.
 - [x] VTT export button triggers a browser download.
-- [ ] VTT export uses sorted millisecond timings and normalized timestamps.
+- [x] VTT export uses sorted second-based timings and normalized timestamps.
 - [ ] Global shortcuts execute properly and are ignored inside form fields.
 
 ### Quality

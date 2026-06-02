@@ -40,6 +40,7 @@ export function SubtitleTranscriptPanel({
 }: SubtitleTranscriptPanelProps) {
   const {
     currentTime,
+    selectedSubtitleId,
     subtitles,
     setSelectedSubtitleId,
     setSubtitles,
@@ -47,6 +48,7 @@ export function SubtitleTranscriptPanel({
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       currentTime: s.currentTime,
+      selectedSubtitleId: s.selectedSubtitleId,
       subtitles: s.subtitles,
       setSelectedSubtitleId: s.setSelectedSubtitleId,
       setSubtitles: s.setSubtitles,
@@ -159,7 +161,16 @@ export function SubtitleTranscriptPanel({
     updateSubtitle(targetSubtitle.id, { text: e.target.value });
   };
 
+  const canExport = subtitles.some(
+    (subtitle) =>
+      Number.isFinite(subtitle.startTime) &&
+      Number.isFinite(subtitle.endTime) &&
+      subtitle.endTime > subtitle.startTime
+  );
+
   const handleExport = () => {
+    if (!canExport) return;
+
     const content = serializeVttContent(subtitles);
 
     const blob = new Blob([content], { type: 'text/vtt' });
@@ -193,6 +204,7 @@ export function SubtitleTranscriptPanel({
         <ToolTip title={`Xuất file phụ đề ${subtitle.label}`} side='bottom'>
           <Button
             onClick={handleExport}
+            disabled={!canExport}
             variant='ghost'
             className='hover:bg-transparent'
           >
@@ -228,8 +240,9 @@ export function SubtitleTranscriptPanel({
             {rowVirtualizer.getVirtualItems().map((row) => {
               const subtitle = subtitles[row.index];
               const isActive =
-                subtitle.startTime <= currentTime &&
-                currentTime < subtitle.endTime;
+                (subtitle.startTime <= currentTime &&
+                  currentTime < subtitle.endTime) ||
+                selectedSubtitleId === subtitle.id;
 
               return (
                 <div
@@ -253,12 +266,16 @@ export function SubtitleTranscriptPanel({
                       }
                     )}
                     whileHover={{
-                      translateY: -2,
-                      boxShadow: '0 0 6px 1px rgba(0,0,0,0.15)'
+                      translateY: -2
                     }}
                     transition={{
                       duration: 0.2,
                       ease: 'linear'
+                    }}
+                    onClick={() => {
+                      if (subtitle.id === selectedSubtitleId) return;
+
+                      setSelectedSubtitleId(subtitle.id);
                     }}
                   >
                     <div className='mb-1.5 flex items-center gap-2'>
@@ -276,7 +293,6 @@ export function SubtitleTranscriptPanel({
                       className='w-full resize-none rounded-md border border-gray-200 bg-transparent p-1 text-sm transition-all duration-200 ease-linear outline-none focus-visible:border-gray-200'
                       value={subtitle.text}
                       rows={4}
-                      onFocus={() => setSelectedSubtitleId(subtitle.id)}
                       onChange={(e) => handleVttContentChange(e, subtitle)}
                       spellCheck={false}
                     />

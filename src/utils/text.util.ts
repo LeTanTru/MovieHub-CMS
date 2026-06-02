@@ -1,7 +1,7 @@
 import { SUBTITLE_DELIMITER } from '@/constants';
 import { logger } from '@/logger';
 import type { OptionType, SubtitleType } from '@/types';
-import { vttTimeToSecond } from '@/utils/vtt-time.util';
+import { secondToVttTime, vttTimeToSecond } from '@/utils/vtt-time.util';
 
 const VTT_HEADER_PATTERN = /^\uFEFF?WEBVTT(?:\s.*)?$/i;
 const VTT_METADATA_BLOCK_PATTERN = /^(NOTE(?:\s.*)?|STYLE|REGION)$/i;
@@ -141,15 +141,24 @@ export const parseVttContent = (content: string): SubtitleType[] => {
 };
 
 export const serializeVttContent = (subtitles: SubtitleType[]): string => {
-  // Add WEBVTT header
   const lines = ['WEBVTT', ''];
 
-  subtitles.forEach((subtitle) => {
-    lines.push(subtitle.id);
-    lines.push(`${subtitle.start} ${SUBTITLE_DELIMITER} ${subtitle.end}`);
-    lines.push(subtitle.text);
-    lines.push('');
-  });
+  [...subtitles]
+    .filter(
+      (subtitle) =>
+        Number.isFinite(subtitle.startTime) &&
+        Number.isFinite(subtitle.endTime) &&
+        subtitle.endTime > subtitle.startTime
+    )
+    .sort((a, b) => a.startTime - b.startTime)
+    .forEach((subtitle, index) => {
+      lines.push(`${index + 1}`);
+      lines.push(
+        `${secondToVttTime(subtitle.startTime)} ${SUBTITLE_DELIMITER} ${secondToVttTime(subtitle.endTime)}`
+      );
+      lines.push(subtitle.text);
+      lines.push('');
+    });
 
-  return lines.join('\n');
+  return `${lines.join('\n')}\n`;
 };
