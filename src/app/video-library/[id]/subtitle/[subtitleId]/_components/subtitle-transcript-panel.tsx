@@ -231,7 +231,7 @@ export function SubtitleTranscriptPanel({
                     className={cn(
                       'rounded-md p-2 shadow-[0_0_4px_1px_rgba(0,0,0,0.1)] transition-colors duration-200 ease-linear',
                       {
-                        'border-main-color border-2 border-solid': isActive
+                        'ring-main-color ring-2': isActive
                       }
                     )}
                     whileHover={{
@@ -255,7 +255,7 @@ export function SubtitleTranscriptPanel({
                     </div>
 
                     <textarea
-                      className='focus-visible:ring-main-color w-full resize-none rounded-md border bg-transparent p-1 text-sm text-zinc-700 transition-all duration-200 ease-linear outline-none focus-visible:ring-2'
+                      className='w-full resize-none rounded-md border border-gray-200 bg-transparent p-1 text-sm transition-all duration-200 ease-linear outline-none focus-visible:border-gray-200'
                       value={subtitle.text}
                       rows={4}
                       onFocus={() => setSelectedSubtitleId(subtitle.id)}
