@@ -45,6 +45,7 @@ type VideoLibrarySubtitleState = {
   currentTime: number; // seconds
   subtitles: SubtitleType[];
   selectedSubtitleId: string | null;
+  isSeeking: boolean;
 };
 
 type VideoLibrarySubtitleActions = {
@@ -52,6 +53,7 @@ type VideoLibrarySubtitleActions = {
   setSubtitles: (subtitles: SubtitleType[]) => void;
   setSelectedSubtitleId: (id: string | null) => void;
   updateSubtitle: (id: string, patch: Partial<SubtitleType>) => void;
+  setIsSeeking: (isSeeking: boolean) => void;
 };
 
 export type VideoLibrarySubtitleStoreType = VideoLibrarySubtitleState &

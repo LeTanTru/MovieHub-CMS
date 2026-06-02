@@ -6,6 +6,7 @@ export const useVideoLibrarySubtitleStore =
     currentTime: 0,
     subtitles: [],
     selectedSubtitleId: null,
+    isSeeking: false,
 
     setCurrentTime: (currentTime) => set({ currentTime }),
     setSubtitles: (subtitles) => set({ subtitles }),
@@ -15,5 +16,6 @@ export const useVideoLibrarySubtitleStore =
         subtitles: state.subtitles.map((subtitle) =>
           subtitle.id === id ? { ...subtitle, ...patch } : subtitle
         )
-      }))
+      })),
+    setIsSeeking: (isSeeking) => set({ isSeeking })
   }));

@@ -2,6 +2,7 @@
 
 import { emptyData } from '@/assets';
 import { NotFound } from '@/components/not-found';
+import { CircleLoading } from '@/components/loading';
 import { useVideoLibrarySubtitleStore } from '@/store';
 import {
   SubtitleType,
@@ -9,7 +10,7 @@ import {
   VideoLibrarySubtitleResType
 } from '@/types';
 import { parseVttContent, renderVttUrl } from '@/utils';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
   elementScroll,
@@ -60,15 +61,23 @@ export function SubtitleTranscriptPanel({
   videoLibrary,
   videoSubtitle
 }: SubtitleTranscriptPanelProps) {
-  const { currentTime, subtitles, setSelectedSubtitleId, setSubtitles } =
-    useVideoLibrarySubtitleStore(
-      useShallow((s) => ({
-        currentTime: s.currentTime,
-        subtitles: s.subtitles,
-        setSelectedSubtitleId: s.setSelectedSubtitleId,
-        setSubtitles: s.setSubtitles
-      }))
-    );
+  const {
+    currentTime,
+    subtitles,
+    setSelectedSubtitleId,
+    setSubtitles,
+    isSeeking
+  } = useVideoLibrarySubtitleStore(
+    useShallow((s) => ({
+      currentTime: s.currentTime,
+      subtitles: s.subtitles,
+      setSelectedSubtitleId: s.setSelectedSubtitleId,
+      setSubtitles: s.setSubtitles,
+      isSeeking: s.isSeeking
+    }))
+  );
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const parentRef = useClickOutside<HTMLDivElement>(() =>
     setSelectedSubtitleId(null)
@@ -133,6 +142,7 @@ export function SubtitleTranscriptPanel({
     const controller = new AbortController();
 
     const getVttContent = async () => {
+      setIsLoading(true);
       try {
         const res = await fetch(
           renderVttUrl(
@@ -158,6 +168,10 @@ export function SubtitleTranscriptPanel({
 
         setSelectedSubtitleId(null);
         setSubtitles([]);
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     };
 
@@ -181,21 +195,33 @@ export function SubtitleTranscriptPanel({
     >
       <SubtitleHeader subtitles={subtitles} videoSubtitle={videoSubtitle} />
 
-      <div
-        ref={parentRef}
-        className='relative flex-1 overflow-y-auto [scrollbar-color:var(--color-zinc-300)_transparent] [scrollbar-width:thin]'
-      >
-        {subtitles.length === 0 ? (
-          <div className='flex h-full items-center justify-center'>
-            <NotFound
-              width={150}
-              title='Không có phụ đề'
-              icon={emptyData.src}
-              className='m-0'
-            />
+      <div className='relative flex-1 overflow-hidden'>
+        <div
+          ref={parentRef}
+          className='h-full overflow-y-auto [scrollbar-color:var(--color-zinc-300)_transparent] [scrollbar-width:thin]'
+        >
+          {isLoading ? (
+            <div className='flex h-full items-center justify-center'>
+              <CircleLoading className='stroke-main-color' />
+            </div>
+          ) : subtitles.length === 0 ? (
+            <div className='flex h-full items-center justify-center'>
+              <NotFound
+                width={150}
+                title='Không có phụ đề'
+                icon={emptyData.src}
+                className='m-0'
+              />
+            </div>
+          ) : (
+            <SubtitleList rowVirtualizer={rowVirtualizer} />
+          )}
+        </div>
+
+        {isSeeking && !isLoading && (
+          <div className='absolute inset-0 z-10 flex items-center justify-center bg-gray-50/50 backdrop-blur-[1px]'>
+            <CircleLoading className='stroke-main-color' />
           </div>
-        ) : (
-          <SubtitleList rowVirtualizer={rowVirtualizer} />
         )}
       </div>
     </div>
