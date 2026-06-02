@@ -2,60 +2,85 @@
 
 import { emptyData } from '@/assets';
 import { NotFound } from '@/components/not-found';
+import { CircleLoading } from '@/components/loading';
 import { useVideoLibrarySubtitleStore } from '@/store';
 import {
   SubtitleType,
   VideoLibraryResType,
   VideoLibrarySubtitleResType
 } from '@/types';
-import { parseVttContent, renderVttUrl, serializeVttContent } from '@/utils';
-import { ChangeEvent, useCallback, useEffect, useRef } from 'react';
+import { parseVttContent, renderVttUrl } from '@/utils';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { m } from 'framer-motion';
 import {
   elementScroll,
   useVirtualizer,
   VirtualizerOptions
 } from '@tanstack/react-virtual';
-import { Button, ToolTip } from '@/components/form';
 import { logger } from '@/logger';
-import { Download } from 'lucide-react';
 import { useClickOutside } from '@/hooks';
-import { cn } from '@/lib';
+import { SubtitleList } from './subtitle-list';
+import { SubtitleHeader } from './subtitle-header';
 
 type SubtitleTranscriptPanelProps = {
   height?: number;
   videoLibrary: VideoLibraryResType;
-  subtitle: VideoLibrarySubtitleResType;
+  videoSubtitle: VideoLibrarySubtitleResType;
 };
 
 function easeInOutQuint(t: number) {
   return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
 }
 
+function getNearestSubtitleIndex(
+  subtitles: SubtitleType[],
+  currentTime: number
+) {
+  if (subtitles.length === 0) return -1;
+
+  let nearestIndex = 0;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+
+  subtitles.forEach((subtitle, index) => {
+    const distance =
+      currentTime < subtitle.startTime
+        ? subtitle.startTime - currentTime
+        : currentTime - subtitle.endTime;
+
+    if (distance < nearestDistance) {
+      nearestDistance = distance;
+      nearestIndex = index;
+    }
+  });
+
+  return nearestIndex;
+}
+
 export function SubtitleTranscriptPanel({
   height,
   videoLibrary,
-  subtitle
+  videoSubtitle
 }: SubtitleTranscriptPanelProps) {
   const {
     currentTime,
     subtitles,
     setSelectedSubtitleId,
     setSubtitles,
-    updateSubtitle
+    isSeeking
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       currentTime: s.currentTime,
       subtitles: s.subtitles,
       setSelectedSubtitleId: s.setSelectedSubtitleId,
       setSubtitles: s.setSubtitles,
-      updateSubtitle: s.updateSubtitle
+      isSeeking: s.isSeeking
     }))
   );
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const parentRef = useClickOutside<HTMLDivElement>(() =>
-    setSelectedSubtitleId(undefined)
+    setSelectedSubtitleId(null)
   );
 
   const scrollingRef = useRef<number>(-1);
@@ -93,8 +118,8 @@ export function SubtitleTranscriptPanel({
     count: subtitles.length,
     getScrollElement: () => parentRef.current,
     getItemKey: (index) => subtitles[index].id,
-    estimateSize: () => 180,
-    overscan: 8,
+    estimateSize: () => 150,
+    overscan: 50,
     scrollToFn
   });
 
@@ -102,10 +127,14 @@ export function SubtitleTranscriptPanel({
     const activeIndex = subtitles.findIndex(
       (s) => s.startTime <= currentTime && currentTime < s.endTime
     );
+    const targetIndex =
+      activeIndex === -1
+        ? getNearestSubtitleIndex(subtitles, currentTime)
+        : activeIndex;
 
-    if (activeIndex !== -1 && activeIndex !== activeIndexRef.current) {
-      activeIndexRef.current = activeIndex;
-      rowVirtualizer.scrollToIndex(activeIndex, { align: 'center' });
+    if (targetIndex !== -1 && targetIndex !== activeIndexRef.current) {
+      activeIndexRef.current = targetIndex;
+      rowVirtualizer.scrollToIndex(targetIndex, { align: 'center' });
     }
   }, [currentTime, subtitles, rowVirtualizer]);
 
@@ -113,11 +142,12 @@ export function SubtitleTranscriptPanel({
     const controller = new AbortController();
 
     const getVttContent = async () => {
+      setIsLoading(true);
       try {
         const res = await fetch(
           renderVttUrl(
             videoLibrary.hostname,
-            subtitle.fileUrl,
+            videoSubtitle.fileUrl,
             videoLibrary.sourceType
           ),
           { signal: controller.signal }
@@ -129,13 +159,19 @@ export function SubtitleTranscriptPanel({
 
         const content = await res.text();
 
-        setSubtitles(parseVttContent(content), { resetHistory: true });
+        setSelectedSubtitleId(null);
+        setSubtitles(parseVttContent(content));
       } catch (error) {
         if (controller.signal.aborted) return;
 
         logger.error('[GET_VTT_CONTENT_ERROR]', error);
 
-        setSubtitles([], { resetHistory: true });
+        setSelectedSubtitleId(null);
+        setSubtitles([]);
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     };
 
@@ -146,144 +182,45 @@ export function SubtitleTranscriptPanel({
     };
   }, [
     setSubtitles,
-    subtitle.fileUrl,
+    setSelectedSubtitleId,
+    videoSubtitle.fileUrl,
     videoLibrary.hostname,
     videoLibrary.sourceType
   ]);
-
-  const handleVttContentChange = (
-    e: ChangeEvent<HTMLTextAreaElement>,
-    targetSubtitle: SubtitleType
-  ) => {
-    setSelectedSubtitleId(targetSubtitle.id);
-    updateSubtitle(targetSubtitle.id, { text: e.target.value });
-  };
-
-  const handleExport = () => {
-    const content = serializeVttContent(subtitles);
-
-    const blob = new Blob([content], { type: 'text/vtt' });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${subtitle.language || 'subtitle'}.vtt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    URL.revokeObjectURL(url);
-  };
 
   return (
     <div
       className='flex h-full flex-col overflow-hidden border-l border-gray-200 bg-gray-50'
       style={height ? { height } : undefined}
     >
-      <div className='flex shrink-0 items-center justify-between border-b border-gray-200 p-1'>
-        <div className='flex items-center gap-2'>
-          <span className='font-semibold tracking-widest uppercase'>
-            Phụ đề
-          </span>
-          <span className='rounded-full bg-slate-800 px-2 py-0.5 text-xs font-medium text-white tabular-nums'>
-            {subtitles.length} phân đoạn
-          </span>
+      <SubtitleHeader subtitles={subtitles} videoSubtitle={videoSubtitle} />
+
+      <div className='relative flex-1 overflow-hidden'>
+        <div
+          ref={parentRef}
+          className='h-full overflow-y-auto [scrollbar-color:var(--color-zinc-300)_transparent] [scrollbar-width:thin]'
+        >
+          {isLoading ? (
+            <div className='flex h-full items-center justify-center'>
+              <CircleLoading className='stroke-main-color' />
+            </div>
+          ) : subtitles.length === 0 ? (
+            <div className='flex h-full items-center justify-center'>
+              <NotFound
+                width={150}
+                title='Không có phụ đề'
+                icon={emptyData.src}
+                className='m-0'
+              />
+            </div>
+          ) : (
+            <SubtitleList rowVirtualizer={rowVirtualizer} />
+          )}
         </div>
 
-        <ToolTip title={`Xuất file phụ đề ${subtitle.label}`} side='bottom'>
-          <Button
-            onClick={handleExport}
-            variant='ghost'
-            className='hover:bg-transparent'
-          >
-            <Download
-              size={16}
-              className='transition-all duration-200 ease-linear hover:text-gray-400'
-            />
-          </Button>
-        </ToolTip>
-      </div>
-
-      <div
-        ref={parentRef}
-        className='relative flex-1 overflow-y-auto [scrollbar-color:var(--color-zinc-300)_transparent] [scrollbar-width:thin]'
-      >
-        {subtitles.length === 0 ? (
-          <div className='flex h-full items-center justify-center'>
-            <NotFound
-              width={150}
-              title='Không có phụ đề'
-              icon={emptyData.src}
-              className='m-0'
-            />
-          </div>
-        ) : (
-          <div
-            style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
-              width: '100%',
-              position: 'relative'
-            }}
-          >
-            {rowVirtualizer.getVirtualItems().map((row) => {
-              const subtitle = subtitles[row.index];
-              const isActive =
-                subtitle.startTime <= currentTime &&
-                currentTime < subtitle.endTime;
-
-              return (
-                <div
-                  key={row.key}
-                  data-index={row.index}
-                  ref={rowVirtualizer.measureElement}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    transform: `translateY(${row.start}px)`,
-                    padding: '8px'
-                  }}
-                >
-                  <m.div
-                    className={cn(
-                      'rounded-md p-2 shadow-[0_0_4px_1px_rgba(0,0,0,0.1)] transition-colors duration-200 ease-linear',
-                      {
-                        'ring-main-color ring-2': isActive
-                      }
-                    )}
-                    whileHover={{
-                      translateY: -2,
-                      boxShadow: '0 0 6px 1px rgba(0,0,0,0.15)'
-                    }}
-                    transition={{
-                      duration: 0.2,
-                      ease: 'linear'
-                    }}
-                  >
-                    <div className='mb-1.5 flex items-center gap-2'>
-                      <span className='flex h-5 min-w-7 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white'>
-                        {row.index + 1}
-                      </span>
-                      <div className='flex w-full items-center gap-1 text-xs'>
-                        <span>{subtitle.start.trim()}</span>
-                        <div className='h-px flex-1 bg-zinc-400'></div>
-                        <span>{subtitle.end.trim()}</span>
-                      </div>
-                    </div>
-
-                    <textarea
-                      className='w-full resize-none rounded-md border border-gray-200 bg-transparent p-1 text-sm transition-all duration-200 ease-linear outline-none focus-visible:border-gray-200'
-                      value={subtitle.text}
-                      rows={4}
-                      onFocus={() => setSelectedSubtitleId(subtitle.id)}
-                      onChange={(e) => handleVttContentChange(e, subtitle)}
-                      spellCheck={false}
-                    />
-                  </m.div>
-                </div>
-              );
-            })}
+        {isSeeking && !isLoading && (
+          <div className='absolute inset-0 z-10 flex items-center justify-center bg-gray-50/50 backdrop-blur-[1px]'>
+            <CircleLoading className='stroke-main-color' />
           </div>
         )}
       </div>

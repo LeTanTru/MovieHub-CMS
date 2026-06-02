@@ -37,15 +37,21 @@ export function SubtitlePreviewPlayer({
 
   const accessToken = useAuthStore((s) => s.accessToken);
 
-  const { currentTime, selectedSubtitleId, subtitles, setCurrentTime } =
-    useVideoLibrarySubtitleStore(
-      useShallow((s) => ({
-        currentTime: s.currentTime,
-        selectedSubtitleId: s.selectedSubtitleId,
-        subtitles: s.subtitles,
-        setCurrentTime: s.setCurrentTime
-      }))
-    );
+  const {
+    currentTime,
+    selectedSubtitleId,
+    subtitles,
+    setCurrentTime,
+    setIsSeeking
+  } = useVideoLibrarySubtitleStore(
+    useShallow((s) => ({
+      currentTime: s.currentTime,
+      selectedSubtitleId: s.selectedSubtitleId,
+      subtitles: s.subtitles,
+      setCurrentTime: s.setCurrentTime,
+      setIsSeeking: s.setIsSeeking
+    }))
+  );
 
   const activeSubtitle = subtitles.find(
     (subtitle) =>
@@ -65,6 +71,12 @@ export function SubtitlePreviewPlayer({
     playerRef.current.currentTime = selectedSubtitleStartTime;
     playerRef.current.pause();
   }, [selectedSubtitleId, selectedSubtitleStartTime]);
+
+  const handleSeek = (currentTime: number) => {
+    setIsSeeking(false);
+    setCurrentTime(currentTime);
+    playerRef.current?.play();
+  };
 
   return (
     <div ref={playerContainerRef} className='relative aspect-video w-full'>
@@ -95,6 +107,8 @@ export function SubtitlePreviewPlayer({
               : 0.5
         }
         onTimeUpdate={(detail) => setCurrentTime(detail.currentTime)}
+        onSeeking={() => setIsSeeking(true)}
+        onSeeked={handleSeek}
       />
 
       {previewSubtitle?.text ? (
