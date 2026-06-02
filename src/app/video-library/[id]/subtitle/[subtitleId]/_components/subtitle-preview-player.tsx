@@ -69,12 +69,13 @@ export function SubtitlePreviewPlayer({
     if (!playerRef.current || selectedSubtitleStartTime === undefined) return;
 
     playerRef.current.currentTime = selectedSubtitleStartTime;
-    playerRef.current.play();
+    playerRef.current.pause();
   }, [selectedSubtitleId, selectedSubtitleStartTime]);
 
   const handleSeek = (currentTime: number) => {
     setIsSeeking(false);
     setCurrentTime(currentTime);
+    playerRef.current?.play();
   };
 
   return (
