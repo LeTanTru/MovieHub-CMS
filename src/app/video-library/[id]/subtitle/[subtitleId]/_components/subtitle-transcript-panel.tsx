@@ -3,7 +3,11 @@
 import { emptyData } from '@/assets';
 import { NotFound } from '@/components/not-found';
 import { useVideoLibrarySubtitleStore } from '@/store';
-import { VideoLibraryResType, VideoLibrarySubtitleResType } from '@/types';
+import {
+  SubtitleType,
+  VideoLibraryResType,
+  VideoLibrarySubtitleResType
+} from '@/types';
 import { parseVttContent, renderVttUrl } from '@/utils';
 import { useCallback, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -25,6 +29,30 @@ type SubtitleTranscriptPanelProps = {
 
 function easeInOutQuint(t: number) {
   return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
+}
+
+function getNearestSubtitleIndex(
+  subtitles: SubtitleType[],
+  currentTime: number
+) {
+  if (subtitles.length === 0) return -1;
+
+  let nearestIndex = 0;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+
+  subtitles.forEach((subtitle, index) => {
+    const distance =
+      currentTime < subtitle.startTime
+        ? subtitle.startTime - currentTime
+        : currentTime - subtitle.endTime;
+
+    if (distance < nearestDistance) {
+      nearestDistance = distance;
+      nearestIndex = index;
+    }
+  });
+
+  return nearestIndex;
 }
 
 export function SubtitleTranscriptPanel({
@@ -81,8 +109,8 @@ export function SubtitleTranscriptPanel({
     count: subtitles.length,
     getScrollElement: () => parentRef.current,
     getItemKey: (index) => subtitles[index].id,
-    estimateSize: () => 180,
-    overscan: 8,
+    estimateSize: () => 150,
+    overscan: 50,
     scrollToFn
   });
 
@@ -90,10 +118,14 @@ export function SubtitleTranscriptPanel({
     const activeIndex = subtitles.findIndex(
       (s) => s.startTime <= currentTime && currentTime < s.endTime
     );
+    const targetIndex =
+      activeIndex === -1
+        ? getNearestSubtitleIndex(subtitles, currentTime)
+        : activeIndex;
 
-    if (activeIndex !== -1 && activeIndex !== activeIndexRef.current) {
-      activeIndexRef.current = activeIndex;
-      rowVirtualizer.scrollToIndex(activeIndex, { align: 'center' });
+    if (targetIndex !== -1 && targetIndex !== activeIndexRef.current) {
+      activeIndexRef.current = targetIndex;
+      rowVirtualizer.scrollToIndex(targetIndex, { align: 'center' });
     }
   }, [currentTime, subtitles, rowVirtualizer]);
 

@@ -25,6 +25,9 @@ export function SubtitleItem({
   setSelectedSubtitleId,
   onVttChange
 }: SubtitleItemProps) {
+  const startValue = subtitle.start.trim();
+  const endValue = subtitle.end.trim();
+
   return (
     <m.div
       className={cn(
@@ -51,9 +54,21 @@ export function SubtitleItem({
           {rowIndex}
         </span>
         <div className='flex w-full items-center gap-1 text-xs'>
-          <span>{subtitle.start.trim()}</span>
-          <div className='h-px flex-1 bg-zinc-400'></div>
-          <span>{subtitle.end.trim()}</span>
+          <input
+            value={startValue}
+            type='text'
+            size={Math.max(startValue.length, 1)}
+            className='focus-visible:ring-main-color w-auto grow-0 rounded border border-gray-200 p-1 text-center text-xs transition-all duration-200 ease-linear focus-visible:border-transparent focus-visible:ring-[1.5px]'
+            onChange={() => {}}
+          />
+          <div className='h-px shrink-0 grow bg-zinc-400'></div>
+          <input
+            value={endValue}
+            type='text'
+            size={Math.max(endValue.length, 1)}
+            className='focus-visible:ring-main-color w-auto grow-0 rounded border border-gray-200 p-1 text-center text-xs transition-all duration-200 ease-linear focus-visible:border-transparent focus-visible:ring-[1.5px]'
+            onChange={() => {}}
+          />
         </div>
       </div>
 
