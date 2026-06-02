@@ -57,7 +57,7 @@ Feature 1 owns only loading and normalizing subtitle draft data. It should not d
 - `DONE`: `SubtitleType` includes `startTime` and `endTime` in seconds.
 - `DONE`: The subtitle store includes normalized draft state and selection.
 - `DONE`: `setSubtitles(subtitles)` replaces draft subtitle state.
-- `DONE`: `SubtitleTranscriptPanel` clears selection explicitly with `setSelectedSubtitleId(undefined)` when a new subtitle file is loaded or loading fails.
+- `DONE`: `SubtitleTranscriptPanel` clears selection explicitly with `setSelectedSubtitleId(null)` when a new subtitle file is loaded or loading fails.
 - `DONE`: `parseVttContent` returns normalized subtitle drafts with second-based timing fields.
 - `DONE`: `SubtitleTranscriptPanel` fetches the VTT file on render and calls `setSubtitles(parseVttContent(content))`.
 - `DONE`: `SubtitleTranscriptPanel` uses `AbortController` to cancel stale VTT fetches during unmounts or subtitle changes.
@@ -67,13 +67,13 @@ Feature 1 owns only loading and normalizing subtitle draft data. It should not d
 1. Types: `src/types/video-library-subtitle.type.ts`
    - Add `startTime: number` and `endTime: number` to `SubtitleType`.
    - Keep `start` and `end` as formatted VTT strings. Accept both `hh:mm:ss.mmm` and `mm:ss.mmm` from source files if `vttTimeToSecond` supports both, but normalize new generated values with `secondToVttTime`.
-   - Add `selectedSubtitleId` to `VideoLibrarySubtitleState`.
-   - Add `setSubtitles`, `setSelectedSubtitleId`, and `updateSubtitle` to `VideoLibrarySubtitleActions`.
+   - Add `selectedSubtitleId: string | null` to `VideoLibrarySubtitleState`.
+   - Add `setSubtitles`, `setSelectedSubtitleId(id: string | null)`, and `updateSubtitle` to `VideoLibrarySubtitleActions`.
 
 2. Store: `src/store/video-library-subtitle.store.ts`
    - Initialize `selectedSubtitleId`.
    - Keep `setSubtitles(subtitles)` as a simple draft-state replacement action.
-   - Clear selection explicitly with `setSelectedSubtitleId(undefined)` when replacing the draft after loading a new VTT file.
+   - Clear selection explicitly with `setSelectedSubtitleId(null)` when replacing the draft after loading a new VTT file.
    - Keep `setCurrentTime` lightweight because player events will call it frequently.
 
 3. Utils: `src/utils/text.util.ts`
@@ -91,9 +91,9 @@ Feature 1 owns only loading and normalizing subtitle draft data. It should not d
    - Build the URL with `renderVttUrl(videoLibrary.hostname, subtitle.fileUrl, videoLibrary.sourceType)`.
    - Fetch inside `useEffect` with `AbortController`.
    - Pass `{ signal: controller.signal }` to `fetch`.
-   - Call `setSelectedSubtitleId(undefined)` and then `setSubtitles(parseVttContent(content))` after a successful fetch.
+   - Call `setSelectedSubtitleId(null)` and then `setSubtitles(parseVttContent(content))` after a successful fetch.
    - In `catch`, return early when `controller.signal.aborted` is true.
-   - For real fetch or parse failures, log with `logger.error('[GET_VTT_CONTENT_ERROR]', error)`, call `setSelectedSubtitleId(undefined)`, and call `setSubtitles([])`.
+   - For real fetch or parse failures, log with `logger.error('[GET_VTT_CONTENT_ERROR]', error)`, call `setSelectedSubtitleId(null)`, and call `setSubtitles([])`.
    - Abort the request in the effect cleanup.
 
 5. Styles/UI
@@ -252,7 +252,7 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 
 2. Store: `src/store/video-library-subtitle.store.ts`
    - Confirm `updateSubtitle(id, patch)` exists for per-row edits.
-   - Confirm `setSelectedSubtitleId(id)` exists for row selection.
+   - Confirm `setSelectedSubtitleId(id: string | null)` exists for row selection.
    - Confirm `setSubtitles(previousSnapshot)` can restore an edit snapshot on Escape.
    - Do not add history actions for Feature 3.
 
@@ -261,13 +261,14 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
    - Select `currentTime`, `selectedSubtitleId`, `subtitles`, `setSelectedSubtitleId`, `setSubtitles`, and `updateSubtitle` from the store with `useShallow`.
    - Compute `activeIndex` with `subtitles.findIndex((s) => s.startTime <= currentTime && currentTime < s.endTime)`.
    - Keep `activeIndex` as `-1` when no cue matches.
-   - Use `useRef<number>(-1)` or `useRef<number | null>(null)` to remember the previous active index.
+   - Use `const activeIndexRef = useRef<number>(-1)` to remember the previous active index.
    - In an effect, call `rowVirtualizer.scrollToIndex(activeIndex, { align: 'center' })` only when:
      - `activeIndex >= 0`.
-     - `activeIndex !== previousActiveIndexRef.current`.
+     - `activeIndex !== activeIndexRef.current`.
      - The user is not currently focused inside an `input` or `textarea` in the transcript panel.
    - Add text editing through `updateSubtitle(id, { text })`; do not call `setSubtitles` for per-row edits.
-   - Select the row when a user focuses, clicks, or pointer-downs inside it with `setSelectedSubtitleId(subtitle.id)`.
+   - Current row selection happens on row click and textarea text changes with `setSelectedSubtitleId(subtitle.id)`.
+   - Later timestamp-input work can also select the row on input focus or pointer down if needed.
    - Add compact start/end timestamp inputs:
      - Use controlled values from `subtitle.start` and `subtitle.end`.
      - Use plain `<input>` elements or existing form input components if they fit this compact row layout.

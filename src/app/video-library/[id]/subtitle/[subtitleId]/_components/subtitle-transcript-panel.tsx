@@ -3,15 +3,10 @@
 import { emptyData } from '@/assets';
 import { NotFound } from '@/components/not-found';
 import { useVideoLibrarySubtitleStore } from '@/store';
-import {
-  SubtitleType,
-  VideoLibraryResType,
-  VideoLibrarySubtitleResType
-} from '@/types';
+import { VideoLibraryResType, VideoLibrarySubtitleResType } from '@/types';
 import { parseVttContent, renderVttUrl, serializeVttContent } from '@/utils';
-import { ChangeEvent, useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { m } from 'framer-motion';
 import {
   elementScroll,
   useVirtualizer,
@@ -21,7 +16,7 @@ import { Button, ToolTip } from '@/components/form';
 import { logger } from '@/logger';
 import { Download } from 'lucide-react';
 import { useClickOutside } from '@/hooks';
-import { cn } from '@/lib';
+import { SubtitleList } from './subtitle-list';
 
 type SubtitleTranscriptPanelProps = {
   height?: number;
@@ -38,23 +33,15 @@ export function SubtitleTranscriptPanel({
   videoLibrary,
   subtitle
 }: SubtitleTranscriptPanelProps) {
-  const {
-    currentTime,
-    selectedSubtitleId,
-    subtitles,
-    setSelectedSubtitleId,
-    setSubtitles,
-    updateSubtitle
-  } = useVideoLibrarySubtitleStore(
-    useShallow((s) => ({
-      currentTime: s.currentTime,
-      selectedSubtitleId: s.selectedSubtitleId,
-      subtitles: s.subtitles,
-      setSelectedSubtitleId: s.setSelectedSubtitleId,
-      setSubtitles: s.setSubtitles,
-      updateSubtitle: s.updateSubtitle
-    }))
-  );
+  const { currentTime, subtitles, setSelectedSubtitleId, setSubtitles } =
+    useVideoLibrarySubtitleStore(
+      useShallow((s) => ({
+        currentTime: s.currentTime,
+        subtitles: s.subtitles,
+        setSelectedSubtitleId: s.setSelectedSubtitleId,
+        setSubtitles: s.setSubtitles
+      }))
+    );
 
   const parentRef = useClickOutside<HTMLDivElement>(() =>
     setSelectedSubtitleId(null)
@@ -156,14 +143,6 @@ export function SubtitleTranscriptPanel({
     videoLibrary.sourceType
   ]);
 
-  const handleVttContentChange = (
-    e: ChangeEvent<HTMLTextAreaElement>,
-    targetSubtitle: SubtitleType
-  ) => {
-    setSelectedSubtitleId(targetSubtitle.id);
-    updateSubtitle(targetSubtitle.id, { text: e.target.value });
-  };
-
   const canExport = subtitles.some(
     (subtitle) =>
       Number.isFinite(subtitle.startTime) &&
@@ -233,77 +212,7 @@ export function SubtitleTranscriptPanel({
             />
           </div>
         ) : (
-          <div
-            style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
-              width: '100%',
-              position: 'relative'
-            }}
-          >
-            {rowVirtualizer.getVirtualItems().map((row) => {
-              const subtitle = subtitles[row.index];
-              const isActive =
-                (subtitle.startTime <= currentTime &&
-                  currentTime < subtitle.endTime) ||
-                selectedSubtitleId === subtitle.id;
-
-              return (
-                <div
-                  key={row.key}
-                  data-index={row.index}
-                  ref={rowVirtualizer.measureElement}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    transform: `translateY(${row.start}px)`,
-                    padding: '8px'
-                  }}
-                >
-                  <m.div
-                    className={cn(
-                      'rounded-md p-2 shadow-[0_0_4px_1px_rgba(0,0,0,0.1)] transition-colors duration-200 ease-linear',
-                      {
-                        'ring-main-color ring-2': isActive
-                      }
-                    )}
-                    whileHover={{
-                      translateY: -2
-                    }}
-                    transition={{
-                      duration: 0.2,
-                      ease: 'linear'
-                    }}
-                    onClick={() => {
-                      if (subtitle.id === selectedSubtitleId) return;
-
-                      setSelectedSubtitleId(subtitle.id);
-                    }}
-                  >
-                    <div className='mb-1.5 flex items-center gap-2'>
-                      <span className='flex h-5 min-w-7 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white'>
-                        {row.index + 1}
-                      </span>
-                      <div className='flex w-full items-center gap-1 text-xs'>
-                        <span>{subtitle.start.trim()}</span>
-                        <div className='h-px flex-1 bg-zinc-400'></div>
-                        <span>{subtitle.end.trim()}</span>
-                      </div>
-                    </div>
-
-                    <textarea
-                      className='w-full resize-none rounded-md border border-gray-200 bg-transparent p-1 text-sm transition-all duration-200 ease-linear outline-none focus-visible:border-gray-200'
-                      value={subtitle.text}
-                      rows={4}
-                      onChange={(e) => handleVttContentChange(e, subtitle)}
-                      spellCheck={false}
-                    />
-                  </m.div>
-                </div>
-              );
-            })}
-          </div>
+          <SubtitleList rowVirtualizer={rowVirtualizer} />
         )}
       </div>
     </div>
