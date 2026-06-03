@@ -17,5 +17,7 @@ export const useVideoLibrarySubtitleStore =
           subtitle.id === id ? { ...subtitle, ...patch } : subtitle
         )
       })),
-    setIsSeeking: (isSeeking) => set({ isSeeking })
+    startSeek: () =>
+      set((state) => (state.isSeeking ? state : { isSeeking: true })),
+    completeSeek: (currentTime) => set({ currentTime, isSeeking: false })
   }));

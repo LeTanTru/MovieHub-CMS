@@ -136,9 +136,11 @@ The data flow is:
 - `DONE`: Player `currentTime` is synced into the store from Vidstack `onTimeUpdate` in seconds.
 - `DONE`: Draft subtitle text is rendered live over the video with a custom overlay.
 - `DONE`: Selecting a transcript row seeks the preview player to that segment start and pauses playback.
+- `DONE`: Seek completion preserves the current play/pause state instead of forcing playback to resume.
 - `DONE`: When a transcript row is selected, the overlay shows the selected subtitle; otherwise it shows the active subtitle for the current playhead.
 - `DONE`: Active subtitle lookup uses `currentTime >= startTime && currentTime < endTime`, matching the transcript active-row rule.
 - `DONE`: Row selection seeking depends on the selected ID and selected start time, so text edits do not repeatedly seek the player.
+- `DONE`: Player seek lifecycle uses `startSeek()` and `completeSeek(currentTime)` so the transcript panel can avoid auto-scroll churn during a seek.
 - Draft subtitles are not registered as Vidstack `TextTrack` entries because updating Blob-backed tracks on every edit caused duplicate caption-menu keys such as `:subtitles-[draft preview] tiếng việt`.
 
 ### Modify One By One
@@ -147,6 +149,7 @@ The data flow is:
    - Store state currently uses seconds: `currentTime: number`.
    - Subtitle cue timing currently uses seconds: `startTime: number` and `endTime: number`.
    - Actions currently include `setCurrentTime(currentTime: number)`.
+   - Seek actions currently include `startSeek()` and `completeSeek(currentTime)`.
 
 2. Store: `src/store/video-library-subtitle.store.ts`
    - Keep `setCurrentTime` lightweight because playback can call it frequently.
@@ -228,11 +231,16 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 
 ### Current Status
 
-- `DONE`: `SubtitleTranscriptPanel` uses `@tanstack/react-virtual`.
-- `DONE`: Rows show segment numbers and textarea fields.
+- `DONE`: `SubtitleTranscriptPanel` uses `@tanstack/react-virtual` (fully compatible with React Compiler by passing `virtualItems` as a direct prop to `SubtitleList`).
+- `PARTIAL`: Rows show segment numbers, compact start/end timestamp inputs, and textarea fields. Timestamp inputs are currently controlled placeholders with no update logic.
 - `DONE`: Textarea changes update subtitle text in the store through `updateSubtitle`.
 - `DONE`: Active row detection and auto-scroll are implemented.
-- `TODO`: Timestamp inputs are not implemented; rows currently render read-only start/end text.
+- `DONE`: Auto-scroll ignores gaps with no active cue and uses instant scrolling for distant cue jumps to avoid virtualized-list flicker.
+- `DONE`: Active-row auto-scroll pauses while the player is seeking.
+- `TODO`: Active-row auto-scroll does not pause while an input or textarea in the transcript panel is focused.
+- `TODO`: Timestamp inputs do not update `start`, `end`, `startTime`, or `endTime` yet.
+- `TODO`: Invalid timestamp draft handling is not implemented.
+- `TODO`: Valid timestamp normalization with `secondToVttTime` on blur or Enter is not implemented.
 - `TODO`: Textarea auto-height is not implemented; textareas use fixed `rows={4}`.
 - `PARTIAL`: Active and selected rows use the same ring style; separate active/selected styling is not implemented.
 - `TODO`: Blur/Enter edit finalization and Escape snapshot restore are not implemented.
@@ -258,6 +266,7 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 
 3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
    - Keep `useVirtualizer` with stable row keys from subtitle IDs.
+   - **React Compiler Compatibility**: Since the React Compiler is enabled, it aggressively memoizes `<SubtitleList>` because the `rowVirtualizer` reference remains stable (interior mutability). To bypass this, we must pass `virtualItems={rowVirtualizer.getVirtualItems()}` as a prop to `SubtitleList`. Since `getVirtualItems()` returns a new array reference on scroll, this notifies the React Compiler that the prop changed, forcing a correct re-render of the list.
    - Select `currentTime`, `selectedSubtitleId`, `subtitles`, `setSelectedSubtitleId`, `setSubtitles`, and `updateSubtitle` from the store with `useShallow`.
    - Compute `activeIndex` with `subtitles.findIndex((s) => s.startTime <= currentTime && currentTime < s.endTime)`.
    - Keep `activeIndex` as `-1` when no cue matches.
@@ -355,7 +364,7 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 - [ ] Start/end inputs update `start`, `end`, `startTime`, and `endTime`.
 - [ ] Invalid timestamp input is editable while focused and restored if still invalid on blur.
 - [ ] Valid timestamp input normalizes with `secondToVttTime` on blur or Enter.
-- [ ] Text and timestamp edits finalize on blur or Enter.
+- [ ] Text edits finalize on blur or Ctrl+Enter/Cmd+Enter; timestamp edits finalize on blur or Enter.
 - [ ] Escape restores the edit snapshot and clears local timestamp drafts.
 - [ ] Textarea auto-height works for one-line and multiline cues without breaking virtualization.
 
@@ -369,8 +378,11 @@ Support structural subtitle operations for adding a new segment and deleting the
 
 ### Current Status
 
-- `TODO`: Add and delete actions are not implemented.
+- `TODO`: Add and delete actions are not implemented in `src/store/video-library-subtitle.store.ts`.
 - `PARTIAL`: Transcript panel toolbar exists, but currently only contains export.
+- `TODO`: Add behavior and new-segment selection are not implemented.
+- `TODO`: Delete behavior and post-delete selection are not implemented.
+- `TODO`: Add/delete controls are not implemented.
 
 ### Modify One By One
 
@@ -443,7 +455,7 @@ Support structural subtitle operations for adding a new segment and deleting the
 ### Acceptance Checks
 
 - [ ] Add creates a valid segment at the current player time.
-- [ ] Delete removes the selected segment and clears selection.
+- [ ] Delete removes the selected segment and keeps selection predictable.
 - [ ] Add/delete controls are disabled when the action cannot run.
 
 ---
@@ -530,5 +542,6 @@ Compile the edited in-memory subtitles into a valid WebVTT file and download it 
 
 ### Quality
 
-- [x] `yarn lint` passes as of 2026-06-02 with 1 existing warning in `src/components/form/multi-select-field.tsx`.
-- [x] `yarn next build` passes as of 2026-06-02. `yarn build` requires `.next` to be unlocked because its prebuild step deletes `.next`.
+- [x] `yarn lint` passes as of 2026-06-03 with 1 existing warning in `src/components/form/multi-select-field.tsx`.
+- [x] `yarn tsc --noEmit --pretty false` passes as of 2026-06-03.
+- [x] `yarn build` and `yarn next build` compile successfully without errors.

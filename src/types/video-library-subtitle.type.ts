@@ -53,7 +53,8 @@ type VideoLibrarySubtitleActions = {
   setSubtitles: (subtitles: SubtitleType[]) => void;
   setSelectedSubtitleId: (id: string | null) => void;
   updateSubtitle: (id: string, patch: Partial<SubtitleType>) => void;
-  setIsSeeking: (isSeeking: boolean) => void;
+  startSeek: () => void;
+  completeSeek: (currentTime: number) => void;
 };
 
 export type VideoLibrarySubtitleStoreType = VideoLibrarySubtitleState &
