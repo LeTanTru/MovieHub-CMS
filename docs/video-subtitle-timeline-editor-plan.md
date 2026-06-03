@@ -140,6 +140,7 @@ The data flow is:
 - `DONE`: When a transcript row is selected, the overlay shows the selected subtitle; otherwise it shows the active subtitle for the current playhead.
 - `DONE`: Active subtitle lookup uses `currentTime >= startTime && currentTime < endTime`, matching the transcript active-row rule.
 - `DONE`: Row selection seeking depends on the selected ID and selected start time, so text edits do not repeatedly seek the player.
+- `DONE`: Player seek lifecycle uses `startSeek()` and `completeSeek(currentTime)` so the transcript panel can avoid auto-scroll churn during a seek.
 - Draft subtitles are not registered as Vidstack `TextTrack` entries because updating Blob-backed tracks on every edit caused duplicate caption-menu keys such as `:subtitles-[draft preview] tiếng việt`.
 
 ### Modify One By One
@@ -148,6 +149,7 @@ The data flow is:
    - Store state currently uses seconds: `currentTime: number`.
    - Subtitle cue timing currently uses seconds: `startTime: number` and `endTime: number`.
    - Actions currently include `setCurrentTime(currentTime: number)`.
+   - Seek actions currently include `startSeek()` and `completeSeek(currentTime)`.
 
 2. Store: `src/store/video-library-subtitle.store.ts`
    - Keep `setCurrentTime` lightweight because playback can call it frequently.
@@ -233,6 +235,8 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 - `PARTIAL`: Rows show segment numbers, compact start/end timestamp inputs, and textarea fields. Timestamp inputs are currently controlled placeholders with no update logic.
 - `DONE`: Textarea changes update subtitle text in the store through `updateSubtitle`.
 - `DONE`: Active row detection and auto-scroll are implemented.
+- `DONE`: Auto-scroll ignores gaps with no active cue and uses instant scrolling for distant cue jumps to avoid virtualized-list flicker.
+- `DONE`: Active-row auto-scroll pauses while the player is seeking.
 - `TODO`: Active-row auto-scroll does not pause while an input or textarea in the transcript panel is focused.
 - `TODO`: Timestamp inputs do not update `start`, `end`, `startTime`, or `endTime` yet.
 - `TODO`: Invalid timestamp draft handling is not implemented.
@@ -537,6 +541,6 @@ Compile the edited in-memory subtitles into a valid WebVTT file and download it 
 
 ### Quality
 
-- [x] `yarn lint` passes as of 2026-06-03 with 2 existing warnings in `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-item.tsx` and `src/components/form/multi-select-field.tsx`.
+- [x] `yarn lint` passes as of 2026-06-03 with 1 existing warning in `src/components/form/multi-select-field.tsx`.
 - [x] `yarn tsc --noEmit --pretty false` passes as of 2026-06-03.
 - [ ] `yarn build` and `yarn next build` are blocked as of 2026-06-02 by a locked `.next/app-path-routes-manifest.json` file (`EPERM: operation not permitted, unlink`) before compilation starts.

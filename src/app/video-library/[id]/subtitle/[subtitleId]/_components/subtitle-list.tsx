@@ -9,9 +9,15 @@ import type { SubtitleType } from '@/types';
 
 type SubtitleListProps = {
   rowVirtualizer: Virtualizer<HTMLDivElement, Element>;
+  virtualItems: ReturnType<
+    Virtualizer<HTMLDivElement, Element>['getVirtualItems']
+  >;
 };
 
-export function SubtitleList({ rowVirtualizer }: SubtitleListProps) {
+export function SubtitleList({
+  rowVirtualizer,
+  virtualItems
+}: SubtitleListProps) {
   const {
     currentTime,
     selectedSubtitleId,
@@ -44,7 +50,7 @@ export function SubtitleList({ rowVirtualizer }: SubtitleListProps) {
         position: 'relative'
       }}
     >
-      {rowVirtualizer.getVirtualItems().map((row) => {
+      {virtualItems.map((row) => {
         const subtitle = subtitles[row.index];
         const isActive =
           subtitle.startTime <= currentTime && currentTime < subtitle.endTime;

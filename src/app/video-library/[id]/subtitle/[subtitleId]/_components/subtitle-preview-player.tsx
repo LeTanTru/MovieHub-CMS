@@ -42,14 +42,16 @@ export function SubtitlePreviewPlayer({
     selectedSubtitleId,
     subtitles,
     setCurrentTime,
-    setIsSeeking
+    startSeek,
+    completeSeek
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       currentTime: s.currentTime,
       selectedSubtitleId: s.selectedSubtitleId,
       subtitles: s.subtitles,
       setCurrentTime: s.setCurrentTime,
-      setIsSeeking: s.setIsSeeking
+      startSeek: s.startSeek,
+      completeSeek: s.completeSeek
     }))
   );
 
@@ -73,8 +75,7 @@ export function SubtitlePreviewPlayer({
   }, [selectedSubtitleId, selectedSubtitleStartTime]);
 
   const handleSeek = (currentTime: number) => {
-    setIsSeeking(false);
-    setCurrentTime(currentTime);
+    completeSeek(currentTime);
   };
 
   return (
@@ -106,7 +107,7 @@ export function SubtitlePreviewPlayer({
               : 0.5
         }
         onTimeUpdate={(detail) => setCurrentTime(detail.currentTime)}
-        onSeeking={() => setIsSeeking(true)}
+        onSeeking={startSeek}
         onSeeked={handleSeek}
       />
 

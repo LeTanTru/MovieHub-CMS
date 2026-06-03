@@ -10,27 +10,21 @@ import {
   VideoLibrarySubtitleResType
 } from '@/types';
 import { parseVttContent, renderVttUrl } from '@/utils';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import {
-  elementScroll,
-  useVirtualizer,
-  VirtualizerOptions
-} from '@tanstack/react-virtual';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { logger } from '@/logger';
 import { useClickOutside } from '@/hooks';
 import { SubtitleList } from './subtitle-list';
 import { SubtitleHeader } from './subtitle-header';
+
+const SMOOTH_SCROLL_MAX_INDEX_DISTANCE = 8;
 
 type SubtitleTranscriptPanelProps = {
   height?: number;
   videoLibrary: VideoLibraryResType;
   videoSubtitle: VideoLibrarySubtitleResType;
 };
-
-function easeInOutQuint(t: number) {
-  return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
-}
 
 function getNearestSubtitleIndex(
   subtitles: SubtitleType[],
@@ -63,17 +57,17 @@ export function SubtitleTranscriptPanel({
 }: SubtitleTranscriptPanelProps) {
   const {
     currentTime,
+    isSeeking,
     subtitles,
     setSelectedSubtitleId,
-    setSubtitles,
-    isSeeking
+    setSubtitles
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       currentTime: s.currentTime,
+      isSeeking: s.isSeeking,
       subtitles: s.subtitles,
       setSelectedSubtitleId: s.setSelectedSubtitleId,
-      setSubtitles: s.setSubtitles,
-      isSeeking: s.isSeeking
+      setSubtitles: s.setSubtitles
     }))
   );
 
@@ -83,47 +77,19 @@ export function SubtitleTranscriptPanel({
     setSelectedSubtitleId(null)
   );
 
-  const scrollingRef = useRef<number>(-1);
-
   const activeIndexRef = useRef<number>(-1);
-
-  const scrollToFn: VirtualizerOptions<HTMLDivElement, Element>['scrollToFn'] =
-    useCallback(
-      (offset, canSmooth, instance) => {
-        const duration = 500;
-        const start = parentRef.current?.scrollTop || 0;
-        const startTime = (scrollingRef.current = Date.now());
-
-        const run = () => {
-          if (scrollingRef.current !== startTime) return;
-          const now = Date.now();
-          const elapsed = now - startTime;
-          const progress = easeInOutQuint(Math.min(elapsed / duration, 1));
-          const interpolated = start + (offset - start) * progress;
-
-          if (elapsed < duration) {
-            elementScroll(interpolated, canSmooth, instance);
-            requestAnimationFrame(run);
-          } else {
-            elementScroll(interpolated, canSmooth, instance);
-          }
-        };
-
-        requestAnimationFrame(run);
-      },
-      [parentRef]
-    );
 
   const rowVirtualizer = useVirtualizer({
     count: subtitles.length,
     getScrollElement: () => parentRef.current,
     getItemKey: (index) => subtitles[index].id,
     estimateSize: () => 150,
-    overscan: 50,
-    scrollToFn
+    overscan: 10
   });
 
   useEffect(() => {
+    if (isSeeking) return;
+
     const activeIndex = subtitles.findIndex(
       (s) => s.startTime <= currentTime && currentTime < s.endTime
     );
@@ -132,11 +98,21 @@ export function SubtitleTranscriptPanel({
         ? getNearestSubtitleIndex(subtitles, currentTime)
         : activeIndex;
 
-    if (targetIndex !== -1 && targetIndex !== activeIndexRef.current) {
+    const previousTargetIndex = activeIndexRef.current;
+
+    if (targetIndex !== -1 && targetIndex !== previousTargetIndex) {
       activeIndexRef.current = targetIndex;
-      rowVirtualizer.scrollToIndex(targetIndex, { align: 'center' });
+      rowVirtualizer.scrollToIndex(targetIndex, {
+        align: 'center',
+        behavior:
+          previousTargetIndex !== -1 &&
+          Math.abs(targetIndex - previousTargetIndex) <=
+            SMOOTH_SCROLL_MAX_INDEX_DISTANCE
+            ? 'smooth'
+            : 'auto'
+      });
     }
-  }, [currentTime, subtitles, rowVirtualizer]);
+  }, [currentTime, isSeeking, subtitles, rowVirtualizer]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -214,7 +190,10 @@ export function SubtitleTranscriptPanel({
               />
             </div>
           ) : (
-            <SubtitleList rowVirtualizer={rowVirtualizer} />
+            <SubtitleList
+              rowVirtualizer={rowVirtualizer}
+              virtualItems={rowVirtualizer.getVirtualItems()}
+            />
           )}
         </div>
 
