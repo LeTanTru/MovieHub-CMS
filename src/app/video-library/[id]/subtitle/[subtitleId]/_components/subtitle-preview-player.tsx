@@ -75,7 +75,6 @@ export function SubtitlePreviewPlayer({
   const handleSeek = (currentTime: number) => {
     setIsSeeking(false);
     setCurrentTime(currentTime);
-    playerRef.current?.play();
   };
 
   return (
