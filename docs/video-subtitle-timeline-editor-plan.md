@@ -231,7 +231,7 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 
 ### Current Status
 
-- `DONE`: `SubtitleTranscriptPanel` uses `@tanstack/react-virtual`.
+- `DONE`: `SubtitleTranscriptPanel` uses `@tanstack/react-virtual` (fully compatible with React Compiler by passing `virtualItems` as a direct prop to `SubtitleList`).
 - `PARTIAL`: Rows show segment numbers, compact start/end timestamp inputs, and textarea fields. Timestamp inputs are currently controlled placeholders with no update logic.
 - `DONE`: Textarea changes update subtitle text in the store through `updateSubtitle`.
 - `DONE`: Active row detection and auto-scroll are implemented.
@@ -266,6 +266,7 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 
 3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
    - Keep `useVirtualizer` with stable row keys from subtitle IDs.
+   - **React Compiler Compatibility**: Since the React Compiler is enabled, it aggressively memoizes `<SubtitleList>` because the `rowVirtualizer` reference remains stable (interior mutability). To bypass this, we must pass `virtualItems={rowVirtualizer.getVirtualItems()}` as a prop to `SubtitleList`. Since `getVirtualItems()` returns a new array reference on scroll, this notifies the React Compiler that the prop changed, forcing a correct re-render of the list.
    - Select `currentTime`, `selectedSubtitleId`, `subtitles`, `setSelectedSubtitleId`, `setSubtitles`, and `updateSubtitle` from the store with `useShallow`.
    - Compute `activeIndex` with `subtitles.findIndex((s) => s.startTime <= currentTime && currentTime < s.endTime)`.
    - Keep `activeIndex` as `-1` when no cue matches.
@@ -543,4 +544,4 @@ Compile the edited in-memory subtitles into a valid WebVTT file and download it 
 
 - [x] `yarn lint` passes as of 2026-06-03 with 1 existing warning in `src/components/form/multi-select-field.tsx`.
 - [x] `yarn tsc --noEmit --pretty false` passes as of 2026-06-03.
-- [ ] `yarn build` and `yarn next build` are blocked as of 2026-06-02 by a locked `.next/app-path-routes-manifest.json` file (`EPERM: operation not permitted, unlink`) before compilation starts.
+- [x] `yarn build` and `yarn next build` compile successfully without errors.
