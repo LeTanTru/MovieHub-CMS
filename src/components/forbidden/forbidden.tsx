@@ -791,7 +791,7 @@ export function Forbidden() {
           Bạn có không có quyền truy cập vào trang này
         </h1>
         <Link
-          className='text-main-color text-base transition-all duration-200 ease-linear hover:opacity-80'
+          className='text-sporty-blue text-base transition-all duration-200 ease-linear hover:opacity-80'
           href={route.home.path}
         >
           Quay về trang chủ

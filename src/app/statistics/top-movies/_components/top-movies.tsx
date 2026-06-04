@@ -144,7 +144,7 @@ export function TopMovies() {
         <div className='relative grid gap-3 xl:grid-cols-[minmax(0,1fr)_420px]'>
           {isFetching && (
             <div className='absolute inset-0 z-10 flex items-start justify-center rounded-lg bg-white/70 pt-24'>
-              <CircleLoading className='stroke-main-color' />
+              <CircleLoading className='stroke-sporty-blue' />
             </div>
           )}
 
@@ -213,7 +213,7 @@ export function TopMovies() {
                           <TableCell className='px-4 text-right'>
                             {formatRating(movie.averageRating)}
                           </TableCell>
-                          <TableCell className='text-main-color px-4 text-right font-semibold'>
+                          <TableCell className='text-sporty-blue px-4 text-right font-semibold'>
                             {getMetricBySort(movie, sortBy)}
                           </TableCell>
                         </TableRow>

@@ -43,7 +43,6 @@
   --color-sidebar-item-active: rgb(32, 42, 73);
   --color-sidebar: #181b24;
   --color-sidebar-active-menu: rgb(12, 19, 26);
-  --color-main-color: #1678ff;
   --color-page-wrapper: #f0f2f5;
   --color-base-table: #fff;
   --color-list-page-wrapper: #fff;
@@ -51,6 +50,7 @@
   --color-primary-button: #1678ff;
   --color-charade: #282b3a;
   --color-image-fill: #fff;
+  --color-sporty-blue: #1678ff;
 }
 
 :root {
@@ -138,7 +138,7 @@
 }
 
 *::selection {
-  background-color: var(--color-main-color);
+  background-color: var(--color-sporty-blue);
   color: white;
 }
 

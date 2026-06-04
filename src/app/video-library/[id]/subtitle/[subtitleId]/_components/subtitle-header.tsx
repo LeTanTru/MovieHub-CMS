@@ -40,7 +40,7 @@ export function SubtitleHeader({
   };
 
   return (
-    <div className='flex shrink-0 items-center justify-between border-b border-gray-200 p-1'>
+    <div className='flex shrink-0 items-center justify-between border-b border-gray-200 px-2 py-1'>
       <div className='flex items-center gap-2'>
         <span className='font-semibold tracking-widest uppercase'>Phụ đề</span>
         <span className='rounded-full bg-slate-800 px-2 py-0.5 text-xs font-medium text-white tabular-nums'>
@@ -53,7 +53,7 @@ export function SubtitleHeader({
           onClick={handleExport}
           disabled={!canExport}
           variant='ghost'
-          className='hover:bg-transparent'
+          className='p-0! hover:bg-transparent'
         >
           <Download
             size={16}

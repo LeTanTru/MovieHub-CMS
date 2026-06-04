@@ -285,9 +285,9 @@ export function MultiSelectField<
                       aria-label='Select'
                       disabled={disabled}
                       className={cn(
-                        'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 pl-1! text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
+                        'hover:border-input focus-visible:border-input focus-visible:ring-sporty-blue w-full justify-between border px-3! py-0 pl-1! text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
                         {
-                          'ring-main-color border-transparent! ring-2': open,
+                          'ring-sporty-blue border-transparent! ring-2': open,
                           'border-rose-500 ring-rose-500': !!fieldState.error
                         },
                         className
@@ -339,7 +339,7 @@ export function MultiSelectField<
 
                           {/* +N badge — only in single-line mode */}
                           {!isMultiLine && hiddenCount > 0 && (
-                            <span className='bg-main-color/15 text-main-color shrink-0 rounded px-1.5 py-[2.2px] text-xs font-medium'>
+                            <span className='bg-sporty-blue/15 text-sporty-blue shrink-0 rounded px-1.5 py-[2.2px] text-xs font-medium'>
                               +{hiddenCount}
                             </span>
                           )}
@@ -426,7 +426,7 @@ export function MultiSelectField<
                                 {
                                   'bg-accent text-accent-foreground':
                                     highlightedIndex === idx,
-                                  'bg-main-color/10': isSelected
+                                  'bg-sporty-blue/10': isSelected
                                 }
                               )}
                             >

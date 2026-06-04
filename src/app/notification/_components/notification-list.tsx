@@ -205,7 +205,7 @@ export function NotificationList() {
           {hasMore && !loading && !isFetchingMore && (
             <Button
               variant='ghost'
-              className='hover:text-main-color mx-auto mt-2 h-5! p-0! font-medium hover:bg-transparent'
+              className='hover:text-sporty-blue mx-auto mt-2 h-5! p-0! font-medium hover:bg-transparent'
               onClick={handleFetchMore}
             >
               Xem thêm ({totalLeft}) thông báo

@@ -221,7 +221,7 @@ export function VideoLibrarySubtitleModal({
                 </div>
                 {editLoading && (
                   <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
-                    <CircleLoading className='stroke-main-color mt-10' />
+                    <CircleLoading className='stroke-sporty-blue mt-10' />
                   </div>
                 )}
               </>
@@ -305,7 +305,7 @@ export function VideoLibrarySubtitleModal({
                 </div>
                 {translateMutation.isPending && (
                   <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
-                    <CircleLoading className='stroke-main-color mt-10' />
+                    <CircleLoading className='stroke-sporty-blue mt-10' />
                   </div>
                 )}
               </>

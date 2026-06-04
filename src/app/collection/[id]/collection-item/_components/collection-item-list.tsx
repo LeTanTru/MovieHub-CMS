@@ -144,7 +144,7 @@ export function CollectionItemList() {
         <>
           <span
             className={cn(
-              'text-main-color line-clamp-1 block flex items-center gap-x-1 truncate',
+              'text-sporty-blue line-clamp-1 block flex items-center gap-x-1 truncate',
               {
                 'highlight-animated': record.movie.isFeatured
               }

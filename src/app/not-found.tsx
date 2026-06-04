@@ -15,7 +15,7 @@ export default function NotFoundPage() {
         />
         <span className='mt-4 text-base font-medium'>Không tìm thấy trang</span>
         <Link
-          className='text-main-color mt-4 text-base transition-all duration-200 ease-linear hover:opacity-70'
+          className='text-sporty-blue mt-4 text-base transition-all duration-200 ease-linear hover:opacity-70'
           href={route.home.path}
         >
           Quay về trang chủ

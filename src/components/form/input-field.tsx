@@ -143,7 +143,7 @@ export function InputField<T extends FieldValues>({
                     'pr-10': suffixIcon,
                     'border-rose-500 focus-visible:ring-rose-500':
                       !!fieldState.error,
-                    'focus-visible:ring-main-color': !fieldState.error
+                    'focus-visible:ring-sporty-blue': !fieldState.error
                   }
                 )}
                 onChange={(e) => {
@@ -204,7 +204,7 @@ export function InputField<T extends FieldValues>({
                         >
                           <span className='flex-1'>{option}</span>
                           {field.value === option && (
-                            <Check className='text-main-color size-4' />
+                            <Check className='text-sporty-blue size-4' />
                           )}
                         </div>
                       ))}

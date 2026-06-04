@@ -88,7 +88,7 @@ export function MovieDistribution() {
         <div className='relative grid gap-3 xl:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]'>
           {isFetching && (
             <div className='absolute inset-0 z-10 flex items-start justify-center rounded-lg bg-white/70 pt-24'>
-              <CircleLoading className='stroke-main-color' />
+              <CircleLoading className='stroke-sporty-blue' />
             </div>
           )}
 

@@ -128,7 +128,7 @@ export function NumberField<T extends FieldValues>({
                     'pr-10': suffixIcon,
                     'border-rose-500 focus-visible:ring-rose-500':
                       !!fieldState.error,
-                    'focus-visible:ring-main-color': !fieldState.error
+                    'focus-visible:ring-sporty-blue': !fieldState.error
                   }
                 )}
                 onChange={(e) => {

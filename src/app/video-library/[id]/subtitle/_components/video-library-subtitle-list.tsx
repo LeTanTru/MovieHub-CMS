@@ -126,7 +126,7 @@ export function VideoLibrarySubtitleList() {
                   variant='ghost'
                   {...buttonProps}
                 >
-                  <AiOutlineEdit className='text-main-color size-4' />
+                  <AiOutlineEdit className='text-sporty-blue size-4' />
                 </Button>
               </span>
             </ToolTip>
@@ -165,7 +165,7 @@ export function VideoLibrarySubtitleList() {
                   variant='ghost'
                   {...buttonProps}
                 >
-                  <ScissorsLineDashed className='text-main-color size-4.5' />
+                  <ScissorsLineDashed className='text-sporty-blue size-4.5' />
                 </Button>
               </span>
             </ToolTip>
@@ -188,7 +188,7 @@ export function VideoLibrarySubtitleList() {
             </span>
             {record.isDefault && (
               <ToolTip title='Mặc định'>
-                <BadgeCheck className='fill-main-color size-5 stroke-white' />
+                <BadgeCheck className='fill-sporty-blue size-5 stroke-white' />
               </ToolTip>
             )}
           </div>

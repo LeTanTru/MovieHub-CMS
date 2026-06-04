@@ -7,6 +7,7 @@ export const useVideoLibrarySubtitleStore =
     subtitles: [],
     selectedSubtitleId: null,
     isSeeking: false,
+    duration: 0,
 
     setCurrentTime: (currentTime) => set({ currentTime }),
     setSubtitles: (subtitles) => set({ subtitles }),
@@ -19,5 +20,6 @@ export const useVideoLibrarySubtitleStore =
       })),
     startSeek: () =>
       set((state) => (state.isSeeking ? state : { isSeeking: true })),
-    completeSeek: (currentTime) => set({ currentTime, isSeeking: false })
+    completeSeek: (currentTime) => set({ currentTime, isSeeking: false }),
+    setDuration: (duration: number) => set({ duration })
   }));

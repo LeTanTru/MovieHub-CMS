@@ -15,7 +15,7 @@ import {
 } from '@/types';
 import { generatePath, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 export function SubtitleEditor() {
   const [playerHeight, setPlayerHeight] = useState(0);
@@ -61,7 +61,7 @@ export function SubtitleEditor() {
   );
 
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
-  const playerContainerRef = useCallback((node: HTMLDivElement | null) => {
+  const playerContainerRef = (node: HTMLDivElement | null) => {
     if (resizeObserverRef.current) {
       resizeObserverRef.current.disconnect();
       resizeObserverRef.current = null;
@@ -77,7 +77,7 @@ export function SubtitleEditor() {
       resizeObserver.observe(node);
       resizeObserverRef.current = resizeObserver;
     }
-  }, []);
+  };
 
   return (
     <PageWrapper
@@ -118,7 +118,7 @@ export function SubtitleEditor() {
         <Row className='grid-row-no-gutters items-stretch'>
           <Col className='grid-c-9 grid-col-no-gutters'>
             {loading || loadingVideoLibrary ? (
-              <CircleLoading className='stroke-main-color m-4' />
+              <CircleLoading className='stroke-sporty-blue m-4' />
             ) : videoLibrary && videoSubtitle ? (
               <SubtitlePreviewPlayer
                 videoLibrary={videoLibrary}

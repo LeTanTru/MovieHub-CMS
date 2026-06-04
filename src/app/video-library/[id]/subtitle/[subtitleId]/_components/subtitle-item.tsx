@@ -1,21 +1,30 @@
 'use client';
 
+import { AiOutlineEdit } from 'react-icons/ai';
+import { Button } from '@/components/form';
 import { cn } from '@/lib';
-import { SubtitleType } from '@/types';
 import { m } from 'framer-motion';
-import { ChangeEvent } from 'react';
+import { Separator } from '@/components/ui/separator';
+import { useDisclosure } from '@/hooks';
+import SubtitleModal from './subtitle-modal';
+import {
+  useState,
+  type ChangeEvent,
+  type KeyboardEvent,
+  type MouseEvent
+} from 'react';
+import type { SubtitleType } from '@/types';
 
 type SubtitleItemProps = {
   isActive: boolean;
   isSelected: boolean;
   subtitle: SubtitleType;
   rowIndex: number;
-  setSelectedSubtitleId: (id: string | null) => void;
+  onSelect: (id: string, index: number) => void;
   onVttChange: (
     e: ChangeEvent<HTMLTextAreaElement>,
     targetSubtitle: SubtitleType
   ) => void;
-  onTimeChange: (id: string, patch: Partial<SubtitleType>) => void;
 };
 
 export function SubtitleItem({
@@ -23,64 +32,99 @@ export function SubtitleItem({
   isSelected,
   subtitle,
   rowIndex,
-  setSelectedSubtitleId,
-  onVttChange,
-  onTimeChange
+  onSelect,
+  onVttChange
 }: SubtitleItemProps) {
-  const startValue = subtitle.start.trim();
-  const endValue = subtitle.end.trim();
+  const virtualIndex = rowIndex - 1;
+
+  const {
+    opened: openedSubtitle,
+    open: openSubtitle,
+    close: closeSubtitle
+  } = useDisclosure();
+
+  const [selectedSubtitle, setSelectedSubtitle] = useState<SubtitleType>();
+
+  const handleSelect = () => {
+    if (isSelected) return;
+
+    onSelect(subtitle.id, virtualIndex);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) return;
+
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleSelect();
+    }
+  };
+
+  const handleEditClick = (
+    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+    subtitle: SubtitleType
+  ) => {
+    if (isSelected) {
+      e.stopPropagation();
+    }
+
+    setSelectedSubtitle(subtitle);
+    openSubtitle();
+  };
 
   return (
-    <m.div
-      className={cn(
-        'rounded-md p-2 shadow-[0_0_4px_1px_rgba(0,0,0,0.1)] transition-colors duration-200 ease-linear',
-        {
-          'ring-main-color ring-2': isActive || isSelected
-        }
-      )}
-      whileHover={{
-        translateY: -2
-      }}
-      transition={{
-        duration: 0.2,
-        ease: 'linear'
-      }}
-      onClick={() => {
-        if (isSelected) return;
-
-        setSelectedSubtitleId(subtitle.id);
-      }}
-    >
-      <div className='mb-1.5 flex items-center gap-2'>
-        <span className='flex h-5 min-w-7 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-white'>
-          {rowIndex}
-        </span>
-        <div className='flex w-full items-center gap-1 text-xs'>
-          <input
-            value={startValue}
-            type='text'
-            size={Math.max(startValue.length, 1)}
-            className='focus-visible:ring-main-color w-auto grow-0 rounded border border-gray-200 p-1 text-center text-xs transition-all duration-200 ease-linear focus-visible:border-transparent focus-visible:ring-[1.5px]'
-            onChange={() => {}}
+    <>
+      <m.div
+        role='button'
+        tabIndex={0}
+        className={cn(
+          'cursor-pointer rounded-md p-2 shadow-[0_0_4px_1px_rgba(0,0,0,0.1)] transition-colors duration-200 ease-linear outline-none',
+          {
+            'ring-sporty-blue ring-2': isActive || isSelected
+          }
+        )}
+        whileHover={{
+          translateY: -2
+        }}
+        transition={{
+          duration: 0.2,
+          ease: 'linear'
+        }}
+        onClick={handleSelect}
+        onKeyDown={handleKeyDown}
+      >
+        <div className='mb-1.5 flex items-center gap-1'>
+          <span className='flex h-5 min-w-7 shrink-0 items-center justify-center rounded-full bg-slate-800 p-1.5 text-[11px] leading-normal font-bold text-white'>
+            {rowIndex}
+          </span>
+          <div className='flex w-full items-center gap-1 text-xs'>
+            <span>{subtitle.start.trim()}</span>
+            <div className='h-px shrink-0 grow bg-gray-400'></div>
+            <span>{subtitle.end.trim()}</span>
+          </div>
+          <Separator
+            className='h-4! w-px! bg-gray-400'
+            orientation='vertical'
           />
-          <div className='h-px shrink-0 grow bg-zinc-400'></div>
-          <input
-            value={endValue}
-            type='text'
-            size={Math.max(endValue.length, 1)}
-            className='focus-visible:ring-main-color w-auto grow-0 rounded border border-gray-200 p-1 text-center text-xs transition-all duration-200 ease-linear focus-visible:border-transparent focus-visible:ring-[1.5px]'
-            onChange={() => {}}
-          />
+          <Button
+            size='sm'
+            variant='ghost'
+            className='hover:text-sporty-blue p-0! hover:bg-transparent'
+            onClick={(e) => handleEditClick(e, subtitle)}
+          >
+            <AiOutlineEdit size={16} />
+          </Button>
         </div>
-      </div>
 
-      <textarea
-        className='w-full resize-none rounded-md border border-gray-200 bg-transparent p-1 text-sm transition-all duration-200 ease-linear outline-none focus-visible:border-gray-200'
-        value={subtitle.text}
-        rows={4}
-        onChange={(e) => onVttChange(e, subtitle)}
-        spellCheck={false}
-      />
-    </m.div>
+        <p className='text-justify'>{subtitle.text}</p>
+      </m.div>
+      {selectedSubtitle && (
+        <SubtitleModal
+          open={openedSubtitle}
+          subtitle={selectedSubtitle}
+          onClose={closeSubtitle}
+        />
+      )}
+    </>
   );
 }

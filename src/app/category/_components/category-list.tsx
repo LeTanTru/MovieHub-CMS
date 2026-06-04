@@ -76,7 +76,7 @@ export function CategoryList() {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <AiOutlineEdit className='text-main-color size-4' />
+                  <AiOutlineEdit className='text-sporty-blue size-4' />
                 </Button>
               </span>
             </ToolTip>

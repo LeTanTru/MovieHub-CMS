@@ -160,7 +160,7 @@ export function TimePickerField<T extends FieldValues>({
                       className={cn(
                         'w-full justify-between text-left font-normal text-black opacity-100',
                         'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
-                        'data-[state=open]:border-main-color data-[state=open]:ring-main-color hover:border-input px-3! shadow-none hover:text-black data-[state=open]:ring-1',
+                        'data-[state=open]:border-sporty-blue data-[state=open]:ring-sporty-blue hover:border-input px-3! shadow-none hover:text-black data-[state=open]:ring-1',
                         {
                           'text-gray-300 hover:text-gray-300': !field.value,
                           'border-rose-500 hover:border-rose-500 focus-visible:border-rose-500 focus-visible:ring-[1px] focus-visible:ring-rose-500 data-[state=open]:border-rose-500 data-[state=open]:ring-1 data-[state=open]:ring-rose-500':

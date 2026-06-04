@@ -97,7 +97,7 @@ export function EmployeeList() {
                 >
                   <Icon
                     className={cn('size-4', {
-                      'text-main-color': record.status === STATUS_LOCK,
+                      'text-sporty-blue': record.status === STATUS_LOCK,
                       'text-destructive': record.status === STATUS_ACTIVE
                     })}
                   />

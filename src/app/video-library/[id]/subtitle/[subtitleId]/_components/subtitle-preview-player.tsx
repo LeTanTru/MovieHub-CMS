@@ -20,7 +20,7 @@ const VideoPlayer = dynamic(
   () => import('@/components/video-player').then((m) => m.VideoPlayer),
   {
     ssr: false,
-    loading: () => <CircleLoading className='stroke-main-color m-4' />
+    loading: () => <CircleLoading className='stroke-sporty-blue m-4' />
   }
 );
 

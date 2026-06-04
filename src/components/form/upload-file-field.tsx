@@ -236,12 +236,12 @@ export function UploadFileField<T extends FieldValues>({
       {uploading && (
         <div className='mt-2 flex items-center gap-2'>
           <div className='flex shrink-0 items-center gap-2'>
-            <CircleLoading className='stroke-main-color size-4' />
+            <CircleLoading className='stroke-sporty-blue size-4' />
             {progress}% đang tải...
           </div>
           <div className='h-2 w-full overflow-hidden rounded-full'>
             <div
-              className='bg-main-color! skeleton h-full transition-all'
+              className='bg-sporty-blue! skeleton h-full transition-all'
               style={{ width: `${progress}%` }}
             />
           </div>

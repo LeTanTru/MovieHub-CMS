@@ -112,11 +112,11 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
                   {...buttonProps}
                 >
                   {updateMoviePersonLoading && isEditing ? (
-                    <CircleLoading className='stroke-main-color size-4' />
+                    <CircleLoading className='stroke-sporty-blue size-4' />
                   ) : isEditing ? (
-                    <AiOutlineSave className='text-main-color size-4' />
+                    <AiOutlineSave className='text-sporty-blue size-4' />
                   ) : (
-                    <AiOutlineEdit className='text-main-color size-4' />
+                    <AiOutlineEdit className='text-sporty-blue size-4' />
                   )}
                 </Button>
               </span>
@@ -333,7 +333,7 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
                             }}
                             disabled={selectedRow !== record.id}
                           >
-                            <AiOutlineClear className='text-main-color' />
+                            <AiOutlineClear className='text-sporty-blue' />
                           </Button>
                         </ToolTip>
                         <Separator

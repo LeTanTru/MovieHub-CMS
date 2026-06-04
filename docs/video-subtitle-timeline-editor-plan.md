@@ -264,84 +264,49 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
    - Confirm `setSubtitles(previousSnapshot)` can restore an edit snapshot on Escape.
    - Do not add history actions for Feature 3.
 
-3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
-   - Keep `useVirtualizer` with stable row keys from subtitle IDs.
-   - **React Compiler Compatibility**: Since the React Compiler is enabled, it aggressively memoizes `<SubtitleList>` because the `rowVirtualizer` reference remains stable (interior mutability). To bypass this, we must pass `virtualItems={rowVirtualizer.getVirtualItems()}` as a prop to `SubtitleList`. Since `getVirtualItems()` returns a new array reference on scroll, this notifies the React Compiler that the prop changed, forcing a correct re-render of the list.
-   - Select `currentTime`, `selectedSubtitleId`, `subtitles`, `setSelectedSubtitleId`, `setSubtitles`, and `updateSubtitle` from the store with `useShallow`.
-   - Compute `activeIndex` with `subtitles.findIndex((s) => s.startTime <= currentTime && currentTime < s.endTime)`.
-   - Keep `activeIndex` as `-1` when no cue matches.
-   - Use `const activeIndexRef = useRef<number>(-1)` to remember the previous active index.
-   - In an effect, call `rowVirtualizer.scrollToIndex(activeIndex, { align: 'center' })` only when:
-     - `activeIndex >= 0`.
-     - `activeIndex !== activeIndexRef.current`.
-     - The user is not currently focused inside an `input` or `textarea` in the transcript panel.
-   - Add text editing through `updateSubtitle(id, { text })`; do not call `setSubtitles` for per-row edits.
-   - Current row selection happens on row click and textarea text changes with `setSelectedSubtitleId(subtitle.id)`.
-   - Later timestamp-input work can also select the row on input focus or pointer down if needed.
-   - Add compact start/end timestamp inputs:
-     - Use controlled values from `subtitle.start` and `subtitle.end`.
-     - Use plain `<input>` elements or existing form input components if they fit this compact row layout.
-     - Accept `hh:mm:ss.mmm` and `mm:ss.mmm` because `vttTimeToSecond` supports both.
-     - For a valid start edit, call `updateSubtitle(id, { start: nextValue, startTime: vttTimeToSecond(nextValue) })`.
-     - For a valid end edit, call `updateSubtitle(id, { end: nextValue, endTime: vttTimeToSecond(nextValue) })`.
-     - Normalize the displayed string with `secondToVttTime(timeInSeconds)` on blur or Enter.
-     - If input is invalid, keep local input state so the user can finish typing; do not immediately overwrite their partial value from the store.
-     - On blur, if the local value is invalid, restore the last valid store value.
-   - Enforce basic timestamp validity before committing:
-     - `startTime >= 0`.
-     - `endTime > startTime`.
-     - If `duration > 0`, require `startTime < duration` and `endTime <= duration`.
-     - Recommended non-overlap rule: `previous.endTime <= startTime` and `endTime <= next.startTime` when neighboring cues exist.
-     - If a timestamp would violate these rules, keep the local input visible while focused, but do not apply it to the store.
-   - Capture a previous subtitle snapshot before editing:
-     - Add `const editSnapshotRef = useRef<SubtitleType[] | null>(null)`.
-     - On the first `onFocus` or `onPointerDown` for an edit session, store `structuredClone(subtitles)` if `editSnapshotRef.current` is null.
-     - On blur, normalize valid timestamp values, restore invalid timestamp values, then clear the ref.
-     - On Enter in timestamp inputs, normalize, clear the ref, and blur the input.
-     - On `Ctrl+Enter` or `Cmd+Enter` in the textarea, clear the ref and blur the textarea.
-     - On Escape, restore the previous snapshot with `setSubtitles(previousSnapshot)` and clear the ref.
-   - Handle keyboard editing inside fields:
-     - `Enter` in timestamp inputs commits the edit and blurs the input.
-     - `Enter` in textarea should keep normal multiline behavior unless `Ctrl+Enter` / `Cmd+Enter` is chosen as the commit shortcut.
-     - `Escape` cancels the active edit from the captured snapshot.
-   - Add local timestamp draft state:
-     - Keep an object keyed by subtitle ID and field, for example `{ [id]: { start?: string; end?: string } }`.
-     - Display `draftValue ?? subtitle.start` and `draftValue ?? subtitle.end`.
-     - Clear the field draft after successful normalization or Escape.
-     - This prevents partial values like `00:01:` from being rejected before the user finishes typing.
-   - Make active-row auto-scroll editing-safe:
-     - Check `const activeElement = document.activeElement`.
-     - Treat editing as active when `parentRef.current?.contains(activeElement)` and `activeElement.matches('input, textarea')`.
-     - Return early from auto-scroll while editing.
-   - Keep virtual row measuring stable:
-     - Continue passing `ref={rowVirtualizer.measureElement}` to each virtual row wrapper.
-     - If textarea height changes, call `rowVirtualizer.measure()` after the DOM height update.
+3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/`
+   - `subtitle-transcript-panel.tsx`:
+     - Select states (`currentTime`, `subtitles`, etc.) using `useShallow`.
+     - Calculate `activeIndex` based on matching `currentTime` within cue intervals (`s.startTime <= currentTime && currentTime < s.endTime`).
+     - Manage the `useEffect` that calls `rowVirtualizer.scrollToIndex` when `activeIndex` changes.
+     - **Auto-scroll Pause**: Prevent auto-scrolling to the active cue when the user is focused on any input/textarea inside the panel. Check if `document.activeElement` is an input or textarea inside `parentRef.current`.
+     - Pass computed `virtualItems={rowVirtualizer.getVirtualItems()}` directly to `<SubtitleList />` to support React Compiler invalidation.
+
+   - `subtitle-list.tsx`:
+     - Pass the `virtualItems` prop down and map over it to render each row wrapper.
+     - Pass down `rowVirtualizer.measureElement` as a ref callback to each virtual item wrapper.
+
+   - `subtitle-item.tsx`:
+     - **Text Editing**: Textarea value is bound to `subtitle.text` and updates the store on change via `onVttChange`.
+     - **Textarea Auto-height**: Implement auto-growing height by setting `style.height = 'auto'` then `style.height = scrollHeight + 'px'` on textarea mount/change. Trigger item measurement update after height changes.
+     - **Compact Timing Inputs**:
+       - Add start/end `<input>` fields bound to local state values (`useState`) initialized from `subtitle.start` and `subtitle.end` during focus. Local state prevents typing interruptions on partial inputs (like `00:01:`).
+       - **Validation on Blur/Enter**: Check if the string matches `hh:mm:ss.mmm` or `mm:ss.mmm`. If valid:
+         - Ensure `startTime >= 0` and `endTime > startTime`.
+         - Clamp to `duration` if available.
+         - Ensure they do not overlap neighbors: `previous.endTime <= startTime` and `endTime <= next.startTime`.
+         - Update store: `onTimeChange(subtitle.id, { start/end, startTime/endTime })`.
+       - If invalid on blur, discard the local value and restore the last valid store value.
+       - **Escape Snapshot Restore**: On the first focus of any field in the row, capture a snapshot (`structuredClone(subtitles)`). On `Escape`, restore the snapshot via `setSubtitles` and blur the active input.
+       - **Keyboard Shortcuts**:
+         - `Enter` in timing inputs commits, normalizes, and blurs.
+         - `Ctrl+Enter` or `Cmd+Enter` in textarea blurs.
+         - `Escape` restores snapshot and blurs.
+     - **Row Styling**:
+       - Active playback row: visible ring, subtle warm background, and clear border.
+       - Selected row (if different from active): neutral border/ring. Active style wins if both.
 
 4. Utils: `src/utils/vtt-time.util.ts`
    - Use `vttTimeToSecond` for timestamp input parsing.
    - Use `secondToVttTime` to normalize timestamp display after valid edits.
-   - Keep all timestamp edit calculations in seconds.
-   - If validation needs a helper, add a small local function in the transcript panel first:
-     - `parseTimestampInput(value): number | null`.
-     - Return `null` for invalid or non-finite values.
+   - Keep all calculations in seconds.
 
 5. Styles/UI
-   - Apply a strong active-row style: visible ring, subtle warm background, and clear border.
-   - Apply a separate selected-row style, for example a neutral border/ring, when `selectedSubtitleId` differs from the active playback row.
-   - If a row is both selected and active, active styling should win.
-   - Keep row heights stable enough for virtualization.
-   - Add textarea auto-height without causing layout thrash; call `rowVirtualizer.measure()` after height changes if needed.
-   - Keep timestamp inputs compact and readable inside the right panel.
-   - Suggested row layout:
-     - Top row: segment index, start input, divider, end input.
-     - Body: auto-height textarea.
-   - Timestamp inputs should have monospace/tabular numeric styling so values do not jump while editing.
-   - Invalid timestamp input should show a clear border color while focused, but do not add bulky helper text inside every row.
-   - Textarea auto-height implementation detail:
-     - Keep `resize-none`.
-     - On mount/change, set `textarea.style.height = 'auto'`, then `textarea.style.height = textarea.scrollHeight + 'px'`.
-     - Call `rowVirtualizer.measureElement(rowElement)` or `rowVirtualizer.measure()` after height changes.
-     - Avoid measuring every row on every playback time update.
+   - Keep timestamp inputs compact with monospace/tabular numeric styling (`font-mono` or `tabular-nums`) to prevent layout shift.
+   - Layout per row:
+     - Top row: segment index badge, start timestamp input, divider line (`bg-zinc-400`), end timestamp input.
+     - Body: `resize-none` auto-height textarea.
+   - Highlight invalid inputs with a red border (`border-red-500` / `ring-red-500`) only while focused, avoiding bulky error text.
 
 ### Edge Cases
 
@@ -374,89 +339,63 @@ Do not introduce `startMs`, `endMs`, `vttTimeToMs`, or `msToVttTime` for this fe
 
 ### Purpose
 
-Support structural subtitle operations for adding a new segment and deleting the selected segment. No history actions or global keyboard shortcuts are required for this feature.
+Support structural subtitle operations for adding a new segment at the player playhead and deleting the currently selected segment.
 
 ### Current Status
 
-- `TODO`: Add and delete actions are not implemented in `src/store/video-library-subtitle.store.ts`.
-- `PARTIAL`: Transcript panel toolbar exists, but currently only contains export.
-- `TODO`: Add behavior and new-segment selection are not implemented.
-- `TODO`: Delete behavior and post-delete selection are not implemented.
-- `TODO`: Add/delete controls are not implemented.
+- `TODO`: Add/delete action definitions in `VideoLibrarySubtitleStoreType` and `useVideoLibrarySubtitleStore`.
+- `TODO`: Add/delete toolbar buttons and tooltips in `SubtitleHeader`.
 
 ### Modify One By One
 
 1. Types: `src/types/video-library-subtitle.type.ts`
-   - Add dedicated action types if add/delete live in the store:
-     - `addSubtitleAt(currentTime: number, duration?: number): void`.
-     - `deleteSelectedSubtitle(): void`.
+   - Add actions to `VideoLibrarySubtitleActions`:
+     - `addSubtitleAt(currentTime: number, duration?: number): void`
+     - `deleteSelectedSubtitle(): void`
 
 2. Store: `src/store/video-library-subtitle.store.ts`
-   - Prefer implementing structural actions in the store so toolbar buttons share one behavior:
-     - `addSubtitleAt(currentTime, duration)`.
-     - `deleteSelectedSubtitle()`.
-   - Each structural action should apply the mutation directly to the current draft subtitle list.
-   - Add delete behavior that clears selection when the selected row is deleted.
-   - Keep selection predictable:
-     - Add should select the newly created segment.
-     - Delete should select the next segment if one exists, otherwise the previous segment, otherwise clear selection.
-   - Add behavior:
-     - Use seconds, not milliseconds.
-     - Default new cue duration: `2` seconds.
-     - Create a local ID such as `subtitle-${Date.now()}-${Math.random().toString(36).slice(2)}`.
-     - If `duration > 0`, clamp the new cue end to `duration`.
-     - If the playhead is inside an existing cue, insert the new cue after that cue using the existing cue end as the start.
-     - Otherwise start the new cue at `currentTime`.
-     - Avoid overlap with the next cue by clamping the new cue end to `next.startTime` when needed.
-     - If clamping would make `endTime <= startTime`, use a small fallback duration only if it does not overlap; otherwise do not add.
-     - Set `start` and `end` with `secondToVttTime(startTime)` and `secondToVttTime(endTime)`.
-     - Use empty `text` for the new cue.
+   - Implement **`addSubtitleAt(currentTime, duration = 2)`**:
+     - Generate a unique ID using a helper (e.g., `subtitle-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`).
+     - Determine insertion position and `startTime`:
+       - If playhead `currentTime` falls inside an existing cue, set `startTime` to that active cue's `endTime`.
+       - Otherwise, set `startTime` to `currentTime`.
+     - Determine `endTime`:
+       - Default `endTime` is `startTime + duration` (2 seconds).
+       - Clamp `endTime` to the video's total `duration` if available.
+       - Find the next chronological cue in the array. If one exists, clamp `endTime` to `next.startTime` to prevent overlaps.
+     - Validate timing: if `endTime <= startTime`, cancel insertion to avoid zero-duration cues.
+     - Insert the new cue (with empty `text`, formatted VTT timestamp strings normalized via `secondToVttTime`, and calculated seconds) into the array sorted by `startTime`.
+     - Automatically select the new cue by setting `selectedSubtitleId` to its ID.
+   - Implement **`deleteSelectedSubtitle()`**:
+     - If no `selectedSubtitleId` is set, return early.
+     - Find the index of the selected subtitle.
+     - Remove the subtitle from the `subtitles` array.
+     - Update selection: select the next chronological cue. If the deleted cue was the last one, select the previous cue. If the list is now empty, set `selectedSubtitleId` to `null`.
 
-3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-transcript-panel.tsx`
-   - Add toolbar buttons for add, delete, and export.
-   - Disable delete when there are no subtitles or no selection.
-   - Disable add when `duration > 0` and `currentTime >= duration`.
-   - Add a new segment at the current player time:
-     - Use `currentTime` from the store, in seconds.
-     - Default duration: `2` seconds.
-     - If duration is known, clamp the end to `duration`.
-     - If the new segment would overlap the next cue, end it before the next cue starts.
-     - If the playhead is inside an existing cue, insert after that cue or create a short cue after the selected cue; choose one behavior and keep it consistent.
-   - Delete selected segment through the store action.
+3. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-header.tsx`
+   - Retrieve `addSubtitleAt`, `deleteSelectedSubtitle`, and `selectedSubtitleId` from the store.
+   - Add `Plus` (Add) and `Trash2` (Delete) buttons to the header toolbar alongside the existing `Download` (Export) button.
+   - Disable the Delete button when `selectedSubtitleId` is `null` or subtitles list is empty.
+   - Disable the Add button when the playhead has reached the end of the video (`currentTime >= duration`).
 
-4. Components: `src/app/video-library/[id]/subtitle/[subtitleId]/_components/subtitle-editor.tsx`
-   - No global keyboard shortcuts are required for this feature.
-   - Keep add/delete available from toolbar buttons only.
-
-5. Utils
-   - Add a small local helper for generating subtitle IDs if needed.
-   - Use `secondToVttTime` when creating segments.
-   - Suggested ID helper: `subtitle-${Date.now()}-${Math.random().toString(36).slice(2)}`.
-   - Keep this helper local to the subtitle store or transcript panel unless another module needs it.
-
-6. Styles/UI
-   - Use existing `Button` and `ToolTip` components.
-   - Use lucide icons for toolbar actions.
-   - Show disabled states clearly.
-   - Keep toolbar controls compact because this panel is narrow.
-   - Suggested lucide icons:
-     - Add: `Plus`.
-     - Delete: `Trash2`.
-     - Export: `Download`.
-   - Toolbar order: add, delete, separator, export.
+4. Styles/UI
+   - Keep toolbar controls compact in the header with `lucide-react` icons:
+     - Add: `Plus` (Tooltip: "Thêm phân đoạn")
+     - Delete: `Trash2` (Tooltip: "Xóa phân đoạn")
+     - Export: `Download` (Tooltip: "Xuất file phụ đề")
+   - Layout: Render buttons in a flex container on the right side of the header.
 
 ### Edge Cases
 
-- Do not let add create zero-length cues.
-- Do not let add create cues beyond `duration` when duration is available.
-- Do not let add overlap the next cue.
-- Delete should do nothing when no subtitle is selected.
+- **Zero-duration Cues**: The store must block insertions where clamping reduces the segment length to <= 0.
+- **Overlap Prevention**: The insert timing must automatically clamp to `next.startTime` of the subsequent segment.
+- **Post-delete Selection**: The active selection must update seamlessly to the neighboring row without losing focus context.
 
 ### Acceptance Checks
 
-- [ ] Add creates a valid segment at the current player time.
-- [ ] Delete removes the selected segment and keeps selection predictable.
-- [ ] Add/delete controls are disabled when the action cannot run.
+- [ ] Add creates a valid 2-second segment at the playhead time without overlapping subsequent cues.
+- [ ] Delete removes the selected cue and selects the next/previous neighbor predictably.
+- [ ] Add/delete buttons show correct disabled states.
 
 ---
 

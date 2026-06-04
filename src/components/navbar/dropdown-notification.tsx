@@ -165,10 +165,10 @@ export function DropdownNotification() {
                       variant='ghost'
                       onClick={handleReadAll}
                       disabled={readAllNotificationLoading}
-                      className='hover:text-main-color flex h-fit cursor-pointer items-center gap-1 p-0! transition-all duration-200 ease-linear hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50'
+                      className='hover:text-sporty-blue flex h-fit cursor-pointer items-center gap-1 p-0! transition-all duration-200 ease-linear hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50'
                     >
                       {readAllNotificationLoading ? (
-                        <CircleLoading className='stroke-main-color size-4' />
+                        <CircleLoading className='stroke-sporty-blue size-4' />
                       ) : (
                         <CheckCheck className='size-4' />
                       )}
@@ -187,7 +187,7 @@ export function DropdownNotification() {
                           className='flex h-fit cursor-pointer items-center gap-1 p-0! transition-all duration-200 ease-linear hover:bg-transparent hover:text-rose-500 disabled:cursor-not-allowed disabled:opacity-50'
                         >
                           {deleteAllNotificationLoading ? (
-                            <CircleLoading className='stroke-main-color size-4' />
+                            <CircleLoading className='stroke-sporty-blue size-4' />
                           ) : (
                             <Trash className='size-4' />
                           )}
@@ -209,7 +209,7 @@ export function DropdownNotification() {
             {notificationList.length > 0 && (
               <div className='border-t border-t-gray-200 p-2 text-center'>
                 <Link
-                  className='hover:text-main-color inline-block transition-colors duration-200 ease-linear'
+                  className='hover:text-sporty-blue inline-block transition-colors duration-200 ease-linear'
                   href={route.notification.getList.path}
                 >
                   Xem tất cả

@@ -102,7 +102,7 @@ export function MovieList() {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <AiOutlineUser className='text-main-color size-4' />
+                  <AiOutlineUser className='text-sporty-blue size-4' />
                 </Button>
               </span>
             </ToolTip>
@@ -137,7 +137,7 @@ export function MovieList() {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <MessageSquareMore className='text-main-color size-4' />
+                  <MessageSquareMore className='text-sporty-blue size-4' />
                 </Button>
               </span>
             </ToolTip>
@@ -172,7 +172,7 @@ export function MovieList() {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <Star className='text-main-color size-4' />
+                  <Star className='text-sporty-blue size-4' />
                 </Button>
               </span>
             </ToolTip>
@@ -231,7 +231,7 @@ export function MovieList() {
               })
             )}`}
             className={cn(
-              'text-main-color line-clamp-1 block flex items-center gap-x-1 truncate',
+              'text-sporty-blue line-clamp-1 block flex items-center gap-x-1 truncate',
               {
                 'highlight-animated': record.isFeatured
               }
