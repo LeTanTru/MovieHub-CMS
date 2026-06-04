@@ -1,17 +1,15 @@
 import { SUBTITLE_DELIMITER } from '@/constants';
 import { logger } from '@/logger';
 import type { OptionType, SubtitleType } from '@/types';
-import { secondToVttTime, vttTimeToSecond } from '@/utils/vtt-time.util';
+import {
+  isValidClockTime,
+  secondsToTime,
+  secondsToVttTime,
+  timeToSeconds
+} from '@/utils/time.util';
 
 const VTT_HEADER_PATTERN = /^\uFEFF?WEBVTT(?:\s.*)?$/i;
 const VTT_METADATA_BLOCK_PATTERN = /^(NOTE(?:\s.*)?|STYLE|REGION)$/i;
-const VTT_TIME_PATTERN = /^(?:\d{2,}:)?\d{2}:\d{2}\.\d{1,3}$/;
-
-const createSubtitleId = (
-  index: number,
-  startTime: number,
-  endTime: number
-): string => `subtitle-${index}-${startTime}-${endTime}`;
 
 export const getLastWord = (text: string): string => {
   const words = text.trim().split(/\s+/);
@@ -59,6 +57,12 @@ export const parseJSON = <T>(json: string): T | null => {
   }
 };
 
+export const createSubtitleId = (
+  index: number,
+  startTime: number,
+  endTime: number
+): string => `subtitle-${index}-${startTime}-${endTime}`;
+
 export const parseVttContent = (content: string): SubtitleType[] => {
   const lines = content.replace(/^\uFEFF/, '').split(/\r?\n/);
   const subtitles: SubtitleType[] = [];
@@ -99,13 +103,13 @@ export const parseVttContent = (content: string): SubtitleType[] => {
     const start = startTimeStr.trim();
     const end = endTimeStr.trim().split(/\s+/)[0] || '';
 
-    if (!VTT_TIME_PATTERN.test(start) || !VTT_TIME_PATTERN.test(end)) {
+    if (!isValidClockTime(start) || !isValidClockTime(end)) {
       i++;
       continue;
     }
 
-    const startTime = vttTimeToSecond(start);
-    const endTime = vttTimeToSecond(end);
+    const startTime = timeToSeconds(start);
+    const endTime = timeToSeconds(end);
 
     if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) {
       i++;
@@ -129,8 +133,8 @@ export const parseVttContent = (content: string): SubtitleType[] => {
 
     subtitles.push({
       id: createSubtitleId(subtitleIndex, startTime, endTime),
-      start,
-      end,
+      start: secondsToTime(startTime),
+      end: secondsToTime(endTime),
       startTime,
       endTime,
       text: textLines.join('\n')
@@ -150,11 +154,11 @@ export const serializeVttContent = (subtitles: SubtitleType[]): string => {
         Number.isFinite(subtitle.endTime) &&
         subtitle.endTime > subtitle.startTime
     )
-    .sort((a, b) => a.startTime - b.startTime)
+    .toSorted((a, b) => a.startTime - b.startTime)
     .forEach((subtitle, index) => {
       lines.push(`${index + 1}`);
       lines.push(
-        `${secondToVttTime(subtitle.startTime)} ${SUBTITLE_DELIMITER} ${secondToVttTime(subtitle.endTime)}`
+        `${secondsToVttTime(subtitle.startTime)} ${SUBTITLE_DELIMITER} ${secondsToVttTime(subtitle.endTime)}`
       );
       lines.push(subtitle.text);
       lines.push('');

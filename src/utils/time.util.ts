@@ -1,38 +1,96 @@
-export const timeToSeconds = (time: string): number => {
-  if (typeof time === 'number') return time;
+import {
+  DEFAULT_TIME,
+  HOURS_TO_SECOND,
+  MILLISECOND,
+  MINUTES_TO_SECOND
+} from '@/constants';
 
-  const parts = time.split(':');
+const CLOCK_TIME_PATTERN = /^(?:\d{2,}:)?[0-5]\d:[0-5]\d(?:\.\d{1,3})?$/;
 
-  if (parts.length !== 3) {
-    throw new Error('Invalid time format');
-  }
+function parseClockTime(time: string) {
+  const normalizedTime = time.trim();
+  if (!normalizedTime) return null;
 
-  const [hours, minutes, seconds] = parts.map((p) => parseInt(p, 10));
+  const parts = normalizedTime.split(':');
+  if (parts.length !== 2 && parts.length !== 3) return null;
+  if (parts.some((part) => part.trim() === '')) return null;
+
+  const values = parts.map(Number);
+  if (values.some((part) => !Number.isFinite(part))) return null;
+
+  const [hours, minutes, seconds] =
+    values.length === 3 ? values : [0, values[0], values[1]];
 
   if (
-    isNaN(hours) ||
-    isNaN(minutes) ||
-    isNaN(seconds) ||
     hours < 0 ||
     minutes < 0 ||
     minutes >= 60 ||
     seconds < 0 ||
     seconds >= 60
   ) {
-    throw new Error('Invalid time format');
+    return null;
   }
 
-  return hours * 3600 + minutes * 60 + seconds;
+  return {
+    hours,
+    minutes,
+    seconds
+  };
+}
+
+export const timeToSeconds = (
+  time: string | number | null | undefined
+): number => {
+  if (time === null || time === undefined) return 0;
+  if (typeof time === 'number') {
+    return Number.isFinite(time) && time > 0 ? time : 0;
+  }
+
+  const parsedTime = parseClockTime(time);
+  if (!parsedTime) return 0;
+
+  return (
+    parsedTime.hours * HOURS_TO_SECOND +
+    parsedTime.minutes * MINUTES_TO_SECOND +
+    parsedTime.seconds
+  );
 };
 
-export const formatSecondsToHMS = (totalSeconds: number): string => {
-  if (!totalSeconds || isNaN(totalSeconds)) return '00:00:00';
+export const isValidClockTime = (time: string): boolean =>
+  CLOCK_TIME_PATTERN.test(time.trim()) && parseClockTime(time) !== null;
 
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
+export const secondsToTime = (totalSeconds: number): string => {
+  if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return DEFAULT_TIME;
+
+  const safeSeconds = Math.floor(totalSeconds);
+  const hours = Math.floor(safeSeconds / HOURS_TO_SECOND);
+  const minutes = Math.floor(
+    (safeSeconds % HOURS_TO_SECOND) / MINUTES_TO_SECOND
+  );
+  const seconds = safeSeconds % MINUTES_TO_SECOND;
 
   return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+};
+
+export const secondsToVttTime = (totalSeconds: number): string => {
+  if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) {
+    return `${DEFAULT_TIME}.000`;
+  }
+
+  const safeMilliseconds = Math.round(totalSeconds * MILLISECOND);
+  const hours = Math.floor(safeMilliseconds / (HOURS_TO_SECOND * MILLISECOND));
+  const minutes = Math.floor(
+    (safeMilliseconds % (HOURS_TO_SECOND * MILLISECOND)) /
+      (MINUTES_TO_SECOND * MILLISECOND)
+  );
+  const seconds = Math.floor(
+    (safeMilliseconds % (MINUTES_TO_SECOND * MILLISECOND)) / MILLISECOND
+  );
+  const milliseconds = safeMilliseconds % MILLISECOND;
+
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}.${String(
+    milliseconds
+  ).padStart(3, '0')}`;
 };
 
 function pad(n: number): string {

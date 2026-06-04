@@ -15,6 +15,7 @@ import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import {
   apiConfig,
+  DEFAULT_TIME,
   ErrorCode,
   objectNames,
   queryKeys,
@@ -288,10 +289,10 @@ export function VideoLibraryForm() {
                     placeholder='Thời gian bắt đầu intro'
                     onChange={(value) => {
                       const introStartSec = timeToSeconds(
-                        (value as string) || '00:00:00'
+                        (value as string) || DEFAULT_TIME
                       );
                       const introEndSec = timeToSeconds(
-                        (introEnd as string) || '00:00:00'
+                        (introEnd as string) || DEFAULT_TIME
                       );
                       if (introStartSec < introEndSec) {
                         form.clearErrors('introEnd');
@@ -307,10 +308,10 @@ export function VideoLibraryForm() {
                     placeholder='Thời gian kết thúc intro'
                     onChange={(value) => {
                       const introStartSec = timeToSeconds(
-                        (introStart as string) || '00:00:00'
+                        (introStart as string) || DEFAULT_TIME
                       );
                       const introEndSec = timeToSeconds(
-                        (value as string) || '00:00:00'
+                        (value as string) || DEFAULT_TIME
                       );
                       if (introStartSec < introEndSec) {
                         form.clearErrors('introStart');
@@ -328,10 +329,10 @@ export function VideoLibraryForm() {
                     placeholder='Thời gian bắt đầu outro'
                     onChange={(value) => {
                       const introEndSec = timeToSeconds(
-                        (introEnd as string) || '00:00:00'
+                        (introEnd as string) || DEFAULT_TIME
                       );
                       const outStartSec = timeToSeconds(
-                        (value as string) || '00:00:00'
+                        (value as string) || DEFAULT_TIME
                       );
                       if (outStartSec > introEndSec) {
                         form.clearErrors('introEnd');
@@ -393,16 +394,16 @@ export function VideoLibraryForm() {
                         <VideoPlayer
                           auth={false}
                           duration={timeToSeconds(
-                            (duration as string) || '00:00:00'
+                            (duration as string) || DEFAULT_TIME
                           )}
                           introEnd={timeToSeconds(
-                            (introEnd as string) || '00:00:00'
+                            (introEnd as string) || DEFAULT_TIME
                           )}
                           introStart={timeToSeconds(
-                            (introStart as string) || '00:00:00'
+                            (introStart as string) || DEFAULT_TIME
                           )}
                           outroStart={timeToSeconds(
-                            (outroStart as string) || '00:00:00'
+                            (outroStart as string) || DEFAULT_TIME
                           )}
                           src={validatedContent}
                           thumbnailUrl={renderImageUrl(imageManager.currentUrl)}
@@ -440,16 +441,18 @@ export function VideoLibraryForm() {
                         auth={true}
                         duration={data.duration}
                         introEnd={
-                          timeToSeconds((introEnd as string) || '00:00:00') ||
+                          timeToSeconds((introEnd as string) || DEFAULT_TIME) ||
                           data.introEnd
                         }
                         introStart={
-                          timeToSeconds((introStart as string) || '00:00:00') ||
-                          data.introStart
+                          timeToSeconds(
+                            (introStart as string) || DEFAULT_TIME
+                          ) || data.introStart
                         }
                         outroStart={
-                          timeToSeconds((outroStart as string) || '00:00:00') ||
-                          data.outroStart
+                          timeToSeconds(
+                            (outroStart as string) || DEFAULT_TIME
+                          ) || data.outroStart
                         }
                         src={renderVideoUrl(
                           data.hostname,

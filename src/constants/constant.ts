@@ -152,3 +152,5 @@ export const HOURS_TO_SECOND = 60 * 60;
 export const MINUTES_TO_SECOND = 60;
 export const SECONDS_TO_SECOND = 1;
 export const MILLISECOND = 1_000;
+
+export const DEFAULT_TIME = '00:00:00';

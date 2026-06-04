@@ -17,4 +17,3 @@ export * from './text.util';
 export * from './time.util';
 export * from './url.util';
 export * from './validate-permission.util';
-export * from './vtt-time.util';

@@ -1,4 +1,5 @@
 import { VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL } from '@/constants';
+import { timeToSeconds } from '@/utils';
 import { z } from 'zod';
 
 export const videoLibrarySchema = z
@@ -58,25 +59,10 @@ export const videoLibrarySchema = z
       });
     }
 
-    // Helper function to convert time to seconds
-    const toSeconds = (value: string | number | null | undefined): number => {
-      if (value === null || value === undefined) return 0;
-      if (typeof value === 'number') return value;
-      if (typeof value === 'string') {
-        if (value === '00:00:00' || value === '') return 0;
-        // Handle HH:MM:SS format
-        const parts = value.split(':').map(Number);
-        if (parts.length === 3) {
-          return parts[0] * 3600 + parts[1] * 60 + parts[2];
-        }
-      }
-      return 0;
-    };
-
-    const introStartSec = toSeconds(data.introStart);
-    const introEndSec = toSeconds(data.introEnd);
-    const outroStartSec = toSeconds(data.outroStart);
-    const durationSec = toSeconds(data.duration);
+    const introStartSec = timeToSeconds(data.introStart);
+    const introEndSec = timeToSeconds(data.introEnd);
+    const outroStartSec = timeToSeconds(data.outroStart);
+    const durationSec = timeToSeconds(data.duration);
 
     const hasIntroStart = introStartSec > 0;
     const hasIntroEnd = introEndSec > 0;

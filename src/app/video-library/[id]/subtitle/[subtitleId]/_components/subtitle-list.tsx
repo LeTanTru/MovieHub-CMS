@@ -4,8 +4,6 @@ import { SubtitleItem } from './subtitle-item';
 import { useShallow } from 'zustand/react/shallow';
 import { useVideoLibrarySubtitleStore } from '@/store';
 import { Virtualizer } from '@tanstack/react-virtual';
-import type { ChangeEvent } from 'react';
-import type { SubtitleType } from '@/types';
 
 type SubtitleListProps = {
   rowVirtualizer: Virtualizer<HTMLDivElement, Element>;
@@ -23,24 +21,18 @@ export function SubtitleList({
     selectedSubtitleId,
     subtitles,
     setSelectedSubtitleId,
-    updateSubtitle
+    updateSubtitle,
+    deleteSubtitle
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       currentTime: s.currentTime,
       selectedSubtitleId: s.selectedSubtitleId,
       subtitles: s.subtitles,
       setSelectedSubtitleId: s.setSelectedSubtitleId,
-      updateSubtitle: s.updateSubtitle
+      updateSubtitle: s.updateSubtitle,
+      deleteSubtitle: s.deleteSubtitle
     }))
   );
-
-  const handleVttContentChange = (
-    e: ChangeEvent<HTMLTextAreaElement>,
-    targetSubtitle: SubtitleType
-  ) => {
-    setSelectedSubtitleId(targetSubtitle.id);
-    updateSubtitle(targetSubtitle.id, { text: e.target.value });
-  };
 
   const handleSubtitleSelect = (id: string, index: number) => {
     setSelectedSubtitleId(id);
@@ -91,8 +83,9 @@ export function SubtitleList({
               key={subtitle.id}
               rowIndex={row.index + 1}
               subtitle={subtitle}
-              onVttChange={handleVttContentChange}
+              onEdit={updateSubtitle}
               onSelect={handleSubtitleSelect}
+              onDelete={deleteSubtitle}
             />
           </div>
         );
