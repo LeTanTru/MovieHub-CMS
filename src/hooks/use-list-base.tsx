@@ -343,7 +343,7 @@ export const useListBase = <
               variant='ghost'
               {...buttonProps}
             >
-              <AiOutlineEdit className='text-main-color size-4' />
+              <AiOutlineEdit className='text-sporty-blue size-4' />
             </Button>
           </span>
         </ToolTip>

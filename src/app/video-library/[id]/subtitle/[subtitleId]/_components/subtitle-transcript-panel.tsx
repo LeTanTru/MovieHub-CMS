@@ -10,7 +10,7 @@ import {
   VideoLibrarySubtitleResType
 } from '@/types';
 import { parseVttContent, renderVttUrl } from '@/utils';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { logger } from '@/logger';
@@ -60,16 +60,22 @@ export function SubtitleTranscriptPanel({
     isSeeking,
     subtitles,
     setSelectedSubtitleId,
-    setSubtitles
+    setSubtitles,
+    setDuration
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       currentTime: s.currentTime,
       isSeeking: s.isSeeking,
       subtitles: s.subtitles,
       setSelectedSubtitleId: s.setSelectedSubtitleId,
-      setSubtitles: s.setSubtitles
+      setSubtitles: s.setSubtitles,
+      setDuration: s.setDuration
     }))
   );
+
+  useLayoutEffect(() => {
+    setDuration(videoLibrary.duration);
+  }, [videoLibrary.duration, setDuration]);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -89,6 +95,15 @@ export function SubtitleTranscriptPanel({
 
   useEffect(() => {
     if (isSeeking) return;
+
+    const activeElement = document.activeElement;
+    const isEditing =
+      activeElement &&
+      parentRef.current?.contains(activeElement) &&
+      (activeElement.tagName === 'INPUT' ||
+        activeElement.tagName === 'TEXTAREA');
+
+    if (isEditing) return;
 
     const activeIndex = subtitles.findIndex(
       (s) => s.startTime <= currentTime && currentTime < s.endTime
@@ -112,7 +127,7 @@ export function SubtitleTranscriptPanel({
             : 'auto'
       });
     }
-  }, [currentTime, isSeeking, subtitles, rowVirtualizer]);
+  }, [currentTime, isSeeking, subtitles, rowVirtualizer, parentRef]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -166,7 +181,7 @@ export function SubtitleTranscriptPanel({
 
   return (
     <div
-      className='flex h-full flex-col overflow-hidden border-l border-gray-200 bg-gray-50'
+      className='flex h-full flex-col overflow-hidden bg-gray-50'
       style={height ? { height } : undefined}
     >
       <SubtitleHeader subtitles={subtitles} videoSubtitle={videoSubtitle} />
@@ -178,7 +193,7 @@ export function SubtitleTranscriptPanel({
         >
           {isLoading ? (
             <div className='flex h-full items-center justify-center'>
-              <CircleLoading className='stroke-main-color' />
+              <CircleLoading className='stroke-sporty-blue' />
             </div>
           ) : subtitles.length === 0 ? (
             <div className='flex h-full items-center justify-center'>
@@ -199,7 +214,7 @@ export function SubtitleTranscriptPanel({
 
         {isSeeking && !isLoading && (
           <div className='absolute inset-0 z-10 flex items-center justify-center bg-gray-50/50 backdrop-blur-[1px]'>
-            <CircleLoading className='stroke-main-color' />
+            <CircleLoading className='stroke-sporty-blue' />
           </div>
         )}
       </div>

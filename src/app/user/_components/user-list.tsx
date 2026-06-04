@@ -94,7 +94,7 @@ export function UserList() {
                 >
                   <Icon
                     className={cn('size-4', {
-                      'text-main-color': record.status !== STATUS_ACTIVE,
+                      'text-sporty-blue': record.status !== STATUS_ACTIVE,
                       'text-destructive': record.status === STATUS_ACTIVE
                     })}
                   />

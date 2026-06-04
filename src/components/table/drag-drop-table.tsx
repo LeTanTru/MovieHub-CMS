@@ -305,7 +305,7 @@ export function DragDropTable<T extends Record<string, unknown>>({
               transition={{ duration: 0.2, ease: 'linear' }}
               className='absolute inset-0 top-[55px] z-50 flex items-start justify-center bg-white/80 pt-5'
             >
-              <CircleLoading className='stroke-main-color' />
+              <CircleLoading className='stroke-sporty-blue' />
             </m.div>
           )}
         </AnimatePresence>

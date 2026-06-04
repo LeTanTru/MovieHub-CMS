@@ -48,7 +48,7 @@ export function NotificationList({
   if (loading) {
     return (
       <div className='flex min-h-[50vh] items-center justify-center'>
-        <CircleLoading className='stroke-main-color' />
+        <CircleLoading className='stroke-sporty-blue' />
       </div>
     );
   }

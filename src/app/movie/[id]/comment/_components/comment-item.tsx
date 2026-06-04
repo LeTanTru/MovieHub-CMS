@@ -321,7 +321,7 @@ export function CommentItem({
           className={cn(
             'flex items-start rounded-md border p-3 hover:bg-gray-50',
             {
-              'ring-main-color ring-2 transition-all duration-200 ease-linear':
+              'ring-sporty-blue ring-2 transition-all duration-200 ease-linear':
                 isScrollTarget
             }
           )}
@@ -497,7 +497,7 @@ export function CommentItem({
               {isAuthor && canUpdate && (
                 <Button
                   variant='ghost'
-                  className='text-main-color hover:text-main-color/50 h-5! p-0! hover:bg-transparent'
+                  className='text-sporty-blue hover:text-sporty-blue/50 h-5! p-0! hover:bg-transparent'
                   onClick={() => handleEditComment(comment)}
                 >
                   <AiOutlineEdit className='size-5' />

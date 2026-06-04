@@ -139,7 +139,7 @@ export function DropdownAvatar() {
                 onClick={handleLogout}
               >
                 {logoutLoading ? (
-                  <CircleLoading className='stroke-main-color mx-auto size-5' />
+                  <CircleLoading className='stroke-sporty-blue mx-auto size-5' />
                 ) : (
                   <>
                     <LogOut className='size-5' /> Đăng xuất

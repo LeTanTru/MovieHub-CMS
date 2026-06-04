@@ -94,7 +94,7 @@ export function CollectionList() {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <TbListDetails className='text-main-color size-4' />
+                  <TbListDetails className='text-sporty-blue size-4' />
                 </Button>
               </span>
             </ToolTip>
@@ -118,7 +118,7 @@ export function CollectionList() {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  <TbPalette className='text-main-color size-4' />
+                  <TbPalette className='text-sporty-blue size-4' />
                 </Button>
               </span>
             </ToolTip>

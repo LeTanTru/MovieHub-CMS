@@ -129,7 +129,7 @@ export function Overview() {
         <div className='relative'>
           {isFetching && (
             <div className='absolute inset-0 z-10 flex items-start justify-center rounded-lg bg-white/70 pt-24'>
-              <CircleLoading className='stroke-main-color' />
+              <CircleLoading className='stroke-sporty-blue' />
             </div>
           )}
 
@@ -150,7 +150,7 @@ export function Overview() {
                       <Skeleton className='mt-2 h-8 w-24' />
                     )}
                   </div>
-                  <div className='bg-main-color/10 text-main-color flex size-10 items-center justify-center rounded-md'>
+                  <div className='bg-sporty-blue/10 text-sporty-blue flex size-10 items-center justify-center rounded-md'>
                     <metric.icon className='size-5' />
                   </div>
                 </CardContent>

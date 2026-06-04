@@ -69,7 +69,7 @@ export function ColorPickerField<T extends FieldValues>({
                   onChange={field.onChange}
                   disabled={disabled}
                   className={cn(
-                    'border-input bg-background focus-visible:ring-main-color h-10 w-10 cursor-pointer rounded border p-0 transition-all duration-200 ease-linear focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
+                    'border-input bg-background focus-visible:ring-sporty-blue h-10 w-10 cursor-pointer rounded border p-0 transition-all duration-200 ease-linear focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
                     className
                   )}
                 />

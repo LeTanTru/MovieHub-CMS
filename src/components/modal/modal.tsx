@@ -384,7 +384,7 @@ function Confirm({ message, className }: ConfirmProps) {
               </Button>
               <Button
                 size='sm'
-                className='bg-main-color hover:bg-main-color/80 text-white'
+                className='bg-sporty-blue hover:bg-sporty-blue/80 text-white'
                 onClick={onConfirmYes}
               >
                 Có

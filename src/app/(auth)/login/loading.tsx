@@ -3,7 +3,7 @@ import { CircleLoading } from '@/components/loading';
 export default function Loading() {
   return (
     <div className='flex h-full items-center justify-center'>
-      <CircleLoading className='stroke-main-color size-8' />
+      <CircleLoading className='stroke-sporty-blue size-8' />
     </div>
   );
 }

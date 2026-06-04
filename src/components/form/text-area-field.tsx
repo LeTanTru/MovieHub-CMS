@@ -96,7 +96,7 @@ export function TextAreaField<T extends FieldValues>({
                 maxLength={maxLength}
                 rows={rows}
                 className={cn(
-                  'focus-visible:ring-main-color scrollbar-none field-sizing-fixed w-full pt-4 break-all shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-transparent',
+                  'focus-visible:ring-sporty-blue scrollbar-none field-sizing-fixed w-full pt-4 break-all shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-transparent',
                   {
                     'border-rose-500 focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-rose-500':
                       !!fieldState.error

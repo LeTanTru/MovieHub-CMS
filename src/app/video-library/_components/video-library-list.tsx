@@ -132,7 +132,7 @@ export function VideoLibraryList() {
                   variant='ghost'
                   {...buttonProps}
                 >
-                  <PlayCircle className='text-main-color size-4' />
+                  <PlayCircle className='text-sporty-blue size-4' />
                 </Button>
               </span>
             </ToolTip>
@@ -173,7 +173,7 @@ export function VideoLibraryList() {
                   variant='ghost'
                   {...buttonProps}
                 >
-                  <ClosedCaption className='text-main-color size-4.5' />
+                  <ClosedCaption className='text-sporty-blue size-4.5' />
                 </Button>
               </span>
             </ToolTip>
@@ -215,7 +215,7 @@ export function VideoLibraryList() {
                   variant='ghost'
                   {...buttonProps}
                 >
-                  <FaRotateRight className='text-main-color size-4' />
+                  <FaRotateRight className='text-sporty-blue size-4' />
                 </Button>
               </span>
             </ToolTip>
@@ -269,9 +269,9 @@ export function VideoLibraryList() {
                     record.state === VIDEO_LIBRARY_STATE_COMPLETE &&
                     !isNoSpeech
                   }
-                  iconClassName='stroke-main-color size-4'
+                  iconClassName='stroke-sporty-blue size-4'
                 >
-                  <AudioLines className='text-main-color size-4' />
+                  <AudioLines className='text-sporty-blue size-4' />
                 </Button>
               </span>
             </ToolTip>

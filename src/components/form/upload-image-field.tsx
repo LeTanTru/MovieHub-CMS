@@ -358,7 +358,7 @@ export function UploadImageField<T extends FieldValues>({
                 )}
               </div>
             ) : loading ? (
-              <CircleLoading className='stroke-main-color' />
+              <CircleLoading className='stroke-sporty-blue' />
             ) : avatar ? (
               <CircleUserRoundIcon
                 strokeWidth={1}
@@ -421,7 +421,7 @@ export function UploadImageField<T extends FieldValues>({
               >
                 <CropperDescription />
                 <CropperImage />
-                <CropperCropArea className='border-main-color border-2' />
+                <CropperCropArea className='border-sporty-blue border-2' />
               </Cropper>
             ) : (
               previewUrl && (

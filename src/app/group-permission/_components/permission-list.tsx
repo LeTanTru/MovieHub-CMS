@@ -115,7 +115,7 @@ export function PermissionList() {
         <div className='relative flex flex-col gap-y-4 p-4 max-[1560px]:max-w-300'>
           {loading ? (
             <div className='absolute inset-0 flex justify-center bg-white/80'>
-              <CircleLoading className='stroke-main-color mt-20' />
+              <CircleLoading className='stroke-sporty-blue mt-20' />
             </div>
           ) : (
             groupPermissions.map((groupPermission) => {
@@ -130,7 +130,7 @@ export function PermissionList() {
                     <div className='font-semibold'>{group}</div>
                     <ToolTip sideOffset={8} title='Thêm quyền'>
                       <Plus
-                        className='stroke-main-color size-4 cursor-pointer transition-all duration-200 ease-linear hover:opacity-80'
+                        className='stroke-sporty-blue size-4 cursor-pointer transition-all duration-200 ease-linear hover:opacity-80'
                         onClick={() => handleAdd(group)}
                       />
                     </ToolTip>
@@ -159,7 +159,7 @@ export function PermissionList() {
                                       className='h-5 border-none bg-transparent p-0! shadow-none hover:bg-transparent'
                                       onClick={() => handleEdit(permission)}
                                     >
-                                      <AiOutlineEdit className='text-main-color size-4' />
+                                      <AiOutlineEdit className='text-sporty-blue size-4' />
                                     </Button>
                                   </ToolTip>
                                   <ConfirmModal

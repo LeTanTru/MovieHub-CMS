@@ -291,9 +291,9 @@ export function AutoCompleteField<
                       disabled={disabled}
                       title={selectedOption?.label ?? ''}
                       className={cn(
-                        'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2',
+                        'hover:border-input focus-visible:border-input focus-visible:ring-sporty-blue w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2',
                         {
-                          'ring-main-color border-transparent! ring-2': open,
+                          'ring-sporty-blue border-transparent! ring-2': open,
                           'border-rose-500 ring-rose-500': !!fieldState.error
                         },
                         className
@@ -409,7 +409,7 @@ export function AutoCompleteField<
                           }}
                         >
                           {loading ? (
-                            <CircleLoading className='stroke-main-color mx-auto my-2' />
+                            <CircleLoading className='stroke-sporty-blue mx-auto my-2' />
                           ) : (
                             combinedOptions.map((opt, idx) => {
                               const value = opt.value;
@@ -428,7 +428,7 @@ export function AutoCompleteField<
                                     {
                                       'bg-accent text-accent-foreground':
                                         highlightedIndex === idx,
-                                      'bg-main-color/10': isSelected
+                                      'bg-sporty-blue/10': isSelected
                                     }
                                   )}
                                 >

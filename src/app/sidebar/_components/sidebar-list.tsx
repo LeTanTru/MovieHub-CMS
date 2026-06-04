@@ -78,7 +78,7 @@ export function SidebarList() {
                 >
                   <Icon
                     className={cn('size-4', {
-                      'text-main-color': !record.active,
+                      'text-sporty-blue': !record.active,
                       'text-destructive': record.active
                     })}
                   />

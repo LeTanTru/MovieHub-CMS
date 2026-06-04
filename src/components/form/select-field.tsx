@@ -169,9 +169,9 @@ export function SelectField<
                       aria-label='Select'
                       disabled={disabled}
                       className={cn(
-                        'hover:border-input focus-visible:border-input focus-visible:ring-main-color w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
+                        'hover:border-input focus-visible:border-input focus-visible:ring-sporty-blue w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
                         {
-                          'ring-main-color border-transparent! ring-2': open,
+                          'ring-sporty-blue border-transparent! ring-2': open,
                           'border-rose-500 ring-rose-500': !!fieldState.error
                         },
                         className
@@ -282,7 +282,7 @@ export function SelectField<
                                 {
                                   'bg-accent text-accent-foreground':
                                     highlightedIndex === idx,
-                                  'bg-main-color/10': isSelected
+                                  'bg-sporty-blue/10': isSelected
                                 }
                               )}
                             >

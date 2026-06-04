@@ -1,4 +1,5 @@
 import {
+  subtitleSchema,
   videoLibrarySubtitleSchema,
   videoLibrarySubtitleSearchSchema,
   videoLibrarySubtitleTranslateSchema
@@ -46,6 +47,7 @@ type VideoLibrarySubtitleState = {
   subtitles: SubtitleType[];
   selectedSubtitleId: string | null;
   isSeeking: boolean;
+  duration: number; // seconds
 };
 
 type VideoLibrarySubtitleActions = {
@@ -55,7 +57,10 @@ type VideoLibrarySubtitleActions = {
   updateSubtitle: (id: string, patch: Partial<SubtitleType>) => void;
   startSeek: () => void;
   completeSeek: (currentTime: number) => void;
+  setDuration: (duration: number) => void;
 };
 
 export type VideoLibrarySubtitleStoreType = VideoLibrarySubtitleState &
   VideoLibrarySubtitleActions;
+
+export type SubtitleBodyType = z.infer<typeof subtitleSchema>;

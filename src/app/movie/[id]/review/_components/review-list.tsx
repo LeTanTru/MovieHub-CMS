@@ -15,7 +15,6 @@ import { route } from '@/routes';
 import type { ReviewResType, ReviewSearchType } from '@/types';
 import { useParams } from 'next/navigation';
 import { ReviewItem } from './review-item';
-import { useCallback } from 'react';
 import { renderListPageUrl } from '@/utils';
 
 export function ReviewList() {
@@ -48,12 +47,9 @@ export function ReviewList() {
     return acc + item.rate;
   }, 0);
 
-  const handleDeleteReview = useCallback(
-    async (review: ReviewResType) => {
-      handlers.handleDeleteClick(review.id);
-    },
-    [handlers]
-  );
+  const handleDeleteReview = async (review: ReviewResType) => {
+    handlers.handleDeleteClick(review.id);
+  };
 
   return (
     <PageWrapper

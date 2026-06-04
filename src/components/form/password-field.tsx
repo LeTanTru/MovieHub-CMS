@@ -131,7 +131,7 @@ export function PasswordField<T extends FieldValues>({
                     {
                       'border-rose-500 focus-visible:ring-rose-500':
                         !!fieldState.error,
-                      'focus-visible:ring-main-color': !fieldState.error,
+                      'focus-visible:ring-sporty-blue': !fieldState.error,
                       'pb-0.5': !isVisible && !!field.value, // not show and have value
                       'pb-1': (!isVisible && !field.value) || isVisible, // not show and no value
                       'pb-1.25': isVisible && !!field.value

@@ -42,10 +42,24 @@ export function SubtitleList({
     updateSubtitle(targetSubtitle.id, { text: e.target.value });
   };
 
+  const handleSubtitleSelect = (id: string, index: number) => {
+    setSelectedSubtitleId(id);
+    rowVirtualizer.scrollToIndex(index, {
+      align: 'center',
+      behavior: 'smooth'
+    });
+  };
+
+  const lastVirtualItem = virtualItems[virtualItems.length - 1];
+  const listHeight =
+    lastVirtualItem?.index === subtitles.length - 1
+      ? lastVirtualItem.end
+      : rowVirtualizer.getTotalSize();
+
   return (
     <div
       style={{
-        height: `${rowVirtualizer.getTotalSize()}px`,
+        height: `${listHeight}px`,
         width: '100%',
         position: 'relative'
       }}
@@ -68,7 +82,7 @@ export function SubtitleList({
               left: 0,
               width: '100%',
               transform: `translateY(${row.start}px)`,
-              padding: '8px'
+              padding: '8px 4px 8px 8px'
             }}
           >
             <SubtitleItem
@@ -78,8 +92,7 @@ export function SubtitleList({
               rowIndex={row.index + 1}
               subtitle={subtitle}
               onVttChange={handleVttContentChange}
-              setSelectedSubtitleId={setSelectedSubtitleId}
-              onTimeChange={updateSubtitle}
+              onSelect={handleSubtitleSelect}
             />
           </div>
         );

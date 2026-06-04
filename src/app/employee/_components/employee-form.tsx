@@ -323,7 +323,7 @@ export function EmployeeForm() {
             </>
             {loading && (
               <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
-                <CircleLoading className='stroke-main-color mt-20' />
+                <CircleLoading className='stroke-sporty-blue mt-20' />
               </div>
             )}
           </>

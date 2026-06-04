@@ -69,7 +69,7 @@ export function StyleList() {
             </span>
             {record.isDefault && (
               <ToolTip title='Mặc định'>
-                <BadgeCheck className='fill-main-color size-5 stroke-white' />
+                <BadgeCheck className='fill-sporty-blue size-5 stroke-white' />
               </ToolTip>
             )}
           </div>

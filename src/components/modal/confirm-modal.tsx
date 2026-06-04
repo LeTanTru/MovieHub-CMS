@@ -93,7 +93,7 @@ export function ConfirmModal({
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
-            className='bg-main-color hover:bg-main-color/80 focus-visible:ring-main-color h-8 cursor-pointer font-normal transition-all duration-200 ease-linear focus-visible:ring-0'
+            className='bg-sporty-blue hover:bg-sporty-blue/80 focus-visible:ring-sporty-blue h-8 cursor-pointer font-normal transition-all duration-200 ease-linear focus-visible:ring-0'
           >
             {loading ? (
               <CircleLoading className='size-4 stroke-white' />
