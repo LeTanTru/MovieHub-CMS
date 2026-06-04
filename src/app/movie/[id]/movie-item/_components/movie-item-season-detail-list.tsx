@@ -35,7 +35,7 @@ import type {
 } from '@/types';
 import {
   convertUTCToLocal,
-  formatSecondsToHMS,
+  secondsToTime,
   generatePath,
   notify,
   renderImageUrl,
@@ -300,7 +300,7 @@ export function MovieItemSeasonDetailList() {
       width: 120,
       render: (_, record) => {
         if (record.video) {
-          return formatSecondsToHMS(record.video.duration);
+          return secondsToTime(record.video.duration);
         }
         return 'N/A';
       },

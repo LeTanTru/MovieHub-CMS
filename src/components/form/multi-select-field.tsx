@@ -224,7 +224,7 @@ export function MultiSelectField<
             newValues = [...selectedValues, val];
           }
           // Sort selected values by their label in the options array
-          newValues.sort((a, b) => {
+          const sortedValues = newValues.toSorted((a, b) => {
             const labelA = options.find((o) => getValue(o) === a);
             const labelB = options.find((o) => getValue(o) === b);
             const labelCompareA = labelA
@@ -235,8 +235,8 @@ export function MultiSelectField<
               : '';
             return labelCompareA.localeCompare(labelCompareB);
           });
-          field.onChange(newValues);
-          onValueChange?.(newValues);
+          field.onChange(sortedValues);
+          onValueChange?.(sortedValues);
         };
 
         const handleRemove = (val: string | number) => {

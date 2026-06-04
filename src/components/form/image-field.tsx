@@ -93,7 +93,7 @@ export function ImageField({
         (rule) =>
           typeof rule?.breakpoint === 'number' && typeof rule?.size === 'number'
       )
-      .sort((a, b) => a.breakpoint - b.breakpoint);
+      .toSorted((a, b) => a.breakpoint - b.breakpoint);
   }, [breakpoints]);
 
   const resolvedSize = useMemo(() => {

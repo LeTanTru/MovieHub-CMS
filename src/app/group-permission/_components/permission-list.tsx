@@ -143,7 +143,7 @@ export function PermissionList() {
                   >
                     {permissionList?.length > 0 ? (
                       permissionList
-                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .toSorted((a, b) => a.name.localeCompare(b.name))
                         .map((permission: PermissionResType, index: number) => {
                           return (
                             <div key={permission.id}>

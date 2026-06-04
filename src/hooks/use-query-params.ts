@@ -42,7 +42,7 @@ export const useQueryParams = <S extends Record<string, unknown>>() => {
   const serializeParams = (obj: Record<string, unknown>) => {
     return Object.entries(obj)
       .filter(([_, v]) => v !== null && v !== undefined && v !== '')
-      .sort(([a], [b]) => a.localeCompare(b))
+      .toSorted(([a], [b]) => a.localeCompare(b))
       .map(
         ([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`
       )

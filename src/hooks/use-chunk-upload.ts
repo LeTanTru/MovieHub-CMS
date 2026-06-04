@@ -146,13 +146,15 @@ export const useChunkUpload = () => {
         await Promise.all(Array.from({ length: concurrency }, uploadNext));
 
         // Sort by partNumber before complete (required by S3/MinIO)
-        parts.sort((a, b) => a.partNumber - b.partNumber);
+        const sortedParts = parts.toSorted(
+          (a, b) => a.partNumber - b.partNumber
+        );
 
         // 4. Tell MinIO to complete the upload
         const res = await http.post<{ filePath: string }>(
           apiConfig.file.uploadChunkComplete,
           {
-            body: { objectName, uploadId, parts }
+            body: { objectName, uploadId, parts: sortedParts }
           }
         );
 
