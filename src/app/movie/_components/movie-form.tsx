@@ -62,7 +62,7 @@ export function MovieForm() {
         value: category.id.toString(),
         label: category.name
       }))
-      .sort((a, b) => a.label.localeCompare(b.label)) || [];
+      .toSorted((a, b) => a.label.localeCompare(b.label)) || [];
 
   const { mutateAsync: uploadImageMutate } = useUploadLogoMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
@@ -155,7 +155,7 @@ export function MovieForm() {
       ageRating: data?.ageRating ?? 0,
       categoryIds:
         data?.categories
-          ?.sort((a, b) => a.name.localeCompare(b.name))
+          ?.toSorted((a, b) => a.name.localeCompare(b.name))
           .map((category) => category.id.toString()) ?? [],
       country: data?.country ?? '',
       description: data?.description ?? '',

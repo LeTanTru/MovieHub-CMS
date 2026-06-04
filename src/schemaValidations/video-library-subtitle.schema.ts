@@ -1,4 +1,4 @@
-import { timeToSeconds } from '@/utils';
+import { isValidClockTime, timeToSeconds } from '@/utils';
 import z from 'zod';
 
 export const videoLibrarySubtitleSearchSchema = z.object({
@@ -24,7 +24,45 @@ export const subtitleSchema = z
     end: z.string().nonempty('Bắt buộc'),
     text: z.string().nonempty('Bắt buộc')
   })
-  .superRefine((data, ctx) => {
-    const startTime = timeToSeconds(data.start);
-    const endTime = timeToSeconds(data.end);
+  .superRefine(({ start, end }, ctx) => {
+    const isValidStart = isValidClockTime(start);
+    const isValidEnd = isValidClockTime(end);
+
+    if (start && !isValidStart) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Thời gian bắt đầu không hợp lệ',
+        path: ['start']
+      });
+    }
+
+    if (end && !isValidEnd) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Thời gian kết thúc không hợp lệ',
+        path: ['end']
+      });
+    }
+
+    if (!isValidStart || !isValidEnd) return;
+
+    const startTime = timeToSeconds(start);
+    const endTime = timeToSeconds(end);
+
+    const hasStartTime = !!start;
+    const hasEndTime = !!end;
+
+    // startTime < endTime
+    if (hasStartTime && hasEndTime && startTime >= endTime) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc',
+        path: ['start']
+      });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Thời gian kết thúc phải lớn hơn thời gian bắt đầu',
+        path: ['end']
+      });
+    }
   });

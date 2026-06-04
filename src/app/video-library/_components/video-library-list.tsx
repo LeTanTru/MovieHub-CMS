@@ -42,7 +42,7 @@ import type {
   VideoLibrarySearchType
 } from '@/types';
 import {
-  formatSecondsToHMS,
+  secondsToTime,
   generatePath,
   notify,
   renderImageUrl,
@@ -321,7 +321,7 @@ export function VideoLibraryList() {
       dataIndex: 'duration',
       render: (value) => (
         <span className='line-clamp-1 block truncate'>
-          {formatSecondsToHMS(value as number)}
+          {secondsToTime(value as number)}
         </span>
       ),
       width: 120,

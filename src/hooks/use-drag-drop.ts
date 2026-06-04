@@ -32,14 +32,16 @@ export const useDragDrop = <T extends { id: string }>({
   updateOnDragEnd,
   mappingData
 }: UseDragDropType<T>) => {
-  const [isChanged, setIsChanged] = useState<boolean>(false);
-  const [sortedData, setSortedData] = useState<T[]>(
-    (data.length > 0 &&
-      data.sort(
+  const sortData = useCallback(
+    (items: T[]) =>
+      items.toSorted(
         (a, b) => (a?.[sortField] as number) - (b?.[sortField] as number)
-      )) ||
-      []
+      ),
+    [sortField]
   );
+
+  const [isChanged, setIsChanged] = useState<boolean>(false);
+  const [sortedData, setSortedData] = useState<T[]>(() => sortData(data));
 
   const { mutateAsync, isPending } = useMutation({
     mutationKey: ['updateOrdering', apiConfig.baseUrl],
@@ -113,9 +115,9 @@ export const useDragDrop = <T extends { id: string }>({
   );
 
   useEffect(() => {
-    if (data) setSortedData(data);
+    if (data) setSortedData(sortData(data));
     else setSortedData([]);
-  }, [data]);
+  }, [data, sortData]);
 
   return {
     isChanged,

@@ -61,7 +61,8 @@ export function SubtitleTranscriptPanel({
     subtitles,
     setSelectedSubtitleId,
     setSubtitles,
-    setDuration
+    setDuration,
+    addSubtitle
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       currentTime: s.currentTime,
@@ -69,7 +70,8 @@ export function SubtitleTranscriptPanel({
       subtitles: s.subtitles,
       setSelectedSubtitleId: s.setSelectedSubtitleId,
       setSubtitles: s.setSubtitles,
-      setDuration: s.setDuration
+      setDuration: s.setDuration,
+      addSubtitle: s.addSubtitle
     }))
   );
 
@@ -184,7 +186,11 @@ export function SubtitleTranscriptPanel({
       className='flex h-full flex-col overflow-hidden bg-gray-50'
       style={height ? { height } : undefined}
     >
-      <SubtitleHeader subtitles={subtitles} videoSubtitle={videoSubtitle} />
+      <SubtitleHeader
+        subtitles={subtitles}
+        videoSubtitle={videoSubtitle}
+        addSubtitle={addSubtitle}
+      />
 
       <div className='relative flex-1 overflow-hidden'>
         <div

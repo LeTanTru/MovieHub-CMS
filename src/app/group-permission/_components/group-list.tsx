@@ -125,7 +125,7 @@ export function GroupList() {
     >
       <BaseTable
         columns={columns}
-        dataSource={data?.sort((a, b) => a.kind - b.kind)}
+        dataSource={data?.toSorted((a, b) => a.kind - b.kind)}
         pagination={pagination}
         loading={loading}
         changePagination={handlers.changePagination}

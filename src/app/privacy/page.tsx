@@ -151,7 +151,8 @@ export default function PrivacyPage() {
                 Truy cập, chỉnh sửa và xóa thông tin cá nhân của mình mà chúng
                 tôi lưu giữ. Để thực hiện các quyền này, vui lòng liên hệ với
                 chúng tôi qua email:{' '}
-                <a href='mailto:lienhe@moviehub.biz'>lienhe@moviehub.biz</a>.
+                <a href='mailto:lienhe@moviehub.io.vn'>lienhe@moviehub.io.vn</a>
+                .
               </li>
               <li>
                 Từ chối nhận thông báo từ MovieHub bất kỳ lúc nào thông qua tùy

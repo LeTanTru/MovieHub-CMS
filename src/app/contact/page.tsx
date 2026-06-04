@@ -7,7 +7,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Liên hệ',
   description:
-    'Liên hệ MovieHub để được hỗ trợ về tài khoản, kỹ thuật, góp ý dịch vụ. Email: lienhe@moviehub.biz',
+    'Liên hệ MovieHub để được hỗ trợ về tài khoản, kỹ thuật, góp ý dịch vụ. Email: lienhe@moviehub.io.vn',
   metadataBase: new URL(envConfig.NEXT_PUBLIC_URL),
   keywords: ['MovieHub', 'liên hệ', 'hỗ trợ', 'tài khoản', 'kỹ thuật'],
   alternates: {
@@ -62,8 +62,8 @@ export default function ContactPage() {
           </h3>
           <p className='mb-4 text-neutral-400'>
             Email hỗ trợ khách hàng:{' '}
-            <Link className='text-white' href='mailto:lienhe@moviehub.biz'>
-              <b>lienhe@moviehub.biz</b>
+            <Link className='text-white' href='mailto:lienhe@moviehub.io.vn'>
+              <b>lienhe@moviehub.io.vn</b>
             </Link>
           </p>
           <ul className='mb-4 list-disc pl-9 text-neutral-400 *:leading-[1.6]'>
@@ -82,8 +82,8 @@ export default function ContactPage() {
           </ul>
           <p className='mb-4 text-neutral-400'>
             Email liên hệ về Chính Sách Riêng Tư:{' '}
-            <Link href='mailto:lienhe@moviehub.biz'>
-              <b className='text-white'>lienhe@moviehub.biz</b>
+            <Link href='mailto:lienhe@moviehub.io.vn'>
+              <b className='text-white'>lienhe@moviehub.io.vn</b>
             </Link>
           </p>
           <p className='mb-4 text-neutral-400'>
