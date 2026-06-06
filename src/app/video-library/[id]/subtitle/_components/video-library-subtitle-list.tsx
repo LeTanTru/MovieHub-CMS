@@ -87,7 +87,7 @@ export function VideoLibrarySubtitleList() {
             <Button
               onClick={() => {
                 setSelectedSubtitle(null);
-                open();
+                openVideoSubtitleModal();
               }}
               variant='primary'
               disabled={!defaultSubtitle}
