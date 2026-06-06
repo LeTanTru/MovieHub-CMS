@@ -1,8 +1,9 @@
 import {
-  DEFAULT_TIME,
+  SUBTITLE_TIME_PLACEHOLDER,
   HOURS_TO_SECOND,
   MILLISECOND,
-  MINUTES_TO_SECOND
+  MINUTES_TO_SECOND,
+  DEFAULT_TIME
 } from '@/constants';
 
 const CLOCK_TIME_PATTERN = /^(?:\d{2,}:)?[0-5]\d:[0-5]\d(?:\.\d{1,3})?$/;
@@ -74,7 +75,7 @@ export const secondsToTime = (totalSeconds: number): string => {
 
 export const secondsToVttTime = (totalSeconds: number): string => {
   if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) {
-    return `${DEFAULT_TIME}.000`;
+    return SUBTITLE_TIME_PLACEHOLDER;
   }
 
   const safeMilliseconds = Math.round(totalSeconds * MILLISECOND);

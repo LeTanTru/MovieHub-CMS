@@ -64,6 +64,8 @@ export function InputField<T extends FieldValues>({
   options = EMPTY_OPTIONS,
   onOptionSelect,
   ref,
+  onBlur,
+  onChange,
   ...inputProps
 }: InputFieldProps<T>) {
   const [showOptions, setShowOptions] = useState<boolean>(false);
@@ -136,7 +138,6 @@ export function InputField<T extends FieldValues>({
                 value={field.value ?? ''}
                 ref={ref}
                 className={cn(
-                  className,
                   'text-sm font-normal shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
                   {
                     'pl-10': prefixIcon,
@@ -144,13 +145,15 @@ export function InputField<T extends FieldValues>({
                     'border-rose-500 focus-visible:ring-rose-500':
                       !!fieldState.error,
                     'focus-visible:ring-sporty-blue': !fieldState.error
-                  }
+                  },
+                  className
                 )}
                 onChange={(e) => {
                   const raw = e.target.value;
                   const transformed =
                     type === 'number' ? toNumberIfPossible(raw) : raw;
                   field.onChange(transformed);
+                  onChange?.(e);
                   if (options.length > 0) {
                     handleFilterOptions(raw);
                     setShowOptions(true);
@@ -161,6 +164,10 @@ export function InputField<T extends FieldValues>({
                     handleFilterOptions(field.value || '');
                     setShowOptions(true);
                   }
+                }}
+                onBlur={(event) => {
+                  field.onBlur();
+                  onBlur?.(event);
                 }}
               />
               <AnimatePresence>

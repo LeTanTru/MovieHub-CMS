@@ -50,9 +50,6 @@ export function VideoLibrarySubtitleModal({
 }: VideoLibrarySubtitleModalProps) {
   const isEdit = !!subtitle;
 
-  // ----------------------------------------------------
-  // Translate Form State & Mutation
-  // ----------------------------------------------------
   const translateMutation = useVideoSubtitleTranslateMutation();
   const [isTranslateFormChanged, setIsTranslateFormChanged] =
     useState<boolean>(false);
@@ -103,9 +100,6 @@ export function VideoLibrarySubtitleModal({
     }
   };
 
-  // ----------------------------------------------------
-  // Edit Form useSaveBase Hook
-  // ----------------------------------------------------
   const {
     loading: editLoading,
     isFormChanged: isEditFormChanged,
@@ -158,9 +152,6 @@ export function VideoLibrarySubtitleModal({
     invalidateQueries([queryKeys.VIDEO_LIBRARY_SUBTITLE_LIST]);
   };
 
-  // ----------------------------------------------------
-  // Unified Cancel & Close Handles
-  // ----------------------------------------------------
   const handleCancel = () => {
     onClose();
     if (isEdit) {
@@ -282,7 +273,7 @@ export function VideoLibrarySubtitleModal({
                         type='button'
                         variant='outline'
                         onClick={handleCancel}
-                        className='border-rose-500 text-rose-500 hover:border-rose-500/50 hover:text-rose-500/50'
+                        className='border-rose-500 text-rose-500 hover:border-rose-500/50 hover:text-rose-500/50 disabled:border-rose-500/50 disabled:text-rose-500/50 disabled:hover:border-rose-500/50 disabled:hover:text-rose-500/50'
                       >
                         <ArrowLeftFromLine />
                         Hủy

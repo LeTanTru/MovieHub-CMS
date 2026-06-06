@@ -249,7 +249,7 @@ export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
                 type='button'
                 variant='outline'
                 onClick={handleCancel}
-                className='border-rose-500 text-rose-500 hover:border-rose-500/50 hover:text-rose-500/50'
+                className='border-rose-500 text-rose-500 hover:border-rose-500/50 hover:text-rose-500/50 disabled:border-rose-500/50 disabled:text-rose-500/50 disabled:hover:border-rose-500/50 disabled:hover:text-rose-500/50'
               >
                 <ArrowLeftFromLine />
                 Hủy
@@ -267,7 +267,7 @@ export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
                   <Button
                     type='button'
                     variant='outline'
-                    className='border-rose-500 text-rose-500 hover:border-rose-500/50 hover:text-rose-500/50'
+                    className='border-rose-500 text-rose-500 hover:border-rose-500/50 hover:text-rose-500/50 disabled:border-rose-500/50 disabled:text-rose-500/50 disabled:hover:border-rose-500/50 disabled:hover:text-rose-500/50'
                   >
                     <ArrowLeftFromLine />
                     Hủy

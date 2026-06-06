@@ -431,7 +431,7 @@ export function MultiSelectField<
                               )}
                             >
                               {getPrefix?.(opt) && (
-                                <span className='mr-1 font-mono text-xs opacity-70'>
+                                <span className='mr-1 text-xs opacity-70'>
                                   {getPrefix(opt)}
                                 </span>
                               )}

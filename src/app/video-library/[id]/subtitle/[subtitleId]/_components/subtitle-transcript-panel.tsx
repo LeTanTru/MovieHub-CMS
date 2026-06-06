@@ -24,6 +24,8 @@ type SubtitleTranscriptPanelProps = {
   height?: number;
   videoLibrary: VideoLibraryResType;
   videoSubtitle: VideoLibrarySubtitleResType;
+  onAddSubtitle: () => void;
+  onEditSubtitle: (subtitle: SubtitleType) => void;
 };
 
 function getNearestSubtitleIndex(
@@ -53,7 +55,9 @@ function getNearestSubtitleIndex(
 export function SubtitleTranscriptPanel({
   height,
   videoLibrary,
-  videoSubtitle
+  videoSubtitle,
+  onAddSubtitle,
+  onEditSubtitle
 }: SubtitleTranscriptPanelProps) {
   const {
     currentTime,
@@ -61,8 +65,7 @@ export function SubtitleTranscriptPanel({
     subtitles,
     setSelectedSubtitleId,
     setSubtitles,
-    setDuration,
-    addSubtitle
+    setDuration
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       currentTime: s.currentTime,
@@ -70,8 +73,7 @@ export function SubtitleTranscriptPanel({
       subtitles: s.subtitles,
       setSelectedSubtitleId: s.setSelectedSubtitleId,
       setSubtitles: s.setSubtitles,
-      setDuration: s.setDuration,
-      addSubtitle: s.addSubtitle
+      setDuration: s.setDuration
     }))
   );
 
@@ -183,13 +185,13 @@ export function SubtitleTranscriptPanel({
 
   return (
     <div
-      className='flex h-full flex-col overflow-hidden bg-gray-50'
+      className='flex h-full flex-col overflow-hidden'
       style={height ? { height } : undefined}
     >
       <SubtitleHeader
         subtitles={subtitles}
         videoSubtitle={videoSubtitle}
-        addSubtitle={addSubtitle}
+        onAddSubtitle={onAddSubtitle}
       />
 
       <div className='relative flex-1 overflow-hidden'>
@@ -214,6 +216,7 @@ export function SubtitleTranscriptPanel({
             <SubtitleList
               rowVirtualizer={rowVirtualizer}
               virtualItems={rowVirtualizer.getVirtualItems()}
+              onEditSubtitle={onEditSubtitle}
             />
           )}
         </div>

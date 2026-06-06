@@ -4,24 +4,26 @@ import { SubtitleItem } from './subtitle-item';
 import { useShallow } from 'zustand/react/shallow';
 import { useVideoLibrarySubtitleStore } from '@/store';
 import { Virtualizer } from '@tanstack/react-virtual';
+import { SubtitleType } from '@/types';
 
 type SubtitleListProps = {
   rowVirtualizer: Virtualizer<HTMLDivElement, Element>;
   virtualItems: ReturnType<
     Virtualizer<HTMLDivElement, Element>['getVirtualItems']
   >;
+  onEditSubtitle: (subtitle: SubtitleType) => void;
 };
 
 export function SubtitleList({
   rowVirtualizer,
-  virtualItems
+  virtualItems,
+  onEditSubtitle
 }: SubtitleListProps) {
   const {
     currentTime,
     selectedSubtitleId,
     subtitles,
     setSelectedSubtitleId,
-    updateSubtitle,
     deleteSubtitle
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
@@ -29,7 +31,6 @@ export function SubtitleList({
       selectedSubtitleId: s.selectedSubtitleId,
       subtitles: s.subtitles,
       setSelectedSubtitleId: s.setSelectedSubtitleId,
-      updateSubtitle: s.updateSubtitle,
       deleteSubtitle: s.deleteSubtitle
     }))
   );
@@ -53,7 +54,9 @@ export function SubtitleList({
       style={{
         height: `${listHeight}px`,
         width: '100%',
-        position: 'relative'
+        position: 'relative',
+        marginTop: 4,
+        marginBottom: 4
       }}
     >
       {virtualItems.map((row) => {
@@ -74,7 +77,7 @@ export function SubtitleList({
               left: 0,
               width: '100%',
               transform: `translateY(${row.start}px)`,
-              padding: '8px 4px 8px 8px'
+              padding: '0px 4px 0px 8px'
             }}
           >
             <SubtitleItem
@@ -83,7 +86,7 @@ export function SubtitleList({
               key={subtitle.id}
               rowIndex={row.index + 1}
               subtitle={subtitle}
-              onEdit={updateSubtitle}
+              onEdit={onEditSubtitle}
               onSelect={handleSubtitleSelect}
               onDelete={deleteSubtitle}
             />

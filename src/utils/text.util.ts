@@ -3,7 +3,6 @@ import { logger } from '@/logger';
 import type { OptionType, SubtitleType } from '@/types';
 import {
   isValidClockTime,
-  secondsToTime,
   secondsToVttTime,
   timeToSeconds
 } from '@/utils/time.util';
@@ -133,8 +132,8 @@ export const parseVttContent = (content: string): SubtitleType[] => {
 
     subtitles.push({
       id: createSubtitleId(subtitleIndex, startTime, endTime),
-      start: secondsToTime(startTime),
-      end: secondsToTime(endTime),
+      start,
+      end,
       startTime,
       endTime,
       text: textLines.join('\n')
