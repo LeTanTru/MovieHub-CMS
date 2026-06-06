@@ -64,6 +64,14 @@ const ASPECT_RATIOS = [
   { label: '2:3', value: 2 / 3 }
 ] as const;
 
+const DEFAULT_FIELD_SIZE = 70;
+const REMOVE_BUTTON_OFFSET_PERCENT = 6;
+const REMOVE_BUTTON_OFFSET_PX = -8;
+const ZOOM_ICON_SIZE = 16;
+const ZOOM_SLIDER_MIN = 1;
+const ZOOM_SLIDER_MAX = 3;
+const ZOOM_SLIDER_STEP = 0.01;
+
 type Area = { x: number; y: number; width: number; height: number };
 
 const createImage = (url: string): Promise<HTMLImageElement> =>
@@ -141,7 +149,7 @@ export function UploadImageField<T extends FieldValues>({
   labelClassName,
   className,
   imageClassName,
-  size = 70,
+  size = DEFAULT_FIELD_SIZE,
   loading,
   aspect = 1,
   defaultCrop = false,
@@ -346,8 +354,12 @@ export function UploadImageField<T extends FieldValues>({
                           'border-background absolute size-6 rounded-full border-none text-white hover:text-rose-500'
                         )}
                         style={{
-                          top: avatar ? (6 * size) / 100 : -8,
-                          right: avatar ? (6 * size) / 100 : -8
+                          top: avatar
+                            ? (REMOVE_BUTTON_OFFSET_PERCENT * size) / 100
+                            : REMOVE_BUTTON_OFFSET_PX,
+                          right: avatar
+                            ? (REMOVE_BUTTON_OFFSET_PERCENT * size) / 100
+                            : REMOVE_BUTTON_OFFSET_PX
                         }}
                         aria-label='Remove image'
                       >
@@ -440,19 +452,26 @@ export function UploadImageField<T extends FieldValues>({
           </AspectRatio>
 
           <DialogFooter className='flex flex-col flex-wrap gap-4 border-t px-4 py-6 sm:justify-between'>
-            {!keepOriginalSize && (
+            {!keepOriginalSize && shouldCrop && (
               <div className='mx-auto flex w-full max-w-80 items-center gap-4'>
-                <ZoomOutIcon className='shrink-0 opacity-60' size={16} />
+                <ZoomOutIcon
+                  className='shrink-0 opacity-60'
+                  size={ZOOM_ICON_SIZE}
+                />
                 <Slider
                   value={[zoom]}
-                  min={1}
-                  max={3}
-                  step={0.01}
+                  min={ZOOM_SLIDER_MIN}
+                  max={ZOOM_SLIDER_MAX}
+                  step={ZOOM_SLIDER_STEP}
                   onValueChange={(val) => setZoom(val[0])}
                   showTooltip
-                  className='cursor-pointer [&_span[role="slider"]]:bg-gray-500'
+                  className='cursor-pointer [&_span[role="slider"]]:border-none [&_span[role="slider"]]:bg-black'
+                  trackClassName='bg-gray-500'
                 />
-                <ZoomInIcon className='shrink-0 opacity-60' size={16} />
+                <ZoomInIcon
+                  className='shrink-0 opacity-60'
+                  size={ZOOM_ICON_SIZE}
+                />
               </div>
             )}
 

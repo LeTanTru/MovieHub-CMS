@@ -9,11 +9,11 @@ export const useClickOutside = <T extends HTMLElement>(
     const handleClick = (e: MouseEvent) => {
       const target = e.target as Node;
       const clickedInsidePortal = (target as Element).closest?.(
-        '[data-radix-popper-content-wrapper], [data-radix-portal], [role="alertdialog"], [role="dialog"]'
+        '[data-radix-popper-content-wrapper], [data-radix-portal], [data-modal-portal], [role="alertdialog"], [role="dialog"]'
       );
 
       const clickedOnOverlay = (target as Element).matches?.(
-        '[data-state="open"].fixed, [data-aria-hidden="true"]'
+        '[data-state="open"].fixed, [data-aria-hidden="true"], [data-modal-backdrop]'
       );
 
       if (

@@ -154,3 +154,5 @@ export const SECONDS_TO_SECOND = 1;
 export const MILLISECOND = 1_000;
 
 export const DEFAULT_TIME = '00:00:00';
+
+export const SUBTITLE_TIME_PLACEHOLDER = '00:00:00.000';

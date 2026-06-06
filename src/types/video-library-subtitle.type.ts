@@ -66,3 +66,11 @@ export type VideoLibrarySubtitleStoreType = VideoLibrarySubtitleState &
   VideoLibrarySubtitleActions;
 
 export type SubtitleBodyType = z.infer<typeof subtitleSchema>;
+
+export type SubtitleTimeField = 'start' | 'end';
+
+export type SubtitleTimePointSelection = {
+  field: SubtitleTimeField;
+  seconds: number;
+  key: number;
+};

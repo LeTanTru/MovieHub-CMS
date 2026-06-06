@@ -203,6 +203,8 @@ export function Modal({
       {open && (
         <>
           <m.div
+            data-modal-backdrop=''
+            data-modal-portal=''
             className='backdrop fixed inset-0 z-50 bg-black/50 backdrop-blur-xs'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
