@@ -2,6 +2,7 @@
 
 import { Button, ToolTip } from '@/components/form';
 import { Separator } from '@/components/ui/separator';
+import { useVideoLibrarySubtitleStore } from '@/store';
 import { SubtitleType, VideoLibrarySubtitleResType } from '@/types';
 import { serializeVttContent } from '@/utils';
 import { Download, Plus } from 'lucide-react';
@@ -9,14 +10,16 @@ import { Download, Plus } from 'lucide-react';
 type SubtitleHeaderProps = {
   subtitles: SubtitleType[];
   videoSubtitle: VideoLibrarySubtitleResType;
-  onAddSubtitle: () => void;
 };
 
 export function SubtitleHeader({
   subtitles,
-  videoSubtitle,
-  onAddSubtitle
+  videoSubtitle
 }: SubtitleHeaderProps) {
+  const requestSubtitleFormState = useVideoLibrarySubtitleStore(
+    (s) => s.requestSubtitleFormState
+  );
+
   const canExport = subtitles.some(
     (subtitle) =>
       Number.isFinite(subtitle.startTime) &&
@@ -42,6 +45,10 @@ export function SubtitleHeader({
     URL.revokeObjectURL(url);
   };
 
+  const handleAddSubtitle = () => {
+    requestSubtitleFormState({ mode: 'create' });
+  };
+
   return (
     <div className='flex shrink-0 items-center justify-between border-b border-gray-200 px-2 py-1'>
       <div className='flex items-center gap-2'>
@@ -56,7 +63,7 @@ export function SubtitleHeader({
           <Button
             variant='ghost'
             className='p-0! hover:bg-transparent'
-            onClick={onAddSubtitle}
+            onClick={handleAddSubtitle}
           >
             <Plus
               size={16}

@@ -14,107 +14,28 @@ import { useListBase, useQueryParams } from '@/hooks';
 import { useVideoLibraryQuery } from '@/queries';
 import { useVideoLibrarySubtitleStore } from '@/store';
 import {
-  SubtitleType,
   VideoLibrarySubtitleResType,
   VideoLibrarySubtitleSearchType
 } from '@/types';
 import { generatePath, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
-import { useReducer } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-
-type SubtitleFormStateType =
-  | {
-      mode: 'create';
-    }
-  | {
-      mode: 'edit';
-      subtitleId: string;
-    };
-
-type SubtitleEditorState = {
-  subtitleFormState: SubtitleFormStateType | null;
-  pendingSubtitleFormState: SubtitleFormStateType | null;
-  isSubtitleFormChanged: boolean;
-  isSubtitleFormSwitchConfirmOpen: boolean;
-};
-
-type SubtitleEditorAction =
-  | { type: 'REQUEST_FORM_STATE'; payload: SubtitleFormStateType }
-  | { type: 'CLOSE_FORM' }
-  | { type: 'SET_FORM_CHANGED'; payload: boolean }
-  | { type: 'SET_SWITCH_CONFIRM_OPEN'; payload: boolean }
-  | { type: 'CONFIRM_SWITCH' };
-
-function subtitleEditorReducer(
-  state: SubtitleEditorState,
-  action: SubtitleEditorAction
-): SubtitleEditorState {
-  switch (action.type) {
-    case 'REQUEST_FORM_STATE':
-      if (state.subtitleFormState && state.isSubtitleFormChanged) {
-        return {
-          ...state,
-          pendingSubtitleFormState: action.payload,
-          isSubtitleFormSwitchConfirmOpen: true
-        };
-      }
-      return {
-        ...state,
-        subtitleFormState: action.payload,
-        isSubtitleFormChanged: false
-      };
-    case 'CLOSE_FORM':
-      return {
-        ...state,
-        subtitleFormState: null,
-        isSubtitleFormChanged: false
-      };
-    case 'SET_FORM_CHANGED':
-      return {
-        ...state,
-        isSubtitleFormChanged: action.payload
-      };
-    case 'SET_SWITCH_CONFIRM_OPEN':
-      return {
-        ...state,
-        isSubtitleFormSwitchConfirmOpen: action.payload,
-        pendingSubtitleFormState: action.payload
-          ? state.pendingSubtitleFormState
-          : null
-      };
-    case 'CONFIRM_SWITCH':
-      return {
-        ...state,
-        subtitleFormState: state.pendingSubtitleFormState,
-        isSubtitleFormChanged: false,
-        pendingSubtitleFormState: null
-      };
-    default:
-      return state;
-  }
-}
 
 export function SubtitleEditor() {
   const [playerHeight, playerContainerRef] = useElementHeight();
   const [subtitleFormHeight, subtitleFormContainerRef] = useElementHeight();
 
-  const [{ subtitleFormState, isSubtitleFormSwitchConfirmOpen }, dispatch] =
-    useReducer(subtitleEditorReducer, {
-      subtitleFormState: null,
-      pendingSubtitleFormState: null,
-      isSubtitleFormChanged: false,
-      isSubtitleFormSwitchConfirmOpen: false
-    });
-
-  const { subtitles, addSubtitle, updateSubtitle } =
-    useVideoLibrarySubtitleStore(
-      useShallow((s) => ({
-        subtitles: s.subtitles,
-        addSubtitle: s.addSubtitle,
-        updateSubtitle: s.updateSubtitle
-      }))
-    );
+  const {
+    isSubtitleFormSwitchConfirmOpen,
+    setSubtitleFormSwitchConfirmOpen,
+    confirmSubtitleFormSwitch
+  } = useVideoLibrarySubtitleStore(
+    useShallow((s) => ({
+      isSubtitleFormSwitchConfirmOpen: s.isSubtitleFormSwitchConfirmOpen,
+      setSubtitleFormSwitchConfirmOpen: s.setSubtitleFormSwitchConfirmOpen,
+      confirmSubtitleFormSwitch: s.confirmSubtitleFormSwitch
+    }))
+  );
 
   const { id: videoLibraryId } = useParams<{
     id: string;
@@ -155,36 +76,6 @@ export function SubtitleEditor() {
   const videoSubtitle = subtitleList.find(
     (subtitle) => subtitle.language === p_language
   );
-
-  const isEditingSubtitle =
-    subtitleFormState?.mode === 'edit'
-      ? subtitles.find(
-          (subtitle) => subtitle.id === subtitleFormState.subtitleId
-        )
-      : null;
-
-  const handleOpenAddSubtitleForm = () => {
-    dispatch({ type: 'REQUEST_FORM_STATE', payload: { mode: 'create' } });
-  };
-
-  const handleOpenEditSubtitleForm = (subtitle: SubtitleType) => {
-    dispatch({
-      type: 'REQUEST_FORM_STATE',
-      payload: { mode: 'edit', subtitleId: subtitle.id }
-    });
-  };
-
-  const handleCloseSubtitleForm = () => {
-    dispatch({ type: 'CLOSE_FORM' });
-  };
-
-  const handleSubtitleFormSwitchConfirmOpenChange = (open: boolean) => {
-    dispatch({ type: 'SET_SWITCH_CONFIRM_OPEN', payload: open });
-  };
-
-  const handleConfirmSubtitleFormSwitch = () => {
-    dispatch({ type: 'CONFIRM_SWITCH' });
-  };
 
   const transcriptPanelHeight = playerHeight + subtitleFormHeight;
 
@@ -235,25 +126,7 @@ export function SubtitleEditor() {
                   playerContainerRef={playerContainerRef}
                 />
                 <div ref={subtitleFormContainerRef} className='flex flex-col'>
-                  <SubtitleForm
-                    subtitle={
-                      subtitleFormState?.mode === 'edit'
-                        ? isEditingSubtitle
-                        : null
-                    }
-                    onClose={handleCloseSubtitleForm}
-                    onAdd={addSubtitle}
-                    onEdit={updateSubtitle}
-                    onFormChange={(changed) =>
-                      dispatch({ type: 'SET_FORM_CHANGED', payload: changed })
-                    }
-                    disabled={
-                      subtitleFormState?.mode === 'create' ||
-                      !!isEditingSubtitle
-                        ? false
-                        : true
-                    }
-                  />
+                  <SubtitleForm />
                 </div>
               </>
             ) : null}
@@ -264,8 +137,6 @@ export function SubtitleEditor() {
                 videoSubtitle={videoSubtitle}
                 videoLibrary={videoLibrary}
                 height={transcriptPanelHeight}
-                onAddSubtitle={handleOpenAddSubtitleForm}
-                onEditSubtitle={handleOpenEditSubtitleForm}
               />
             )}
           </Col>
@@ -273,9 +144,9 @@ export function SubtitleEditor() {
       </ListPageWrapper>
       <ConfirmModal
         open={isSubtitleFormSwitchConfirmOpen}
-        onOpenChange={handleSubtitleFormSwitchConfirmOpenChange}
+        onOpenChange={setSubtitleFormSwitchConfirmOpen}
         message='Bạn có chắc chắn muốn hủy không ?'
-        onConfirm={handleConfirmSubtitleFormSwitch}
+        onConfirm={confirmSubtitleFormSwitch}
       />
     </PageWrapper>
   );

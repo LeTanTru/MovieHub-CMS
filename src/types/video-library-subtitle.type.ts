@@ -42,12 +42,25 @@ export type SubtitleType = {
   endTime: number; // seconds
 };
 
+export type SubtitleFormStateType =
+  | {
+      mode: 'create';
+    }
+  | {
+      mode: 'edit';
+      subtitleId: string;
+    };
+
 type VideoLibrarySubtitleState = {
   currentTime: number; // seconds
   subtitles: SubtitleType[];
   selectedSubtitleId: string | null;
   isSeeking: boolean;
   duration: number; // seconds
+  subtitleFormState: SubtitleFormStateType | null;
+  pendingSubtitleFormState: SubtitleFormStateType | null;
+  isSubtitleFormChanged: boolean;
+  isSubtitleFormSwitchConfirmOpen: boolean;
 };
 
 type VideoLibrarySubtitleActions = {
@@ -60,6 +73,13 @@ type VideoLibrarySubtitleActions = {
   startSeek: () => void;
   completeSeek: (currentTime: number) => void;
   setDuration: (duration: number) => void;
+  requestSubtitleFormState: (subtitleFormState: SubtitleFormStateType) => void;
+  closeSubtitleForm: () => void;
+  setSubtitleFormChanged: (isSubtitleFormChanged: boolean) => void;
+  setSubtitleFormSwitchConfirmOpen: (
+    isSubtitleFormSwitchConfirmOpen: boolean
+  ) => void;
+  confirmSubtitleFormSwitch: () => void;
 };
 
 export type VideoLibrarySubtitleStoreType = VideoLibrarySubtitleState &

@@ -13,22 +13,12 @@ import {
   type SyntheticEvent,
   useEffect,
   useMemo,
-  useRef,
-  useState
+  useRef
 } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useVideoLibrarySubtitleStore } from '@/store';
 import type { UseFormReturn } from 'react-hook-form';
 import { SUBTITLE_TIME_PLACEHOLDER } from '@/constants';
-
-type SubtitleFormProps = {
-  subtitle?: SubtitleType | null;
-  disabled?: boolean;
-  onClose: () => void;
-  onAdd: (subtitle: SubtitleBodyType) => void;
-  onEdit: (id: string, patch: Partial<SubtitleType>) => void;
-  onFormChange?: (isFormChanged: boolean) => void;
-};
 
 const preventTimeInputPointerSelection = (
   event: ReactPointerEvent<HTMLInputElement>
@@ -88,22 +78,36 @@ function getSubtitleOverlapFields(
   return fields;
 }
 
-export function SubtitleForm({
-  subtitle,
-  disabled = false,
-  onClose,
-  onAdd,
-  onEdit,
-  onFormChange
-}: SubtitleFormProps) {
-  const { duration, subtitles } = useVideoLibrarySubtitleStore(
+export function SubtitleForm() {
+  const {
+    duration,
+    subtitles,
+    subtitleFormState,
+    isSubtitleFormChanged,
+    addSubtitle,
+    updateSubtitle,
+    closeSubtitleForm,
+    setSubtitleFormChanged
+  } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       duration: s.duration,
-      subtitles: s.subtitles
+      subtitles: s.subtitles,
+      subtitleFormState: s.subtitleFormState,
+      isSubtitleFormChanged: s.isSubtitleFormChanged,
+      addSubtitle: s.addSubtitle,
+      updateSubtitle: s.updateSubtitle,
+      closeSubtitleForm: s.closeSubtitleForm,
+      setSubtitleFormChanged: s.setSubtitleFormChanged
     }))
   );
-  const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const subtitle =
+    subtitleFormState?.mode === 'edit'
+      ? subtitles.find((item) => item.id === subtitleFormState.subtitleId)
+      : null;
+
+  const disabled = subtitleFormState?.mode !== 'create' && !subtitle;
 
   const defaultValues: SubtitleBodyType = {
     start: '',
@@ -130,14 +134,8 @@ export function SubtitleForm({
   }, [subtitle?.id, disabled]);
 
   const handleClose = () => {
-    setIsFormChanged(false);
-    onFormChange?.(false);
-    onClose();
-  };
-
-  const handleFormChange = (isChanged: boolean) => {
-    setIsFormChanged(isChanged);
-    onFormChange?.(isChanged);
+    setSubtitleFormChanged(false);
+    closeSubtitleForm();
   };
 
   const onSubmit = (
@@ -193,14 +191,14 @@ export function SubtitleForm({
     };
 
     if (subtitle) {
-      onEdit(subtitle.id, {
+      updateSubtitle(subtitle.id, {
         ...subtitle,
         ...normalizedValues,
         startTime,
         endTime
       });
     } else {
-      onAdd(normalizedValues);
+      addSubtitle(normalizedValues);
     }
 
     handleClose();
@@ -219,7 +217,7 @@ export function SubtitleForm({
         }
       )}
       onSubmit={onSubmit}
-      onFormChange={handleFormChange}
+      onFormChange={setSubtitleFormChanged}
     >
       {(form) => {
         const start = form.watch('start');
@@ -349,7 +347,7 @@ export function SubtitleForm({
             </Row>
             <Row className='mb-0 justify-end'>
               <Col className='w-40'>
-                {isFormChanged ? (
+                {isSubtitleFormChanged ? (
                   <ConfirmModal
                     message='Bạn có chắc chắn muốn hủy không ?'
                     onConfirm={handleClose}
@@ -382,7 +380,7 @@ export function SubtitleForm({
                 <Button
                   type='submit'
                   variant='primary'
-                  disabled={disabled || !isFormChanged}
+                  disabled={disabled || !isSubtitleFormChanged}
                 >
                   <Save />
                   {subtitle ? 'Cập nhật' : 'Thêm'}
