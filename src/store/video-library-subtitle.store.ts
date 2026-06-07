@@ -16,6 +16,12 @@ export const useVideoLibrarySubtitleStore =
     selectedSubtitleId: null,
     isSeeking: false,
     duration: 0,
+    subtitleFormState: null,
+    pendingSubtitleFormState: null,
+    isSubtitleFormChanged: false,
+    isSubtitleFormSwitchConfirmOpen: false,
+    subtitleTimePickField: null,
+    subtitleTimePointSelection: null,
 
     setCurrentTime: (currentTime) => set({ currentTime }),
     setSubtitles: (subtitles) => set({ subtitles }),
@@ -60,5 +66,65 @@ export const useVideoLibrarySubtitleStore =
     startSeek: () =>
       set((state) => (state.isSeeking ? state : { isSeeking: true })),
     completeSeek: (currentTime) => set({ currentTime, isSeeking: false }),
-    setDuration: (duration: number) => set({ duration })
+    setDuration: (duration: number) => set({ duration }),
+    requestSubtitleFormState: (subtitleFormState) =>
+      set((state) => {
+        if (state.subtitleFormState && state.isSubtitleFormChanged) {
+          return {
+            pendingSubtitleFormState: subtitleFormState,
+            isSubtitleFormSwitchConfirmOpen: true
+          };
+        }
+
+        return {
+          subtitleFormState,
+          isSubtitleFormChanged: false,
+          subtitleTimePickField: null
+        };
+      }),
+    closeSubtitleForm: () =>
+      set({
+        subtitleFormState: null,
+        isSubtitleFormChanged: false,
+        subtitleTimePickField: null
+      }),
+    setSubtitleFormChanged: (isSubtitleFormChanged) =>
+      set({ isSubtitleFormChanged }),
+    setSubtitleFormSwitchConfirmOpen: (isSubtitleFormSwitchConfirmOpen) =>
+      set((state) => ({
+        isSubtitleFormSwitchConfirmOpen,
+        pendingSubtitleFormState: isSubtitleFormSwitchConfirmOpen
+          ? state.pendingSubtitleFormState
+          : null
+      })),
+    confirmSubtitleFormSwitch: () =>
+      set((state) => ({
+        subtitleFormState: state.pendingSubtitleFormState,
+        isSubtitleFormChanged: false,
+        pendingSubtitleFormState: null,
+        subtitleTimePickField: null
+      })),
+    startSubtitleTimePick: (field) =>
+      set((state) => ({
+        subtitleTimePickField:
+          state.subtitleTimePickField === field ? null : field
+      })),
+    cancelSubtitleTimePick: () =>
+      set({
+        subtitleTimePickField: null
+      }),
+    selectSubtitleTimePoint: (seconds) =>
+      set((state) => {
+        const field = state.subtitleTimePickField;
+
+        if (!field) return state;
+
+        return {
+          subtitleTimePointSelection: {
+            field,
+            seconds,
+            key: (state.subtitleTimePointSelection?.key ?? 0) + 1
+          }
+        };
+      })
   }));

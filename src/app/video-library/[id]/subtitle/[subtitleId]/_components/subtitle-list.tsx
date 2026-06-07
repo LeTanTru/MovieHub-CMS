@@ -11,27 +11,27 @@ type SubtitleListProps = {
   virtualItems: ReturnType<
     Virtualizer<HTMLDivElement, Element>['getVirtualItems']
   >;
-  onEditSubtitle: (subtitle: SubtitleType) => void;
 };
 
 export function SubtitleList({
   rowVirtualizer,
-  virtualItems,
-  onEditSubtitle
+  virtualItems
 }: SubtitleListProps) {
   const {
     currentTime,
     selectedSubtitleId,
     subtitles,
     setSelectedSubtitleId,
-    deleteSubtitle
+    deleteSubtitle,
+    requestSubtitleFormState
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       currentTime: s.currentTime,
       selectedSubtitleId: s.selectedSubtitleId,
       subtitles: s.subtitles,
       setSelectedSubtitleId: s.setSelectedSubtitleId,
-      deleteSubtitle: s.deleteSubtitle
+      deleteSubtitle: s.deleteSubtitle,
+      requestSubtitleFormState: s.requestSubtitleFormState
     }))
   );
 
@@ -41,6 +41,10 @@ export function SubtitleList({
       align: 'center',
       behavior: 'smooth'
     });
+  };
+
+  const handleEditSubtitle = (subtitle: SubtitleType) => {
+    requestSubtitleFormState({ mode: 'edit', subtitleId: subtitle.id });
   };
 
   const lastVirtualItem = virtualItems[virtualItems.length - 1];
@@ -86,7 +90,7 @@ export function SubtitleList({
               key={subtitle.id}
               rowIndex={row.index + 1}
               subtitle={subtitle}
-              onEdit={onEditSubtitle}
+              onEdit={handleEditSubtitle}
               onSelect={handleSubtitleSelect}
               onDelete={deleteSubtitle}
             />

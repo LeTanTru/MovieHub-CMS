@@ -42,12 +42,35 @@ export type SubtitleType = {
   endTime: number; // seconds
 };
 
+export type SubtitleTimeField = 'start' | 'end';
+
+export type SubtitleTimePointSelection = {
+  field: SubtitleTimeField;
+  seconds: number;
+  key: number;
+};
+
+export type SubtitleFormStateType =
+  | {
+      mode: 'create';
+    }
+  | {
+      mode: 'edit';
+      subtitleId: string;
+    };
+
 type VideoLibrarySubtitleState = {
   currentTime: number; // seconds
   subtitles: SubtitleType[];
   selectedSubtitleId: string | null;
   isSeeking: boolean;
   duration: number; // seconds
+  subtitleFormState: SubtitleFormStateType | null;
+  pendingSubtitleFormState: SubtitleFormStateType | null;
+  isSubtitleFormChanged: boolean;
+  isSubtitleFormSwitchConfirmOpen: boolean;
+  subtitleTimePickField: SubtitleTimeField | null;
+  subtitleTimePointSelection: SubtitleTimePointSelection | null;
 };
 
 type VideoLibrarySubtitleActions = {
@@ -60,17 +83,19 @@ type VideoLibrarySubtitleActions = {
   startSeek: () => void;
   completeSeek: (currentTime: number) => void;
   setDuration: (duration: number) => void;
+  requestSubtitleFormState: (subtitleFormState: SubtitleFormStateType) => void;
+  closeSubtitleForm: () => void;
+  setSubtitleFormChanged: (isSubtitleFormChanged: boolean) => void;
+  setSubtitleFormSwitchConfirmOpen: (
+    isSubtitleFormSwitchConfirmOpen: boolean
+  ) => void;
+  confirmSubtitleFormSwitch: () => void;
+  startSubtitleTimePick: (field: SubtitleTimeField) => void;
+  cancelSubtitleTimePick: () => void;
+  selectSubtitleTimePoint: (seconds: number) => void;
 };
 
 export type VideoLibrarySubtitleStoreType = VideoLibrarySubtitleState &
   VideoLibrarySubtitleActions;
 
 export type SubtitleBodyType = z.infer<typeof subtitleSchema>;
-
-export type SubtitleTimeField = 'start' | 'end';
-
-export type SubtitleTimePointSelection = {
-  field: SubtitleTimeField;
-  seconds: number;
-  key: number;
-};

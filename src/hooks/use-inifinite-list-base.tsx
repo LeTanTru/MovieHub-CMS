@@ -269,7 +269,7 @@ export const useInfiniteListBase = <
       }),
     getNextPageParam: (lastPage, allPages) => {
       const currentPage = allPages.length - 1;
-      const totalPages = lastPage.data.totalPages ?? 0;
+      const totalPages = lastPage.data?.totalPages ?? 0;
       return currentPage < totalPages - 1 ? currentPage + 1 : undefined;
     },
     initialPageParam: 0,
@@ -290,7 +290,7 @@ export const useInfiniteListBase = <
   // Update data from query results
   useEffect(() => {
     const allData =
-      infiniteQuery.data?.pages.flatMap((page) => page.data.content || []) ||
+      infiniteQuery.data?.pages.flatMap((page) => page.data?.content || []) ||
       [];
     setData(allData);
   }, [infiniteQuery.data]);
@@ -620,11 +620,11 @@ export const useInfiniteListBase = <
   };
 
   const totalElements = useMemo(() => {
-    return infiniteQuery.data?.pages[0]?.data.totalElements ?? 0;
+    return infiniteQuery.data?.pages[0]?.data?.totalElements ?? 0;
   }, [infiniteQuery.data]);
 
   const totalPages = useMemo(() => {
-    return infiniteQuery.data?.pages[0]?.data.totalPages ?? 0;
+    return infiniteQuery.data?.pages[0]?.data?.totalPages ?? 0;
   }, [infiniteQuery.data]);
 
   const totalLeft = useMemo(() => {

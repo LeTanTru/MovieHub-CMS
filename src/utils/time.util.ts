@@ -48,6 +48,7 @@ export const timeToSeconds = (
   }
 
   const parsedTime = parseClockTime(time);
+
   if (!parsedTime) return 0;
 
   return (
