@@ -54,6 +54,7 @@ import {
 import { cn } from '@/lib';
 
 import './video-player.css';
+import { TimeSliderMarkerType } from '@/types';
 
 type IndicatorAction = 'initial' | 'play-pause' | 'volume' | 'none';
 const IndicatorContext = createContext<{
@@ -70,11 +71,15 @@ type VideoPlayerProps = Omit<
   ComponentProps<typeof MediaPlayer>,
   'ref' | 'children' | 'viewType' | 'streamType'
 > & {
+  activeMarkerId?: string | null;
   auth: boolean;
   defaultQuality?: number;
   duration: number;
+  hideVolumeIndicator?: boolean;
   introEnd: number;
   introStart: number;
+  isTimeSliderSelectionActive?: boolean;
+  markers?: TimeSliderMarkerType[];
   next?: boolean;
   outroStart: number;
   prev?: boolean;
@@ -87,34 +92,38 @@ type VideoPlayerProps = Omit<
   onNextClick?: () => void;
   onPrevClick?: () => void;
   onSeeked?: (currentTime: number) => void;
-  hideVolumeIndicator?: boolean;
+  onTimeSliderSelect?: (time: number) => void;
 };
 
 export function VideoPlayer({
+  activeMarkerId,
   auth,
+  autoPlay = true,
+  className,
   defaultQuality = 0,
   duration,
+  hideVolumeIndicator = false,
   introEnd,
   introStart,
+  isTimeSliderSelectionActive = false,
+  markers,
   next,
   outroStart,
   prev,
+  ref,
   skipOutro = false,
   slots,
   textTracks,
   thumbnailUrl,
   token,
+  volume = 0.5,
   vttUrl,
+  onEnded,
   onNextClick,
   onPrevClick,
   onSeeked,
-  hideVolumeIndicator = false,
+  onTimeSliderSelect,
   onTimeUpdate,
-  onEnded,
-  autoPlay = true,
-  volume = 0.5,
-  className,
-  ref,
   ...mediaPlayerProps
 }: VideoPlayerProps & { ref?: Ref<MediaPlayerInstance> }) {
   const playerRef = useRef<MediaPlayerInstance | null>(null);
@@ -244,6 +253,10 @@ export function VideoPlayer({
                 duration={duration}
                 outroStart={outroStart}
                 vttUrl={vttUrl}
+                markers={markers}
+                activeMarkerId={activeMarkerId}
+                isTimeSliderSelectionActive={isTimeSliderSelectionActive}
+                onTimeSliderSelect={onTimeSliderSelect}
               />
             ),
             bufferingIndicator: (

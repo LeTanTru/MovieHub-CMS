@@ -107,8 +107,8 @@ export const parseVttContent = (content: string): SubtitleType[] => {
       continue;
     }
 
-    const startTime = timeToSeconds(start);
-    const endTime = timeToSeconds(end);
+    const startTime = Number(timeToSeconds(start).toFixed(2));
+    const endTime = Number(timeToSeconds(end).toFixed(2));
 
     if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) {
       i++;

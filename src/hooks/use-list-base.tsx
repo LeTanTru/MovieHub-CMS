@@ -268,8 +268,8 @@ export const useListBase = <
 
   // Update data from query results
   useEffect(() => {
-    setData(listQuery.data?.data.content || []);
-  }, [listQuery.data?.data.content]);
+    setData(listQuery.data?.data?.content || []);
+  }, [listQuery.data?.data?.content]);
 
   // Pagination
   const current = searchParams['page'];
@@ -277,7 +277,7 @@ export const useListBase = <
     setPagination((p) => ({
       ...p,
       current: current ? Number(current) : DEFAULT_TABLE_PAGE_START + 1,
-      total: listQuery.data?.data.totalPages ?? 0
+      total: listQuery.data?.data?.totalPages ?? 0
     }));
   }, [current, listQuery.data]);
 
@@ -588,11 +588,11 @@ export const useListBase = <
   );
 
   const totalElements = useMemo(() => {
-    return listQuery.data?.data.totalElements ?? 0;
+    return listQuery.data?.data?.totalElements ?? 0;
   }, [listQuery.data]);
 
   const totalPages = useMemo(() => {
-    return listQuery.data?.data.totalPages ?? 0;
+    return listQuery.data?.data?.totalPages ?? 0;
   }, [listQuery.data]);
 
   const mappingData = (response: ApiResponseList<T>) => {

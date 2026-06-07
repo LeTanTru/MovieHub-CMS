@@ -2,16 +2,28 @@
 
 import { ArrowLeftFromLine, Crosshair, Save } from 'lucide-react';
 import { BaseForm } from '@/components/form/base-form';
-import { Button, Col, InputField, Row, TextAreaField } from '@/components/form';
+import {
+  Button,
+  Col,
+  InputField,
+  Row,
+  TextAreaField,
+  ToolTip
+} from '@/components/form';
 import { cn } from '@/lib/utils';
 import { ConfirmModal } from '@/components/modal';
 import { secondsToVttTime, timeToSeconds } from '@/utils';
-import { SubtitleBodyType, SubtitleType } from '@/types';
+import type {
+  SubtitleBodyType,
+  SubtitleTimeField,
+  SubtitleType
+} from '@/types';
 import { subtitleSchema } from '@/schemaValidations';
 import {
   type PointerEvent as ReactPointerEvent,
   type SyntheticEvent,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef
 } from 'react';
@@ -35,6 +47,54 @@ const collapseTimeInputSelection = (
     input.setSelectionRange(input.value.length, input.value.length);
   }
 };
+
+const START_TIME_EXCEEDS_DURATION_MESSAGE =
+  'Thời gian bắt đầu phải nhỏ hơn thời lượng video';
+const END_TIME_EXCEEDS_DURATION_MESSAGE =
+  'Thời gian kết thúc không được vượt quá thời lượng video';
+
+function validateSubtitleTimeFields({
+  form,
+  field,
+  start,
+  end,
+  duration
+}: {
+  form: UseFormReturn<SubtitleBodyType>;
+  field: SubtitleTimeField;
+  start: string;
+  end: string;
+  duration: number;
+}) {
+  const startTime = timeToSeconds(start || SUBTITLE_TIME_PLACEHOLDER);
+  const endTime = timeToSeconds(end || SUBTITLE_TIME_PLACEHOLDER);
+  const hasValidOrder = startTime < endTime;
+  const hasDuration = duration > 0 && Number.isFinite(duration);
+
+  if (hasValidOrder) {
+    form.clearErrors(field === 'start' ? 'end' : 'start');
+  }
+
+  if (field === 'start') {
+    if (hasDuration && startTime >= duration) {
+      form.setError('start', {
+        message: START_TIME_EXCEEDS_DURATION_MESSAGE
+      });
+    } else if (hasValidOrder) {
+      form.clearErrors('start');
+    }
+  }
+
+  if (field === 'end') {
+    if (hasDuration && endTime > duration) {
+      form.setError('end', {
+        message: END_TIME_EXCEEDS_DURATION_MESSAGE
+      });
+    } else if (hasValidOrder) {
+      form.clearErrors('end');
+    }
+  }
+}
 
 function getSubtitleOverlapFields(
   subtitles: SubtitleType[],
@@ -84,20 +144,24 @@ export function SubtitleForm() {
     subtitles,
     subtitleFormState,
     isSubtitleFormChanged,
+    subtitleTimePickField,
     addSubtitle,
     updateSubtitle,
     closeSubtitleForm,
-    setSubtitleFormChanged
+    setSubtitleFormChanged,
+    startSubtitleTimePick
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       duration: s.duration,
       subtitles: s.subtitles,
       subtitleFormState: s.subtitleFormState,
       isSubtitleFormChanged: s.isSubtitleFormChanged,
+      subtitleTimePickField: s.subtitleTimePickField,
       addSubtitle: s.addSubtitle,
       updateSubtitle: s.updateSubtitle,
       closeSubtitleForm: s.closeSubtitleForm,
-      setSubtitleFormChanged: s.setSubtitleFormChanged
+      setSubtitleFormChanged: s.setSubtitleFormChanged,
+      startSubtitleTimePick: s.startSubtitleTimePick
     }))
   );
   const formRef = useRef<HTMLFormElement>(null);
@@ -149,14 +213,14 @@ export function SubtitleForm() {
 
     if (hasDuration && startTime >= duration) {
       form.setError('start', {
-        message: 'Thời gian bắt đầu phải nhỏ hơn thời lượng video'
+        message: START_TIME_EXCEEDS_DURATION_MESSAGE
       });
       hasError = true;
     }
 
     if (hasDuration && endTime > duration) {
       form.setError('end', {
-        message: 'Thời gian kết thúc không được vượt quá thời lượng video'
+        message: END_TIME_EXCEEDS_DURATION_MESSAGE
       });
       hasError = true;
     }
@@ -225,6 +289,11 @@ export function SubtitleForm() {
 
         return (
           <>
+            <SubtitleTimePointSelectionConsumer
+              form={form}
+              disabled={disabled}
+              duration={duration}
+            />
             <div className='mb-3 flex items-center justify-between gap-2 border-b border-gray-100 pb-2'>
               <h2
                 className={cn('font-semibold uppercase', {
@@ -259,12 +328,19 @@ export function SubtitleForm() {
 
                       if (startTime >= duration) {
                         form.setError('start', {
-                          message:
-                            'Thời gian bắt đầu phải nhỏ hơn thời lượng video'
+                          message: START_TIME_EXCEEDS_DURATION_MESSAGE
                         });
                       } else {
                         form.clearErrors('start');
                       }
+
+                      validateSubtitleTimeFields({
+                        form,
+                        field: 'start',
+                        start: e.target.value,
+                        end,
+                        duration
+                      });
                     }}
                     readOnly
                     tabIndex={-1}
@@ -273,15 +349,23 @@ export function SubtitleForm() {
                     className='cursor-default caret-transparent select-none'
                     formItemClassName='grow'
                   />
-                  <Button
-                    className='rounded-md'
-                    size='icon'
-                    type='button'
-                    variant='ghost'
-                    disabled={disabled}
-                  >
-                    <Crosshair />
-                  </Button>
+                  <ToolTip title='Chọn thời gian từ timeline' side='bottom'>
+                    <Button
+                      className={cn('rounded-md', {
+                        'bg-sporty-blue hover:bg-sporty-blue/80 text-white hover:text-white':
+                          subtitleTimePickField === 'start'
+                      })}
+                      size='icon'
+                      type='button'
+                      variant='ghost'
+                      disabled={disabled}
+                      aria-label='Pick start time from timeline'
+                      aria-pressed={subtitleTimePickField === 'start'}
+                      onClick={() => startSubtitleTimePick('start')}
+                    >
+                      <Crosshair />
+                    </Button>
+                  </ToolTip>
                 </div>
               </Col>
               <Col className='grid-c-6'>
@@ -307,12 +391,19 @@ export function SubtitleForm() {
                       }
                       if (endTime > duration) {
                         form.setError('end', {
-                          message:
-                            'Thời gian kết thúc không được vượt quá thời lượng video'
+                          message: END_TIME_EXCEEDS_DURATION_MESSAGE
                         });
                       } else {
                         form.clearErrors('end');
                       }
+
+                      validateSubtitleTimeFields({
+                        form,
+                        field: 'end',
+                        start,
+                        end: e.target.value,
+                        duration
+                      });
                     }}
                     readOnly
                     tabIndex={-1}
@@ -321,15 +412,23 @@ export function SubtitleForm() {
                     className='cursor-default caret-transparent select-none'
                     formItemClassName='grow'
                   />
-                  <Button
-                    className='rounded-md'
-                    size='icon'
-                    type='button'
-                    variant='ghost'
-                    disabled={disabled}
-                  >
-                    <Crosshair />
-                  </Button>
+                  <ToolTip title='Chọn thời gian từ timeline' side='bottom'>
+                    <Button
+                      className={cn('rounded-md', {
+                        'bg-sporty-blue hover:bg-sporty-blue/80 text-white hover:text-white':
+                          subtitleTimePickField === 'end'
+                      })}
+                      size='icon'
+                      type='button'
+                      variant='ghost'
+                      disabled={disabled}
+                      aria-label='Pick end time from timeline'
+                      aria-pressed={subtitleTimePickField === 'end'}
+                      onClick={() => startSubtitleTimePick('end')}
+                    >
+                      <Crosshair />
+                    </Button>
+                  </ToolTip>
                 </div>
               </Col>
             </Row>
@@ -392,4 +491,59 @@ export function SubtitleForm() {
       }}
     </BaseForm>
   );
+}
+
+function SubtitleTimePointSelectionConsumer({
+  form,
+  disabled,
+  duration
+}: {
+  form: UseFormReturn<SubtitleBodyType>;
+  disabled: boolean;
+  duration: number;
+}) {
+  const { subtitleTimePointSelection } = useVideoLibrarySubtitleStore(
+    useShallow((s) => ({
+      subtitleTimePointSelection: s.subtitleTimePointSelection
+    }))
+  );
+  const handledSelectionKeyRef = useRef<number | null>(null);
+
+  useLayoutEffect(() => {
+    if (!subtitleTimePointSelection) return;
+    if (handledSelectionKeyRef.current === subtitleTimePointSelection.key) {
+      return;
+    }
+
+    handledSelectionKeyRef.current = subtitleTimePointSelection.key;
+
+    if (disabled) return;
+
+    const selectedSeconds =
+      duration > 0 && Number.isFinite(duration)
+        ? Math.min(Math.max(subtitleTimePointSelection.seconds, 0), duration)
+        : Math.max(subtitleTimePointSelection.seconds, 0);
+
+    form.setValue(
+      subtitleTimePointSelection.field,
+      secondsToVttTime(selectedSeconds),
+      {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true
+      }
+    );
+
+    const values = form.getValues();
+
+    validateSubtitleTimeFields({
+      form,
+      field: subtitleTimePointSelection.field,
+      start: values.start,
+      end: values.end,
+      duration
+    });
+  }, [disabled, duration, form, subtitleTimePointSelection]);
+
+  return null;
 }

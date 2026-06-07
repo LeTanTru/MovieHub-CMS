@@ -19,7 +19,7 @@ export function NotFound({
   return (
     <div
       className={cn(
-        'mx-2 flex h-[calc(90dvh-6rem)] w-full flex-col items-center justify-center rounded-lg bg-white max-[1560px]:h-[calc(90dvh-115px)]',
+        'flex h-[calc(90dvh-6rem)] w-full flex-col items-center justify-center rounded-lg bg-white max-[1560px]:h-[calc(90dvh-115px)]',
         className
       )}
     >
