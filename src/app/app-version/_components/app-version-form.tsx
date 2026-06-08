@@ -163,6 +163,9 @@ export function AppVersionForm() {
                   label='Chọn tệp (.apk)'
                   accept='.apk'
                   required
+                  fileName={
+                    data ? `moviehub_${form.watch('name')}.apk` : undefined
+                  }
                 />
               </Col>
             </Row>
