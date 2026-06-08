@@ -7,7 +7,6 @@ import { BaseTable } from '@/components/table';
 import {
   apiConfig,
   FieldTypes,
-  languageOptions,
   objectNames,
   queryKeys,
   SUBTITLE_COMPLETE,
@@ -243,7 +242,10 @@ export function VideoLibrarySubtitleList() {
         key: 'language',
         placeholder: 'Ngôn ngữ',
         type: FieldTypes.SELECT,
-        options: languageOptions,
+        options: data?.map((sub) => ({
+          value: sub.language,
+          label: sub.label
+        })),
         submitOnChanged: true
       }
     ];
@@ -293,6 +295,7 @@ export function VideoLibrarySubtitleList() {
         onClose={closeVideoSubtitleModal}
         subtitle={selectedSubtitle}
         defaultSubtitleId={data?.find((sub) => sub.isDefault)?.id || ''}
+        translatedLanguages={data?.map((sub) => sub.language)}
       />
     </PageWrapper>
   );
