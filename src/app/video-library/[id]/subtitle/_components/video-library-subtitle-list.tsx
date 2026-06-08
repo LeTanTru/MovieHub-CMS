@@ -22,6 +22,7 @@ import { useVideoLibraryQuery } from '@/queries';
 import { route } from '@/routes';
 import { videoLibrarySubtitleSearchSchema } from '@/schemaValidations';
 import { VideoLibrarySubtitleModal } from './video-library-subtitle-modal';
+import { VideoLibrarySubtitleTranslateModal } from './video-library-subtitle-translate-modal';
 import type {
   Column,
   SearchFormProps,
@@ -51,10 +52,21 @@ export function VideoLibrarySubtitleList() {
     useState<VideoLibrarySubtitleResType | null>(null);
 
   const {
-    opened: openedVideoSubtitleModal,
-    open: openVideoSubtitleModal,
-    close: closeVideoSubtitleModal
+    opened: openedEditModal,
+    open: openEditModal,
+    close: closeEditModal
   } = useDisclosure();
+
+  const {
+    opened: openedTranslateModal,
+    open: openTranslateModal,
+    close: closeTranslateModal
+  } = useDisclosure();
+
+  const handleCloseEditModal = () => {
+    closeEditModal();
+    setSelectedSubtitle(null);
+  };
 
   const { searchParams, serializeParams, deprefixParams } =
     useQueryParams<Record<string, string>>();
@@ -76,7 +88,6 @@ export function VideoLibrarySubtitleList() {
     },
     override: (handlers) => {
       handlers.renderAddButton = () => {
-        const defaultSubtitle = data?.find((sub) => sub.isDefault);
         return (
           <HasPermission
             requiredPermissions={[
@@ -85,11 +96,9 @@ export function VideoLibrarySubtitleList() {
           >
             <Button
               onClick={() => {
-                setSelectedSubtitle(null);
-                openVideoSubtitleModal();
+                openTranslateModal();
               }}
               variant='primary'
-              disabled={!defaultSubtitle}
             >
               <PlusIcon />
               Thêm mới
@@ -107,12 +116,12 @@ export function VideoLibrarySubtitleList() {
             subtitle: VideoLibrarySubtitleResType
           ) => {
             setSelectedSubtitle(subtitle);
-            openVideoSubtitleModal();
+            openEditModal();
           };
 
           return (
             <ToolTip
-              title={`Cập nhật phụ đề tiếng ${record.language}`}
+              title={`Cập nhật phụ đề tiếng ${record.label}`}
               sideOffset={0}
             >
               <span>
@@ -291,11 +300,15 @@ export function VideoLibrarySubtitleList() {
         />
       </ListPageWrapper>
       <VideoLibrarySubtitleModal
-        open={openedVideoSubtitleModal}
-        onClose={closeVideoSubtitleModal}
+        open={openedEditModal}
+        onClose={handleCloseEditModal}
         subtitle={selectedSubtitle}
+      />
+      <VideoLibrarySubtitleTranslateModal
+        open={openedTranslateModal}
+        onClose={closeTranslateModal}
         defaultSubtitleId={data?.find((sub) => sub.isDefault)?.id || ''}
-        translatedLanguages={data?.map((sub) => sub.language)}
+        translatedLanguages={data?.map((sub) => sub.language) || []}
       />
     </PageWrapper>
   );

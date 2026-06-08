@@ -169,6 +169,7 @@ The video library area has several connected responsibilities:
 
 Key files:
 
+- `docs/subtitle-editor-flow.md`
 - `src/app/video-library`
 - `src/queries/video-library.query.ts`
 - `src/queries/video-library-subtitle.query.ts`
