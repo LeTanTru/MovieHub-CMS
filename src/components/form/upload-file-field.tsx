@@ -27,14 +27,13 @@ type UploadFileFieldProps<T extends FieldValues> = {
   className?: string;
   accept: string;
   maxSize?: number; // Max file size in bytes
+  fileName?: string;
   onChange?: (url: string) => void;
   onUploadStart?: () => void;
-
   uploadFileFn: (
     file: File,
     onProgress: (progress: number) => void
   ) => Promise<string>;
-
   deleteImageFn?: (url: string) => Promise<ApiResponseNoData | undefined>;
 };
 
@@ -46,6 +45,7 @@ export function UploadFileField<T extends FieldValues>({
   className,
   accept,
   maxSize,
+  fileName,
   onChange,
   onUploadStart,
   uploadFileFn,
@@ -184,7 +184,7 @@ export function UploadFileField<T extends FieldValues>({
             {file ? (
               file.name
             ) : value ? (
-              <span>Đã tải tệp lên</span>
+              <span>{fileName || 'Đã tải tệp lên'}</span>
             ) : (
               <span
                 className={cn('text-gray-300', {
