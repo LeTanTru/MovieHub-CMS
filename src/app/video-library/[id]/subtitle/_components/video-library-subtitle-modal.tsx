@@ -37,8 +37,9 @@ import type { UseFormReturn } from 'react-hook-form';
 
 type VideoLibrarySubtitleModalProps = {
   open: boolean;
-  subtitle: VideoLibrarySubtitleResType | null; // Null means Translate (Create) mode
-  defaultSubtitleId?: string; // Used in Translate mode
+  subtitle: VideoLibrarySubtitleResType | null;
+  defaultSubtitleId?: string;
+  translatedLanguages: string[];
   onClose: () => void;
 };
 
@@ -46,6 +47,7 @@ export function VideoLibrarySubtitleModal({
   open,
   subtitle,
   defaultSubtitleId = '',
+  translatedLanguages,
   onClose
 }: VideoLibrarySubtitleModalProps) {
   const isEdit = !!subtitle;
@@ -67,6 +69,10 @@ export function VideoLibrarySubtitleModal({
       language: ''
     }),
     [defaultSubtitleId]
+  );
+
+  const filteredLanguageOptions = languageOptions.filter(
+    (opt) => !translatedLanguages.includes(opt.value)
   );
 
   const handleTranslateSubmit = async (
@@ -104,7 +110,7 @@ export function VideoLibrarySubtitleModal({
     loading: editLoading,
     isFormChanged: isEditFormChanged,
     onFormChange: onEditFormChange,
-    handleSubmit: handleEditSubmit,
+    handleSubmit,
     renderActions
   } = useSaveBase<VideoLibrarySubtitleResType, VideoLibrarySubtitleBodyType>({
     apiConfig: apiConfig.videoLibrarySubtitle,
@@ -138,11 +144,11 @@ export function VideoLibrarySubtitleModal({
     [subtitle]
   );
 
-  const handleEditSubmitWrapper = async (
+  const onSubmit = async (
     values: VideoLibrarySubtitleBodyType,
     form: UseFormReturn<VideoLibrarySubtitleBodyType>
   ) => {
-    await handleEditSubmit(
+    await handleSubmit(
       {
         ...values,
         id: subtitle?.id ?? ''
@@ -174,7 +180,7 @@ export function VideoLibrarySubtitleModal({
       <Modal.Body>
         {isEdit ? (
           <BaseForm
-            onSubmit={handleEditSubmitWrapper}
+            onSubmit={onSubmit}
             defaultValues={editDefaultValues}
             schema={videoLibrarySubtitleSchema}
             initialValues={editInitialValues}
@@ -235,7 +241,7 @@ export function VideoLibrarySubtitleModal({
                       name='language'
                       label='Ngôn ngữ phụ đề cần dịch'
                       placeholder='Chọn ngôn ngữ phụ đề cần dịch'
-                      options={languageOptions}
+                      options={filteredLanguageOptions}
                       required
                       onValueChange={(val) => {
                         if (val) {
