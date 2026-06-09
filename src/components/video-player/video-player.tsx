@@ -78,7 +78,6 @@ type VideoPlayerProps = Omit<
   hideVolumeIndicator?: boolean;
   introEnd: number;
   introStart: number;
-  isTimeSliderSelectionActive?: boolean;
   markers?: TimeSliderMarkerType[];
   next?: boolean;
   outroStart: number;
@@ -92,7 +91,6 @@ type VideoPlayerProps = Omit<
   onNextClick?: () => void;
   onPrevClick?: () => void;
   onSeeked?: (currentTime: number) => void;
-  onTimeSliderSelect?: (time: number) => void;
 };
 
 export function VideoPlayer({
@@ -105,7 +103,6 @@ export function VideoPlayer({
   hideVolumeIndicator = false,
   introEnd,
   introStart,
-  isTimeSliderSelectionActive = false,
   markers,
   next,
   outroStart,
@@ -122,7 +119,6 @@ export function VideoPlayer({
   onNextClick,
   onPrevClick,
   onSeeked,
-  onTimeSliderSelect,
   onTimeUpdate,
   ...mediaPlayerProps
 }: VideoPlayerProps & { ref?: Ref<MediaPlayerInstance> }) {
@@ -255,8 +251,6 @@ export function VideoPlayer({
                 vttUrl={vttUrl}
                 markers={markers}
                 activeMarkerId={activeMarkerId}
-                isTimeSliderSelectionActive={isTimeSliderSelectionActive}
-                onTimeSliderSelect={onTimeSliderSelect}
               />
             ),
             bufferingIndicator: (

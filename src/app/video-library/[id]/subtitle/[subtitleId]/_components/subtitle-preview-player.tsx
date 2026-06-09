@@ -40,22 +40,18 @@ export function SubtitlePreviewPlayer({
   const {
     currentTime,
     selectedSubtitleId,
-    subtitleTimePickField,
     subtitles,
     setCurrentTime,
     startSeek,
-    completeSeek,
-    selectSubtitleTimePoint
+    completeSeek
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       currentTime: s.currentTime,
       selectedSubtitleId: s.selectedSubtitleId,
-      subtitleTimePickField: s.subtitleTimePickField,
       subtitles: s.subtitles,
       setCurrentTime: s.setCurrentTime,
       startSeek: s.startSeek,
-      completeSeek: s.completeSeek,
-      selectSubtitleTimePoint: s.selectSubtitleTimePoint
+      completeSeek: s.completeSeek
     }))
   );
 
@@ -121,8 +117,6 @@ export function SubtitlePreviewPlayer({
         onSeeked={handleSeek}
         markers={markers}
         activeMarkerId={previewSubtitle?.id}
-        isTimeSliderSelectionActive={!!subtitleTimePickField}
-        onTimeSliderSelect={selectSubtitleTimePoint}
       />
 
       {previewSubtitle?.text ? (

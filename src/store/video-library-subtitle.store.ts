@@ -20,8 +20,6 @@ export const useVideoLibrarySubtitleStore =
     pendingSubtitleFormState: null,
     isSubtitleFormChanged: false,
     isSubtitleFormSwitchConfirmOpen: false,
-    subtitleTimePickField: null,
-    subtitleTimePointSelection: null,
 
     setCurrentTime: (currentTime) => set({ currentTime }),
     setSubtitles: (subtitles) => set({ subtitles }),
@@ -78,15 +76,13 @@ export const useVideoLibrarySubtitleStore =
 
         return {
           subtitleFormState,
-          isSubtitleFormChanged: false,
-          subtitleTimePickField: null
+          isSubtitleFormChanged: false
         };
       }),
     closeSubtitleForm: () =>
       set({
         subtitleFormState: null,
-        isSubtitleFormChanged: false,
-        subtitleTimePickField: null
+        isSubtitleFormChanged: false
       }),
     setSubtitleFormChanged: (isSubtitleFormChanged) =>
       set({ isSubtitleFormChanged }),
@@ -101,30 +97,6 @@ export const useVideoLibrarySubtitleStore =
       set((state) => ({
         subtitleFormState: state.pendingSubtitleFormState,
         isSubtitleFormChanged: false,
-        pendingSubtitleFormState: null,
-        subtitleTimePickField: null
-      })),
-    startSubtitleTimePick: (field) =>
-      set((state) => ({
-        subtitleTimePickField:
-          state.subtitleTimePickField === field ? null : field
-      })),
-    cancelSubtitleTimePick: () =>
-      set({
-        subtitleTimePickField: null
-      }),
-    selectSubtitleTimePoint: (seconds) =>
-      set((state) => {
-        const field = state.subtitleTimePickField;
-
-        if (!field) return state;
-
-        return {
-          subtitleTimePointSelection: {
-            field,
-            seconds,
-            key: (state.subtitleTimePointSelection?.key ?? 0) + 1
-          }
-        };
-      })
+        pendingSubtitleFormState: null
+      }))
   }));

@@ -14,7 +14,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { logger } from '@/logger';
-import { useClickOutside } from '@/hooks';
 import { SubtitleList } from './subtitle-list';
 import { SubtitleHeader } from './subtitle-header';
 
@@ -59,6 +58,7 @@ export function SubtitleTranscriptPanel({
     currentTime,
     isSeeking,
     subtitles,
+    subtitleFormState,
     setSelectedSubtitleId,
     setSubtitles,
     setDuration
@@ -67,6 +67,7 @@ export function SubtitleTranscriptPanel({
       currentTime: s.currentTime,
       isSeeking: s.isSeeking,
       subtitles: s.subtitles,
+      subtitleFormState: s.subtitleFormState,
       setSelectedSubtitleId: s.setSelectedSubtitleId,
       setSubtitles: s.setSubtitles,
       setDuration: s.setDuration
@@ -79,9 +80,7 @@ export function SubtitleTranscriptPanel({
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const parentRef = useClickOutside<HTMLDivElement>(() =>
-    setSelectedSubtitleId(null)
-  );
+  const parentRef = useRef<HTMLDivElement>(null);
 
   const activeIndexRef = useRef<number>(-1);
 
@@ -95,6 +94,7 @@ export function SubtitleTranscriptPanel({
 
   useEffect(() => {
     if (isSeeking) return;
+    if (subtitleFormState) return;
 
     const activeElement = document.activeElement;
     const isEditing =
@@ -127,7 +127,14 @@ export function SubtitleTranscriptPanel({
             : 'auto'
       });
     }
-  }, [currentTime, isSeeking, subtitles, rowVirtualizer, parentRef]);
+  }, [
+    currentTime,
+    isSeeking,
+    subtitleFormState,
+    subtitles,
+    rowVirtualizer,
+    parentRef
+  ]);
 
   useEffect(() => {
     const controller = new AbortController();
