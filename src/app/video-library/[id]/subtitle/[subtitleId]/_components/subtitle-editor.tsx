@@ -111,7 +111,10 @@ export function SubtitleEditor() {
             : 'Chỉnh sửa nội dung'
         }
       ]}
-      notFound={!videoLibrary || !videoSubtitle}
+      loading={loading || loadingVideoLibrary}
+      notFound={
+        !(loading || loadingVideoLibrary) && (!videoLibrary || !videoSubtitle)
+      }
       notFoundContent={`Không tìm thấy ${videoLibrary ? 'phụ đề' : 'video'}`}
     >
       <ListPageWrapper>

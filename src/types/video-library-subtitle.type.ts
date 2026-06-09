@@ -42,14 +42,6 @@ export type SubtitleType = {
   endTime: number; // seconds
 };
 
-export type SubtitleTimeField = 'start' | 'end';
-
-export type SubtitleTimePointSelection = {
-  field: SubtitleTimeField;
-  seconds: number;
-  key: number;
-};
-
 export type SubtitleFormStateType =
   | {
       mode: 'create';
@@ -69,8 +61,6 @@ type VideoLibrarySubtitleState = {
   pendingSubtitleFormState: SubtitleFormStateType | null;
   isSubtitleFormChanged: boolean;
   isSubtitleFormSwitchConfirmOpen: boolean;
-  subtitleTimePickField: SubtitleTimeField | null;
-  subtitleTimePointSelection: SubtitleTimePointSelection | null;
 };
 
 type VideoLibrarySubtitleActions = {
@@ -90,9 +80,6 @@ type VideoLibrarySubtitleActions = {
     isSubtitleFormSwitchConfirmOpen: boolean
   ) => void;
   confirmSubtitleFormSwitch: () => void;
-  startSubtitleTimePick: (field: SubtitleTimeField) => void;
-  cancelSubtitleTimePick: () => void;
-  selectSubtitleTimePoint: (seconds: number) => void;
 };
 
 export type VideoLibrarySubtitleStoreType = VideoLibrarySubtitleState &
