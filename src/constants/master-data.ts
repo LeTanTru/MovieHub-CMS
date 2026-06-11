@@ -1,10 +1,10 @@
 import {
   AGE_RATING_18_PLUS,
-  AGE_RATING_K,
-  AGE_RATING_P,
-  AGE_RATING_T13,
-  AGE_RATING_T16,
-  AGE_RATING_T18,
+  AGE_RATING_GENERAL,
+  AGE_RATING_NC17,
+  AGE_RATING_PG,
+  AGE_RATING_PG13,
+  AGE_RATING_R,
   COLLECTION_TYPE_SECTION,
   COLLECTION_TYPE_TOPIC,
   COLOR_STATUS_ACTIVE,
@@ -1535,29 +1535,34 @@ export const videoLibraryStateOptions = [
 
 export const ageRatingOptions = [
   {
-    value: AGE_RATING_P,
-    label: 'P',
-    mean: 'Mọi lứa tuổi'
+    value: AGE_RATING_GENERAL,
+    label: 'G',
+    mean: 'Phù hợp với mọi lứa tuổi'
   },
   {
-    value: AGE_RATING_K,
-    label: 'K',
-    mean: 'Dưới 13 tuổi'
+    value: AGE_RATING_PG,
+    label: 'PG',
+    mean: 'Dành cho khán giả dưới 13 tuổi khi có cha mẹ hoặc người giám hộ đi cùng'
   },
   {
-    value: AGE_RATING_T13,
-    label: 'T13',
-    mean: '13 tuổi trở lên'
+    value: AGE_RATING_PG13,
+    label: 'PG-13',
+    mean: 'Dành cho khán giả từ đủ 13 tuổi trở lên'
   },
   {
-    value: AGE_RATING_T16,
-    label: 'T16',
-    mean: '16 tuổi trở lên'
+    value: AGE_RATING_R,
+    label: 'R',
+    mean: 'Dành cho khán giả từ đủ 16 tuổi trở lên'
   },
   {
-    value: AGE_RATING_T18,
-    label: 'T18',
-    mean: '18 tuổi trở lên'
+    value: AGE_RATING_NC17,
+    label: 'NC-17',
+    mean: 'Dành cho khán giả từ đủ 18 tuổi trở lên'
+  },
+  {
+    value: AGE_RATING_18_PLUS,
+    label: '18+',
+    mean: 'Nội dung chỉ dành cho người trưởng thành từ 18 tuổi trở lên'
   }
 ];
 
@@ -1814,11 +1819,11 @@ export const typeLabelMap: Record<number | string, string> = {
 };
 
 export const ageRatingLabelMap: Record<number | string, string> = {
-  [AGE_RATING_P]: 'G',
-  [AGE_RATING_K]: 'PG',
-  [AGE_RATING_T13]: 'PG-13',
-  [AGE_RATING_T16]: 'R',
-  [AGE_RATING_T18]: 'NC-17',
+  [AGE_RATING_GENERAL]: 'G',
+  [AGE_RATING_PG]: 'PG',
+  [AGE_RATING_PG13]: 'PG-13',
+  [AGE_RATING_R]: 'R',
+  [AGE_RATING_NC17]: 'NC-17',
   [AGE_RATING_18_PLUS]: '18+',
   Unknown: 'Không xác định'
 };

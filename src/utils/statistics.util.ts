@@ -1,4 +1,10 @@
-import { ageRatingLabelMap, typeLabelMap } from '@/constants';
+import {
+  ageRatingLabelMap,
+  typeLabelMap,
+  countryOptions,
+  languageOptions,
+  ageRatingOptions
+} from '@/constants';
 import { DistributionGroupBy, TopMoviesSortBy } from '@/types';
 
 const numberFormatter = new Intl.NumberFormat('vi-VN');
@@ -20,7 +26,15 @@ export const getDistributionLabel = (
   groupBy: DistributionGroupBy
 ) => {
   if (groupBy === 'type') return typeLabelMap[label] ?? label;
-  if (groupBy === 'ageRating') return ageRatingLabelMap[label] ?? label;
+  if (groupBy === 'ageRating') {
+    return ageRatingOptions.find(
+      (age) => age.label === ageRatingLabelMap[Number(label)]
+    );
+  }
+  if (groupBy === 'country')
+    return countryOptions.find((c) => c.value === label)?.label ?? label;
+  if (groupBy === 'language')
+    return languageOptions.find((l) => l.value === label)?.label ?? label;
   if (label === 'Unknown') return 'Không xác định';
   return label;
 };

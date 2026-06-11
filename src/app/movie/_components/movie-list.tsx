@@ -312,12 +312,16 @@ export function MovieList() {
     {
       title: 'Quốc gia',
       dataIndex: 'country',
-      render: (val) => {
-        const value = val as string;
-        return (
-          <span className='line-clamp-1 block truncate' title={value}>
-            {value || 'N/A'}
-          </span>
+      render: (value) => {
+        const country = countryOptions.find(
+          (country) => country.value === value
+        );
+        return country ? (
+          <ToolTip title={country.label} sideOffset={0}>
+            <span className='line-clamp-1 block truncate'>{country.value}</span>
+          </ToolTip>
+        ) : (
+          'N/A'
         );
       },
       align: 'center',
