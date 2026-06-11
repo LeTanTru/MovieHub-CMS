@@ -5,6 +5,7 @@ import {
   ChartGradients,
   getGradientIdByIndex
 } from '@/app/statistics/_components';
+import { ImageField } from '@/components/form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { Pagination } from '@/components/pagination';
@@ -226,7 +227,8 @@ export function TopMovies() {
           <div>
             <h1 className='text-xl font-semibold text-zinc-950'>Top phim</h1>
             <p className='mt-1 text-sm text-zinc-500'>
-              Xếp hạng phim theo lượt xem, bình luận, review hoặc điểm đánh giá.
+              Xếp hạng phim theo lượt xem, bình luận, đánh giá hoặc điểm đánh
+              giá.
             </p>
           </div>
           <div className='grid gap-2 lg:grid-cols-[220px_minmax(0,560px)]'>
@@ -287,7 +289,7 @@ export function TopMovies() {
                         Bình luận
                       </TableHead>
                       <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
-                        Review
+                        Đánh giá
                       </TableHead>
                       <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
                         Điểm
@@ -311,18 +313,17 @@ export function TopMovies() {
                           </TableCell>
                           <TableCell className='px-4'>
                             <div className='flex min-w-0 items-center gap-3'>
-                              <div className='relative aspect-video w-20 shrink-0 overflow-hidden rounded border border-zinc-100/50 bg-zinc-100 shadow-sm'>
-                                {movie.thumbnailUrl ? (
-                                  <Image
-                                    src={renderImageUrl(movie.thumbnailUrl)}
-                                    alt={movie.title}
-                                    fill
-                                    sizes='420px'
-                                    unoptimized
-                                    className='aspect-video object-cover'
-                                  />
-                                ) : null}
-                              </div>
+                              <ImageField
+                                src={
+                                  movie.thumbnailUrl
+                                    ? renderImageUrl(movie.thumbnailUrl)
+                                    : undefined
+                                }
+                                alt={movie.title}
+                                aspect={16 / 9}
+                                className='aspect-video w-20 shrink-0 rounded border border-zinc-100/50 shadow-sm'
+                                imageClassName='object-cover'
+                              />
                               <span
                                 className='hover:text-sporty-blue line-clamp-2 font-medium text-zinc-900 transition-colors duration-150'
                                 title={movie.title}
