@@ -24,7 +24,7 @@ import {
   Clapperboard,
   Eye,
   Heart,
-  MessageCircle,
+  MessageCircleMore,
   Star,
   Users
 } from 'lucide-react';
@@ -97,7 +97,7 @@ export function Overview() {
     {
       label: 'Bình luận',
       value: formatStatisticsValue(data?.totalComments),
-      icon: MessageCircle,
+      icon: MessageCircleMore,
       gradient: 'from-orange-500 to-amber-500',
       iconBg: 'bg-orange-50 text-orange-600',
       glow: 'shadow-orange-500/5'
