@@ -52,12 +52,12 @@ export const MOVIE_ITEM_KIND_SEASON = 1;
 export const MOVIE_ITEM_KIND_EPISODE = 2;
 export const MOVIE_ITEM_KIND_TRAILER = 3;
 
-export const AGE_RATING_P = 1;
-export const AGE_RATING_K = 2;
-export const AGE_RATING_T13 = 3;
-export const AGE_RATING_T16 = 4;
-export const AGE_RATING_T18 = 5;
-export const AGE_RATING_18_PLUS = 6;
+export const AGE_RATING_GENERAL = 1; // G - General Audience
+export const AGE_RATING_PG = 2; // PG - Parental Guidance
+export const AGE_RATING_PG13 = 3; // PG-13 - Not under 13
+export const AGE_RATING_R = 4; // R - Restricted (under 17 needs adult)
+export const AGE_RATING_NC17 = 5; // NC-17 - No one 17 and under admitted
+export const AGE_RATING_18_PLUS = 6; // 18+ - Local classification
 
 export const MOVIE_IS_FEATURED = 1;
 export const MOVIE_IS_NOT_FEATURED = 0;

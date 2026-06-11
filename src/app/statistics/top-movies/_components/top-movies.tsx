@@ -1,6 +1,10 @@
 'use client';
 
-import { StatisticsDateFilter } from '@/app/statistics/_components';
+import {
+  StatisticsDateFilter,
+  ChartGradients,
+  getGradientIdByIndex
+} from '@/app/statistics/_components';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import { Pagination } from '@/components/pagination';
@@ -21,7 +25,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { chartColors, topMovieSortOptions } from '@/constants';
+import { topMovieSortOptions } from '@/constants';
 import { useTopMoviesQuery } from '@/queries';
 import type {
   OverviewSearchType,
@@ -33,9 +37,9 @@ import {
   convertLocalToUTC,
   formatStatisticsValue,
   formatRating,
-  getMetricBySort,
-  toChartNumber
+  getMetricBySort
 } from '@/utils';
+import { Star } from 'lucide-react';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import {
@@ -48,6 +52,10 @@ import {
   XAxis,
   YAxis
 } from 'recharts';
+import {
+  NameType,
+  ValueType
+} from 'recharts/types/component/DefaultTooltipContent';
 
 const defaultDateFilters: OverviewSearchType = {
   fromDate: '',
@@ -55,6 +63,108 @@ const defaultDateFilters: OverviewSearchType = {
 };
 
 const pageSize = 10;
+
+const renderRankBadge = (rank: number) => {
+  if (rank === 1) {
+    return (
+      <span className='inline-flex size-6 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-400 to-yellow-500 text-xs font-bold text-amber-950 shadow-sm ring-2 ring-yellow-200/50'>
+        1
+      </span>
+    );
+  }
+  if (rank === 2) {
+    return (
+      <span className='inline-flex size-6 items-center justify-center rounded-full bg-gradient-to-br from-slate-200 via-zinc-300 to-slate-400 text-xs font-bold text-zinc-950 shadow-sm ring-2 ring-zinc-200/50'>
+        2
+      </span>
+    );
+  }
+  if (rank === 3) {
+    return (
+      <span className='inline-flex size-6 items-center justify-center rounded-full bg-gradient-to-br from-amber-600/80 via-orange-500/80 to-amber-700/80 text-xs font-bold text-orange-50 shadow-sm ring-2 ring-orange-200/50'>
+        3
+      </span>
+    );
+  }
+  return (
+    <span className='inline-flex size-6 items-center justify-center rounded-full bg-zinc-100 text-xs font-medium text-zinc-500'>
+      {rank}
+    </span>
+  );
+};
+
+interface TopMovieTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name?: NameType;
+    value?: ValueType;
+    color?: string;
+    fill?: string;
+    payload?: Record<string, unknown>;
+  }>;
+  label?: string | number | null | undefined;
+  sortBy: TopMoviesSortBy;
+  activeSortLabel: string;
+}
+
+function TopMovieTooltip({
+  active,
+  payload,
+  label: _label,
+  sortBy,
+  activeSortLabel
+}: TopMovieTooltipProps) {
+  if (!active || !payload || !payload.length) return null;
+  const data = payload[0].payload as {
+    name: string;
+    value: number;
+    thumbnailUrl?: string;
+    averageRating?: number;
+    viewCount?: number;
+    commentCount?: number;
+    reviewCount?: number;
+  };
+  return (
+    <div className='flex min-w-[200px] items-center gap-3 rounded-xl border border-zinc-200/50 bg-white/85 p-3 shadow-lg backdrop-blur-md'>
+      {data.thumbnailUrl && (
+        <div className='relative aspect-video w-16 shrink-0 overflow-hidden rounded border border-white/20 bg-zinc-100 shadow-sm'>
+          <Image
+            src={renderImageUrl(data.thumbnailUrl)}
+            alt={data.name}
+            fill
+            sizes='80px'
+            unoptimized
+            className='object-cover'
+          />
+        </div>
+      )}
+      <div className='min-w-0 flex-1'>
+        <p className='mb-1 line-clamp-2 text-[12px] leading-tight font-semibold text-zinc-950'>
+          {data.name}
+        </p>
+        <div className='flex items-center gap-1.5 text-xs text-zinc-500'>
+          <span
+            className='size-2 shrink-0 rounded-full'
+            style={{ backgroundColor: payload[0].color || '#1678ff' }}
+          />
+          {sortBy === 'averageRating' ? (
+            <div className='flex items-center gap-0.5 text-[12px] font-bold text-zinc-950'>
+              <Star className='size-3 fill-amber-400 stroke-amber-500' />
+              <span>{formatRating(data.value)}</span>
+            </div>
+          ) : (
+            <span className='text-[12px] font-bold text-zinc-900'>
+              {formatStatisticsValue(data.value)}
+            </span>
+          )}
+          <span className='text-[10px] text-zinc-400'>
+            ({activeSortLabel.toLowerCase()})
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function TopMovies() {
   const [dateFilters, setDateFilters] =
@@ -86,7 +196,12 @@ export function TopMovies() {
 
   const chartData = movies.map((movie) => ({
     name: movie.title,
-    value: movie[sortBy]
+    value: movie[sortBy],
+    thumbnailUrl: movie.thumbnailUrl,
+    averageRating: movie.averageRating,
+    viewCount: movie.viewCount,
+    commentCount: movie.commentCount,
+    reviewCount: movie.reviewCount
   }));
 
   const handleDateSubmit = (values: OverviewSearchType) => {
@@ -148,26 +263,36 @@ export function TopMovies() {
             </div>
           )}
 
-          <Card className='overflow-hidden rounded-lg border-zinc-100 shadow-none'>
+          <Card className='overflow-hidden rounded-xl border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm'>
             <CardHeader className='border-b p-4'>
-              <CardTitle className='text-base'>{activeSortLabel}</CardTitle>
+              <CardTitle className='text-base font-semibold text-zinc-900'>
+                {activeSortLabel}
+              </CardTitle>
             </CardHeader>
             <CardContent className='p-0'>
               <div className='overflow-x-auto'>
                 <Table className='min-w-220'>
-                  <TableHeader className='bg-zinc-50'>
+                  <TableHeader className='bg-zinc-50/50'>
                     <TableRow>
-                      <TableHead className='w-20 p-4 text-center'>
+                      <TableHead className='text-zinc-750 w-20 p-4 text-center font-semibold'>
                         Hạng
                       </TableHead>
-                      <TableHead className='p-4'>Phim</TableHead>
-                      <TableHead className='p-4 text-right'>Lượt xem</TableHead>
-                      <TableHead className='p-4 text-right'>
+                      <TableHead className='text-zinc-750 p-4 font-semibold'>
+                        Phim
+                      </TableHead>
+                      <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
+                        Lượt xem
+                      </TableHead>
+                      <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
                         Bình luận
                       </TableHead>
-                      <TableHead className='p-4 text-right'>Review</TableHead>
-                      <TableHead className='p-4 text-right'>Điểm</TableHead>
-                      <TableHead className='p-4 text-right'>
+                      <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
+                        Review
+                      </TableHead>
+                      <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
+                        Điểm
+                      </TableHead>
+                      <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
                         Chỉ số chính
                       </TableHead>
                     </TableRow>
@@ -175,13 +300,18 @@ export function TopMovies() {
                   <TableBody>
                     {movies.length ? (
                       movies.map((movie, index) => (
-                        <TableRow key={movie.id} className='hover:bg-zinc-50'>
+                        <TableRow
+                          key={movie.id}
+                          className='transition-colors duration-150 hover:bg-zinc-50/50'
+                        >
                           <TableCell className='px-4 text-center font-medium'>
-                            {(currentPage - 1) * pageSize + index + 1}
+                            {renderRankBadge(
+                              (currentPage - 1) * pageSize + index + 1
+                            )}
                           </TableCell>
                           <TableCell className='px-4'>
                             <div className='flex min-w-0 items-center gap-3'>
-                              <div className='relative aspect-video w-20 shrink-0 overflow-hidden rounded bg-zinc-100'>
+                              <div className='relative aspect-video w-20 shrink-0 overflow-hidden rounded border border-zinc-100/50 bg-zinc-100 shadow-sm'>
                                 {movie.thumbnailUrl ? (
                                   <Image
                                     src={renderImageUrl(movie.thumbnailUrl)}
@@ -194,26 +324,26 @@ export function TopMovies() {
                                 ) : null}
                               </div>
                               <span
-                                className='line-clamp-2 font-medium text-zinc-950'
+                                className='hover:text-sporty-blue line-clamp-2 font-medium text-zinc-900 transition-colors duration-150'
                                 title={movie.title}
                               >
                                 {movie.title}
                               </span>
                             </div>
                           </TableCell>
-                          <TableCell className='px-4 text-right'>
+                          <TableCell className='text-zinc-650 px-4 text-right font-medium'>
                             {formatStatisticsValue(movie.viewCount)}
                           </TableCell>
-                          <TableCell className='px-4 text-right'>
+                          <TableCell className='text-zinc-650 px-4 text-right font-medium'>
                             {formatStatisticsValue(movie.commentCount)}
                           </TableCell>
-                          <TableCell className='px-4 text-right'>
+                          <TableCell className='text-zinc-650 px-4 text-right font-medium'>
                             {formatStatisticsValue(movie.reviewCount)}
                           </TableCell>
-                          <TableCell className='px-4 text-right'>
+                          <TableCell className='px-4 text-right font-bold text-zinc-900'>
                             {formatRating(movie.averageRating)}
                           </TableCell>
-                          <TableCell className='text-sporty-blue px-4 text-right font-semibold'>
+                          <TableCell className='text-sporty-blue px-4 text-right font-bold'>
                             {getMetricBySort(movie, sortBy)}
                           </TableCell>
                         </TableRow>
@@ -239,18 +369,27 @@ export function TopMovies() {
             </CardContent>
           </Card>
 
-          <Card className='rounded-lg border-zinc-100 shadow-none'>
+          <Card className='rounded-xl border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm'>
             <CardHeader className='p-4 pb-2'>
-              <CardTitle className='text-base'>Biểu đồ top phim</CardTitle>
+              <CardTitle className='text-base font-semibold text-zinc-900'>
+                Biểu đồ top phim
+              </CardTitle>
             </CardHeader>
             <CardContent className='h-96 p-4 pt-0'>
               <ResponsiveContainer width='100%' height='100%'>
                 <BarChart data={chartData} layout='vertical'>
-                  <CartesianGrid strokeDasharray='3 3' horizontal={false} />
+                  <ChartGradients />
+                  <CartesianGrid
+                    strokeDasharray='4 4'
+                    stroke='#e2e8f0'
+                    strokeOpacity={0.4}
+                    horizontal={false}
+                  />
                   <XAxis
                     type='number'
                     tickLine={false}
                     axisLine={false}
+                    tick={{ fontSize: 11, fill: '#888888', fontWeight: 500 }}
                     tickFormatter={(value) =>
                       sortBy === 'averageRating'
                         ? formatRating(Number(value))
@@ -263,20 +402,25 @@ export function TopMovies() {
                     tickLine={false}
                     axisLine={false}
                     width={120}
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 11, fill: '#888888', fontWeight: 500 }}
                   />
                   <Tooltip
-                    formatter={(value) =>
-                      sortBy === 'averageRating'
-                        ? formatRating(toChartNumber(value))
-                        : formatStatisticsValue(toChartNumber(value))
+                    content={
+                      <TopMovieTooltip
+                        sortBy={sortBy}
+                        activeSortLabel={activeSortLabel}
+                      />
                     }
                   />
-                  <Bar dataKey='value' radius={[0, 6, 6, 0]}>
+                  <Bar
+                    dataKey='value'
+                    radius={[0, 8, 8, 0]}
+                    animationDuration={1500}
+                  >
                     {chartData.map((_entry, index) => (
                       <Cell
                         key={index}
-                        fill={chartColors[index % chartColors.length]}
+                        fill={`url(#${getGradientIdByIndex(index)})`}
                       />
                     ))}
                   </Bar>
