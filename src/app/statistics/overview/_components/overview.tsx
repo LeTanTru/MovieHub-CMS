@@ -103,7 +103,7 @@ export function Overview() {
       glow: 'shadow-orange-500/5'
     },
     {
-      label: 'Review',
+      label: 'Đánh giá',
       value: formatStatisticsValue(data?.totalReviews),
       icon: Star,
       gradient: 'from-rose-500 to-red-600',
@@ -123,7 +123,7 @@ export function Overview() {
   const interactionData = [
     { name: 'Lượt xem', value: data?.totalViews ?? 0 },
     { name: 'Bình luận', value: data?.totalComments ?? 0 },
-    { name: 'Review', value: data?.totalReviews ?? 0 },
+    { name: 'Đánh giá', value: data?.totalReviews ?? 0 },
     { name: 'Yêu thích', value: data?.totalFavourites ?? 0 }
   ];
 
@@ -200,7 +200,7 @@ export function Overview() {
                 className={`relative overflow-hidden rounded-xl border border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${metric.glow}`}
               >
                 <div
-                  className={`absolute top-0 right-0 left-0 h-1 bg-gradient-to-r ${metric.gradient}`}
+                  className={`absolute top-0 right-0 left-0 h-1 bg-linear-to-r ${metric.gradient}`}
                 />
                 <CardContent className='flex items-center justify-between p-5'>
                   <div>
@@ -267,6 +267,7 @@ export function Overview() {
                     />
                     <Bar
                       dataKey='value'
+                      name='Số lượng'
                       radius={[8, 8, 0, 0]}
                       onMouseEnter={(_data, index) => setHoveredBarIndex(index)}
                       onMouseLeave={() => setHoveredBarIndex(null)}

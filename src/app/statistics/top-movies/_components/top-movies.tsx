@@ -67,21 +67,21 @@ const pageSize = 10;
 const renderRankBadge = (rank: number) => {
   if (rank === 1) {
     return (
-      <span className='inline-flex size-6 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-400 to-yellow-500 text-xs font-bold text-amber-950 shadow-sm ring-2 ring-yellow-200/50'>
+      <span className='inline-flex size-6 items-center justify-center rounded-full bg-linear-to-br from-yellow-300 via-amber-400 to-yellow-500 text-xs font-bold text-amber-950 shadow-sm ring-2 ring-yellow-200/50'>
         1
       </span>
     );
   }
   if (rank === 2) {
     return (
-      <span className='inline-flex size-6 items-center justify-center rounded-full bg-gradient-to-br from-slate-200 via-zinc-300 to-slate-400 text-xs font-bold text-zinc-950 shadow-sm ring-2 ring-zinc-200/50'>
+      <span className='inline-flex size-6 items-center justify-center rounded-full bg-linear-to-br from-slate-200 via-zinc-300 to-slate-400 text-xs font-bold text-zinc-950 shadow-sm ring-2 ring-zinc-200/50'>
         2
       </span>
     );
   }
   if (rank === 3) {
     return (
-      <span className='inline-flex size-6 items-center justify-center rounded-full bg-gradient-to-br from-amber-600/80 via-orange-500/80 to-amber-700/80 text-xs font-bold text-orange-50 shadow-sm ring-2 ring-orange-200/50'>
+      <span className='inline-flex size-6 items-center justify-center rounded-full bg-linear-to-br from-amber-600/80 via-orange-500/80 to-amber-700/80 text-xs font-bold text-orange-50 shadow-sm ring-2 ring-orange-200/50'>
         3
       </span>
     );
