@@ -1,13 +1,7 @@
 import { OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '@/constants';
 import { envConfig } from '@/config';
+import { OverviewClient } from './overview-client';
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-
-const Overview = dynamic(
-  () =>
-    import('@/app/statistics/overview/_components').then((mod) => mod.Overview),
-  { ssr: false }
-);
 
 export const metadata: Metadata = {
   title: 'Tổng quan thống kê',
@@ -45,5 +39,5 @@ export const metadata: Metadata = {
 };
 
 export default function OverviewPage() {
-  return <Overview />;
+  return <OverviewClient />;
 }
