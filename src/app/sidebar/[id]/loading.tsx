@@ -1,5 +1,5 @@
-import { ListPageSkeleton } from '@/components/loading';
+import { SidebarFormSkeleton } from '@/app/sidebar/_components';
 
 export default function Loading() {
-  return <ListPageSkeleton />;
+  return <SidebarFormSkeleton />;
 }

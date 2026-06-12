@@ -36,7 +36,8 @@ export const metadata: Metadata = {
     description:
       'Liên hệ MovieHub để được hỗ trợ về tài khoản, kỹ thuật, góp ý dịch vụ.',
     images: ['/logo.webp']
-  }
+  },
+  robots: { index: false, follow: false }
 };
 
 export default function ContactPage() {

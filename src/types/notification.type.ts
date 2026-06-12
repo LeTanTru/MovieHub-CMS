@@ -89,3 +89,25 @@ export type SubtitleNotificationType = {
   name: string;
   sourceType: number;
 };
+
+export type ToxicSpan = {
+  start: number;
+  end: number;
+};
+
+export type ToxicCommentLockedNotificationType = {
+  id: string;
+  parentId?: string;
+  movieId: string;
+  movieTitle: string;
+  movieThumbnail: string;
+  content: string;
+  author: {
+    id: string;
+    username: string;
+    email: string;
+    fullName: string;
+    avatarPath: string;
+  };
+  toxicSpans: ToxicSpan[];
+};

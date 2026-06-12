@@ -36,12 +36,13 @@ export function AudioBody({
         })
       )}
     >
-      <div className='relative w-20 shrink-0'>
+      <div className='relative aspect-video w-20 shrink-0'>
         <ImageField
           src={renderImageUrl(body?.thumbnailUrl)}
           alt={body?.name}
           aspect={16 / 9}
           disablePreview
+          className='h-full'
         />
       </div>
       <div className='flex flex-1 flex-col justify-between'>

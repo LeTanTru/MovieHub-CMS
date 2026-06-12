@@ -1,5 +1,5 @@
-import { FormSkeleton } from '@/components/loading';
+import { MovieFormSkeleton } from '@/app/movie/_components';
 
 export default function Loading() {
-  return <FormSkeleton />;
+  return <MovieFormSkeleton />;
 }

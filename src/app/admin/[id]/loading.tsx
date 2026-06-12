@@ -1,5 +1,5 @@
-import { FormSkeleton } from '@/components/loading';
+import { AdminFormSkeleton } from '@/app/admin/_components';
 
 export default function Loading() {
-  return <FormSkeleton />;
+  return <AdminFormSkeleton />;
 }

@@ -1,9 +1,5 @@
-import { CircleLoading } from '@/components/loading';
+import { ProfileFormSkeleton } from '@/app/profile/_components';
 
 export default function Loading() {
-  return (
-    <div className='flex h-full items-center justify-center'>
-      <CircleLoading className='stroke-sporty-blue size-8' />
-    </div>
-  );
+  return <ProfileFormSkeleton />;
 }

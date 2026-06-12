@@ -1,5 +1,5 @@
-import { FormSkeleton } from '@/components/loading';
+import { GroupFormSkeleton } from '@/app/group-permission/_components';
 
 export default function Loading() {
-  return <FormSkeleton />;
+  return <GroupFormSkeleton />;
 }
