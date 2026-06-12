@@ -219,7 +219,7 @@ export function NotificationList() {
           <NoData width={150} content='Không có thông báo nào' />
         )}
         {(loading || isFetchingMore) && (
-          <DotLoading className='mx-auto mt-4 justify-center bg-transparent' />
+          <DotLoading className='mx-auto justify-center bg-transparent pb-4' />
         )}
         <div
           className={cn('flex justify-center', {

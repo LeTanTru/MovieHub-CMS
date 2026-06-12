@@ -7,5 +7,5 @@ export const updateReadNotificationSchema = z.object({
 export const notificationSearchSchema = z.object({
   accountId: z.string().optional().nullable(),
   isRead: z.boolean().optional().nullable(),
-  type: z.number().optional().nullable()
+  type: z.union([z.number(), z.string()])
 });

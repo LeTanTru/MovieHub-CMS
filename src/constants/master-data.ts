@@ -1833,11 +1833,22 @@ export const ageRatingLabelMap: Record<number | string, string> = {
 
 export const notificationOtions = [
   {
+    value: NOTIFICATION_TYPE_SYSTEM,
+    label: 'Hệ thống'
+  },
+  {
     value: NOTIFICATION_TYPE_COMMUNITY,
     label: 'Cộng đồng'
-  },
+  }
+];
+
+export const notificationTabs: OptionType[] = [
   {
     value: NOTIFICATION_TYPE_SYSTEM,
     label: 'Hệ thống'
+  },
+  {
+    value: NOTIFICATION_TYPE_COMMUNITY,
+    label: 'Cộng đồng'
   }
 ];
