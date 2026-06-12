@@ -1,15 +1,7 @@
 import { OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '@/constants';
 import { envConfig } from '@/config';
+import { MovieDistributionClient } from './movie-distribution-client';
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-
-const MovieDistribution = dynamic(
-  () =>
-    import('@/app/statistics/movie-distribution/_components').then(
-      (mod) => mod.MovieDistribution
-    ),
-  { ssr: false }
-);
 
 export const metadata: Metadata = {
   title: 'Phân bố phim',
@@ -47,5 +39,5 @@ export const metadata: Metadata = {
 };
 
 export default function MovieDistributionPage() {
-  return <MovieDistribution />;
+  return <MovieDistributionClient />;
 }

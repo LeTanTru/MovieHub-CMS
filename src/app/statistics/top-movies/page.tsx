@@ -1,15 +1,7 @@
 import { OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '@/constants';
 import { envConfig } from '@/config';
+import { TopMoviesClient } from './top-movies-client';
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-
-const TopMovies = dynamic(
-  () =>
-    import('@/app/statistics/top-movies/_components').then(
-      (mod) => mod.TopMovies
-    ),
-  { ssr: false }
-);
 
 export const metadata: Metadata = {
   title: 'Phim xem nhiều nhất',
@@ -47,5 +39,5 @@ export const metadata: Metadata = {
 };
 
 export default function TopMoviesPage() {
-  return <TopMovies />;
+  return <TopMoviesClient />;
 }
