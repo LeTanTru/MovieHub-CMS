@@ -10,7 +10,7 @@ import { NotificationItem } from '@/components/notification';
 import { CircleLoading } from '@/components/loading';
 
 type Props = {
-  notifications: NotificationResType[];
+  notificationList: NotificationResType[];
   canDelete: boolean;
   loading?: boolean;
   onDelete: (id: string) => void;
@@ -18,7 +18,7 @@ type Props = {
 };
 
 export function NotificationList({
-  notifications,
+  notificationList,
   canDelete,
   loading,
   onDelete,
@@ -53,13 +53,13 @@ export function NotificationList({
     );
   }
 
-  if (!notifications.length) {
+  if (!notificationList.length) {
     return <NoData width={150} content='Không có thông báo nào' />;
   }
 
   return (
     <List className='scrollbar-none flex max-h-[80vh] min-h-[50vh] flex-col overflow-y-auto rounded bg-white'>
-      {notifications.map((notification) => (
+      {notificationList.map((notification) => (
         <NotificationItem
           key={notification.id}
           notification={notification}
