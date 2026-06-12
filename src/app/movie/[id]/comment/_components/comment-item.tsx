@@ -161,6 +161,8 @@ export function CommentItem({
   const scrollTargetName = `comment-${comment.id}`; // unique name for scroll target
   const [isScrollTarget, setIsScrollTarget] = useState(false); // state to trigger highlight effect
 
+  const isHidden = comment.status === COMMENT_STATUS_HIDE;
+
   const {
     mutateAsync: changeStatusCommentMutate,
     isPending: changeStatusCommentLoading
@@ -440,7 +442,11 @@ export function CommentItem({
               )}
             </div>
 
-            <p className='mt-4 break-all text-gray-700'>
+            <p
+              className={cn('mt-4 break-all text-gray-700', {
+                'max-640:text-[13px] blur-xs select-none': isHidden
+              })}
+            >
               {renderContentWithMentions()}
               {comment.content}
             </p>

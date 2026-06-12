@@ -46,7 +46,9 @@ type ReviewItemProps = {
 };
 
 export function ReviewItem({ review, onDelete }: ReviewItemProps) {
+  const isHidden = review.status === REVIEW_STATUS_HIDE;
   const hasPermission = useValidatePermission();
+
   const {
     mutateAsync: changeReviewStatusMutate,
     isPending: changeReviewStatusLoading
@@ -159,7 +161,13 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
           </div>
 
           <div className='mt-2 flex flex-col gap-2'>
-            <p className='break-all text-gray-700'>{review.content}</p>
+            <p
+              className={cn('break-all text-gray-700', {
+                'max-640:text-[13px] blur-xs select-none': isHidden
+              })}
+            >
+              {review.content}
+            </p>
             <StarRating value={review.rate} showValue={false} />
           </div>
 
