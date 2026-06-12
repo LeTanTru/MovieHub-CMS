@@ -1,5 +1,5 @@
-import { FormSkeleton } from '@/components/loading';
+import { StyleFormSkeleton } from '@/app/style/_components';
 
 export default function Loading() {
-  return <FormSkeleton />;
+  return <StyleFormSkeleton />;
 }

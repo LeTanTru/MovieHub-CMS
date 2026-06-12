@@ -2,11 +2,17 @@
 
 import {
   NOTIFICATION_PAGE_SIZE,
+  NOTIFICATION_TYPE_SYSTEM,
   apiConfig,
   objectNames,
   queryKeys
 } from '@/constants';
-import { useDisclosure, useClickOutside, useInfiniteListBase } from '@/hooks';
+import {
+  useDisclosure,
+  useClickOutside,
+  useInfiniteListBase,
+  useQueryParams
+} from '@/hooks';
 import { NotificationResType, NotificationSearchType } from '@/types';
 import { AnimatePresence, m } from 'framer-motion';
 import { Bell, CheckCheck, Trash } from 'lucide-react';
@@ -20,13 +26,15 @@ import {
 import { CircleLoading } from '@/components/loading';
 import { Button } from '@/components/form';
 import { ConfirmModal } from '@/components/modal';
-import { invalidateQueries, notify } from '@/utils';
+import { invalidateQueries, notify, renderListPageUrl } from '@/utils';
 import { logger } from '@/logger';
 import { NotificationList } from './notification-list';
 
 const NOTIFICATION_BADGE_MAX_DISPLAY = 9;
 
 export function DropdownNotification() {
+  const { serializeParams } = useQueryParams();
+
   const {
     opened: openedDropdown,
     toggle: toggleDropDown,
@@ -210,7 +218,10 @@ export function DropdownNotification() {
               <div className='border-t border-t-gray-200 p-2 text-center'>
                 <Link
                   className='hover:text-sporty-blue inline-block transition-colors duration-200 ease-linear'
-                  href={route.notification.getList.path}
+                  href={renderListPageUrl(
+                    route.notification.getList.path,
+                    serializeParams({ type: NOTIFICATION_TYPE_SYSTEM })
+                  )}
                 >
                   Xem tất cả
                 </Link>

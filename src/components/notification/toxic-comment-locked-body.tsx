@@ -2,7 +2,10 @@ import { AvatarField, ImageField } from '@/components/form';
 import { useQueryParams } from '@/hooks';
 import { route } from '@/routes';
 import { useCommentStore } from '@/store';
-import { NotificationResType, ReplyCommentNotificationType } from '@/types';
+import {
+  NotificationResType,
+  ToxicCommentLockedNotificationType
+} from '@/types';
 import {
   convertUTCToLocal,
   generatePath,
@@ -14,29 +17,30 @@ import {
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-export function ReplyCommentBody({
+export function ToxicCommentLockedBody({
   notification
 }: {
   notification: NotificationResType;
 }) {
+  console.log('🚀 ~ ToxicCommentLockedBody ~ notification:', notification);
+
   const body = useMemo(
-    () => parseJSON<ReplyCommentNotificationType>(notification.body),
+    () => parseJSON<ToxicCommentLockedNotificationType>(notification.body),
     [notification.body]
   );
+
   const { serializeParams } = useQueryParams();
   const setOpenParentIds = useCommentStore((s) => s.setOpenParentIds);
   const setScrollTarget = useCommentStore((s) => s.setScrollTarget);
 
   const handleClick = () => {
-    const parentId = body?.parentId;
-
-    if (parentId) {
-      setOpenParentIds((prev) =>
-        prev.includes(parentId) ? prev : [...prev, parentId]
-      );
-    }
-
-    setScrollTarget({ commentId: body?.id, parentId });
+    // const parentId = body?.parentId;
+    // if (parentId) {
+    //   setOpenParentIds((prev) =>
+    //     prev.includes(parentId) ? prev : [...prev, parentId]
+    //   );
+    // }
+    // setScrollTarget({ commentId: body?.id, parentId });
   };
 
   return (
@@ -46,10 +50,10 @@ export function ReplyCommentBody({
       href={renderListPageUrl(
         generatePath(route.comment.getList.path, {
           id: body?.movieId || ''
-        }),
-        serializeParams({
-          movieTitle: body?.movieTitle
         })
+        // serializeParams({
+        //   movieTitle: body?.movieTitle
+        // })
       )}
     >
       <div className='flex shrink-0 justify-center'>
@@ -65,7 +69,7 @@ export function ReplyCommentBody({
           {notification.title}:&nbsp;&quot;
           <span className='font-normal'>{body?.content}</span>
           &quot;&nbsp;trong phim&nbsp;
-          <span className='font-semibold'>{body?.movieTitle}</span>
+          {/* <span className='font-semibold'>{body?.movieTitle}</span> */}
         </h3>
         <div
           className='text-muted-foreground mt-2 shrink-0 text-xs'

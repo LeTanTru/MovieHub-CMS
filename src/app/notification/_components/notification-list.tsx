@@ -9,7 +9,10 @@ import { NoData } from '@/components/no-data';
 import { NotificationItem } from '@/components/notification';
 import {
   apiConfig,
+  FieldTypes,
   NOTIFICATION_PAGE_SIZE,
+  NOTIFICATION_TYPE_SYSTEM,
+  notificationOtions,
   objectNames,
   queryKeys
 } from '@/constants';
@@ -22,7 +25,12 @@ import {
   useReadAllNotificationMutation,
   useUpdateReadNotificationMutation
 } from '@/queries';
-import { NotificationResType, NotificationSearchType } from '@/types';
+import { notificationSearchSchema } from '@/schemaValidations';
+import {
+  NotificationResType,
+  NotificationSearchType,
+  SearchFormProps
+} from '@/types';
 import { invalidateQueries, notify } from '@/utils';
 import { CheckCheck, Trash } from 'lucide-react';
 
@@ -40,7 +48,8 @@ export function NotificationList() {
     options: {
       objectName: objectNames.NOTIFICATION,
       queryKey: queryKeys.NOTIFICATION,
-      pageSize: NOTIFICATION_PAGE_SIZE
+      pageSize: NOTIFICATION_PAGE_SIZE,
+      defaultFilters: { type: NOTIFICATION_TYPE_SYSTEM }
     }
   });
 
@@ -169,11 +178,26 @@ export function NotificationList() {
     );
   };
 
+  const searchFields: SearchFormProps<NotificationSearchType>['searchFields'] =
+    [
+      {
+        key: 'type',
+        placeholder: 'Loại thông báo',
+        type: FieldTypes.SELECT,
+        options: notificationOtions,
+        submitOnChanged: true
+      }
+    ];
+
   return (
     <PageWrapper breadcrumbs={[{ label: 'Thông báo' }]}>
       <ListPageWrapper
         reloadButton={handlers.renderReloadButton()}
         additionButtons={[renderButtonReadAll(), renderButtonDeleteAll()]}
+        searchForm={handlers.renderSearchForm({
+          searchFields,
+          schema: notificationSearchSchema
+        })}
       >
         {notificationList.length ? (
           <List className='scrollbar-none flex flex-col overflow-y-auto rounded bg-white'>

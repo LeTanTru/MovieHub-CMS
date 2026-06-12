@@ -39,7 +39,8 @@ export const metadata: Metadata = {
     description:
       'Chính sách bảo mật và quyền riêng tư của MovieHub. Tìm hiểu cách chúng tôi thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn.',
     images: ['/logo.webp']
-  }
+  },
+  robots: { index: false, follow: false }
 };
 
 export default function PrivacyPage() {

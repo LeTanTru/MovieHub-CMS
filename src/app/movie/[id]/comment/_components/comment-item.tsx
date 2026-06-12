@@ -206,7 +206,7 @@ export function CommentItem({
 
     return (
       <span className='rounded bg-sky-50 px-1.5 py-0.5 font-semibold text-sky-600'>
-        {mention}
+        {mention}&nbsp;
       </span>
     );
   };
@@ -441,7 +441,8 @@ export function CommentItem({
             </div>
 
             <p className='mt-4 break-all text-gray-700'>
-              {renderContentWithMentions()}&nbsp;{comment.content}
+              {renderContentWithMentions()}
+              {comment.content}
             </p>
 
             <div className='mt-4 flex items-center gap-x-8 text-sm text-gray-500'>

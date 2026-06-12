@@ -1,5 +1,5 @@
-import { FormSkeleton } from '@/components/loading';
+import { ListPageSkeleton } from '@/components/loading';
 
 export default function Loading() {
-  return <FormSkeleton />;
+  return <ListPageSkeleton />;
 }

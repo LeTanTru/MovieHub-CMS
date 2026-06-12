@@ -3,6 +3,7 @@
 import {
   useAuth,
   useFirstActiveRoute,
+  useIsMounted,
   useNavigate,
   useQueryParams
 } from '@/hooks';
@@ -62,6 +63,7 @@ export function PermissionGuard({ children }: PermissionGuardProps) {
   const navigate = useNavigate(false);
   const pathname = usePathname();
   const { permissionCode: userPermissions, isAuthenticated } = useAuth();
+  const isMounted = useIsMounted();
 
   const { loading, setLoading } = useAppContext();
 
@@ -70,6 +72,7 @@ export function PermissionGuard({ children }: PermissionGuardProps) {
   const isPublicRoute = matchedRoute?.auth === false;
 
   useEffect(() => {
+    if (!isMounted) return;
     if (matchedRoute === null) return;
 
     if (loading || (isPublicRoute && !isAuthenticated)) {
@@ -101,6 +104,7 @@ export function PermissionGuard({ children }: PermissionGuardProps) {
   }, [
     firstActiveRoute,
     isAuthenticated,
+    isMounted,
     isPublicRoute,
     loading,
     matchedRoute,
@@ -126,7 +130,9 @@ export function PermissionGuard({ children }: PermissionGuardProps) {
         userKind: matchedRoute.userKind as number
       }));
 
-  if (loading && !isAuthenticated && !isPublicRoute) {
+  const isProtectedRoute = !!matchedRoute && !isPublicRoute;
+
+  if (isProtectedRoute && (!isMounted || loading || !isAuthenticated)) {
     return (
       <div
         suppressHydrationWarning

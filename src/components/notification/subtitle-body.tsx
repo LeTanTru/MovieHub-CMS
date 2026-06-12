@@ -13,7 +13,7 @@ import {
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-export default function SubtitleBody({
+export function SubtitleBody({
   notification
 }: {
   notification: NotificationResType;

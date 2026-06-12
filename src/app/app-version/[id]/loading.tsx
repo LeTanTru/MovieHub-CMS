@@ -1,5 +1,5 @@
-import { FormSkeleton } from '@/components/loading';
+import { AppVersionFormSkeleton } from '@/app/app-version/_components';
 
 export default function Loading() {
-  return <FormSkeleton />;
+  return <AppVersionFormSkeleton />;
 }
