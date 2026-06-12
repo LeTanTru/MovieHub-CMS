@@ -124,7 +124,8 @@ export function MqttProvider() {
     callback: (data) => {
       switch (data.cmd) {
         case mqttCMDs.REPLY_COMMENT:
-        case mqttCMDs.VOTE_COMMENT: {
+        case mqttCMDs.VOTE_COMMENT:
+        case mqttCMDs.TOXIC_COMMENT_LOCKED: {
           invalidateQueries(
             [queryKeys.UNREAD_NOTIFICATION_COUNT],
             [queryKeys.NOTIFICATION_INFINITE]
