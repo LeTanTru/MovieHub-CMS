@@ -109,6 +109,10 @@ export function VideoLibraryList() {
       handlers.handleDeleteError = (code) => {
         if (code === ErrorCode.VIDEO_LIBRARY_ERROR_MOVIE_ITEM_EXIST) {
           notify.error('Video này có mục phim đang liên kết');
+        } else if (code === ErrorCode.VIDEO_LIBRARY_ERROR_NO_SERVER_CONFIG) {
+          notify.error(
+            'Không thể xóa video không có liên kết với bất kỳ máy chủ nào'
+          );
         }
       };
 
@@ -278,14 +282,6 @@ export function VideoLibraryList() {
           );
         }
       });
-
-      handlers.handleDeleteError = (code) => {
-        if (code === ErrorCode.VIDEO_LIBRARY_ERROR_NO_SERVER_CONFIG) {
-          notify.error(
-            'Không thể xóa video không có liên kết với bất kỳ máy chủ nào'
-          );
-        }
-      };
     }
   });
 

@@ -126,15 +126,12 @@ export function MovieItemModal({
       handlers.handleSubmitError = (code) => {
         if (code === ErrorCode.MOVIE_ITEM_ERROR_PARENT_REQUIRED) {
           notify.error('Vui lòng chọn phần để thêm');
+        } else if (code === ErrorCode.MOVIE_ITEM_EXCEED_TOTAL_EXPISODE) {
+          notify.error('Số tập đã vượt quá tổng số tập của phần');
         }
       };
       handlers.handleSubmitSuccess = () => {
         onClose();
-      };
-      handlers.handleSubmitError = (code) => {
-        if (code === ErrorCode.MOVIE_ITEM_EXCEED_TOTAL_EXPISODE) {
-          notify.error('Số tập đã vượt quá tổng số tập của phần');
-        }
       };
     }
   });

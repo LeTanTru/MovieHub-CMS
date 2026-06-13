@@ -121,6 +121,8 @@ export const ErrorCode = {
   SERVER_CONFIG_ERROR_SERVER_NUMBER_EXISTED: 'ERROR-SERVER-CONFIG-0001',
   SERVER_CONFIG_ERROR_HOSTNAME_EXISTED: 'ERROR-SERVER-CONFIG-0002',
   SERVER_CONFIG_ERROR_IP_PORT_EXISTED: 'ERROR-SERVER-CONFIG-0003',
+  SERVER_CONFIG_ERROR_UNAUTHORIZED: 'ERROR-SERVER-CONFIG-0004',
+  SERVER_CONFIG_ERROR_USED_BY_VIDEO_LIBRARY: 'ERROR-SERVER-CONFIG-0005',
 
   // === Setting error code ===
   SETTING_ERROR_NOT_FOUND: 'ERROR-SETTING-0000',
@@ -313,14 +315,7 @@ export const settingErrorMaps: ErrorMaps<SettingBodyType> = {
       'keyName',
       {
         type: 'manual',
-        message: 'Tên đã tồn tại'
-      }
-    ],
-    [
-      'groupName',
-      {
-        type: 'manual',
-        message: 'Nhóm đã tồn tại'
+        message: 'Tên cài đặt đã tồn tại'
       }
     ]
   ]
