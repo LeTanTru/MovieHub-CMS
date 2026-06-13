@@ -1,7 +1,7 @@
 'use client';
 
 import { INDICATOR_AUTO_HIDE_MS } from '@/constants';
-import { useIndicator } from '@/components/video-player/video-player';
+import { useIndicator } from '../indicator-context';
 import { useMediaState } from '@vidstack/react';
 import { AnimatePresence, m } from 'framer-motion';
 import { useEffect, useReducer } from 'react';

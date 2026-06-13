@@ -1,4 +1,5 @@
-import { Button, ToolTip } from '@/components/form';
+import { Button } from '@/components/form/button';
+import { ToolTip } from '@/components/form/tooltip';
 import { HasPermission } from '@/components/has-permission';
 import { SearchForm } from '@/components/search-form';
 import { ConfirmModal } from '@/components/modal';

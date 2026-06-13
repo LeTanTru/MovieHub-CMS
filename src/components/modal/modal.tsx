@@ -16,7 +16,7 @@ import {
 } from 'framer-motion';
 import { cn } from '@/lib';
 import { createPortal } from 'react-dom';
-import { useIsMounted } from '@/hooks';
+import { useIsMounted } from '@/hooks/use-is-mounted';
 import { X, ChevronDown, Info } from 'lucide-react';
 import { Button } from '@/components/form/button';
 

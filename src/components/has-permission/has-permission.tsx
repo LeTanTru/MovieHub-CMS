@@ -1,6 +1,7 @@
 'use client';
 
-import { useIsMounted, useValidatePermission } from '@/hooks';
+import { useIsMounted } from '@/hooks/use-is-mounted';
+import { useValidatePermission } from '@/hooks/use-validate-permission';
 import type { ReactNode } from 'react';
 
 type HasPermissionProps = {

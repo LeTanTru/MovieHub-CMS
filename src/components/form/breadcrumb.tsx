@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Fragment } from 'react';
 import type { BreadcrumbProps } from '@/types';
-import { useIsMounted } from '@/hooks';
+import { useIsMounted } from '@/hooks/use-is-mounted';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export function Breadcrumb({

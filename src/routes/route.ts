@@ -1,4 +1,4 @@
-import { apiConfig } from '@/constants';
+import { apiConfig } from '@/constants/api-config';
 import { RouteConfig } from '@/types';
 
 const defineRoute = <T extends RouteConfig>(routes: T): T => routes;

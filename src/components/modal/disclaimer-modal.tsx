@@ -11,7 +11,8 @@ import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/form/button';
 import { useEffect } from 'react';
 import { storageKeys } from '@/constants';
-import { useDisclosure, useIsMounted } from '@/hooks';
+import { useDisclosure } from '@/hooks/use-disclosure';
+import { useIsMounted } from '@/hooks/use-is-mounted';
 import { getData, setData } from '@/utils';
 import { envConfig } from '@/config';
 

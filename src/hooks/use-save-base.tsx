@@ -1,4 +1,6 @@
-import { Button, Col, Row } from '@/components/form';
+import { Button } from '@/components/form/button';
+import { Col } from '@/components/form/col';
+import { Row } from '@/components/form/row';
 import { ConfirmModal } from '@/components/modal';
 import { QUERY_STALE_TIME, storageKeys } from '@/constants';
 import { useDisclosure } from '@/hooks/use-disclosure';

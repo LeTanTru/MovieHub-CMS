@@ -4,7 +4,7 @@ import { logger } from '@/logger';
 import { route } from '@/routes';
 import type { ApiConfig, Payload } from '@/types';
 import { useAuthStore } from '@/store';
-import { getCookie } from '@/utils';
+import { getCookie } from './cookie.util';
 import { buildLoginRedirectPath } from './url.util';
 import axios, {
   AxiosError,

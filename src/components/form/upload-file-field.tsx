@@ -12,11 +12,10 @@ import {
 import { Button } from '@/components/form/button';
 import { FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib';
-import { useFileUpload } from '@/hooks';
+import { useFileUpload, formatBytes } from '@/hooks/use-file-upload';
 import { CircleLoading } from '@/components/loading';
 import { logger } from '@/logger';
 import type { ApiResponseNoData } from '@/types';
-import { formatBytes } from '@/hooks/use-file-upload';
 import { ConfirmModal } from '@/components/modal';
 
 type UploadFileFieldProps<T extends FieldValues> = {
