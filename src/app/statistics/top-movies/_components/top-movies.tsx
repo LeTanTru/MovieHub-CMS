@@ -2,6 +2,7 @@
 
 import {
   StatisticsDateFilter,
+  StatisticsEmptyState,
   ChartGradients,
   getGradientIdByIndex
 } from '@/app/statistics/_components';
@@ -192,6 +193,7 @@ export function TopMovies() {
 
   const { data, isFetching } = useTopMoviesQuery({ params });
   const movies = data?.content ?? [];
+  const isEmpty = data !== undefined && movies.length === 0;
   const activeSortLabel =
     topMovieSortOptions.find((option) => option.value === sortBy)?.label ?? '';
 
@@ -258,177 +260,191 @@ export function TopMovies() {
           </div>
         </div>
 
-        <div className='relative grid gap-3 xl:grid-cols-[minmax(0,1fr)_420px]'>
+        <div className='relative'>
           {isFetching && (
             <div className='absolute inset-0 z-10 flex items-start justify-center rounded-lg bg-white/70 pt-24'>
               <CircleLoading className='stroke-sporty-blue' />
             </div>
           )}
 
-          <Card className='overflow-hidden rounded-xl border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm'>
-            <CardHeader className='border-b p-4'>
-              <CardTitle className='text-base font-semibold text-zinc-900'>
-                {activeSortLabel}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className='p-0'>
-              <div className='overflow-x-auto'>
-                <Table className='min-w-220'>
-                  <TableHeader className='bg-zinc-50/50'>
-                    <TableRow>
-                      <TableHead className='text-zinc-750 w-20 p-4 text-center font-semibold'>
-                        Hạng
-                      </TableHead>
-                      <TableHead className='text-zinc-750 p-4 font-semibold'>
-                        Phim
-                      </TableHead>
-                      <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
-                        Lượt xem
-                      </TableHead>
-                      <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
-                        Bình luận
-                      </TableHead>
-                      <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
-                        Đánh giá
-                      </TableHead>
-                      <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
-                        Điểm
-                      </TableHead>
-                      <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
-                        Chỉ số chính
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {movies.length ? (
-                      movies.map((movie, index) => (
-                        <TableRow
-                          key={movie.id}
-                          className='transition-colors duration-150 hover:bg-zinc-50/50'
-                        >
-                          <TableCell className='px-4 text-center font-medium'>
-                            {renderRankBadge(
-                              (currentPage - 1) * pageSize + index + 1
-                            )}
-                          </TableCell>
-                          <TableCell className='px-4'>
-                            <div className='flex min-w-0 items-center gap-3'>
-                              <ImageField
-                                src={
-                                  movie.thumbnailUrl
-                                    ? renderImageUrl(movie.thumbnailUrl)
-                                    : undefined
-                                }
-                                alt={movie.title}
-                                aspect={16 / 9}
-                                className='aspect-video w-20 shrink-0 rounded border border-zinc-100/50 shadow-sm'
-                                imageClassName='object-cover'
-                              />
-                              <span
-                                className='hover:text-sporty-blue line-clamp-2 font-medium text-zinc-900 transition-colors duration-150'
-                                title={movie.title}
-                              >
-                                {movie.title}
-                              </span>
-                            </div>
-                          </TableCell>
-                          <TableCell className='text-zinc-650 px-4 text-right font-medium'>
-                            {formatStatisticsValue(movie.viewCount)}
-                          </TableCell>
-                          <TableCell className='text-zinc-650 px-4 text-right font-medium'>
-                            {formatStatisticsValue(movie.commentCount)}
-                          </TableCell>
-                          <TableCell className='text-zinc-650 px-4 text-right font-medium'>
-                            {formatStatisticsValue(movie.reviewCount)}
-                          </TableCell>
-                          <TableCell className='px-4 text-right font-bold text-zinc-900'>
-                            {formatRating(movie.averageRating)}
-                          </TableCell>
-                          <TableCell className='text-sporty-blue px-4 text-right font-bold'>
-                            {getMetricBySort(movie, sortBy)}
-                          </TableCell>
+          {isEmpty ? (
+            <StatisticsEmptyState content='Không có dữ liệu top phim' />
+          ) : (
+            <div className='grid gap-3 xl:grid-cols-[minmax(0,1fr)_420px]'>
+              <Card className='overflow-hidden rounded-xl border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm'>
+                <CardHeader className='border-b p-4'>
+                  <CardTitle className='text-base font-semibold text-zinc-900'>
+                    {activeSortLabel}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className='p-0'>
+                  <div className='overflow-x-auto'>
+                    <Table className='min-w-220'>
+                      <TableHeader className='bg-zinc-50/50'>
+                        <TableRow>
+                          <TableHead className='text-zinc-750 w-20 p-4 text-center font-semibold'>
+                            Hạng
+                          </TableHead>
+                          <TableHead className='text-zinc-750 p-4 font-semibold'>
+                            Phim
+                          </TableHead>
+                          <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
+                            Lượt xem
+                          </TableHead>
+                          <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
+                            Bình luận
+                          </TableHead>
+                          <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
+                            Đánh giá
+                          </TableHead>
+                          <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
+                            Điểm
+                          </TableHead>
+                          <TableHead className='text-zinc-750 p-4 text-right font-semibold'>
+                            Chỉ số chính
+                          </TableHead>
                         </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell
-                          colSpan={7}
-                          className='h-40 text-center text-zinc-500'
-                        >
-                          Không có dữ liệu
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={data?.totalPages ?? 0}
-                changePagination={setCurrentPage}
-              />
-            </CardContent>
-          </Card>
+                      </TableHeader>
+                      <TableBody>
+                        {movies.length ? (
+                          movies.map((movie, index) => (
+                            <TableRow
+                              key={movie.id}
+                              className='transition-colors duration-150 hover:bg-zinc-50/50'
+                            >
+                              <TableCell className='px-4 text-center font-medium'>
+                                {renderRankBadge(
+                                  (currentPage - 1) * pageSize + index + 1
+                                )}
+                              </TableCell>
+                              <TableCell className='px-4'>
+                                <div className='flex min-w-0 items-center gap-3'>
+                                  <ImageField
+                                    src={
+                                      movie.thumbnailUrl
+                                        ? renderImageUrl(movie.thumbnailUrl)
+                                        : undefined
+                                    }
+                                    alt={movie.title}
+                                    aspect={16 / 9}
+                                    className='aspect-video w-20 shrink-0 rounded border border-zinc-100/50 shadow-sm'
+                                    imageClassName='object-cover'
+                                  />
+                                  <span
+                                    className='hover:text-sporty-blue line-clamp-2 font-medium text-zinc-900 transition-colors duration-150'
+                                    title={movie.title}
+                                  >
+                                    {movie.title}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell className='text-zinc-650 px-4 text-right font-medium'>
+                                {formatStatisticsValue(movie.viewCount)}
+                              </TableCell>
+                              <TableCell className='text-zinc-650 px-4 text-right font-medium'>
+                                {formatStatisticsValue(movie.commentCount)}
+                              </TableCell>
+                              <TableCell className='text-zinc-650 px-4 text-right font-medium'>
+                                {formatStatisticsValue(movie.reviewCount)}
+                              </TableCell>
+                              <TableCell className='px-4 text-right font-bold text-zinc-900'>
+                                {formatRating(movie.averageRating)}
+                              </TableCell>
+                              <TableCell className='text-sporty-blue px-4 text-right font-bold'>
+                                {getMetricBySort(movie, sortBy)}
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell
+                              colSpan={7}
+                              className='h-40 text-center text-zinc-500'
+                            >
+                              Không có dữ liệu
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={data?.totalPages ?? 0}
+                    changePagination={setCurrentPage}
+                  />
+                </CardContent>
+              </Card>
 
-          <Card className='rounded-xl border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm'>
-            <CardHeader className='p-4 pb-2'>
-              <CardTitle className='text-base font-semibold text-zinc-900'>
-                Biểu đồ top phim
-              </CardTitle>
-            </CardHeader>
-            <CardContent className='h-96 p-4 pt-0'>
-              <ResponsiveContainer width='100%' height='100%'>
-                <BarChart data={chartData} layout='vertical'>
-                  <ChartGradients />
-                  <CartesianGrid
-                    strokeDasharray='4 4'
-                    stroke='#e2e8f0'
-                    strokeOpacity={0.4}
-                    horizontal={false}
-                  />
-                  <XAxis
-                    type='number'
-                    tickLine={false}
-                    axisLine={false}
-                    tick={{ fontSize: 11, fill: '#888888', fontWeight: 500 }}
-                    tickFormatter={(value) =>
-                      sortBy === 'averageRating'
-                        ? formatRating(Number(value))
-                        : formatStatisticsValue(Number(value))
-                    }
-                  />
-                  <YAxis
-                    type='category'
-                    dataKey='name'
-                    tickLine={false}
-                    axisLine={false}
-                    width={120}
-                    tick={{ fontSize: 11, fill: '#888888', fontWeight: 500 }}
-                  />
-                  <Tooltip
-                    content={
-                      <TopMovieTooltip
-                        sortBy={sortBy}
-                        activeSortLabel={activeSortLabel}
+              <Card className='rounded-xl border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm'>
+                <CardHeader className='p-4 pb-2'>
+                  <CardTitle className='text-base font-semibold text-zinc-900'>
+                    Biểu đồ top phim
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className='h-96 p-4 pt-0'>
+                  <ResponsiveContainer width='100%' height='100%'>
+                    <BarChart data={chartData} layout='vertical'>
+                      <ChartGradients />
+                      <CartesianGrid
+                        strokeDasharray='4 4'
+                        stroke='#e2e8f0'
+                        strokeOpacity={0.4}
+                        horizontal={false}
                       />
-                    }
-                  />
-                  <Bar
-                    dataKey='value'
-                    radius={[0, 8, 8, 0]}
-                    animationDuration={1500}
-                  >
-                    {chartData.map((_entry, index) => (
-                      <Cell
-                        key={index}
-                        fill={`url(#${getGradientIdByIndex(index)})`}
+                      <XAxis
+                        type='number'
+                        tickLine={false}
+                        axisLine={false}
+                        tick={{
+                          fontSize: 11,
+                          fill: '#888888',
+                          fontWeight: 500
+                        }}
+                        tickFormatter={(value) =>
+                          sortBy === 'averageRating'
+                            ? formatRating(Number(value))
+                            : formatStatisticsValue(Number(value))
+                        }
                       />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+                      <YAxis
+                        type='category'
+                        dataKey='name'
+                        tickLine={false}
+                        axisLine={false}
+                        width={120}
+                        tick={{
+                          fontSize: 11,
+                          fill: '#888888',
+                          fontWeight: 500
+                        }}
+                      />
+                      <Tooltip
+                        content={
+                          <TopMovieTooltip
+                            sortBy={sortBy}
+                            activeSortLabel={activeSortLabel}
+                          />
+                        }
+                      />
+                      <Bar
+                        dataKey='value'
+                        radius={[0, 8, 8, 0]}
+                        animationDuration={1500}
+                      >
+                        {chartData.map((_entry, index) => (
+                          <Cell
+                            key={index}
+                            fill={`url(#${getGradientIdByIndex(index)})`}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </div>
     </PageWrapper>

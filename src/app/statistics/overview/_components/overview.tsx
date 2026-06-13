@@ -2,6 +2,7 @@
 
 import {
   StatisticsDateFilter,
+  StatisticsEmptyState,
   ChartGradients,
   getGradientIdByIndex,
   getGradientColorFromId,
@@ -132,6 +133,20 @@ export function Overview() {
     { name: 'Phim bộ', value: data?.totalSeriesMovies ?? 0 }
   ];
 
+  const isEmpty =
+    !!data &&
+    [
+      data.averageRating,
+      data.totalComments,
+      data.totalFavourites,
+      data.totalMovies,
+      data.totalReviews,
+      data.totalSeriesMovies,
+      data.totalSingleMovies,
+      data.totalUsers,
+      data.totalViews
+    ].every((value) => Number(value ?? 0) === 0);
+
   const renderActiveShape = (props: {
     cx?: number;
     cy?: number;
@@ -193,199 +208,216 @@ export function Overview() {
             </div>
           )}
 
-          <div className='grid gap-3 md:grid-cols-2 xl:grid-cols-3'>
-            {metricCards.map((metric) => (
-              <Card
-                key={metric.label}
-                className={`relative overflow-hidden rounded-xl border border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${metric.glow}`}
-              >
-                <div
-                  className={`absolute top-0 right-0 left-0 h-1 bg-linear-to-r ${metric.gradient}`}
-                />
-                <CardContent className='flex items-center justify-between p-5'>
-                  <div>
-                    <p className='text-xs font-semibold tracking-wider text-zinc-400 uppercase'>
-                      {metric.label}
-                    </p>
-                    {data ? (
-                      <p className='mt-2 text-3xl font-extrabold tracking-tight text-zinc-900'>
-                        {metric.value}
-                      </p>
-                    ) : (
-                      <Skeleton className='mt-2.5 h-8 w-24' />
-                    )}
-                  </div>
-                  <div
-                    className={`flex size-11 items-center justify-center rounded-xl transition-transform duration-300 hover:scale-110 ${metric.iconBg}`}
+          {isEmpty ? (
+            <StatisticsEmptyState content='Không có dữ liệu thống kê tổng quan' />
+          ) : (
+            <>
+              <div className='grid gap-3 md:grid-cols-2 xl:grid-cols-3'>
+                {metricCards.map((metric) => (
+                  <Card
+                    key={metric.label}
+                    className={`relative overflow-hidden rounded-xl border border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${metric.glow}`}
                   >
-                    <metric.icon className='size-5.5' />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className='mt-3 grid gap-3 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,0.8fr)]'>
-            <Card className='rounded-xl border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm'>
-              <CardHeader className='p-4 pb-2'>
-                <CardTitle className='text-base font-semibold text-zinc-900'>
-                  Tương tác nội dung
-                </CardTitle>
-              </CardHeader>
-              <CardContent className='h-80 p-4 pt-0'>
-                <ResponsiveContainer width='100%' height='100%'>
-                  <BarChart data={interactionData}>
-                    <ChartGradients />
-                    <CartesianGrid
-                      strokeDasharray='4 4'
-                      stroke='#e2e8f0'
-                      strokeOpacity={0.4}
-                      vertical={false}
-                    />
-                    <XAxis
-                      dataKey='name'
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fontSize: 11, fill: '#888888', fontWeight: 500 }}
-                    />
-                    <YAxis
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fontSize: 11, fill: '#888888', fontWeight: 500 }}
-                      tickFormatter={(value) =>
-                        formatStatisticsValue(Number(value))
-                      }
-                    />
-                    <Tooltip
-                      content={
-                        <CustomTooltip
-                          valueFormatter={(value) =>
-                            formatStatisticsValue(toChartNumber(value))
-                          }
-                        />
-                      }
-                    />
-                    <Bar
-                      dataKey='value'
-                      name='Số lượng'
-                      radius={[8, 8, 0, 0]}
-                      onMouseEnter={(_data, index) => setHoveredBarIndex(index)}
-                      onMouseLeave={() => setHoveredBarIndex(null)}
-                    >
-                      {interactionData.map((_entry, index) => {
-                        const fill = `url(#${getGradientIdByIndex(index)})`;
-                        const opacity =
-                          hoveredBarIndex === null || hoveredBarIndex === index
-                            ? 1
-                            : 0.4;
-                        return (
-                          <Cell
-                            key={index}
-                            fill={fill}
-                            opacity={opacity}
-                            className='transition-opacity duration-200'
-                          />
-                        );
-                      })}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            <Card className='rounded-xl border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm'>
-              <CardHeader className='p-4 pb-2'>
-                <CardTitle className='text-base font-semibold text-zinc-900'>
-                  Cơ cấu phim
-                </CardTitle>
-              </CardHeader>
-              <CardContent className='p-4 pt-0'>
-                <div className='relative flex h-56 w-full items-center justify-center'>
-                  <ResponsiveContainer width='100%' height='100%'>
-                    <PieChart>
-                      <ChartGradients />
-                      <Pie
-                        data={movieTypeData}
-                        dataKey='value'
-                        nameKey='name'
-                        innerRadius={70}
-                        outerRadius={95}
-                        paddingAngle={4}
-                        activeShape={renderActiveShape}
-                        onMouseEnter={(_data, index) =>
-                          setHoveredPieIndex(index)
-                        }
-                        onMouseLeave={() => setHoveredPieIndex(null)}
-                      >
-                        {movieTypeData.map((_entry, index) => (
-                          <Cell
-                            key={index}
-                            fill={`url(#${getGradientIdByIndex(index)})`}
-                            stroke='none'
-                            style={{
-                              filter:
-                                hoveredPieIndex === index
-                                  ? 'drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.15))'
-                                  : 'none',
-                              transition: 'all 0.2s ease-in-out'
-                            }}
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        content={
-                          <CustomTooltip
-                            valueFormatter={(value) =>
-                              formatStatisticsValue(toChartNumber(value))
-                            }
-                          />
-                        }
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className='pointer-events-none absolute flex flex-col items-center justify-center text-center'>
-                    <span className='text-[10px] font-semibold tracking-wider text-zinc-400 uppercase'>
-                      Tổng phim
-                    </span>
-                    <span className='mt-0.5 text-xl font-extrabold text-zinc-900'>
-                      {formatStatisticsValue(data?.totalMovies)}
-                    </span>
-                  </div>
-                </div>
-                <div className='grid gap-2 text-sm'>
-                  {movieTypeData.map((item, index) => (
                     <div
-                      key={item.name}
-                      className='flex items-center justify-between rounded-xl border border-zinc-100/50 bg-zinc-50/50 px-3.5 py-2'
-                    >
-                      <span className='flex items-center gap-2 font-medium text-zinc-600'>
-                        <span
-                          className='size-2.5 rounded-full shadow-sm'
-                          style={{
-                            backgroundColor: getGradientColorFromId(
-                              `url(#${getGradientIdByIndex(index)})`
-                            )
+                      className={`absolute top-0 right-0 left-0 h-1 bg-linear-to-r ${metric.gradient}`}
+                    />
+                    <CardContent className='flex items-center justify-between p-5'>
+                      <div>
+                        <p className='text-xs font-semibold tracking-wider text-zinc-400 uppercase'>
+                          {metric.label}
+                        </p>
+                        {data ? (
+                          <p className='mt-2 text-3xl font-extrabold tracking-tight text-zinc-900'>
+                            {metric.value}
+                          </p>
+                        ) : (
+                          <Skeleton className='mt-2.5 h-8 w-24' />
+                        )}
+                      </div>
+                      <div
+                        className={`flex size-11 items-center justify-center rounded-xl transition-transform duration-300 hover:scale-110 ${metric.iconBg}`}
+                      >
+                        <metric.icon className='size-5.5' />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className='mt-3 grid gap-3 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,0.8fr)]'>
+                <Card className='rounded-xl border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm'>
+                  <CardHeader className='p-4 pb-2'>
+                    <CardTitle className='text-base font-semibold text-zinc-900'>
+                      Tương tác nội dung
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className='h-80 p-4 pt-0'>
+                    <ResponsiveContainer width='100%' height='100%'>
+                      <BarChart data={interactionData}>
+                        <ChartGradients />
+                        <CartesianGrid
+                          strokeDasharray='4 4'
+                          stroke='#e2e8f0'
+                          strokeOpacity={0.4}
+                          vertical={false}
+                        />
+                        <XAxis
+                          dataKey='name'
+                          tickLine={false}
+                          axisLine={false}
+                          tick={{
+                            fontSize: 11,
+                            fill: '#888888',
+                            fontWeight: 500
                           }}
                         />
-                        {item.name}
-                      </span>
-                      <span className='font-bold text-zinc-900'>
-                        {formatStatisticsValue(item.value)}
-                      </span>
+                        <YAxis
+                          tickLine={false}
+                          axisLine={false}
+                          tick={{
+                            fontSize: 11,
+                            fill: '#888888',
+                            fontWeight: 500
+                          }}
+                          tickFormatter={(value) =>
+                            formatStatisticsValue(Number(value))
+                          }
+                        />
+                        <Tooltip
+                          content={
+                            <CustomTooltip
+                              valueFormatter={(value) =>
+                                formatStatisticsValue(toChartNumber(value))
+                              }
+                            />
+                          }
+                        />
+                        <Bar
+                          dataKey='value'
+                          name='Số lượng'
+                          radius={[8, 8, 0, 0]}
+                          onMouseEnter={(_data, index) =>
+                            setHoveredBarIndex(index)
+                          }
+                          onMouseLeave={() => setHoveredBarIndex(null)}
+                        >
+                          {interactionData.map((_entry, index) => {
+                            const fill = `url(#${getGradientIdByIndex(index)})`;
+                            const opacity =
+                              hoveredBarIndex === null ||
+                              hoveredBarIndex === index
+                                ? 1
+                                : 0.4;
+                            return (
+                              <Cell
+                                key={index}
+                                fill={fill}
+                                opacity={opacity}
+                                className='transition-opacity duration-200'
+                              />
+                            );
+                          })}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                <Card className='rounded-xl border-zinc-100 bg-white/90 shadow-sm backdrop-blur-sm'>
+                  <CardHeader className='p-4 pb-2'>
+                    <CardTitle className='text-base font-semibold text-zinc-900'>
+                      Cơ cấu phim
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className='p-4 pt-0'>
+                    <div className='relative flex h-56 w-full items-center justify-center'>
+                      <ResponsiveContainer width='100%' height='100%'>
+                        <PieChart>
+                          <ChartGradients />
+                          <Pie
+                            data={movieTypeData}
+                            dataKey='value'
+                            nameKey='name'
+                            innerRadius={70}
+                            outerRadius={95}
+                            paddingAngle={4}
+                            activeShape={renderActiveShape}
+                            onMouseEnter={(_data, index) =>
+                              setHoveredPieIndex(index)
+                            }
+                            onMouseLeave={() => setHoveredPieIndex(null)}
+                          >
+                            {movieTypeData.map((_entry, index) => (
+                              <Cell
+                                key={index}
+                                fill={`url(#${getGradientIdByIndex(index)})`}
+                                stroke='none'
+                                style={{
+                                  filter:
+                                    hoveredPieIndex === index
+                                      ? 'drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.15))'
+                                      : 'none',
+                                  transition: 'all 0.2s ease-in-out'
+                                }}
+                              />
+                            ))}
+                          </Pie>
+                          <Tooltip
+                            content={
+                              <CustomTooltip
+                                valueFormatter={(value) =>
+                                  formatStatisticsValue(toChartNumber(value))
+                                }
+                              />
+                            }
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                      <div className='pointer-events-none absolute flex flex-col items-center justify-center text-center'>
+                        <span className='text-[10px] font-semibold tracking-wider text-zinc-400 uppercase'>
+                          Tổng phim
+                        </span>
+                        <span className='mt-0.5 text-xl font-extrabold text-zinc-900'>
+                          {formatStatisticsValue(data?.totalMovies)}
+                        </span>
+                      </div>
                     </div>
-                  ))}
-                  <div className='flex items-center justify-between rounded-xl border border-zinc-100/50 bg-zinc-50/50 px-3.5 py-2'>
-                    <span className='font-medium text-zinc-600'>
-                      Điểm trung bình
-                    </span>
-                    <span className='font-bold text-zinc-900'>
-                      {formatRating(data?.averageRating)}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                    <div className='grid gap-2 text-sm'>
+                      {movieTypeData.map((item, index) => (
+                        <div
+                          key={item.name}
+                          className='flex items-center justify-between rounded-xl border border-zinc-100/50 bg-zinc-50/50 px-3.5 py-2'
+                        >
+                          <span className='flex items-center gap-2 font-medium text-zinc-600'>
+                            <span
+                              className='size-2.5 rounded-full shadow-sm'
+                              style={{
+                                backgroundColor: getGradientColorFromId(
+                                  `url(#${getGradientIdByIndex(index)})`
+                                )
+                              }}
+                            />
+                            {item.name}
+                          </span>
+                          <span className='font-bold text-zinc-900'>
+                            {formatStatisticsValue(item.value)}
+                          </span>
+                        </div>
+                      ))}
+                      <div className='flex items-center justify-between rounded-xl border border-zinc-100/50 bg-zinc-50/50 px-3.5 py-2'>
+                        <span className='font-medium text-zinc-600'>
+                          Điểm trung bình
+                        </span>
+                        <span className='font-bold text-zinc-900'>
+                          {formatRating(data?.averageRating)}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </PageWrapper>
