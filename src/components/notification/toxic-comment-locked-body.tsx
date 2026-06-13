@@ -22,8 +22,6 @@ export function ToxicCommentLockedBody({
 }: {
   notification: NotificationResType;
 }) {
-  console.log('🚀 ~ ToxicCommentLockedBody ~ notification:', notification);
-
   const body = useMemo(
     () => parseJSON<ToxicCommentLockedNotificationType>(notification.body),
     [notification.body]
@@ -34,13 +32,13 @@ export function ToxicCommentLockedBody({
   const setScrollTarget = useCommentStore((s) => s.setScrollTarget);
 
   const handleClick = () => {
-    // const parentId = body?.parentId;
-    // if (parentId) {
-    //   setOpenParentIds((prev) =>
-    //     prev.includes(parentId) ? prev : [...prev, parentId]
-    //   );
-    // }
-    // setScrollTarget({ commentId: body?.id, parentId });
+    const parentId = body?.parentId;
+    if (parentId) {
+      setOpenParentIds((prev) =>
+        prev.includes(parentId) ? prev : [...prev, parentId]
+      );
+    }
+    setScrollTarget({ commentId: body?.id, parentId });
   };
 
   return (
@@ -50,10 +48,10 @@ export function ToxicCommentLockedBody({
       href={renderListPageUrl(
         generatePath(route.comment.getList.path, {
           id: body?.movieId || ''
+        }),
+        serializeParams({
+          movieTitle: body?.movieTitle
         })
-        // serializeParams({
-        //   movieTitle: body?.movieTitle
-        // })
       )}
     >
       <div className='flex shrink-0 justify-center'>
@@ -66,10 +64,8 @@ export function ToxicCommentLockedBody({
       </div>
       <div className='flex flex-1 flex-col justify-between'>
         <h3 className='line-clamp-2 font-medium' title={notification.title}>
-          {notification.title}:&nbsp;&quot;
-          <span className='font-normal'>{body?.content}</span>
-          &quot;&nbsp;trong phim&nbsp;
-          {/* <span className='font-semibold'>{body?.movieTitle}</span> */}
+          {notification.title} trong phim&nbsp;
+          <span className='font-semibold'>{body?.movieTitle}</span>
         </h3>
         <div
           className='text-muted-foreground mt-2 shrink-0 text-xs'

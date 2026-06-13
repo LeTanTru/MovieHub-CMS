@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { StarRating } from '@/components/star-rating';
 import { ConfirmModal } from '@/components/modal';
@@ -31,7 +32,7 @@ import {
   renderImageUrl,
   timeAgo
 } from '@/utils';
-import { Ellipsis, Mars, Venus } from 'lucide-react';
+import { Ellipsis, Eye, EyeClosed, Mars, Venus } from 'lucide-react';
 import {
   AiOutlineDelete,
   AiOutlineEye,
@@ -47,6 +48,9 @@ type ReviewItemProps = {
 
 export function ReviewItem({ review, onDelete }: ReviewItemProps) {
   const isHidden = review.status === REVIEW_STATUS_HIDE;
+  const [isContentVisible, setIsContentVisible] = useState(false);
+  const shouldShowViewContent = isHidden;
+  const shouldBlurHiddenContent = isHidden && !isContentVisible;
   const hasPermission = useValidatePermission();
 
   const {
@@ -75,17 +79,27 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
         onSuccess: (res) => {
           if (res.result) {
             invalidateQueries([queryKeys.REVIEW_INFINITE]);
-            notify.success('Cập nhật trạng thái thành công');
+            notify.success(
+              `${status === REVIEW_STATUS_SHOW ? 'Ẩn' : 'Hiện'} đánh giá thành công`
+            );
           } else {
-            notify.error('Cập nhật trạng thái thất bại');
+            notify.error(
+              `${status === REVIEW_STATUS_SHOW ? 'Ẩn' : 'Hiện'} đánh giá thất bại`
+            );
           }
         },
         onError: (error) => {
           logger.error('[CHANGE_STATUS_REVIEW_ERROR]', error);
-          notify.error('Cập nhật trạng thái thất bại');
+          notify.error(
+            `${status === REVIEW_STATUS_SHOW ? 'Ẩn' : 'Hiện'} đánh giá thất bại`
+          );
         }
       }
     );
+  };
+
+  const handleViewContent = () => {
+    setIsContentVisible((prev) => !prev);
   };
 
   return (
@@ -163,7 +177,8 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
           <div className='mt-2 flex flex-col gap-2'>
             <p
               className={cn('break-all text-gray-700', {
-                'max-640:text-[13px] blur-xs select-none': isHidden
+                'max-640:text-[13px] blur-xs select-none':
+                  shouldBlurHiddenContent
               })}
             >
               {review.content}
@@ -201,7 +216,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
                 {review.totalDislike}
               </div>
             </div>
-            {(canChangeStatus || canDelete) && (
+            {(shouldShowViewContent || canChangeStatus || canDelete) && (
               <DropdownMenu>
                 <DropdownMenuTrigger
                   className='border-none bg-transparent shadow-none'
@@ -217,8 +232,8 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
                   align='start'
                 >
                   <DropdownMenuGroup>
-                    <DropdownMenuItem className='cursor-pointer' asChild>
-                      {canChangeStatus && (
+                    {canChangeStatus && (
+                      <DropdownMenuItem className='cursor-pointer' asChild>
                         <Button
                           className='h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
                           variant='ghost'
@@ -230,19 +245,43 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
                           {review.status === REVIEW_STATUS_SHOW ? (
                             <>
                               <AiOutlineEyeInvisible />
-                              Ẩn
+                              Ẩn đánh giá
                             </>
                           ) : (
                             <>
                               <AiOutlineEye />
-                              Hiện
+                              Hiện đánh giá
                             </>
                           )}
                         </Button>
-                      )}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className='cursor-pointer p-0! transition-all duration-200 ease-linear'>
-                      {canDelete && (
+                      </DropdownMenuItem>
+                    )}
+                    {shouldShowViewContent && (
+                      <DropdownMenuItem
+                        className='cursor-pointer p-0! transition-all duration-200 ease-linear'
+                        asChild
+                      >
+                        <Button
+                          className='h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
+                          variant='ghost'
+                          onClick={handleViewContent}
+                        >
+                          {isContentVisible ? (
+                            <>
+                              <EyeClosed />
+                              Ẩn nội dung
+                            </>
+                          ) : (
+                            <>
+                              <Eye />
+                              Xem nội dung
+                            </>
+                          )}
+                        </Button>
+                      </DropdownMenuItem>
+                    )}
+                    {canDelete && (
+                      <DropdownMenuItem className='cursor-pointer p-0! transition-all duration-200 ease-linear'>
                         <ConfirmModal
                           message='Bạn có chắc chắn muốn xóa đánh giá này không ?'
                           onConfirm={onDelete}
@@ -253,8 +292,8 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
                             </Button>
                           }
                         />
-                      )}
-                    </DropdownMenuItem>
+                      </DropdownMenuItem>
+                    )}
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>

@@ -1,18 +1,28 @@
 'use client';
 
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useState } from 'react';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { ConfirmModal } from '@/components/modal';
-import { Ellipsis, Mars, Pin, Reply, Venus } from 'lucide-react';
+import {
+  Ellipsis,
+  Eye,
+  EyeClosed,
+  Mars,
+  Pin,
+  Reply,
+  Venus
+} from 'lucide-react';
 import { cn } from '@/lib';
 import {
   convertUTCToLocal,
   getLastWord,
   invalidateQueries,
+  notify,
+  parseJSON,
   renderImageUrl,
   timeAgo
 } from '@/utils';
-import type { CommentResType, CommentSearchType } from '@/types';
+import type { CommentResType, CommentSearchType, ToxicSpan } from '@/types';
 import {
   AVATAR_SIZE_COMMENT,
   apiConfig,
@@ -47,6 +57,7 @@ import { useChangeCommenStatusMutation } from '@/queries';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { Badge } from '@/components/ui/badge';
 import { Element, scroller } from 'react-scroll';
+import { logger } from '@/logger';
 
 type CommentItemProps = {
   comment: CommentResType & { children?: CommentResType[] };
@@ -162,6 +173,13 @@ export function CommentItem({
   const [isScrollTarget, setIsScrollTarget] = useState(false); // state to trigger highlight effect
 
   const isHidden = comment.status === COMMENT_STATUS_HIDE;
+  const toxicSpans = comment.toxicSpans
+    ? parseJSON<ToxicSpan[]>(comment.toxicSpans) || []
+    : [];
+  const hasToxicSpans = toxicSpans.length > 0;
+  const [isContentVisible, setIsContentVisible] = useState(false);
+  const shouldShowViewContent = isHidden || !!hasToxicSpans;
+  const shouldBlurHiddenContent = isHidden && !isContentVisible;
 
   const {
     mutateAsync: changeStatusCommentMutate,
@@ -201,7 +219,7 @@ export function CommentItem({
     setEditingComment(null);
   };
 
-  const renderContentWithMentions = () => {
+  const renderMention = () => {
     if (!replyToInfo?.fullName) return;
 
     const mention = `@${replyToInfo?.fullName}`;
@@ -213,37 +231,93 @@ export function CommentItem({
     );
   };
 
+  const renderContent = () => {
+    const content = comment.content;
+
+    if (!hasToxicSpans)
+      return (
+        <>
+          {renderMention()}
+          {comment.content}
+        </>
+      );
+
+    let result = [];
+    let lastIndex = 0;
+    toxicSpans.forEach((span) => {
+      result.push(content.slice(lastIndex, span.start));
+      result.push(
+        <span
+          className={cn({ 'blur-xs select-none': !isContentVisible })}
+          key={`${span.start}-${span.end}`}
+        >
+          {content.slice(span.start, span.end)}
+        </span>
+      );
+      lastIndex = span.end;
+    });
+
+    result.push(content.slice(lastIndex));
+
+    return result;
+  };
+
   const handleViewReplies = (parentId: string) => {
     setOpenParentIds((prev) => [...prev, parentId]);
   };
 
-  const handleFetchNextPage = () => {
+  const handleFetchNextPage = useCallback(() => {
     handlers.loadMore();
+  }, [handlers]);
+
+  const handleViewContent = () => {
+    setIsContentVisible((prev) => !prev);
   };
-  const loadMoreReplies = handlers.loadMore;
 
   const handleHideReplies = (parentId: string) => {
     setOpenParentIds((prev) => prev.filter((value) => value !== parentId));
   };
 
   const handleChangeCommentStatus = async (id: string, status: number) => {
-    await changeStatusCommentMutate({
-      id,
-      status:
-        status === COMMENT_STATUS_SHOW
-          ? COMMENT_STATUS_HIDE
-          : COMMENT_STATUS_SHOW
-    });
-    if (comment.parent)
-      invalidateQueries([
-        `${queryKeys.COMMENT}-${comment.parent.id}-infinite`,
-        { parentId: comment.parent.id }
-      ]);
-    else
-      invalidateQueries([
-        queryKeys.COMMENT_INFINITE,
-        { movieId: comment.movieId }
-      ]);
+    await changeStatusCommentMutate(
+      {
+        id,
+        status:
+          status === COMMENT_STATUS_SHOW
+            ? COMMENT_STATUS_HIDE
+            : COMMENT_STATUS_SHOW
+      },
+      {
+        onSuccess: (res) => {
+          if (res.result) {
+            if (comment.parent)
+              invalidateQueries([
+                `${queryKeys.COMMENT}-${comment.parent.id}-infinite`,
+                { parentId: comment.parent.id }
+              ]);
+            else
+              invalidateQueries([
+                queryKeys.COMMENT_INFINITE,
+                { movieId: comment.movieId }
+              ]);
+
+            notify.success(
+              `${comment.status === COMMENT_STATUS_SHOW ? 'Ẩn' : 'Hiện'} bình luận thành công`
+            );
+          } else {
+            notify.error(
+              `${comment.status === COMMENT_STATUS_SHOW ? 'Ẩn' : 'Hiện'} bình luận thất bại`
+            );
+          }
+        },
+        onError: (error) => {
+          logger.error('[CHANGE_COMMENT_STATUS_ERROR]', error);
+          notify.error(
+            `${comment.status === COMMENT_STATUS_SHOW ? 'Ẩn' : 'Hiện'} bình luận thất bại`
+          );
+        }
+      }
+    );
   };
 
   const handleVote = (id: string, type: number) => {
@@ -303,14 +377,14 @@ export function CommentItem({
 
     if (commentList.some((item) => item.id === targetCommentId)) return; // if the target comment is already in the currently loaded comments, no need to load more
 
-    loadMoreReplies();
+    handleFetchNextPage();
   }, [
     comment.id,
     commentList,
     hasMore,
     isActiveParent,
     isFetchingMore,
-    loadMoreReplies,
+    handleFetchNextPage,
     loading,
     targetCommentId,
     targetParentId
@@ -444,11 +518,11 @@ export function CommentItem({
 
             <p
               className={cn('mt-4 break-all text-gray-700', {
-                'max-640:text-[13px] blur-xs select-none': isHidden
+                'max-640:text-[13px] blur-xs select-none':
+                  shouldBlurHiddenContent
               })}
             >
-              {renderContentWithMentions()}
-              {comment.content}
+              {renderContent()}
             </p>
 
             <div className='mt-4 flex items-center gap-x-8 text-sm text-gray-500'>
@@ -458,9 +532,13 @@ export function CommentItem({
                     <ToolTip title='Thích'>
                       <Button
                         variant='ghost'
-                        className={cn('size-5! p-0! hover:text-sky-500', {
-                          '[&_svg]:fill-sky-500 [&_svg]:stroke-sky-500': isLiked
-                        })}
+                        className={cn(
+                          'size-5! p-0! select-none hover:text-sky-500',
+                          {
+                            '[&_svg]:fill-sky-500 [&_svg]:stroke-sky-500':
+                              isLiked
+                          }
+                        )}
                         onClick={() =>
                           handleVote(comment.id, REACTION_TYPE_LIKE)
                         }
@@ -475,10 +553,13 @@ export function CommentItem({
                     <ToolTip title='Không thích'>
                       <Button
                         variant='ghost'
-                        className={cn('size-5! p-0! hover:text-rose-500', {
-                          '[&_svg]:fill-rose-500 [&_svg]:stroke-rose-500':
-                            isDisliked
-                        })}
+                        className={cn(
+                          'size-5! p-0! select-none hover:text-rose-500',
+                          {
+                            '[&_svg]:fill-rose-500 [&_svg]:stroke-rose-500':
+                              isDisliked
+                          }
+                        )}
                         onClick={() =>
                           handleVote(comment.id, REACTION_TYPE_DISLIKE)
                         }
@@ -494,7 +575,7 @@ export function CommentItem({
               {canCreate && (
                 <Button
                   variant='ghost'
-                  className='h-5! p-0! hover:bg-transparent'
+                  className='h-5! p-0! select-none hover:bg-transparent'
                   onClick={() => handleReplyComment()}
                 >
                   <Reply className='size-5' /> Trả lời
@@ -504,7 +585,7 @@ export function CommentItem({
               {isAuthor && canUpdate && (
                 <Button
                   variant='ghost'
-                  className='text-sporty-blue hover:text-sporty-blue/50 h-5! p-0! hover:bg-transparent'
+                  className='text-sporty-blue hover:text-sporty-blue/50 h-5! p-0! select-none hover:bg-transparent'
                   onClick={() => handleEditComment(comment)}
                 >
                   <AiOutlineEdit className='size-5' />
@@ -512,7 +593,7 @@ export function CommentItem({
                 </Button>
               )}
 
-              {(canChangeStatus || canDelete) && (
+              {(shouldShowViewContent || canChangeStatus || canDelete) && (
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     className='border-none bg-transparent shadow-none'
@@ -528,8 +609,8 @@ export function CommentItem({
                     align='start'
                   >
                     <DropdownMenuGroup>
-                      <DropdownMenuItem className='cursor-pointer' asChild>
-                        {canChangeStatus && (
+                      {canChangeStatus && (
+                        <DropdownMenuItem className='cursor-pointer' asChild>
                           <Button
                             className='hover:bg-accent/80 h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
                             variant='ghost'
@@ -544,19 +625,43 @@ export function CommentItem({
                             {comment.status === COMMENT_STATUS_SHOW ? (
                               <>
                                 <AiOutlineEyeInvisible />
-                                Ẩn
+                                Ẩn bình luận
                               </>
                             ) : (
                               <>
                                 <AiOutlineEye />
-                                Hiện
+                                Hiện bình luận
                               </>
                             )}
                           </Button>
-                        )}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className='cursor-pointer p-0! transition-all duration-200 ease-linear'>
-                        {canDelete && (
+                        </DropdownMenuItem>
+                      )}
+                      {shouldShowViewContent && (
+                        <DropdownMenuItem
+                          className='cursor-pointer p-0! transition-all duration-200 ease-linear'
+                          asChild
+                        >
+                          <Button
+                            className='hover:bg-accent/80 h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
+                            variant='ghost'
+                            onClick={handleViewContent}
+                          >
+                            {isContentVisible ? (
+                              <>
+                                <EyeClosed />
+                                Ẩn nội dung
+                              </>
+                            ) : (
+                              <>
+                                <Eye />
+                                Xem nội dung
+                              </>
+                            )}
+                          </Button>
+                        </DropdownMenuItem>
+                      )}
+                      {canDelete && (
+                        <DropdownMenuItem className='cursor-pointer p-0! transition-all duration-200 ease-linear'>
                           <ConfirmModal
                             message='Bạn có chắc chắn muốn xóa bình luận này không ?'
                             onConfirm={onDelete}
@@ -570,8 +675,8 @@ export function CommentItem({
                               </Button>
                             }
                           />
-                        )}
-                      </DropdownMenuItem>
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuGroup>
                   </DropdownMenuContent>
                 </DropdownMenu>

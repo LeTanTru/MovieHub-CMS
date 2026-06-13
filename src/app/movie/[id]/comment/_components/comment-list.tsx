@@ -4,6 +4,8 @@ import { CommentInput } from './comment-input';
 import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { NoData } from '@/components/no-data';
 import {
+  REACTION_TYPE_DISLIKE,
+  REACTION_TYPE_LIKE,
   SKELETON_LOADING_COUNT,
   apiConfig,
   objectNames,
@@ -93,8 +95,7 @@ export function CommentList() {
       objectName: objectNames.COMMENT,
       queryKey: queryKeys.COMMENT,
       defaultFilters: { movieId },
-      notShowFromSearchParams: ['movieId'],
-      showNotify: false
+      notShowFromSearchParams: ['movieId']
     }
   });
 
@@ -109,9 +110,36 @@ export function CommentList() {
     type: number,
     onSuccess?: () => void
   ) => {
-    await voteCommentMutate({ id, type });
-    await Promise.all([getVoteList()]);
-    onSuccess?.();
+    await voteCommentMutate(
+      { id, type },
+      {
+        onSuccess: (res) => {
+          if (res.result) {
+            getVoteList();
+            onSuccess?.();
+
+            if (type === REACTION_TYPE_LIKE) {
+              const isLikeAction = !voteMap[id];
+              notify.success(
+                `${isLikeAction ? 'Thích' : 'Bỏ thích'} bình luận thành công`
+              );
+            }
+            if (type === REACTION_TYPE_DISLIKE) {
+              const isDislikeAction = !voteMap[id];
+              notify.success(
+                `${isDislikeAction ? 'Không thích' : 'Bỏ không thích'} bình luận thành công`
+              );
+            }
+          } else {
+            notify.error('Bình chọn bình luận thất bại');
+          }
+        },
+        onError: (error) => {
+          logger.error('[VOTE_COMMENT_ERROR]', error);
+          notify.error('Bình chọn bình luận thất bại');
+        }
+      }
+    );
   };
 
   const handlePinComment = async (id: string, isPinned: boolean) => {
@@ -121,7 +149,15 @@ export function CommentList() {
         onSuccess: (res) => {
           if (res.result) {
             handlers.invalidateQueries();
+            notify.success(
+              `${isPinned ? 'Ghim' : 'Bỏ ghim'} bình luận thành công`
+            );
+          } else {
+            notify.error(`${isPinned ? 'Ghim' : 'Bỏ ghim'} bình luận thất bại`);
           }
+        },
+        onError: () => {
+          notify.error(`${isPinned ? 'Ghim' : 'Bỏ ghim'} bình luận thất bại`);
         }
       }
     );
@@ -135,14 +171,7 @@ export function CommentList() {
             `${queryKeys.COMMENT}-${commentToDelete.parent.id}-infinite`,
             { parentId: commentToDelete.parent.id }
           ]);
-          notify.success('Xóa bình luận thành công');
-        } else {
-          notify.error('Xóa bình luận thất bại');
         }
-      },
-      onError: (error) => {
-        logger.error('[DELETE_COMMENT_ERROR]', error);
-        notify.error('Xóa bình luận thất bại');
       }
     });
   };
