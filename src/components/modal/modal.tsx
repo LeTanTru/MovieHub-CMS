@@ -18,7 +18,7 @@ import { cn } from '@/lib';
 import { createPortal } from 'react-dom';
 import { useIsMounted } from '@/hooks';
 import { X, ChevronDown, Info } from 'lucide-react';
-import { Button } from '@/components/form';
+import { Button } from '@/components/form/button';
 
 const SCROLL_BOTTOM_THRESHOLD_PX = 10;
 const SCROLL_DOWN_AMOUNT_PX = 200;
