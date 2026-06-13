@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/form';
+import { Button } from '@/components/form/button';
 import { cn } from '@/lib';
 import { Info } from 'lucide-react';
 import { useState } from 'react';

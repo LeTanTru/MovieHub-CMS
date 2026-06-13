@@ -8,7 +8,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { AlertTriangle } from 'lucide-react';
-import { Button } from '@/components/form';
+import { Button } from '@/components/form/button';
 import { useEffect } from 'react';
 import { storageKeys } from '@/constants';
 import { useDisclosure, useIsMounted } from '@/hooks';
