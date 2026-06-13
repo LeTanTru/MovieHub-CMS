@@ -183,7 +183,13 @@ export const employeeErrorMaps: ErrorMaps<EmployeeBodyType> = {
     ['email', { type: 'manual', message: 'Email đã tồn tại' }]
   ],
   [ErrorCode.ACCOUNT_ERROR_NEW_PASSWORD_SAME_OLD_PASSWORD]: [
-    ['confirmPassword', { type: 'manual', message: 'Email đã tồn tại' }]
+    [
+      'confirmPassword',
+      {
+        type: 'manual',
+        message: 'Mật khẩu mới không được trùng với mật khẩu cũ'
+      }
+    ]
   ],
   [ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD]: [
     ['password', { type: 'manual', message: 'Mật khẩu không chính xác' }]
