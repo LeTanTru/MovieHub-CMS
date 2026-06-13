@@ -136,9 +136,7 @@ export function NumberField<T extends FieldValues>({
 
                   if (raw === '') {
                     field.onChange(
-                      min !== undefined && !isNaN(Number(min))
-                        ? Number(min)
-                        : ''
+                      min !== undefined && !isNaN(Number(min)) ? Number(min) : 0
                     );
                     return;
                   }
