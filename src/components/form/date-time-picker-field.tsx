@@ -17,7 +17,7 @@ import {
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/form';
+import { Button } from '@/components/form/button';
 import type { DropdownProps } from 'react-day-picker';
 import {
   Select,

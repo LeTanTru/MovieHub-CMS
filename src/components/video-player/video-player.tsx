@@ -11,7 +11,6 @@ import {
   FullscreenToggleButton,
   NextButton,
   PiPToggleButton,
-  PlayPauseIndicator,
   PlayToggleButton,
   PreviousButton,
   SeekBackwardButton,
@@ -20,9 +19,10 @@ import {
   SkipIntroButton,
   SkipOutroButton,
   TimeSlider,
-  VolumeIndicator,
   VolumeToggleButton
 } from './_components';
+import { PlayPauseIndicator } from './_components/play-pause-indicatior';
+import { VolumeIndicator } from './_components/volume-indicator';
 import {
   Gesture,
   isHLSProvider,

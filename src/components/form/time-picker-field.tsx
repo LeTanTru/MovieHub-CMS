@@ -17,7 +17,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { useState } from 'react';
-import { Button } from '@/components/form';
+import { Button } from '@/components/form/button';
 import { X } from 'lucide-react';
 
 type TimePickerFieldProps<T extends FieldValues> = {
