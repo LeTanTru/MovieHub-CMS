@@ -34,7 +34,7 @@ import { ImageField } from '@/components/form/image-field';
 import { ConfirmModal } from '@/components/modal';
 import { FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib';
-import { useFileUpload } from '@/hooks';
+import { useFileUpload } from '@/hooks/use-file-upload';
 import { logger } from '@/logger';
 import {
   type Control,

@@ -22,7 +22,8 @@ import {
   IMAGE_PREVIEW_SCALE_MIN,
   IMAGE_PREVIEW_SCALE_STEP
 } from '@/constants';
-import { useImageStatus, useIsMounted } from '@/hooks';
+import { useImageStatus } from '@/hooks/use-image-status';
+import { useIsMounted } from '@/hooks/use-is-mounted';
 import { createPortal } from 'react-dom';
 
 type ImageFieldProps = {

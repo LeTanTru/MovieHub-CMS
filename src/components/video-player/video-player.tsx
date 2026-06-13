@@ -42,8 +42,6 @@ import {
   DefaultVideoLayoutSlots
 } from '@vidstack/react/player/layouts/default';
 import {
-  createContext,
-  useContext,
   useCallback,
   useEffect,
   useRef,
@@ -55,17 +53,7 @@ import { cn } from '@/lib';
 
 import './video-player.css';
 import { TimeSliderMarkerType } from '@/types';
-
-type IndicatorAction = 'initial' | 'play-pause' | 'volume' | 'none';
-const IndicatorContext = createContext<{
-  currentAction: IndicatorAction;
-  setCurrentAction: (action: IndicatorAction) => void;
-}>({
-  currentAction: 'initial',
-  setCurrentAction: () => {}
-});
-
-export const useIndicator = () => useContext(IndicatorContext);
+import { type IndicatorAction, IndicatorContext } from './indicator-context';
 
 type VideoPlayerProps = Omit<
   ComponentProps<typeof MediaPlayer>,

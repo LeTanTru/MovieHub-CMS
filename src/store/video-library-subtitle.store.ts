@@ -1,5 +1,6 @@
 import type { SubtitleBodyType, VideoLibrarySubtitleStoreType } from '@/types';
-import { createSubtitleId, secondsToTime, timeToSeconds } from '@/utils';
+import { createSubtitleId } from '@/utils/text.util';
+import { secondsToTime, timeToSeconds } from '@/utils/time.util';
 import { create } from 'zustand';
 
 const sortSubtitles = <T extends { startTime: number; endTime: number }>(
