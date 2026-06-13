@@ -77,8 +77,7 @@ export function CommentForm({
       queryKey: queryKeys.COMMENT,
       objectName: objectNames.COMMENT,
       pathParams: { id: editingComment?.id ?? '' },
-      mode: editingComment === null ? 'create' : 'edit',
-      showNotify: false
+      mode: editingComment === null ? 'create' : 'edit'
     }
   });
 

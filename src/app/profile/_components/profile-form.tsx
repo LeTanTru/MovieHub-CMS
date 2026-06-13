@@ -44,8 +44,7 @@ export function ProfileForm() {
       queryKey: queryKeys.PROFILE,
       objectName: objectNames.PROFILE,
       pathParams: {},
-      mode: 'edit',
-      showNotify: true
+      mode: 'edit'
     }
   });
 

@@ -53,8 +53,7 @@ export function CommentInput({ movieId }: CommentInputProps) {
       queryKey: queryKeys.COMMENT,
       objectName: objectNames.COMMENT,
       pathParams: {},
-      mode: 'create',
-      showNotify: false
+      mode: 'create'
     }
   });
 

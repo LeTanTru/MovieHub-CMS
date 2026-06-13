@@ -38,8 +38,7 @@ export function ReviewList() {
       objectName: objectNames.REVIEW,
       queryKey: queryKeys.REVIEW,
       defaultFilters: { movieId },
-      notShowFromSearchParams: ['movieId'],
-      showNotify: false
+      notShowFromSearchParams: ['movieId']
     }
   });
 

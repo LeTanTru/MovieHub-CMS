@@ -318,11 +318,11 @@ export const useInfiniteListBase = <
     options?: { onSuccess?: () => void; onError?: (code: string) => void }
   ) => {
     await deleteMutation.mutateAsync(id, {
-      onSuccess: async (res) => {
+      onSuccess: (res) => {
         if (res.result) {
           if (showNotify) notify.success(`Xoá ${objectName} thành công`);
           options?.onSuccess?.();
-          await invalidateQueryUtil([`${queryKey}-infinite`]);
+          invalidateQueryUtil([`${queryKey}-infinite`]);
         } else {
           if (res.code) {
             if (options?.onError) options?.onError(res.code);

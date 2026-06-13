@@ -179,7 +179,7 @@ export function DropdownNotification() {
             <div className='z-2 before:absolute before:-top-4 before:left-0 before:h-4 before:w-full before:bg-transparent'></div>
             <div className='absolute -top-2 right-10 border-r-8 border-b-8 border-l-8 border-r-transparent border-b-white border-l-transparent'></div>
             <Tabs
-              defaultValue={String(NOTIFICATION_TYPE_SYSTEM)}
+              value={String(params.type)}
               className='flex-1 gap-0 rounded'
               onValueChange={handleChangeTab}
             >
@@ -263,7 +263,7 @@ export function DropdownNotification() {
                   className='hover:text-sporty-blue inline-block transition-colors duration-200 ease-linear'
                   href={renderListPageUrl(
                     route.notification.getList.path,
-                    serializeParams({ type: NOTIFICATION_TYPE_SYSTEM })
+                    serializeParams({ type: params.type })
                   )}
                 >
                   Xem tất cả
