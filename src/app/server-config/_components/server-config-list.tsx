@@ -5,6 +5,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import {
   apiConfig,
+  ErrorCode,
   objectNames,
   queryKeys,
   serverConfigStatusOptions,
@@ -24,6 +25,7 @@ import {
   ServerConfigSearchType
 } from '@/types';
 import { notify } from '@/utils';
+
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
 export function ServerConfigList() {
@@ -110,6 +112,12 @@ export function ServerConfigList() {
           );
         }
       });
+
+      handlers.handleDeleteError = (code) => {
+        if (code === ErrorCode.SERVER_CONFIG_ERROR_USED_BY_VIDEO_LIBRARY) {
+          notify.error('Cấu hình máy chủ đang được sử dụng bởi thư viện video');
+        }
+      };
     }
   });
 

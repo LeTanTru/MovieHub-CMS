@@ -1754,7 +1754,7 @@ export const objectNames = {
   PERSON_DIRECTOR: 'đạo diễn',
   PROFILE: 'hồ sơ',
   REVIEW: 'đánh giá',
-  SERVER_CONFIG: 'máy chủ',
+  SERVER_CONFIG: 'cấu hình máy chủ',
   SETTING: 'cài đặt',
   SIDEBAR: 'phim',
   STYLE: 'thiết kế',
