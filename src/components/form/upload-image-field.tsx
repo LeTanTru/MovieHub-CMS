@@ -28,7 +28,9 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { AvatarField, Button, ImageField } from '@/components/form';
+import { AvatarField } from '@/components/form/avatar-field';
+import { Button } from '@/components/form/button';
+import { ImageField } from '@/components/form/image-field';
 import { ConfirmModal } from '@/components/modal';
 import { FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib';

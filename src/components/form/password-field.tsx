@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/form';
+import { Button } from '@/components/form/button';
 import { List, ListItem } from '@/components/list';
 import {
   FormControl,

@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { ChevronDown, X } from 'lucide-react';
-import { Button } from '@/components/form';
+import { Button } from '@/components/form/button';
 import type { ApiConfig, ApiResponseList } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import { http } from '@/utils';

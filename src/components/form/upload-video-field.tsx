@@ -9,7 +9,7 @@ import {
   useController
 } from 'react-hook-form';
 
-import { Button } from '@/components/form';
+import { Button } from '@/components/form/button';
 import { FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib';
 import { useFileUpload } from '@/hooks';
