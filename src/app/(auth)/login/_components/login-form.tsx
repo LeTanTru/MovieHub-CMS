@@ -13,8 +13,7 @@ import type { LoginBodyType } from '@/types';
 import { useShallow } from 'zustand/react/shallow';
 
 export function LoginForm() {
-  const { mutateAsync: loginMutate, isPending: loginLoading } =
-    useLoginMutation();
+  const { mutate: loginMutate, isPending: loginLoading } = useLoginMutation();
 
   const { setAccessToken, setUserKind } = useAuthStore(
     useShallow((s) => {
@@ -31,9 +30,9 @@ export function LoginForm() {
     grant_type: ''
   };
 
-  const onSubmit = async (values: LoginBodyType) => {
-    await loginMutate(values, {
-      onSuccess: async (res) => {
+  const onSubmit = (values: LoginBodyType) => {
+    loginMutate(values, {
+      onSuccess: (res) => {
         if (res.result) {
           const accessToken = res.data?.access_token;
           const userKind = res.data?.user_kind;

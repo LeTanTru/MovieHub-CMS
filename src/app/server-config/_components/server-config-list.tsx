@@ -29,8 +29,7 @@ import { notify } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
 export function ServerConfigList() {
-  const { mutateAsync: changeStatusMutate } =
-    useChangeServerConfigStatusMutation();
+  const { mutate: changeStatusMutate } = useChangeServerConfigStatusMutation();
 
   const { data, pagination, loading, handlers } = useListBase<
     ServerConfigResType,
@@ -47,8 +46,8 @@ export function ServerConfigList() {
           record: ServerConfigResType,
           buttonProps?: Record<string, unknown>
         ) => {
-          const handleChangeStatus = async () => {
-            await changeStatusMutate(
+          const handleChangeStatus = () => {
+            changeStatusMutate(
               {
                 id: record.id,
                 status:

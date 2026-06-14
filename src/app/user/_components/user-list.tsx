@@ -28,7 +28,7 @@ import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
 export function UserList() {
-  const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
+  const { mutate: changeStatusMutate, isPending: changeStatusLoading } =
     useChangeUserStatusMutation();
 
   const { data, pagination, loading, handlers } = useListBase<
@@ -46,8 +46,8 @@ export function UserList() {
           record: UserResType,
           buttonProps?: Record<string, unknown>
         ) => {
-          const handleChangeStatus = async (record: UserResType) => {
-            await changeStatusMutate(
+          const handleChangeStatus = (record: UserResType) => {
+            changeStatusMutate(
               {
                 id: record.id,
                 status:

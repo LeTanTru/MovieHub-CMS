@@ -48,16 +48,16 @@ export function DropdownAvatar() {
     }))
   );
   const { queryString } = useQueryParams();
-  const { mutateAsync: logoutMutate, isPending: logoutLoading } =
+  const { mutate: logoutMutate, isPending: logoutLoading } =
     useLogoutMutation();
 
   const handleAvatarClick = () => {
     toggleDropDown();
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     closeDropDown();
-    await logoutMutate(undefined, {
+    logoutMutate(undefined, {
       onSuccess: (res) => {
         if (res.result) {
           notify.success('Đăng xuất thành công');

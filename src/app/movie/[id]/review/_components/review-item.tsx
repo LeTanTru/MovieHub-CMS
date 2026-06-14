@@ -54,7 +54,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
   const hasPermission = useValidatePermission();
 
   const {
-    mutateAsync: changeReviewStatusMutate,
+    mutate: changeReviewStatusMutate,
     isPending: changeReviewStatusLoading
   } = useChangeReviewStatusMutation();
 
@@ -66,8 +66,8 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
     requiredPermissions: [apiConfig.review.changeStatus.permissionCode]
   });
 
-  const handleChangeCommentStatus = async (id: string, status: number) => {
-    await changeReviewStatusMutate(
+  const handleChangeCommentStatus = (id: string, status: number) => {
+    changeReviewStatusMutate(
       {
         id,
         status:

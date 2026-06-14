@@ -20,7 +20,7 @@ import { convertUTCToLocal, notify, renderImageUrl } from '@/utils';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 export function SidebarList() {
-  const { mutateAsync: changeStatusMutate, isPending: changeStatusPending } =
+  const { mutate: changeStatusMutate, isPending: changeStatusPending } =
     useChangeActiveSidebarMutation();
 
   const { data, loading, handlers } = useListBase<
@@ -40,8 +40,8 @@ export function SidebarList() {
         ) => {
           const statusLabel = record.active ? 'Ẩn' : 'Hiện';
 
-          const handleChangeStatus = async () => {
-            await changeStatusMutate(
+          const handleChangeStatus = () => {
+            changeStatusMutate(
               {
                 id: record.id,
                 active: !record.active

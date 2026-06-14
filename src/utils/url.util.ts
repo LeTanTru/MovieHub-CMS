@@ -88,3 +88,11 @@ export const buildLoginRedirectPath = (
   const params = new URLSearchParams({ redirect: redirectPath });
   return `${route.login.path}?${params.toString()}`;
 };
+
+export const renderVideoLibraryUploadUrl = (hostname: string, path: string) => {
+  const normalizedHostname = hostname.startsWith('http')
+    ? hostname
+    : `https://${hostname}`;
+
+  return `${normalizedHostname}${path}`;
+};

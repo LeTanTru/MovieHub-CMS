@@ -76,8 +76,8 @@ export function CommentList() {
     movieId
   });
 
-  const { mutateAsync: voteCommentMutate } = useVoteCommentMutation();
-  const { mutateAsync: pinCommentMutate } = usePinCommentMutation();
+  const { mutate: voteCommentMutate } = useVoteCommentMutation();
+  const { mutate: pinCommentMutate } = usePinCommentMutation();
 
   const hasPermission = useValidatePermission();
 
@@ -105,12 +105,8 @@ export function CommentList() {
     return map;
   })();
 
-  const handleVote = async (
-    id: string,
-    type: number,
-    onSuccess?: () => void
-  ) => {
-    await voteCommentMutate(
+  const handleVote = (id: string, type: number, onSuccess?: () => void) => {
+    voteCommentMutate(
       { id, type },
       {
         onSuccess: (res) => {
@@ -142,8 +138,8 @@ export function CommentList() {
     );
   };
 
-  const handlePinComment = async (id: string, isPinned: boolean) => {
-    await pinCommentMutate(
+  const handlePinComment = (id: string, isPinned: boolean) => {
+    pinCommentMutate(
       { id, isPinned },
       {
         onSuccess: (res) => {

@@ -182,7 +182,7 @@ export function CommentItem({
   const shouldBlurHiddenContent = isHidden && !isContentVisible;
 
   const {
-    mutateAsync: changeStatusCommentMutate,
+    mutate: changeStatusCommentMutate,
     isPending: changeStatusCommentLoading
   } = useChangeCommenStatusMutation();
 
@@ -278,8 +278,8 @@ export function CommentItem({
     setOpenParentIds((prev) => prev.filter((value) => value !== parentId));
   };
 
-  const handleChangeCommentStatus = async (id: string, status: number) => {
-    await changeStatusCommentMutate(
+  const handleChangeCommentStatus = (id: string, status: number) => {
+    changeStatusCommentMutate(
       {
         id,
         status:

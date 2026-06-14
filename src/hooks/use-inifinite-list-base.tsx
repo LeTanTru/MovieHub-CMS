@@ -321,11 +321,11 @@ export const useInfiniteListBase = <
     navigate.push(path);
   };
 
-  const handleDeleteClick = async (
+  const handleDeleteClick = (
     id: string,
     options?: { onSuccess?: () => void; onError?: (code: string) => void }
   ) => {
-    await deleteMutation.mutateAsync(id, {
+    deleteMutation.mutate(id, {
       onSuccess: (res) => {
         if (res.result) {
           if (showNotify) notify.success(`Xoá ${objectName} thành công`);

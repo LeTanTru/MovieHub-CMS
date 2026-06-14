@@ -21,6 +21,7 @@ export const useVideoLibrarySubtitleStore =
     pendingSubtitleFormState: null,
     isSubtitleFormChanged: false,
     isSubtitleFormSwitchConfirmOpen: false,
+    videoLibraryHostname: '',
 
     setCurrentTime: (currentTime) => set({ currentTime }),
     setSubtitles: (subtitles) => set({ subtitles }),
@@ -99,5 +100,8 @@ export const useVideoLibrarySubtitleStore =
         subtitleFormState: state.pendingSubtitleFormState,
         isSubtitleFormChanged: false,
         pendingSubtitleFormState: null
-      }))
+      })),
+
+    setVideoLibraryHostname: (hostname) =>
+      set({ videoLibraryHostname: hostname })
   }));

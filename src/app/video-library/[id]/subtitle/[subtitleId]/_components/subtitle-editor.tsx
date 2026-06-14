@@ -20,6 +20,7 @@ import {
 import { generatePath, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useShallow } from 'zustand/react/shallow';
+import { useEffect } from 'react';
 
 export function SubtitleEditor() {
   const [playerHeight, playerContainerRef] = useElementHeight();
@@ -28,12 +29,14 @@ export function SubtitleEditor() {
   const {
     isSubtitleFormSwitchConfirmOpen,
     setSubtitleFormSwitchConfirmOpen,
-    confirmSubtitleFormSwitch
+    confirmSubtitleFormSwitch,
+    setVideoLibraryHostname
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
       isSubtitleFormSwitchConfirmOpen: s.isSubtitleFormSwitchConfirmOpen,
       setSubtitleFormSwitchConfirmOpen: s.setSubtitleFormSwitchConfirmOpen,
-      confirmSubtitleFormSwitch: s.confirmSubtitleFormSwitch
+      confirmSubtitleFormSwitch: s.confirmSubtitleFormSwitch,
+      setVideoLibraryHostname: s.setVideoLibraryHostname
     }))
   );
 
@@ -78,6 +81,12 @@ export function SubtitleEditor() {
   );
 
   const transcriptPanelHeight = playerHeight + subtitleFormHeight;
+
+  useEffect(() => {
+    if (videoLibrary) {
+      setVideoLibraryHostname(videoLibrary.hostname);
+    }
+  }, [setVideoLibraryHostname, videoLibrary]);
 
   return (
     <PageWrapper

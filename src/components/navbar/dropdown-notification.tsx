@@ -56,12 +56,12 @@ export function DropdownNotification() {
   const { data: totalUnreadData } = useCountUnreadNotificationQuery();
 
   const {
-    mutateAsync: readAllNotificationMutate,
+    mutate: readAllNotificationMutate,
     isPending: readAllNotificationLoading
   } = useReadAllNotificationMutation();
 
   const {
-    mutateAsync: deleteAllNotificationMutate,
+    mutate: deleteAllNotificationMutate,
     isPending: deleteAllNotificationLoading
   } = useDeleteAllNotificationMutation();
 
@@ -99,8 +99,8 @@ export function DropdownNotification() {
     handlers.handleDeleteClick(id);
   };
 
-  const handleReadAll = async () => {
-    await readAllNotificationMutate(undefined, {
+  const handleReadAll = () => {
+    readAllNotificationMutate(undefined, {
       onSuccess: () => {
         invalidateQueries(
           [queryKeys.UNREAD_NOTIFICATION_COUNT],
@@ -115,8 +115,8 @@ export function DropdownNotification() {
     });
   };
 
-  const handleDeleteAll = async () => {
-    await deleteAllNotificationMutate(undefined, {
+  const handleDeleteAll = () => {
+    deleteAllNotificationMutate(undefined, {
       onSuccess: () => {
         invalidateQueries(
           [queryKeys.UNREAD_NOTIFICATION_COUNT],
