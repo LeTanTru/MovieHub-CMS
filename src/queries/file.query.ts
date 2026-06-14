@@ -92,3 +92,25 @@ export const useDeleteObjectMutation = () => {
       })
   });
 };
+
+export const useUploadSubtitleMutation = () => {
+  return useMutation({
+    mutationKey: [queryKeys.UPLOAD_SUBTITLE_FILE],
+    mutationFn: ({
+      file,
+      videoId,
+      options
+    }: {
+      file: File;
+      videoId: string;
+      options?: AxiosRequestConfig;
+    }) =>
+      http.post<ApiResponse<UploadFileResType>>(apiConfig.file.uploadSubtitle, {
+        body: {
+          file,
+          videoId
+        },
+        options
+      })
+  });
+};

@@ -4,8 +4,11 @@ import { Button, ToolTip } from '@/components/form';
 import { Separator } from '@/components/ui/separator';
 import { useVideoLibrarySubtitleStore } from '@/store';
 import { SubtitleType, VideoLibrarySubtitleResType } from '@/types';
-import { serializeVttContent } from '@/utils';
-import { Download, Plus } from 'lucide-react';
+import { notify, serializeVttContent } from '@/utils';
+import { useUploadSubtitleMutation } from '@/queries';
+import { Download, Loader2, Plus, Save } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useShallow } from 'zustand/react/shallow';
 
 type SubtitleHeaderProps = {
   subtitles: SubtitleType[];
@@ -16,9 +19,14 @@ export function SubtitleHeader({
   subtitles,
   videoSubtitle
 }: SubtitleHeaderProps) {
+  const { id: videoId } = useParams<{ id: string }>();
+
   const requestSubtitleFormState = useVideoLibrarySubtitleStore(
-    (s) => s.requestSubtitleFormState
+    useShallow((s) => s.requestSubtitleFormState)
   );
+
+  const { mutateAsync: uploadSubtitleMutate, isPending: isUploading } =
+    useUploadSubtitleMutation();
 
   const canExport = subtitles.some(
     (subtitle) =>
@@ -49,6 +57,27 @@ export function SubtitleHeader({
     requestSubtitleFormState({ mode: 'create' });
   };
 
+  const handleUpload = () => {
+    if (!canExport) return;
+
+    const content = serializeVttContent(subtitles);
+    const file = new File([content], `${videoSubtitle.language}.vtt`, {
+      type: 'text/vtt'
+    });
+
+    uploadSubtitleMutate(
+      { file, videoId },
+      {
+        onSuccess: () => {
+          notify.success('Tải lên file phụ đề thành công');
+        },
+        onError: () => {
+          notify.error('Tải lên file phụ đề thất bại');
+        }
+      }
+    );
+  };
+
   return (
     <div className='flex shrink-0 items-center justify-between border-b border-gray-200 px-2 py-1'>
       <div className='flex items-center gap-2'>
@@ -63,6 +92,7 @@ export function SubtitleHeader({
           <Button
             variant='ghost'
             className='p-0! hover:bg-transparent'
+            disabled={isUploading}
             onClick={handleAddSubtitle}
           >
             <Plus
@@ -74,13 +104,33 @@ export function SubtitleHeader({
 
         <Separator className='h-4! w-px!' />
 
+        <ToolTip title='Lưu phụ đề lên server' side='bottom'>
+          <Button
+            variant='ghost'
+            className='p-0! hover:bg-transparent'
+            disabled={!canExport || isUploading}
+            onClick={handleUpload}
+          >
+            {isUploading ? (
+              <Loader2 size={16} className='animate-spin' />
+            ) : (
+              <Save
+                size={16}
+                className='transition-all duration-200 ease-linear hover:text-gray-400'
+              />
+            )}
+          </Button>
+        </ToolTip>
+
+        <Separator className='h-4! w-px!' />
+
         <ToolTip
           title={`Xuất file phụ đề ${videoSubtitle.label}`}
           side='bottom'
         >
           <Button
             onClick={handleExport}
-            disabled={!canExport}
+            disabled={!canExport || isUploading}
             variant='ghost'
             className='p-0! hover:bg-transparent'
           >

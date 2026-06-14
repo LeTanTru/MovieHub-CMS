@@ -589,7 +589,7 @@ export function CommentItem({
                   onClick={() => handleEditComment(comment)}
                 >
                   <AiOutlineEdit className='size-5' />
-                  Chỉnh sửa
+                  Cập nhật
                 </Button>
               )}
 

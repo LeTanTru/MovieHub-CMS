@@ -117,6 +117,7 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
     enabled?: boolean;
     excludeFromQueryFilter?: string[];
     notShowFromSearchParams?: string[];
+    syncSearchParams?: boolean;
     showNotify?: boolean;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
@@ -143,6 +144,7 @@ export const useListBase = <
     enabled = true,
     excludeFromQueryFilter = [],
     notShowFromSearchParams = [],
+    syncSearchParams = true,
     showNotify = true
   } = options;
   const navigate = useNavigate();
@@ -178,8 +180,10 @@ export const useListBase = <
 
   // Combined current params with default params
   const mergedSearchParams = useMemo(() => {
+    if (!syncSearchParams) return defaultFilters;
+
     return { ...defaultFilters, ...searchParams };
-  }, [searchParams, defaultFilters]);
+  }, [searchParams, defaultFilters, syncSearchParams]);
 
   // Filter params which will not be filtered by
   const queryFilter = useMemo(() => {
@@ -200,6 +204,8 @@ export const useListBase = <
 
   // Clear undefined | null params and remove excluded params
   useEffect(() => {
+    if (!syncSearchParams) return;
+
     let hasChanges = false;
     const newParams = { ...searchParams };
 
@@ -234,7 +240,8 @@ export const useListBase = <
     isShownInUrl,
     notShowFromSearchParams,
     searchParams,
-    setQueryParams
+    setQueryParams,
+    syncSearchParams
   ]);
 
   const additionalPathParams = () => ({});

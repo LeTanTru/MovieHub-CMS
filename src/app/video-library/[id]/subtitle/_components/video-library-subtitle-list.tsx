@@ -161,7 +161,7 @@ export function VideoLibrarySubtitleList() {
           };
 
           return (
-            <ToolTip title='Chỉnh sửa nội dung' sideOffset={0}>
+            <ToolTip title='Cập nhật nội dung' sideOffset={0}>
               <span>
                 <Button
                   disabled={record.state !== SUBTITLE_COMPLETE}

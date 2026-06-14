@@ -130,6 +130,7 @@ type UseInfiniteListBaseProps<
     enabled?: boolean;
     excludeFromQueryFilter?: string[];
     notShowFromSearchParams?: string[];
+    syncSearchParams?: boolean;
     showNotify?: boolean;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
@@ -157,6 +158,7 @@ export const useInfiniteListBase = <
     enabled = true,
     excludeFromQueryFilter = [],
     notShowFromSearchParams = [],
+    syncSearchParams = true,
     showNotify = true
   } = options;
   const navigate = useNavigate();
@@ -191,8 +193,10 @@ export const useInfiniteListBase = <
 
   // Combined current params with default params
   const mergedSearchParams = useMemo(() => {
+    if (!syncSearchParams) return defaultFilters;
+
     return { ...defaultFilters, ...searchParams };
-  }, [searchParams, defaultFilters]);
+  }, [searchParams, defaultFilters, syncSearchParams]);
 
   // Filter params which will not be filtered by
   const queryFilter = useMemo(() => {
@@ -213,6 +217,8 @@ export const useInfiniteListBase = <
 
   // Clear undefined | null params and remove excluded params
   useEffect(() => {
+    if (!syncSearchParams) return;
+
     let hasChanges = false;
     const newParams = { ...searchParams };
 
@@ -247,7 +253,8 @@ export const useInfiniteListBase = <
     isShownInUrl,
     notShowFromSearchParams,
     searchParams,
-    setQueryParams
+    setQueryParams,
+    syncSearchParams
   ]);
 
   const additionalPathParams = () => ({});

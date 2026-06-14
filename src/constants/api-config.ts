@@ -396,6 +396,13 @@ export const apiConfig = defineApiConfig({
       permissionCode: 'FILE_U_V',
       isUpload: true
     },
+    uploadSubtitle: {
+      baseUrl: `${AppConstants.mediaUrl}/v1/file/upload-subtitle`,
+      method: 'POST',
+      headers: multipartHeader,
+      permissionCode: 'FILE_U_S',
+      isUpload: true
+    },
     uploadChunkInit: {
       baseUrl: `/api/file/upload/video/chunk/init`,
       method: 'POST',
