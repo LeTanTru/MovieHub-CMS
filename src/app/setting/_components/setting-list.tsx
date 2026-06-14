@@ -91,21 +91,7 @@ export function SettingList({ groupName }: { groupName: string }) {
             {value}
           </span>
         );
-      },
-      width: 300
-    },
-    {
-      title: 'Nhóm',
-      dataIndex: 'groupName',
-      render: (val) => {
-        const value = val as string;
-        return (
-          <span className='line-clamp-1 block truncate' title={value}>
-            {value}
-          </span>
-        );
-      },
-      width: 200
+      }
     },
     {
       title: 'Kiểu dữ liệu',
@@ -132,7 +118,8 @@ export function SettingList({ groupName }: { groupName: string }) {
           </span>
         );
       },
-      align: 'left'
+      align: 'center',
+      width: 150
     },
     handlers.renderActionColumn({
       actions: {
