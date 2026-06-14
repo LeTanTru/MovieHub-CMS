@@ -148,7 +148,7 @@ export function SubtitleTranscriptPanel({
             videoSubtitle.fileUrl,
             videoLibrary.sourceType
           ),
-          { signal: controller.signal }
+          { cache: 'no-store', signal: controller.signal }
         );
 
         if (!res.ok) {

@@ -46,7 +46,7 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
   const { opened, open, close } = useDisclosure();
 
   const {
-    mutateAsync: updateMoviePersonMutate,
+    mutate: updateMoviePersonMutate,
     isPending: updateMoviePersonLoading
   } = useUpdateMoviePersonMutation();
 
@@ -164,7 +164,7 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
     setCharacterNames(names);
   }, [data]);
 
-  const handleUpdateCharacterName = async (
+  const handleUpdateCharacterName = (
     record: MoviePersonResType,
     newCharacterName: string
   ) => {
@@ -185,7 +185,7 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
     );
     handlers.setData(updatedData);
 
-    await updateMoviePersonMutate(
+    updateMoviePersonMutate(
       {
         id: record.id,
         kind: record.kind,

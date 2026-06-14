@@ -47,7 +47,7 @@ export function PermissionList() {
       size: MAX_PAGE_SIZE
     });
 
-  const { mutateAsync: deletePermissionMutate } = useDeletePermissionMutation();
+  const { mutate: deletePermissionMutate } = useDeletePermissionMutation();
 
   const groupPermissions = useMemo(() => {
     return groupPermissionListData?.content || [];
@@ -87,7 +87,7 @@ export function PermissionList() {
     open();
   };
 
-  const handleDelete = async (record: PermissionResType) => {
+  const handleDelete = (record: PermissionResType) => {
     deletePermissionMutate(record.id, {
       onSuccess: async (res) => {
         if (res.result) {

@@ -5,7 +5,7 @@ import type {
   UploadFileResType,
   UploadImageResType
 } from '@/types';
-import { http } from '@/utils';
+import { http, renderVideoLibraryUploadUrl } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 import type { AxiosRequestConfig } from 'axios';
 
@@ -99,18 +99,29 @@ export const useUploadSubtitleMutation = () => {
     mutationFn: ({
       file,
       videoId,
+      videoLibraryHostname,
       options
     }: {
       file: File;
       videoId: string;
+      videoLibraryHostname: string;
       options?: AxiosRequestConfig;
     }) =>
-      http.post<ApiResponse<UploadFileResType>>(apiConfig.file.uploadSubtitle, {
-        body: {
-          file,
-          videoId
+      http.post<ApiResponse<UploadFileResType>>(
+        {
+          ...apiConfig.file.uploadSubtitle,
+          baseUrl: renderVideoLibraryUploadUrl(
+            videoLibraryHostname,
+            apiConfig.file.uploadSubtitle.baseUrl
+          )
         },
-        options
-      })
+        {
+          body: {
+            file,
+            videoId
+          },
+          options
+        }
+      )
   });
 };

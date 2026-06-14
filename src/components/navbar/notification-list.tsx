@@ -24,7 +24,7 @@ export function NotificationList({
   onDelete,
   onItemClick
 }: Props) {
-  const { mutateAsync: updateReadNotificationMutate } =
+  const { mutate: updateReadNotificationMutate } =
     useUpdateReadNotificationMutation();
 
   const handleItemClick = (notification: NotificationResType) => {

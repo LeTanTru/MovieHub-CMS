@@ -81,7 +81,7 @@ export function MovieItemSeasonDetailList() {
   } = useDisclosure();
   const [selectedVideo, setSelectedVideo] = useState<VideoLibraryResType>();
 
-  const { mutateAsync: markLatestMutate, isPending: markLatestPending } =
+  const { mutate: markLatestMutate, isPending: markLatestPending } =
     useMarkLatestMovieItemMutation();
 
   const { data, loading, handlers } = useListBase<

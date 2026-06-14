@@ -87,11 +87,10 @@ export function VideoLibraryList() {
       value: sc.id
     })) || [];
 
-  const { mutateAsync: retryProcessMutate, isPending: retryProcessLoading } =
+  const { mutate: retryProcessMutate, isPending: retryProcessLoading } =
     useRetryProcessVideoLibraryMutation();
 
-  const { mutateAsync: processAudioMutate } =
-    useProcessAudioVideoLibraryMutation();
+  const { mutate: processAudioMutate } = useProcessAudioVideoLibraryMutation();
 
   const { data, pagination, loading, handlers } = useListBase<
     VideoLibraryResType,
@@ -188,8 +187,8 @@ export function VideoLibraryList() {
           record: VideoLibraryResType,
           buttonProps?: Record<string, unknown>
         ) => {
-          const handleRetryProcess = async (record: VideoLibraryResType) => {
-            await retryProcessMutate(
+          const handleRetryProcess = (record: VideoLibraryResType) => {
+            retryProcessMutate(
               {
                 id: record.id,
                 content: record.content
@@ -230,8 +229,8 @@ export function VideoLibraryList() {
           record: VideoLibraryResType,
           buttonProps?: Record<string, unknown>
         ) => {
-          const handleProcessAudio = async (record: VideoLibraryResType) => {
-            await processAudioMutate(
+          const handleProcessAudio = (record: VideoLibraryResType) => {
+            processAudioMutate(
               {
                 id: record.id
               },

@@ -41,7 +41,7 @@ export function MoviePersonModal({
   onClose
 }: MoviePersonModalProps) {
   const {
-    mutateAsync: createMoviePersonMutate,
+    mutate: createMoviePersonMutate,
     isPending: createMoviePersonLoading
   } = useCreateMoviePersonMutation();
   const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
@@ -53,11 +53,11 @@ export function MoviePersonModal({
     characterName: ''
   };
 
-  const handleSubmit = async (
+  const handleSubmit = (
     values: MoviePersonBodyType,
     form: UseFormReturn<MoviePersonBodyType>
   ) => {
-    await createMoviePersonMutate(values, {
+    createMoviePersonMutate(values, {
       onSuccess: (res) => {
         if (res.result) {
           notify.success(

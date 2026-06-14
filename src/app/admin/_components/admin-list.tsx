@@ -30,7 +30,7 @@ import { logger } from '@/logger';
 import { cn } from '@/lib';
 
 export function AdminList() {
-  const { mutateAsync: changeStatusMutate, isPending: changeStatusLoading } =
+  const { mutate: changeStatusMutate, isPending: changeStatusLoading } =
     useChangeAccountStatusMutation();
 
   const { data, pagination, loading, handlers } = useListBase<
@@ -50,8 +50,8 @@ export function AdminList() {
           record: AccountAutoResType,
           buttonProps?: Record<string, unknown>
         ) => {
-          const handleChangeStatus = async (record: AccountAutoResType) => {
-            await changeStatusMutate(
+          const handleChangeStatus = (record: AccountAutoResType) => {
+            changeStatusMutate(
               {
                 id: record.id,
                 status:

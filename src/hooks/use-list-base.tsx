@@ -307,16 +307,16 @@ export const useListBase = <
     navigate.push(path);
   };
 
-  const handleDeleteClick = async (
+  const handleDeleteClick = (
     id: string,
     options?: { onSuccess?: () => void; onError?: (code: string) => void }
   ) => {
-    await deleteMutation.mutateAsync(id, {
-      onSuccess: async (res) => {
+    deleteMutation.mutate(id, {
+      onSuccess: (res) => {
         if (res.result) {
           if (showNotify) notify.success(`Xoá ${objectName} thành công`);
           options?.onSuccess?.();
-          await invalidateQueryUtil([`${queryKey}-list`]);
+          invalidateQueryUtil([`${queryKey}-list`]);
         } else {
           if (res.code) {
             if (options?.onError) options?.onError(res.code);

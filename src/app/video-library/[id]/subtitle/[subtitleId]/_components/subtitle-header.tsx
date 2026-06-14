@@ -21,11 +21,15 @@ export function SubtitleHeader({
 }: SubtitleHeaderProps) {
   const { id: videoId } = useParams<{ id: string }>();
 
-  const requestSubtitleFormState = useVideoLibrarySubtitleStore(
-    useShallow((s) => s.requestSubtitleFormState)
-  );
+  const { requestSubtitleFormState, videoLibraryHostname } =
+    useVideoLibrarySubtitleStore(
+      useShallow((s) => ({
+        requestSubtitleFormState: s.requestSubtitleFormState,
+        videoLibraryHostname: s.videoLibraryHostname
+      }))
+    );
 
-  const { mutateAsync: uploadSubtitleMutate, isPending: isUploading } =
+  const { mutate: uploadSubtitleMutate, isPending: isUploading } =
     useUploadSubtitleMutation();
 
   const canExport = subtitles.some(
@@ -58,7 +62,7 @@ export function SubtitleHeader({
   };
 
   const handleUpload = () => {
-    if (!canExport) return;
+    if (!canExport || !videoLibraryHostname) return;
 
     const content = serializeVttContent(subtitles);
     const file = new File([content], `${videoSubtitle.language}.vtt`, {
@@ -66,13 +70,13 @@ export function SubtitleHeader({
     });
 
     uploadSubtitleMutate(
-      { file, videoId },
+      { file, videoId, videoLibraryHostname },
       {
         onSuccess: () => {
-          notify.success('Tải lên file phụ đề thành công');
+          notify.success('Lưu file phụ đề thành công');
         },
         onError: () => {
-          notify.error('Tải lên file phụ đề thất bại');
+          notify.error('Lưu file phụ đề thất bại');
         }
       }
     );
@@ -104,11 +108,11 @@ export function SubtitleHeader({
 
         <Separator className='h-4! w-px!' />
 
-        <ToolTip title='Lưu phụ đề lên server' side='bottom'>
+        <ToolTip title='Lưu phụ đề' side='bottom'>
           <Button
             variant='ghost'
             className='p-0! hover:bg-transparent'
-            disabled={!canExport || isUploading}
+            disabled={!canExport || !videoLibraryHostname || isUploading}
             onClick={handleUpload}
           >
             {isUploading ? (

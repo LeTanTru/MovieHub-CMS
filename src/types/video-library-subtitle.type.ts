@@ -61,6 +61,7 @@ type VideoLibrarySubtitleState = {
   pendingSubtitleFormState: SubtitleFormStateType | null;
   isSubtitleFormChanged: boolean;
   isSubtitleFormSwitchConfirmOpen: boolean;
+  videoLibraryHostname: string;
 };
 
 type VideoLibrarySubtitleActions = {
@@ -80,6 +81,7 @@ type VideoLibrarySubtitleActions = {
     isSubtitleFormSwitchConfirmOpen: boolean
   ) => void;
   confirmSubtitleFormSwitch: () => void;
+  setVideoLibraryHostname: (hostname: string) => void;
 };
 
 export type VideoLibrarySubtitleStoreType = VideoLibrarySubtitleState &

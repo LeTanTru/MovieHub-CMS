@@ -397,7 +397,7 @@ export const apiConfig = defineApiConfig({
       isUpload: true
     },
     uploadSubtitle: {
-      baseUrl: `${AppConstants.mediaUrl}/v1/file/upload-subtitle`,
+      baseUrl: `/v1/file/upload-subtitle`,
       method: 'POST',
       headers: multipartHeader,
       permissionCode: 'FILE_U_S',

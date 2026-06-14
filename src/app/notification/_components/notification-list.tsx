@@ -57,22 +57,22 @@ export function NotificationList() {
 
   const totalUnread = totalUnreadData?.totalUnread || 0;
 
-  const { mutateAsync: updateReadMutate } = useUpdateReadNotificationMutation();
+  const { mutate: updateReadMutate } = useUpdateReadNotificationMutation();
 
   const {
-    mutateAsync: readAllNotificationMutate,
+    mutate: readAllNotificationMutate,
     isPending: readAllNotificationLoading
   } = useReadAllNotificationMutation();
 
   const {
-    mutateAsync: deleteAllNotificationMutate,
+    mutate: deleteAllNotificationMutate,
     isPending: deleteAllNotificationLoading
   } = useDeleteAllNotificationMutation();
 
-  const handleUpdateRead = async (notification: NotificationResType) => {
+  const handleUpdateRead = (notification: NotificationResType) => {
     if (notification.isRead) return;
 
-    await updateReadMutate(
+    updateReadMutate(
       { ids: [notification.id] },
       {
         onSuccess: () => {
@@ -101,8 +101,8 @@ export function NotificationList() {
     handlers.loadMore();
   };
 
-  const handleReadAll = async () => {
-    await readAllNotificationMutate(undefined, {
+  const handleReadAll = () => {
+    readAllNotificationMutate(undefined, {
       onSuccess: () => {
         invalidateQueries(
           [queryKeys.UNREAD_NOTIFICATION_COUNT],
@@ -117,8 +117,8 @@ export function NotificationList() {
     });
   };
 
-  const handleDeleteAll = async () => {
-    await deleteAllNotificationMutate(undefined, {
+  const handleDeleteAll = () => {
+    deleteAllNotificationMutate(undefined, {
       onSuccess: () => {
         invalidateQueries(
           [queryKeys.UNREAD_NOTIFICATION_COUNT],
