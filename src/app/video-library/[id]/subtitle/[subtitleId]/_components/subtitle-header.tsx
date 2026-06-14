@@ -21,15 +21,21 @@ export function SubtitleHeader({
 }: SubtitleHeaderProps) {
   const { id: videoId } = useParams<{ id: string }>();
 
-  const { requestSubtitleFormState, videoLibraryHostname } =
-    useVideoLibrarySubtitleStore(
-      useShallow((s) => ({
-        requestSubtitleFormState: s.requestSubtitleFormState,
-        videoLibraryHostname: s.videoLibraryHostname
-      }))
-    );
+  const {
+    originalSubtitles,
+    videoLibraryHostname,
+    requestSubtitleFormState,
+    setOriginalSubtitles
+  } = useVideoLibrarySubtitleStore(
+    useShallow((s) => ({
+      originalSubtitles: s.originalSubtitles,
+      videoLibraryHostname: s.videoLibraryHostname,
+      requestSubtitleFormState: s.requestSubtitleFormState,
+      setOriginalSubtitles: s.setOriginalSubtitles
+    }))
+  );
 
-  const { mutate: uploadSubtitleMutate, isPending: isUploading } =
+  const { mutate: uploadSubtitleMutate, isPending: uploadSubtitleLoading } =
     useUploadSubtitleMutation();
 
   const canExport = subtitles.some(
@@ -38,6 +44,9 @@ export function SubtitleHeader({
       Number.isFinite(subtitle.endTime) &&
       subtitle.endTime > subtitle.startTime
   );
+
+  const isSubtitleContentChanged =
+    serializeVttContent(subtitles) !== serializeVttContent(originalSubtitles);
 
   const handleExport = () => {
     if (!canExport) return;
@@ -73,6 +82,7 @@ export function SubtitleHeader({
       { file, videoId, videoLibraryHostname },
       {
         onSuccess: () => {
+          setOriginalSubtitles(subtitles);
           notify.success('Lưu file phụ đề thành công');
         },
         onError: () => {
@@ -95,8 +105,8 @@ export function SubtitleHeader({
         <ToolTip title='Thêm dòng phụ đề mới' side='bottom'>
           <Button
             variant='ghost'
-            className='p-0! hover:bg-transparent'
-            disabled={isUploading}
+            className='text-sporty-blue p-0! hover:bg-transparent'
+            disabled={uploadSubtitleLoading}
             onClick={handleAddSubtitle}
           >
             <Plus
@@ -111,11 +121,16 @@ export function SubtitleHeader({
         <ToolTip title='Lưu phụ đề' side='bottom'>
           <Button
             variant='ghost'
-            className='p-0! hover:bg-transparent'
-            disabled={!canExport || !videoLibraryHostname || isUploading}
+            className='text-sporty-blue p-0! hover:bg-transparent'
+            disabled={
+              !canExport ||
+              !videoLibraryHostname ||
+              !isSubtitleContentChanged ||
+              uploadSubtitleLoading
+            }
             onClick={handleUpload}
           >
-            {isUploading ? (
+            {uploadSubtitleLoading ? (
               <Loader2 size={16} className='animate-spin' />
             ) : (
               <Save
@@ -134,9 +149,9 @@ export function SubtitleHeader({
         >
           <Button
             onClick={handleExport}
-            disabled={!canExport || isUploading}
+            disabled={!canExport || uploadSubtitleLoading}
             variant='ghost'
-            className='p-0! hover:bg-transparent'
+            className='text-sporty-blue p-0! hover:bg-transparent'
           >
             <Download
               size={16}
