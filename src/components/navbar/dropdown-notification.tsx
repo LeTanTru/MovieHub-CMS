@@ -105,6 +105,7 @@ export function DropdownNotification() {
           [queryKeys.UNREAD_NOTIFICATION_COUNT],
           [queryKeys.NOTIFICATION_INFINITE]
         );
+        notify.success('Đọc tất cả thông báo thành công');
       },
       onError: (error) => {
         logger.error('[READ_ALL_NOTIFICATION_ERROR]', error);
@@ -120,6 +121,7 @@ export function DropdownNotification() {
           [queryKeys.UNREAD_NOTIFICATION_COUNT],
           [queryKeys.NOTIFICATION_INFINITE]
         );
+        notify.success('Xóa tất cả thông báo thành công');
       },
       onError: (error) => {
         logger.error('[DELETE_ALL_NOTIFICATION_ERROR]', error);
@@ -223,7 +225,7 @@ export function DropdownNotification() {
                     )}
                     {canDelete && totalElements > 0 && (
                       <ConfirmModal
-                        message='Bạn có chắc chắn muốn xóa tất cả không báo không?'
+                        message='Bạn có chắc chắn muốn xóa tất cả không báo không ?'
                         onConfirm={handleDeleteAll}
                         trigger={
                           <Button
