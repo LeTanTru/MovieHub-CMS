@@ -5,7 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   storageKeys,
   TAB_SETTING_GENERAL,
-  TAB_SETTING_LIVE_ROOM
+  TAB_SETTING_LIVE_ROOM,
+  TAB_SETTING_SYSTEM
 } from '@/constants';
 import { useIsMounted } from '@/hooks';
 import { getData, setData } from '@/utils';
@@ -29,6 +30,11 @@ export function SettingTab() {
       value: TAB_SETTING_LIVE_ROOM,
       label: 'Xem chung',
       component: <SettingList groupName={TAB_SETTING_LIVE_ROOM} />
+    },
+    {
+      value: TAB_SETTING_SYSTEM,
+      label: 'Hệ thống',
+      component: <SettingList groupName={TAB_SETTING_SYSTEM} />
     }
   ];
 

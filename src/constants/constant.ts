@@ -97,6 +97,7 @@ export const SEND_NOTIFICATION_FOR_INTERESTED_USERS = 2;
 
 export const TAB_SETTING_GENERAL = 'general';
 export const TAB_SETTING_LIVE_ROOM = 'live_room';
+export const TAB_SETTING_SYSTEM = 'system';
 
 export const DOWNLOAD_TEMP_FILE_FAILED = 'download_temp_file_failed';
 export const CONVERT_FILE_FAILED = 'convert_file_failed';

@@ -108,6 +108,7 @@ export function NotificationList() {
           [queryKeys.UNREAD_NOTIFICATION_COUNT],
           [queryKeys.NOTIFICATION_INFINITE]
         );
+        notify.success('Đọc tất cả thông báo thành công');
       },
       onError: (error) => {
         logger.error('[READ_ALL_NOTIFICATION_ERROR]', error);
@@ -123,6 +124,7 @@ export function NotificationList() {
           [queryKeys.UNREAD_NOTIFICATION_COUNT],
           [queryKeys.NOTIFICATION_INFINITE]
         );
+        notify.success('Xóa tất cả thông báo thành công');
       },
       onError: (error) => {
         logger.error('[DELETE_ALL_NOTIFICATION_ERROR]', error);
