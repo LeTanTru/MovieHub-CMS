@@ -107,8 +107,8 @@ export function SubtitleEditor() {
         },
         {
           label: videoSubtitle
-            ? `Chỉnh sửa nội dung ${videoSubtitle.label}`
-            : 'Chỉnh sửa nội dung'
+            ? `Cập nhật nội dung ${videoSubtitle.label}`
+            : 'Cập nhật nội dung'
         }
       ]}
       loading={loading || loadingVideoLibrary}

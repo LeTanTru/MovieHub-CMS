@@ -81,8 +81,9 @@ export function DropdownNotification() {
       queryKey: queryKeys.NOTIFICATION,
       pageSize: NOTIFICATION_PAGE_SIZE,
       enabled: openedDropdown,
-      defaultFilters: { ...params },
-      notShowFromSearchParams: ['type', 'page', 'size']
+      defaultFilters: params,
+      notShowFromSearchParams: ['type', 'page', 'size'],
+      syncSearchParams: false
     }
   });
 

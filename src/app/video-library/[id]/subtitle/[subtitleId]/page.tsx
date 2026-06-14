@@ -4,16 +4,16 @@ import { envConfig } from '@/config';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Chỉnh sửa phụ đề',
-  description: 'Chỉnh sửa nội dung phụ đề video MovieHub CMS',
+  title: 'Cập nhật nội dung phụ đề',
+  description: 'Cập nhật nội dung phụ đề video MovieHub CMS',
   metadataBase: new URL(envConfig.NEXT_PUBLIC_URL),
   keywords: ['MovieHub', 'CMS', 'phụ đề', 'subtitle', 'video'],
   alternates: {
     canonical: '/video-library'
   },
   openGraph: {
-    title: 'Chỉnh sửa phụ đề | MovieHub CMS',
-    description: 'Chỉnh sửa nội dung phụ đề video MovieHub CMS',
+    title: 'Cập nhật nội dung phụ đề | MovieHub CMS',
+    description: 'Cập nhật nội dung phụ đề video MovieHub CMS',
     url: '/video-library',
     siteName: 'MovieHub',
     type: 'website',
@@ -29,8 +29,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Chỉnh sửa phụ đề | MovieHub CMS',
-    description: 'Chỉnh sửa nội dung phụ đề video MovieHub CMS',
+    title: 'Cập nhật nội dung phụ đề | MovieHub CMS',
+    description: 'Cập nhật nội dung nội dung phụ đề video MovieHub CMS',
     images: ['/logo.webp']
   },
   robots: { index: false, follow: false }

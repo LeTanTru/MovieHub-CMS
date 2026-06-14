@@ -212,7 +212,8 @@ export const queryKeys = {
   VOTE_COMMENT: 'vote-comment',
   VIDEO_LIBRARY_SUBTITLE: 'video-library-subtitle',
   VIDEO_LIBRARY_SUBTITLE_LIST: 'video-library-subtitle-list',
-  VIDEO_LIBRARY_SUBTITLE_TRANSLATE: 'video-library-subtitle-translate'
+  VIDEO_LIBRARY_SUBTITLE_TRANSLATE: 'video-library-subtitle-translate',
+  UPLOAD_SUBTITLE_FILE: 'upload-subtitle-file'
 };
 
 export const userKindOptions = [
