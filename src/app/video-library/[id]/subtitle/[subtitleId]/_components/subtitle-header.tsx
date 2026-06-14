@@ -6,7 +6,7 @@ import { useVideoLibrarySubtitleStore } from '@/store';
 import { SubtitleType, VideoLibrarySubtitleResType } from '@/types';
 import { notify, serializeVttContent } from '@/utils';
 import { useUploadSubtitleMutation } from '@/queries';
-import { Download, Loader2, Plus, Upload } from 'lucide-react';
+import { Download, Loader2, Plus, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -114,7 +114,7 @@ export function SubtitleHeader({
             {isUploading ? (
               <Loader2 size={16} className='animate-spin' />
             ) : (
-              <Upload
+              <Save
                 size={16}
                 className='transition-all duration-200 ease-linear hover:text-gray-400'
               />
