@@ -14,6 +14,7 @@ export const useVideoLibrarySubtitleStore =
   create<VideoLibrarySubtitleStoreType>((set) => ({
     currentTime: 0,
     subtitles: [],
+    originalSubtitles: [],
     selectedSubtitleId: null,
     isSeeking: false,
     duration: 0,
@@ -25,6 +26,7 @@ export const useVideoLibrarySubtitleStore =
 
     setCurrentTime: (currentTime) => set({ currentTime }),
     setSubtitles: (subtitles) => set({ subtitles }),
+    setOriginalSubtitles: (originalSubtitles) => set({ originalSubtitles }),
     setSelectedSubtitleId: (selectedSubtitleId) => set({ selectedSubtitleId }),
     addSubtitle: ({ start, end, text }: SubtitleBodyType) =>
       set((state) => {

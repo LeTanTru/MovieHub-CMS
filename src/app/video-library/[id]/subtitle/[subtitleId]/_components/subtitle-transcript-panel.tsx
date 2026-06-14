@@ -61,6 +61,7 @@ export function SubtitleTranscriptPanel({
     subtitleFormState,
     setSelectedSubtitleId,
     setSubtitles,
+    setOriginalSubtitles,
     setDuration
   } = useVideoLibrarySubtitleStore(
     useShallow((s) => ({
@@ -70,6 +71,7 @@ export function SubtitleTranscriptPanel({
       subtitleFormState: s.subtitleFormState,
       setSelectedSubtitleId: s.setSelectedSubtitleId,
       setSubtitles: s.setSubtitles,
+      setOriginalSubtitles: s.setOriginalSubtitles,
       setDuration: s.setDuration
     }))
   );
@@ -156,9 +158,11 @@ export function SubtitleTranscriptPanel({
         }
 
         const content = await res.text();
+        const parsedSubtitles = parseVttContent(content);
 
         setSelectedSubtitleId(null);
-        setSubtitles(parseVttContent(content));
+        setSubtitles(parsedSubtitles);
+        setOriginalSubtitles(parsedSubtitles);
       } catch (error) {
         if (controller.signal.aborted) return;
 
@@ -166,6 +170,7 @@ export function SubtitleTranscriptPanel({
 
         setSelectedSubtitleId(null);
         setSubtitles([]);
+        setOriginalSubtitles([]);
       } finally {
         if (!controller.signal.aborted) {
           setIsLoading(false);
@@ -180,6 +185,7 @@ export function SubtitleTranscriptPanel({
     };
   }, [
     setSubtitles,
+    setOriginalSubtitles,
     setSelectedSubtitleId,
     videoSubtitle.fileUrl,
     videoLibrary.hostname,
