@@ -231,7 +231,7 @@ export function UploadVideoField<T extends FieldValues>({
 
         {value && !uploading && (
           <ConfirmModal
-            message='Bạn có chắc chắn muốn xóa video này không?'
+            message='Bạn có chắc chắn muốn xóa video này không ?'
             onConfirm={handleRemove}
             open={confirmRemoveOpen}
             onOpenChange={setConfirmRemoveOpen}

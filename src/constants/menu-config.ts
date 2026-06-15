@@ -173,7 +173,7 @@ export const menuConfig: MenuItem[] = [
       },
       {
         key: 'role',
-        label: 'Vai trò',
+        label: 'Quyền',
         path: route.group.getList.path,
         permissionCode: [apiConfig.group.getList.permissionCode]
       }

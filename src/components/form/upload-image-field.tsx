@@ -343,7 +343,7 @@ export function UploadImageField<T extends FieldValues>({
                 )}
                 {value && (
                   <ConfirmModal
-                    message='Bạn có chắc chắn muốn xóa ảnh này không?'
+                    message='Bạn có chắc chắn muốn xóa ảnh này không ?'
                     onConfirm={handleRemove}
                     open={confirmRemoveOpen}
                     onOpenChange={setConfirmRemoveOpen}
