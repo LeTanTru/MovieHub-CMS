@@ -400,7 +400,7 @@ export const apiConfig = defineApiConfig({
       baseUrl: `/v1/file/upload-subtitle`,
       method: 'POST',
       headers: multipartHeader,
-      permissionCode: 'FILE_U_S',
+      permissionCode: 'FILE_U',
       isUpload: true
     },
     uploadChunkInit: {

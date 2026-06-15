@@ -9,6 +9,8 @@ import { useUploadSubtitleMutation } from '@/queries';
 import { Download, Loader2, Plus, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useShallow } from 'zustand/react/shallow';
+import { useValidatePermission } from '@/hooks';
+import { apiConfig } from '@/constants';
 
 type SubtitleHeaderProps = {
   subtitles: SubtitleType[];
@@ -20,6 +22,7 @@ export function SubtitleHeader({
   videoSubtitle
 }: SubtitleHeaderProps) {
   const { id: videoId } = useParams<{ id: string }>();
+  const hasPermission = useValidatePermission();
 
   const {
     originalSubtitles,
@@ -44,6 +47,10 @@ export function SubtitleHeader({
       Number.isFinite(subtitle.endTime) &&
       subtitle.endTime > subtitle.startTime
   );
+
+  const canUpload = hasPermission({
+    requiredPermissions: [apiConfig.file.uploadSubtitle.permissionCode]
+  });
 
   const isSubtitleContentChanged =
     serializeVttContent(subtitles) !== serializeVttContent(originalSubtitles);
@@ -118,30 +125,34 @@ export function SubtitleHeader({
 
         <Separator className='h-4! w-px!' />
 
-        <ToolTip title='Lưu phụ đề' side='bottom'>
-          <Button
-            variant='ghost'
-            className='text-sporty-blue p-0! hover:bg-transparent'
-            disabled={
-              !canExport ||
-              !videoLibraryHostname ||
-              !isSubtitleContentChanged ||
-              uploadSubtitleLoading
-            }
-            onClick={handleUpload}
-          >
-            {uploadSubtitleLoading ? (
-              <Loader2 size={16} className='animate-spin' />
-            ) : (
-              <Save
-                size={16}
-                className='transition-all duration-200 ease-linear hover:text-gray-400'
-              />
-            )}
-          </Button>
-        </ToolTip>
+        {canUpload && (
+          <>
+            <ToolTip title='Lưu phụ đề' side='bottom'>
+              <Button
+                variant='ghost'
+                className='text-sporty-blue p-0! hover:bg-transparent'
+                disabled={
+                  !canExport ||
+                  !videoLibraryHostname ||
+                  !isSubtitleContentChanged ||
+                  uploadSubtitleLoading
+                }
+                onClick={handleUpload}
+              >
+                {uploadSubtitleLoading ? (
+                  <Loader2 size={16} className='animate-spin' />
+                ) : (
+                  <Save
+                    size={16}
+                    className='transition-all duration-200 ease-linear hover:text-gray-400'
+                  />
+                )}
+              </Button>
+            </ToolTip>
 
-        <Separator className='h-4! w-px!' />
+            <Separator className='h-4! w-px!' />
+          </>
+        )}
 
         <ToolTip title='Tải xuống' side='bottom'>
           <Button
