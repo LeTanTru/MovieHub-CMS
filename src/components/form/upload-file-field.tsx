@@ -210,7 +210,7 @@ export function UploadFileField<T extends FieldValues>({
 
         {value && !uploading && (
           <ConfirmModal
-            message='Bạn có chắc chắn muốn xóa tệp này không?'
+            message='Bạn có chắc chắn muốn xóa tệp này không ?'
             onConfirm={handleRemove}
             open={confirmRemoveOpen}
             onOpenChange={setConfirmRemoveOpen}

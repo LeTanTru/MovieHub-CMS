@@ -1,6 +1,7 @@
 'use client';
 
 import { Button, ToolTip } from '@/components/form';
+import { ConfirmModal } from '@/components/modal';
 import { Separator } from '@/components/ui/separator';
 import { useVideoLibrarySubtitleStore } from '@/store';
 import { SubtitleType, VideoLibrarySubtitleResType } from '@/types';
@@ -54,6 +55,12 @@ export function SubtitleHeader({
 
   const isSubtitleContentChanged =
     serializeVttContent(subtitles) !== serializeVttContent(originalSubtitles);
+
+  const disabledSave =
+    !canExport ||
+    !videoLibraryHostname ||
+    !isSubtitleContentChanged ||
+    uploadSubtitleLoading;
 
   const handleExport = () => {
     if (!canExport) return;
@@ -128,26 +135,27 @@ export function SubtitleHeader({
         {canUpload && (
           <>
             <ToolTip title='Lưu phụ đề' side='bottom'>
-              <Button
-                variant='ghost'
-                className='text-sporty-blue p-0! hover:bg-transparent'
-                disabled={
-                  !canExport ||
-                  !videoLibraryHostname ||
-                  !isSubtitleContentChanged ||
-                  uploadSubtitleLoading
+              <ConfirmModal
+                message='Bạn có chắc chắn muốn lưu phụ đề không ?'
+                onConfirm={handleUpload}
+                loading={uploadSubtitleLoading}
+                trigger={
+                  <Button
+                    variant='ghost'
+                    className='text-sporty-blue p-0! hover:bg-transparent'
+                    disabled={disabledSave}
+                  >
+                    {uploadSubtitleLoading ? (
+                      <Loader2 size={16} className='animate-spin' />
+                    ) : (
+                      <Save
+                        size={16}
+                        className='transition-all duration-200 ease-linear hover:text-gray-400'
+                      />
+                    )}
+                  </Button>
                 }
-                onClick={handleUpload}
-              >
-                {uploadSubtitleLoading ? (
-                  <Loader2 size={16} className='animate-spin' />
-                ) : (
-                  <Save
-                    size={16}
-                    className='transition-all duration-200 ease-linear hover:text-gray-400'
-                  />
-                )}
-              </Button>
+              />
             </ToolTip>
 
             <Separator className='h-4! w-px!' />

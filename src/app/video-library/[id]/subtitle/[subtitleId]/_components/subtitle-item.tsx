@@ -105,7 +105,7 @@ export function SubtitleItem({
         <Separator className='h-4! w-px! bg-gray-400' orientation='vertical' />
         <ToolTip title='Xóa'>
           <ConfirmModal
-            message='Bạn có chắc chắn muốn xóa dòng phụ đề này không?'
+            message='Bạn có chắc chắn muốn xóa dòng phụ đề này không ?'
             onConfirm={() => handleDelete(subtitle.id)}
             trigger={
               <Button
