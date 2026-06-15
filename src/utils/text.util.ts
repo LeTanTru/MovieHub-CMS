@@ -165,3 +165,19 @@ export const serializeVttContent = (subtitles: SubtitleType[]): string => {
 
   return `${lines.join('\n')}\n`;
 };
+
+export const parseBooleanValue = (
+  value: boolean | number | string | undefined
+) => {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return value === 1;
+
+  return value?.toLowerCase() === 'true';
+};
+
+export const stringifyBooleanValue = (value: boolean | number | string) => {
+  if (typeof value === 'boolean') return String(value);
+  if (typeof value === 'number') return value === 1 ? 'true' : 'false';
+
+  return value.toLowerCase() === 'true' ? 'true' : 'false';
+};

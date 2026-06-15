@@ -25,15 +25,24 @@ import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadFileMutation } from '@/queries';
 import { settingSchema } from '@/schemaValidations';
 import type { SettingBodyType, SettingResType } from '@/types';
-import { parseSelectOptions } from '@/utils';
+import {
+  parseBooleanValue,
+  parseSelectOptions,
+  stringifyBooleanValue
+} from '@/utils';
 import { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 type SettingModalProps = {
   open: boolean;
   setting?: SettingResType | null;
   groupName: string;
   onClose: () => void;
+};
+
+type SettingFormType = Omit<SettingBodyType, 'options' | 'valueData'> & {
+  options: string;
+  valueData: boolean | number | string;
 };
 
 export function SettingModal({
@@ -76,7 +85,7 @@ export function SettingModal({
     onOpen: true
   });
 
-  const defaultValues: SettingBodyType = {
+  const defaultValues: SettingFormType = {
     valueData: '',
     dataType: '',
     description: '',
@@ -86,9 +95,12 @@ export function SettingModal({
     options: ''
   };
 
-  const initialValues: SettingBodyType = useMemo(
+  const initialValues: SettingFormType = useMemo(
     () => ({
-      valueData: setting?.valueData ?? '',
+      valueData:
+        setting?.dataType === 'Boolean'
+          ? parseBooleanValue(setting?.valueData)
+          : (setting?.valueData ?? ''),
       dataType: setting?.dataType ?? '',
       description: setting?.description ?? '',
       groupName,
@@ -113,23 +125,27 @@ export function SettingModal({
   );
 
   const onSubmit = async (
-    values: SettingBodyType,
-    form: UseFormReturn<SettingBodyType>
+    values: SettingFormType,
+    form: UseFormReturn<SettingFormType>
   ) => {
+    const submitValues: SettingBodyType = {
+      ...values,
+      options:
+        values.dataType === 'Select'
+          ? JSON.stringify(parseSelectOptions(values.options))
+          : values.options,
+      valueData:
+        values.dataType === 'Upload'
+          ? imageManager.currentUrl
+          : values.dataType === 'Boolean'
+            ? stringifyBooleanValue(values.valueData)
+            : String(values.valueData)
+    };
+
     await imageManager.handleSubmit();
     await handleSubmit(
-      {
-        ...values,
-        options:
-          values.dataType === 'Select'
-            ? JSON.stringify(parseSelectOptions(values.options))
-            : values.options,
-        valueData:
-          values.dataType === 'Upload'
-            ? imageManager.currentUrl
-            : values.valueData
-      },
-      form,
+      submitValues,
+      form as unknown as UseFormReturn<SettingBodyType>,
       settingErrorMaps
     );
   };
@@ -197,6 +213,7 @@ export function SettingModal({
                       name='valueData'
                       label='Giá trị'
                       required
+                      formItemClassName='items-end h-full mb-3'
                     />
                   );
 
@@ -347,7 +364,14 @@ export function SettingModal({
                   </Col>
                 </Row>
 
-                <>{renderActions(form, { onCancel: handleCancel })}</>
+                <>
+                  {renderActions(
+                    form as unknown as UseFormReturn<SettingBodyType>,
+                    {
+                      onCancel: handleCancel
+                    }
+                  )}
+                </>
                 {loading && (
                   <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
                     <CircleLoading className='stroke-sporty-blue mt-20' />
