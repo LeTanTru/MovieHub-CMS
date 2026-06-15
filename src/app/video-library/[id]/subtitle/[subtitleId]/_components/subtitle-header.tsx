@@ -83,10 +83,10 @@ export function SubtitleHeader({
       {
         onSuccess: () => {
           setOriginalSubtitles(subtitles);
-          notify.success('Lưu file phụ đề thành công');
+          notify.success('Lưu phụ đề thành công');
         },
         onError: () => {
-          notify.error('Lưu file phụ đề thất bại');
+          notify.error('Lưu phụ đề thất bại');
         }
       }
     );
@@ -102,7 +102,7 @@ export function SubtitleHeader({
       </div>
 
       <div className='flex items-center gap-2'>
-        <ToolTip title='Thêm dòng phụ đề mới' side='bottom'>
+        <ToolTip title='Thêm' side='bottom'>
           <Button
             variant='ghost'
             className='text-sporty-blue p-0! hover:bg-transparent'
@@ -143,10 +143,7 @@ export function SubtitleHeader({
 
         <Separator className='h-4! w-px!' />
 
-        <ToolTip
-          title={`Xuất file phụ đề ${videoSubtitle.label}`}
-          side='bottom'
-        >
+        <ToolTip title='Tải xuống' side='bottom'>
           <Button
             onClick={handleExport}
             disabled={!canExport || uploadSubtitleLoading}
