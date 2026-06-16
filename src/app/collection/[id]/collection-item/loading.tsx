@@ -1,5 +1,5 @@
 import { ListPageSkeleton } from '@/components/loading';
 
 export default function Loading() {
-  return <ListPageSkeleton />;
+  return <ListPageSkeleton hasSearchForm={false} />;
 }
