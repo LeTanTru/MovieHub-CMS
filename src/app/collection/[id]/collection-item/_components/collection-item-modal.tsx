@@ -20,11 +20,17 @@ import type {
 } from '@/types';
 import { generatePath, notify } from '@/utils';
 import { useParams } from 'next/navigation';
+import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
 type CollectionItemModalProps = {
   open: boolean;
   onClose: () => void;
+};
+
+const defaultValues: CollectionItemBodyType = {
+  collectionId: '',
+  movieId: ''
 };
 
 export function CollectionItemModal({
@@ -62,10 +68,13 @@ export function CollectionItemModal({
     }
   });
 
-  const defaultValues: CollectionItemBodyType = {
-    collectionId: collectionId,
-    movieId: ''
-  };
+  const initialValues: CollectionItemBodyType = useMemo(
+    () => ({
+      collectionId: collectionId ?? defaultValues.collectionId,
+      movieId: defaultValues.movieId
+    }),
+    [collectionId]
+  );
 
   const onSubmit = async (
     values: CollectionItemBodyType,
@@ -94,6 +103,7 @@ export function CollectionItemModal({
           onSubmit={onSubmit}
           defaultValues={defaultValues}
           schema={collectionItemSchema}
+          initialValues={initialValues}
           onFormChange={onFormChange}
         >
           {(form) => {

@@ -29,6 +29,15 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
+const defaultValues: StyleBodyType = {
+  description: '',
+  imageMobileUrl: '',
+  imageWebUrl: '',
+  isDefault: false,
+  name: '',
+  type: 1
+};
+
 export function StyleForm() {
   const { id } = useParams<{ id: string }>();
 
@@ -72,23 +81,14 @@ export function StyleForm() {
     onOpen: true
   });
 
-  const defaultValues: StyleBodyType = {
-    description: '',
-    imageMobileUrl: '',
-    imageWebUrl: '',
-    isDefault: false,
-    name: '',
-    type: 1
-  };
-
   const initialValues: StyleBodyType = useMemo(
     () => ({
-      description: data?.description ?? '',
-      imageMobileUrl: data?.imageMobileUrl ?? '',
-      imageWebUrl: data?.imageWebUrl ?? '',
-      isDefault: data?.isDefault ?? false,
-      name: data?.name ?? '',
-      type: data?.type ?? 1
+      description: data?.description ?? defaultValues.description,
+      imageMobileUrl: data?.imageMobileUrl ?? defaultValues.imageMobileUrl,
+      imageWebUrl: data?.imageWebUrl ?? defaultValues.imageWebUrl,
+      isDefault: data?.isDefault ?? defaultValues.isDefault,
+      name: data?.name ?? defaultValues.name,
+      type: data?.type ?? defaultValues.type
     }),
     [
       data?.description,

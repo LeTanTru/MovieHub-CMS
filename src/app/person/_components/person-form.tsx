@@ -44,6 +44,17 @@ import {
 import { useParams } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 
+const defaultValues: PersonBodyType = {
+  avatarPath: '',
+  bio: '',
+  country: '',
+  dateOfBirth: '',
+  gender: GENDER_MALE,
+  kinds: [],
+  name: '',
+  otherName: ''
+};
+
 export function PersonForm() {
   const { id } = useParams<{ id: string }>();
   const kind = getData(storageKeys.ACTIVE_TAB_PERSON_KIND);
@@ -84,17 +95,6 @@ export function PersonForm() {
     onOpen: true
   });
 
-  const defaultValues: PersonBodyType = {
-    avatarPath: '',
-    bio: '',
-    country: '',
-    dateOfBirth: '',
-    gender: GENDER_MALE,
-    kinds: [],
-    name: '',
-    otherName: ''
-  };
-
   const getKinds = useCallback(() => {
     const kinds = [];
     if (kind === TAB_PERSON_KIND_ACTOR) kinds.push(PERSON_KIND_ACTOR);
@@ -104,14 +104,15 @@ export function PersonForm() {
 
   const initialValues: PersonBodyType = useMemo(
     () => ({
-      avatarPath: data?.avatarPath ?? '',
-      bio: data?.bio ?? '',
-      country: data?.country ?? '',
-      dateOfBirth: formatDate(data?.dateOfBirth, DATE_FORMAT),
-      gender: data?.gender ?? GENDER_MALE,
+      avatarPath: data?.avatarPath ?? defaultValues.avatarPath,
+      bio: data?.bio ?? defaultValues.bio,
+      country: data?.country ?? defaultValues.country,
+      dateOfBirth:
+        formatDate(data?.dateOfBirth, DATE_FORMAT) ?? defaultValues.dateOfBirth,
+      gender: data?.gender ?? defaultValues.gender,
       kinds: data?.kinds ?? getKinds(),
-      name: data?.name ?? '',
-      otherName: data?.otherName ?? ''
+      name: data?.name ?? defaultValues.name,
+      otherName: data?.otherName ?? defaultValues.otherName
     }),
     [
       data?.avatarPath,

@@ -47,6 +47,16 @@ import type { UseFormReturn } from 'react-hook-form';
 import { PlusIcon, X } from 'lucide-react';
 import { logger } from '@/logger';
 
+const defaultValues: CollectionBodyType = {
+  colors: ['#000000'],
+  filter: { limit: 1, noLimit: false },
+  name: '',
+  randomData: false,
+  styleId: '',
+  type: COLLECTION_TYPE_SECTION,
+  fillData: false
+};
+
 export function CollectionForm() {
   const navigate = useNavigate();
 
@@ -91,49 +101,30 @@ export function CollectionForm() {
     }
   });
 
-  const defaultValues: CollectionBodyType = {
-    colors: ['#000000'],
-    filter: { limit: 1, noLimit: false },
-    name: '',
-    randomData: false,
-    styleId: '',
-    type: COLLECTION_TYPE_SECTION,
-    fillData: false
-  };
-
-  const {
-    color: dataColor,
-    fillData: dataFillData,
-    filter: dataFilter,
-    name: dataName,
-    style: dataStyle,
-    type: dataType
-  } = data ?? {};
-
   const initialValues: CollectionBodyType = useMemo(() => {
-    let parsedColors: string[] = ['#000000', '#000000'];
+    let parsedColors: string[] = defaultValues.colors;
 
-    if (dataColor) {
+    if (data?.color) {
       try {
         parsedColors =
-          typeof dataColor === 'string'
-            ? JSON.parse(dataColor)
-            : Array.isArray(dataColor)
-              ? dataColor
-              : [dataColor];
+          typeof data.color === 'string'
+            ? JSON.parse(data.color)
+            : Array.isArray(data.color)
+              ? data.color
+              : [data.color];
       } catch (error) {
-        parsedColors = [dataColor as string];
+        parsedColors = [data.color as string];
         logger.error('[PARSE_COLOR_ERROR]', error);
       }
     }
 
     let filter: CollectionBodyType['filter'] = {};
-    if (dataFilter) {
+    if (data?.filter) {
       try {
         filter =
-          typeof dataFilter === 'string'
-            ? JSON.parse(dataFilter)
-            : (dataFilter as CollectionBodyType['filter']);
+          typeof data.filter === 'string'
+            ? JSON.parse(data.filter)
+            : (data.filter as CollectionBodyType['filter']);
       } catch (error) {
         logger.error('[PARSE_FILTER_ERROR]', error);
       }
@@ -141,22 +132,27 @@ export function CollectionForm() {
 
     return {
       colors: parsedColors,
-      filter: dataFilter
+      filter: data?.filter
         ? { ...filter, noLimit: filter.limit ? false : true }
-        : {},
-      name: dataName || '',
-      randomData: false,
-      styleId: dataStyle?.id?.toString() || '',
-      type: dataType || type ? Number(type) : COLLECTION_TYPE_TOPIC,
-      fillData: dataFillData || false
+        : defaultValues.filter,
+      name: data?.name ?? defaultValues.name,
+      randomData: defaultValues.randomData,
+      styleId: data?.style?.id?.toString() ?? defaultValues.styleId,
+      type:
+        data?.type !== undefined
+          ? data.type
+          : type
+            ? Number(type)
+            : COLLECTION_TYPE_TOPIC,
+      fillData: data?.fillData ?? defaultValues.fillData
     };
   }, [
-    dataColor,
-    dataFillData,
-    dataFilter,
-    dataName,
-    dataStyle?.id,
-    dataType,
+    data?.color,
+    data?.fillData,
+    data?.filter,
+    data?.name,
+    data?.style?.id,
+    data?.type,
     type
   ]);
 

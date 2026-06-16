@@ -30,6 +30,15 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
+const defaultValues: AppVersionBodyType = {
+  name: '',
+  changeLog: '',
+  code: 0,
+  filePath: '',
+  forceUpdate: false,
+  isLatest: false
+};
+
 export function AppVersionForm() {
   const { id } = useParams<{ id: string }>();
 
@@ -67,23 +76,14 @@ export function AppVersionForm() {
 
   const isUploading = imageManager.isUploading;
 
-  const defaultValues: AppVersionBodyType = {
-    name: '',
-    changeLog: '',
-    code: 0,
-    filePath: '',
-    forceUpdate: false,
-    isLatest: false
-  };
-
   const initialValues: AppVersionBodyType = useMemo(
     () => ({
-      name: data?.name ?? '',
-      changeLog: data?.changeLog ?? '',
-      code: data?.code ?? 0,
-      filePath: data?.filePath ?? '',
-      forceUpdate: data?.forceUpdate ?? false,
-      isLatest: data?.isLatest ?? false
+      name: data?.name ?? defaultValues.name,
+      changeLog: data?.changeLog ?? defaultValues.changeLog,
+      code: data?.code ?? defaultValues.code,
+      filePath: data?.filePath ?? defaultValues.filePath,
+      forceUpdate: data?.forceUpdate ?? defaultValues.forceUpdate,
+      isLatest: data?.isLatest ?? defaultValues.isLatest
     }),
     [
       data?.changeLog,

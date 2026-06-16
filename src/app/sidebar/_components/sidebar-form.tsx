@@ -26,6 +26,15 @@ import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 
+const defaultValues: MovieSidebarBodyType = {
+  active: true,
+  description: '',
+  mainColor: '#000000',
+  mobileThumbnailUrl: '',
+  movieId: '',
+  webThumbnailUrl: ''
+};
+
 export function SidebarForm() {
   const { id } = useParams<{
     id: string;
@@ -71,23 +80,15 @@ export function SidebarForm() {
     onOpen: true
   });
 
-  const defaultValues: MovieSidebarBodyType = {
-    active: true,
-    description: '',
-    mainColor: '#000000',
-    mobileThumbnailUrl: '',
-    movieId: '',
-    webThumbnailUrl: ''
-  };
-
   const initialValues: MovieSidebarBodyType = useMemo(
     () => ({
-      description: data?.description ?? '',
-      active: data?.active ?? false,
-      mainColor: data?.mainColor ?? '#000000',
-      mobileThumbnailUrl: data?.mobileThumbnailUrl ?? '',
-      movieId: data?.movie?.id?.toString() ?? '',
-      webThumbnailUrl: data?.webThumbnailUrl ?? ''
+      description: data?.description ?? defaultValues.description,
+      active: data?.active ?? defaultValues.active,
+      mainColor: data?.mainColor ?? defaultValues.mainColor,
+      mobileThumbnailUrl:
+        data?.mobileThumbnailUrl ?? defaultValues.mobileThumbnailUrl,
+      movieId: data?.movie?.id?.toString() ?? defaultValues.movieId,
+      webThumbnailUrl: data?.webThumbnailUrl ?? defaultValues.webThumbnailUrl
     }),
     [
       data?.active,

@@ -20,7 +20,7 @@ import type {
 import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { UseQueryResult } from '@tanstack/react-query';
 import type { UseFormReturn } from 'react-hook-form';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { CircleLoading } from '@/components/loading';
 
 type MoviePersonModalProps = {
@@ -30,6 +30,13 @@ type MoviePersonModalProps = {
   open: boolean;
   listQuery: UseQueryResult<ApiResponseList<MoviePersonResType>, Error>;
   onClose: () => void;
+};
+
+const defaultValues: MoviePersonBodyType = {
+  kind: 0,
+  movieId: '',
+  personId: '',
+  characterName: ''
 };
 
 export function MoviePersonModal({
@@ -46,12 +53,15 @@ export function MoviePersonModal({
   } = useCreateMoviePersonMutation();
   const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
 
-  const defaultValues: MoviePersonBodyType = {
-    kind: kind,
-    movieId: movieId,
-    personId: '',
-    characterName: ''
-  };
+  const initialValues: MoviePersonBodyType = useMemo(
+    () => ({
+      kind: kind ?? defaultValues.kind,
+      movieId: movieId ?? defaultValues.movieId,
+      personId: defaultValues.personId,
+      characterName: defaultValues.characterName
+    }),
+    [kind, movieId]
+  );
 
   const handleSubmit = (
     values: MoviePersonBodyType,
@@ -99,6 +109,7 @@ export function MoviePersonModal({
       <Modal.Body className='overflow-hidden'>
         <BaseForm
           defaultValues={defaultValues}
+          initialValues={initialValues}
           schema={moviePersonSchema}
           onSubmit={handleSubmit}
           onFormChange={(changed) => setIsFormChanged(changed)}
@@ -153,7 +164,7 @@ export function MoviePersonModal({
                     onValueChange={(value) =>
                       handleSubmit(
                         {
-                          ...defaultValues,
+                          ...form.getValues(),
                           personId: value as string
                         },
                         form

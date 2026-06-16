@@ -36,6 +36,14 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
+const defaultValues: GroupBodyType = {
+  name: '',
+  permissions: [],
+  description: '',
+  kind: GROUP_KIND_ADMIN,
+  color: '#000000'
+};
+
 export function GroupForm() {
   const { id } = useParams<{ id: string }>();
 
@@ -102,20 +110,15 @@ export function GroupForm() {
     return groupPermissions.toSorted((a, b) => a.ordering - b.ordering);
   }, [groupPermissions]);
 
-  const defaultValues: GroupBodyType = {
-    name: '',
-    permissions: [],
-    description: '',
-    color: ''
-  };
-
   const initialValues: GroupBodyType = useMemo(
     () => ({
-      description: data?.description ?? '',
-      name: data?.name ?? '',
-      permissions: data?.permissions?.map((g) => g.id.toString()) ?? [],
-      kind: data?.kind ?? GROUP_KIND_ADMIN,
-      color: data?.color ?? '#000000'
+      description: data?.description ?? defaultValues.description,
+      name: data?.name ?? defaultValues.name,
+      permissions:
+        data?.permissions?.map((g) => g.id.toString()) ??
+        defaultValues.permissions,
+      kind: data?.kind ?? defaultValues.kind,
+      color: data?.color ?? defaultValues.color
     }),
     [data?.description, data?.kind, data?.name, data?.permissions, data?.color]
   );

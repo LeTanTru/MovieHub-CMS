@@ -15,6 +15,12 @@ import { invalidateQueries } from '@/utils';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
+const defaultValues: VideoLibrarySubtitleBodyType = {
+  id: '',
+  label: '',
+  isDefault: false
+};
+
 type VideoLibrarySubtitleModalProps = {
   open: boolean;
   subtitle: VideoLibrarySubtitleResType | null;
@@ -44,19 +50,13 @@ export function VideoLibrarySubtitleModal({
       }
     });
 
-  const defaultValues: VideoLibrarySubtitleBodyType = {
-    id: '',
-    label: '',
-    isDefault: false
-  };
-
   const initialValues: VideoLibrarySubtitleBodyType = useMemo(
     () => ({
-      id: subtitle?.id ?? '',
-      label: subtitle?.label ?? '',
-      isDefault: subtitle?.isDefault ?? false
+      id: subtitle?.id ?? defaultValues.id,
+      label: subtitle?.label ?? defaultValues.label,
+      isDefault: subtitle?.isDefault ?? defaultValues.isDefault
     }),
-    [subtitle]
+    [subtitle?.id, subtitle?.isDefault, subtitle?.label]
   );
 
   const onSubmit = async (

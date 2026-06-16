@@ -12,6 +12,12 @@ import Image from 'next/image';
 import type { LoginBodyType } from '@/types';
 import { useShallow } from 'zustand/react/shallow';
 
+const defaultValues: LoginBodyType = {
+  username: '',
+  password: '',
+  grant_type: ''
+};
+
 export function LoginForm() {
   const { mutate: loginMutate, isPending: loginLoading } = useLoginMutation();
 
@@ -23,12 +29,6 @@ export function LoginForm() {
       };
     })
   );
-
-  const defaultValues: LoginBodyType = {
-    username: '',
-    password: '',
-    grant_type: ''
-  };
 
   const onSubmit = (values: LoginBodyType) => {
     loginMutate(values, {

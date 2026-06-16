@@ -50,6 +50,32 @@ import {
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
+const defaultValues: MovieBodyType = {
+  ageRating: 0,
+  categoryIds: [],
+  country: '',
+  description: '',
+  duration: 0,
+  imageTitleUrl: '',
+  isFeatured: false,
+  language: '',
+  originalTitle: '',
+  imdbId: '',
+  posterUrl: '',
+  releaseDate: '',
+  sendNotificationConfig: {
+    isSendNotification: false,
+    scheduleAt: '',
+    sendFor: SEND_NOTIFICATION_FOR_ALL_USERS,
+    title: ''
+  },
+  status: STATUS_ACTIVE,
+  thumbnailUrl: '',
+  title: '',
+  type: 0,
+  year: new Date().getFullYear()
+};
+
 export function MovieForm() {
   const { id } = useParams<{ id: string }>();
 
@@ -114,31 +140,6 @@ export function MovieForm() {
     onOpen: true
   });
 
-  const defaultValues: MovieBodyType = {
-    ageRating: 0,
-    categoryIds: [],
-    country: '',
-    description: '',
-    duration: 0,
-    isFeatured: false,
-    language: '',
-    originalTitle: '',
-    imdbId: '',
-    posterUrl: '',
-    releaseDate: '',
-    sendNotificationConfig: {
-      isSendNotification: false,
-      scheduleAt: '',
-      sendFor: SEND_NOTIFICATION_FOR_ALL_USERS,
-      title: ''
-    },
-    status: STATUS_ACTIVE,
-    thumbnailUrl: '',
-    title: '',
-    type: 0,
-    year: new Date().getFullYear()
-  };
-
   const getDuration = (metadata: string) => {
     if (!metadata) return 0;
     try {
@@ -152,26 +153,30 @@ export function MovieForm() {
 
   const initialValues: MovieBodyType = useMemo(
     () => ({
-      ageRating: data?.ageRating ?? 0,
+      ageRating: data?.ageRating ?? defaultValues.ageRating,
       categoryIds:
         data?.categories
           ?.toSorted((a, b) => a.name.localeCompare(b.name))
-          .map((category) => category.id.toString()) ?? [],
-      country: data?.country ?? '',
-      description: data?.description ?? '',
+          .map((category) => category.id.toString()) ??
+        defaultValues.categoryIds,
+      country: data?.country ?? defaultValues.country,
+      description: data?.description ?? defaultValues.description,
       duration: getDuration(data?.metadata ?? ''),
-      imageTitleUrl: data?.imageTitleUrl ?? '',
-      isFeatured: data?.isFeatured ?? false,
-      language: data?.language ?? '',
-      originalTitle: data?.originalTitle ?? '',
-      imdbId: data?.imdbId ?? '',
-      posterUrl: data?.posterUrl ?? '',
-      releaseDate: convertUTCToLocal(data?.releaseDate ?? null) ?? '',
-      status: data?.status ?? STATUS_ACTIVE,
-      thumbnailUrl: data?.thumbnailUrl ?? '',
-      title: data?.title ?? '',
-      type: data?.type ?? 0,
-      year: data?.year ?? new Date().getFullYear()
+      imageTitleUrl: data?.imageTitleUrl ?? defaultValues.imageTitleUrl,
+      isFeatured: data?.isFeatured ?? defaultValues.isFeatured,
+      language: data?.language ?? defaultValues.language,
+      originalTitle: data?.originalTitle ?? defaultValues.originalTitle,
+      imdbId: data?.imdbId ?? defaultValues.imdbId,
+      posterUrl: data?.posterUrl ?? defaultValues.posterUrl,
+      releaseDate:
+        convertUTCToLocal(data?.releaseDate ?? null) ??
+        defaultValues.releaseDate,
+      sendNotificationConfig: defaultValues.sendNotificationConfig,
+      status: data?.status ?? defaultValues.status,
+      thumbnailUrl: data?.thumbnailUrl ?? defaultValues.thumbnailUrl,
+      title: data?.title ?? defaultValues.title,
+      type: data?.type ?? defaultValues.type,
+      year: data?.year ?? defaultValues.year
     }),
     [
       data?.ageRating,
