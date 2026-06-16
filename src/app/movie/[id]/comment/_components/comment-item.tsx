@@ -177,9 +177,9 @@ export function CommentItem({
     ? parseJSON<ToxicSpan[]>(comment.toxicSpans) || []
     : [];
   const hasToxicSpans = toxicSpans.length > 0;
-  const [isContentVisible, setIsContentVisible] = useState(false);
-  const shouldShowViewContent = isHidden || !!hasToxicSpans;
-  const shouldBlurHiddenContent = isHidden && !isContentVisible;
+  const [isVisible, setIsVisible] = useState(false);
+  const canViewHiddenContent = isHidden || !!hasToxicSpans;
+  const isBlurWholeContent = isHidden && !isVisible && !hasToxicSpans;
 
   const {
     mutate: changeStatusCommentMutate,
@@ -248,7 +248,7 @@ export function CommentItem({
       result.push(content.slice(lastIndex, span.start));
       result.push(
         <span
-          className={cn({ 'blur-xs select-none': !isContentVisible })}
+          className={cn({ 'blur-xs select-none': !isVisible })}
           key={`${span.start}-${span.end}`}
         >
           {content.slice(span.start, span.end)}
@@ -271,7 +271,7 @@ export function CommentItem({
   }, [handlers]);
 
   const handleViewContent = () => {
-    setIsContentVisible((prev) => !prev);
+    setIsVisible((prev) => !prev);
   };
 
   const handleHideReplies = (parentId: string) => {
@@ -518,8 +518,7 @@ export function CommentItem({
 
             <p
               className={cn('mt-4 break-all text-gray-700', {
-                'max-640:text-[13px] blur-xs select-none':
-                  shouldBlurHiddenContent
+                'max-640:text-[13px] blur-xs select-none': isBlurWholeContent
               })}
             >
               {renderContent()}
@@ -593,7 +592,7 @@ export function CommentItem({
                 </Button>
               )}
 
-              {(shouldShowViewContent || canChangeStatus || canDelete) && (
+              {(canViewHiddenContent || canChangeStatus || canDelete) && (
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     className='border-none bg-transparent shadow-none'
@@ -636,7 +635,7 @@ export function CommentItem({
                           </Button>
                         </DropdownMenuItem>
                       )}
-                      {shouldShowViewContent && (
+                      {canViewHiddenContent && (
                         <DropdownMenuItem
                           className='cursor-pointer p-0! transition-all duration-200 ease-linear'
                           asChild
@@ -646,7 +645,7 @@ export function CommentItem({
                             variant='ghost'
                             onClick={handleViewContent}
                           >
-                            {isContentVisible ? (
+                            {isVisible ? (
                               <>
                                 <EyeClosed />
                                 Ẩn nội dung

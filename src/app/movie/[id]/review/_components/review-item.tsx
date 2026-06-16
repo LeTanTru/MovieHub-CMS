@@ -23,12 +23,13 @@ import {
 import { useValidatePermission } from '@/hooks';
 import { cn } from '@/lib';
 import { useChangeReviewStatusMutation } from '@/queries';
-import type { ReviewResType } from '@/types';
+import type { ReviewResType, ToxicSpan } from '@/types';
 import {
   convertUTCToLocal,
   getLastWord,
   invalidateQueries,
   notify,
+  parseJSON,
   renderImageUrl,
   timeAgo
 } from '@/utils';
@@ -48,9 +49,13 @@ type ReviewItemProps = {
 
 export function ReviewItem({ review, onDelete }: ReviewItemProps) {
   const isHidden = review.status === REVIEW_STATUS_HIDE;
-  const [isContentVisible, setIsContentVisible] = useState(false);
-  const shouldShowViewContent = isHidden;
-  const shouldBlurHiddenContent = isHidden && !isContentVisible;
+  const toxicSpans = review.toxicSpans
+    ? parseJSON<ToxicSpan[]>(review.toxicSpans) || []
+    : [];
+  const hasToxicSpans = toxicSpans.length > 0;
+  const [isVisible, setIsVisible] = useState(false);
+  const canViewHiddenContent = isHidden || !!hasToxicSpans;
+  const isBlurWholeContent = isHidden && !isVisible && !hasToxicSpans;
   const hasPermission = useValidatePermission();
 
   const {
@@ -99,7 +104,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
   };
 
   const handleViewContent = () => {
-    setIsContentVisible((prev) => !prev);
+    setIsVisible((prev) => !prev);
   };
 
   return (
@@ -177,8 +182,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
           <div className='mt-2 flex flex-col gap-2'>
             <p
               className={cn('break-all text-gray-700', {
-                'max-640:text-[13px] blur-xs select-none':
-                  shouldBlurHiddenContent
+                'max-640:text-[13px] blur-xs select-none': isBlurWholeContent
               })}
             >
               {review.content}
@@ -216,7 +220,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
                 {review.totalDislike}
               </div>
             </div>
-            {(shouldShowViewContent || canChangeStatus || canDelete) && (
+            {(canViewHiddenContent || canChangeStatus || canDelete) && (
               <DropdownMenu>
                 <DropdownMenuTrigger
                   className='border-none bg-transparent shadow-none'
@@ -256,7 +260,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
                         </Button>
                       </DropdownMenuItem>
                     )}
-                    {shouldShowViewContent && (
+                    {canViewHiddenContent && (
                       <DropdownMenuItem
                         className='cursor-pointer p-0! transition-all duration-200 ease-linear'
                         asChild
@@ -266,7 +270,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
                           variant='ghost'
                           onClick={handleViewContent}
                         >
-                          {isContentVisible ? (
+                          {isVisible ? (
                             <>
                               <EyeClosed />
                               Ẩn nội dung
