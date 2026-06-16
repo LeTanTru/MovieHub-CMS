@@ -197,21 +197,29 @@ The chunked video upload routes require CSRF and client type headers via `apiCon
 
 ## Realtime Notifications
 
-`MqttProvider` subscribes to:
+`MqttProvider` subscribes to two topics:
 
-- `notification/cms`
-- `notification/:accountId`
+- `notification/cms` — global CMS processing events (video conversion, audio, subtitle).
+- `notification/:accountId` — per-account user-facing events (comments, votes, toxic content locks).
 
-It handles command types such as:
+Handled `cmd` values:
 
-- `CMD_DONE_CONVERT_VIDEO`
-- `CMD_DONE_CONVERT_AUDIO`
-- `CMD_DONE_PROCESS_SUBTITLE`
-- `CMD_REPLY_COMMENT`
-- `CMD_VOTE_COMMENT`
-- `CMD_SEND_NOTIFICATION`
+| Command                 | Topic   | Action                                                                              |
+| ----------------------- | ------- | ----------------------------------------------------------------------------------- |
+| `DONE_CONVERT_VIDEO`    | CMS     | Invalidate `VIDEO_LIBRARY_LIST`, notification counts                                |
+| `DONE_CONVERT_AUDIO`    | CMS     | Invalidate `VIDEO_LIBRARY_LIST`, notification counts                                |
+| `DONE_PROCESS_SUBTITLE` | CMS     | Invalidate `VIDEO_LIBRARY_SUBTITLE_LIST`, notification counts                       |
+| `REPLY_COMMENT`         | Account | Parse typed body, invalidate notification counts + comment list/replies             |
+| `VOTE_COMMENT`          | Account | Parse typed body, invalidate notification counts + comment list/replies + vote list |
+| `TOXIC_COMMENT_LOCKED`  | Account | Parse typed body, invalidate notification counts + comment list/replies             |
 
-On relevant messages it invalidates notification, video library, subtitle, and unread-count query keys, then shows a toast.
+The CMS handler uses a `cmsNotificationQueryKeys` lookup map (cmd → query key) to avoid a verbose switch. The account handler uses a `switch` with `parseJSON<T>` to extract typed notification body payloads (`ReplyCommentNotificationType`, `VoteCommentNotificationType`, `ToxicCommentLockedNotificationType`) for targeted cache invalidation.
+
+Helper utilities in `MqttProvider`:
+
+- `invalidateNotificationQueries(...keys)` — always invalidates `UNREAD_NOTIFICATION_COUNT` and `NOTIFICATION_INFINITE` plus any extra keys.
+- `invalidateCommentQueries({ movieId, parentId, includeVoteList })` — invalidates the comment infinite list and optionally reply list and vote list.
+- `isValidMqttCMD(cmd)` — guards against unknown commands.
 
 ## Security Model
 

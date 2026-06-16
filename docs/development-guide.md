@@ -170,7 +170,9 @@ For notification-driven refreshes:
 
 - Add new MQTT command constants to `mqttCMDs`.
 - Validate message shape with Zod schemas.
-- Handle query invalidation in `MqttProvider` or a focused hook.
+- For CMS processing commands (video/audio/subtitle), add an entry to `cmsNotificationQueryKeys` in `MqttProvider` — no switch case needed.
+- For per-account notification commands, add a `case` to the account-topic `switch` in `MqttProvider`. Use `parseJSON<T>` with the appropriate notification body type to extract `movieId`/`parentId` for targeted invalidation.
+- Use `invalidateCommentQueries` and `invalidateNotificationQueries` helpers instead of calling `invalidateQueries` directly.
 - Use centralized `queryKeys`.
 
 ## Environment Changes

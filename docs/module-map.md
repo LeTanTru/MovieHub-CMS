@@ -19,6 +19,8 @@
 | Module              | Route Folder                         | Main Concern                                                  |
 | ------------------- | ------------------------------------ | ------------------------------------------------------------- |
 | Auth                | `src/app/(auth)`                     | Login page and login form                                     |
+| Profile             | `src/app/profile`                    | Current user profile view and edit                            |
+| Actions             | `src/app/actions`                    | Server actions (Next.js server action handlers)               |
 | Admin               | `src/app/admin`                      | Admin account list and create/edit                            |
 | Employee            | `src/app/employee`                   | Employee list and create/edit                                 |
 | User                | `src/app/user`                       | End-user management                                           |
@@ -89,6 +91,11 @@
 | `useChunkUpload`        | Chunked video upload orchestration                         |
 | `useMqtt`               | Subscribe/filter MQTT messages by topic and command        |
 | `useDragDrop`           | Drag/drop ordering support                                 |
+| `useDisclosure`         | Simple open/close boolean toggle                           |
+| `useClickOutside`       | Detect clicks outside a referenced element                 |
+| `useImageStatus`        | Track image load success/error state                       |
+| `useIsMounted`          | Detect if component is currently mounted                   |
+| `useMobile`             | Detect mobile viewport breakpoint                          |
 
 ## Query Modules
 
@@ -104,6 +111,7 @@ Query modules live in `src/queries` and map backend domains to TanStack Query ho
 - `group-permission.query.ts`
 - `movie-item.query.ts`
 - `movie-person.query.ts`
+- `movie-sidebar.query.ts`
 - `notification.query.ts`
 - `permission.query.ts`
 - `review.query.ts`
