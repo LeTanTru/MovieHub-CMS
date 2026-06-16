@@ -1,4 +1,3 @@
-import { Col, Row } from '@/components/form';
 import { FormPageSkeleton } from '@/components/loading/form-page-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -8,8 +7,8 @@ export default function Loading() {
       breadcrumbLevel={4}
       panelClassName='overflow-hidden bg-list-page-wrapper p-0'
     >
-      <Row className='grid-row-no-gutters mb-0 items-stretch'>
-        <Col className='grid-c-9 grid-col-no-gutters'>
+      <FormPageSkeleton.Row className='grid-row-no-gutters mb-0 items-stretch'>
+        <FormPageSkeleton.Col span={9} className='grid-col-no-gutters'>
           <div className='p-4'>
             <Skeleton className='aspect-video w-full rounded-lg' />
           </div>
@@ -17,33 +16,30 @@ export default function Loading() {
             <div className='mb-3 flex items-center justify-between gap-2 border-b border-gray-100 pb-2'>
               <Skeleton className='h-5 w-32' />
             </div>
-            <Row>
-              <Col className='grid-c-6'>
-                <Skeleton className='mb-2 h-4 w-32' />
+            <FormPageSkeleton.Row>
+              <FormPageSkeleton.Col span={6}>
+                <FormPageSkeleton.Field labelWidth='w-32' />
+              </FormPageSkeleton.Col>
+              <FormPageSkeleton.Col span={6}>
+                <FormPageSkeleton.Field labelWidth='w-32' />
+              </FormPageSkeleton.Col>
+            </FormPageSkeleton.Row>
+            <FormPageSkeleton.Row>
+              <FormPageSkeleton.Col span={12}>
+                <FormPageSkeleton.Field labelWidth='w-32' height='h-24' />
+              </FormPageSkeleton.Col>
+            </FormPageSkeleton.Row>
+            <FormPageSkeleton.Row className='mb-0 justify-end'>
+              <FormPageSkeleton.Col className='w-40'>
                 <Skeleton className='h-10 w-full' />
-              </Col>
-              <Col className='grid-c-6'>
-                <Skeleton className='mb-2 h-4 w-32' />
+              </FormPageSkeleton.Col>
+              <FormPageSkeleton.Col className='w-40'>
                 <Skeleton className='h-10 w-full' />
-              </Col>
-            </Row>
-            <Row>
-              <Col className='grid-c-12'>
-                <Skeleton className='mb-2 h-4 w-32' />
-                <Skeleton className='h-24 w-full rounded-lg' />
-              </Col>
-            </Row>
-            <Row className='mb-0 justify-end'>
-              <Col className='w-40'>
-                <Skeleton className='h-10 w-full' />
-              </Col>
-              <Col className='w-40'>
-                <Skeleton className='h-10 w-full' />
-              </Col>
-            </Row>
+              </FormPageSkeleton.Col>
+            </FormPageSkeleton.Row>
           </div>
-        </Col>
-        <Col className='grid-c-3 grid-col-no-gutters'>
+        </FormPageSkeleton.Col>
+        <FormPageSkeleton.Col span={3} className='grid-col-no-gutters'>
           <div className='h-full border-l border-zinc-100 bg-white p-4'>
             <Skeleton className='mb-4 h-5 w-32' />
             <div className='flex flex-col gap-3'>
@@ -59,8 +55,8 @@ export default function Loading() {
               ))}
             </div>
           </div>
-        </Col>
-      </Row>
+        </FormPageSkeleton.Col>
+      </FormPageSkeleton.Row>
     </FormPageSkeleton>
   );
 }
