@@ -24,12 +24,12 @@ export const menuConfig: MenuItem[] = [
       apiConfig.user.getList.permissionCode
     ],
     children: [
-      {
-        key: 'admin',
-        label: 'Quản trị viên',
-        path: route.admin.getList.path,
-        permissionCode: [apiConfig.account.getList.permissionCode]
-      },
+      // {
+      //   key: 'admin',
+      //   label: 'Quản trị viên',
+      //   path: route.admin.getList.path,
+      //   permissionCode: [apiConfig.account.getList.permissionCode]
+      // },
       {
         key: 'employee',
         label: 'Nhân viên',

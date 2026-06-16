@@ -5,9 +5,68 @@ import { useAuth, useMqtt } from '@/hooks';
 import { getMqttClient } from '@/lib/mqtt';
 import { logger } from '@/logger';
 import { mqttMessageSchema } from '@/schemaValidations';
-import { NotificationResType } from '@/types';
-import { generateMqttTopic, invalidateQueries, notify } from '@/utils';
+import type {
+  NotificationResType,
+  ReplyCommentNotificationType,
+  ToxicCommentLockedNotificationType,
+  VoteCommentNotificationType
+} from '@/types';
+import {
+  generateMqttTopic,
+  invalidateQueries,
+  notify,
+  parseJSON
+} from '@/utils';
 import { useEffect } from 'react';
+
+type QueryKey = (string | number | object)[];
+
+const commentListKey = (movieId: string): QueryKey => [
+  queryKeys.COMMENT_INFINITE,
+  { movieId }
+];
+
+const commentRepliesKey = (parentId?: string | null): QueryKey | null => {
+  if (!parentId) return null;
+
+  return [`${queryKeys.COMMENT}-${parentId}-infinite`, { parentId }];
+};
+
+const invalidateCommentQueries = ({
+  movieId,
+  parentId,
+  includeVoteList = false
+}: {
+  movieId?: string;
+  parentId?: string | null;
+  includeVoteList?: boolean;
+}) => {
+  if (!movieId) return;
+
+  const keys: QueryKey[] = [commentListKey(movieId)];
+  const repliesKey = commentRepliesKey(parentId);
+
+  if (repliesKey) keys.push(repliesKey);
+  if (includeVoteList) keys.push([queryKeys.VOTE_COMMENT, movieId]);
+
+  invalidateQueries(...keys);
+};
+
+const invalidateNotificationQueries = (...keys: QueryKey[]) => {
+  invalidateQueries(
+    [queryKeys.UNREAD_NOTIFICATION_COUNT],
+    [queryKeys.NOTIFICATION_INFINITE],
+    ...keys
+  );
+};
+
+const isValidMqttCMD = (cmd: string) => Object.values(mqttCMDs).includes(cmd);
+
+const cmsNotificationQueryKeys: Partial<Record<string, QueryKey>> = {
+  [mqttCMDs.DONE_CONVERT_AUDIO]: [queryKeys.VIDEO_LIBRARY_LIST],
+  [mqttCMDs.DONE_CONVERT_VIDEO]: [queryKeys.VIDEO_LIBRARY_LIST],
+  [mqttCMDs.DONE_PROCESS_SUBTITLE]: [queryKeys.VIDEO_LIBRARY_SUBTITLE_LIST]
+};
 
 export function MqttProvider() {
   const { profile } = useAuth();
@@ -91,27 +150,14 @@ export function MqttProvider() {
     topic: mqttTopics.CMS,
     cmd: mqttCMDs.SEND_NOTIFICATION,
     callback: (data) => {
-      switch (data.cmd) {
-        case mqttCMDs.DONE_CONVERT_VIDEO:
-        case mqttCMDs.DONE_CONVERT_AUDIO: {
-          invalidateQueries(
-            [queryKeys.UNREAD_NOTIFICATION_COUNT],
-            [queryKeys.NOTIFICATION_INFINITE],
-            [queryKeys.VIDEO_LIBRARY_LIST]
-          );
-          notify.success(data.title);
-          break;
-        }
-        case mqttCMDs.DONE_PROCESS_SUBTITLE: {
-          invalidateQueries(
-            [queryKeys.UNREAD_NOTIFICATION_COUNT],
-            [queryKeys.NOTIFICATION_INFINITE],
-            [queryKeys.VIDEO_LIBRARY_SUBTITLE_LIST]
-          );
-          notify.success(data.title);
-          break;
-        }
-      }
+      if (!isValidMqttCMD(data.cmd)) return;
+
+      const queryKey = cmsNotificationQueryKeys[data.cmd];
+
+      if (!queryKey) return;
+
+      invalidateNotificationQueries(queryKey);
+      notify.success(data.title);
     }
   });
 
@@ -122,15 +168,41 @@ export function MqttProvider() {
     }),
     cmd: mqttCMDs.SEND_NOTIFICATION,
     callback: (data) => {
+      if (!isValidMqttCMD(data.cmd)) return;
+
       switch (data.cmd) {
-        case mqttCMDs.REPLY_COMMENT:
-        case mqttCMDs.VOTE_COMMENT:
-        case mqttCMDs.TOXIC_COMMENT_LOCKED: {
-          invalidateQueries(
-            [queryKeys.UNREAD_NOTIFICATION_COUNT],
-            [queryKeys.NOTIFICATION_INFINITE]
-          );
+        case mqttCMDs.REPLY_COMMENT: {
+          const body = parseJSON<ReplyCommentNotificationType>(data.body);
+
+          invalidateNotificationQueries();
           notify.success(data.title);
+          invalidateCommentQueries({
+            movieId: body?.movieId,
+            parentId: body?.parentId
+          });
+          break;
+        }
+        case mqttCMDs.TOXIC_COMMENT_LOCKED: {
+          const body = parseJSON<ToxicCommentLockedNotificationType>(data.body);
+
+          invalidateNotificationQueries();
+          notify.success(data.title);
+          invalidateCommentQueries({
+            movieId: body?.movieId,
+            parentId: body?.parentId
+          });
+          break;
+        }
+        case mqttCMDs.VOTE_COMMENT: {
+          const body = parseJSON<VoteCommentNotificationType>(data.body);
+
+          invalidateNotificationQueries();
+          notify.success(data.title);
+          invalidateCommentQueries({
+            movieId: body?.movieId,
+            parentId: body?.parentId,
+            includeVoteList: true
+          });
           break;
         }
       }
