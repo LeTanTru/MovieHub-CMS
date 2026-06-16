@@ -78,6 +78,8 @@ Notes:
 Main route modules under `src/app`:
 
 - `(auth)`: login flow.
+- `profile`: current user profile.
+- `actions`: Next.js server action handlers.
 - `admin`: admin account management.
 - `employee`: employee management.
 - `user`: platform user management.
