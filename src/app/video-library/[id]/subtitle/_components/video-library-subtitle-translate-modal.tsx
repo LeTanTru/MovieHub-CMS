@@ -35,19 +35,22 @@ export function VideoLibrarySubtitleTranslateModal({
     useVideoSubtitleTranslateMutation();
   const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
 
-  const defaultValues: VideoLibrarySubtitleTranslateBodyType = {
-    id: defaultSubtitleId,
-    label: '',
-    language: ''
-  };
-
-  const initialValues: VideoLibrarySubtitleTranslateBodyType = useMemo(
+  const defaultValues: VideoLibrarySubtitleTranslateBodyType = useMemo(
     () => ({
       id: defaultSubtitleId,
       label: '',
       language: ''
     }),
     [defaultSubtitleId]
+  );
+
+  const initialValues: VideoLibrarySubtitleTranslateBodyType = useMemo(
+    () => ({
+      id: defaultValues.id,
+      label: defaultValues.label,
+      language: defaultValues.language
+    }),
+    [defaultValues.id, defaultValues.label, defaultValues.language]
   );
 
   const filteredLanguageOptions = languageOptions.filter(

@@ -25,6 +25,14 @@ import { getData, removeData, renderImageUrl } from '@/utils';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
+const defaultValues: ProfileBodyType = {
+  fullName: '',
+  avatarPath: '',
+  oldPassword: '',
+  password: '',
+  confirmPassword: ''
+};
+
 export function ProfileForm() {
   const navigate = useNavigate();
   const profile = useAuthStore((s) => s.profile);
@@ -55,22 +63,14 @@ export function ProfileForm() {
     onOpen: true
   });
 
-  const defaultValues: ProfileBodyType = {
-    fullName: '',
-    avatarPath: '',
-    oldPassword: '',
-    password: '',
-    confirmPassword: ''
-  };
-
   const initialValues: ProfileBodyType = useMemo(
     () => ({
       email: profile?.email ?? '',
-      fullName: profile?.fullName ?? '',
-      avatarPath: profile?.avatarPath ?? '',
-      oldPassword: '',
-      password: '',
-      confirmPassword: ''
+      fullName: profile?.fullName ?? defaultValues.fullName,
+      avatarPath: profile?.avatarPath ?? defaultValues.avatarPath,
+      oldPassword: defaultValues.oldPassword,
+      password: defaultValues.password,
+      confirmPassword: defaultValues.confirmPassword
     }),
     [profile?.avatarPath, profile?.email, profile?.fullName]
   );

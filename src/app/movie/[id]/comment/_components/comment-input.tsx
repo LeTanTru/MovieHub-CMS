@@ -15,7 +15,7 @@ import { commentSchema } from '@/schemaValidations';
 import { emojiIcon } from '@/assets';
 import { Send } from 'lucide-react';
 import { useClickOutside, useSaveBase } from '@/hooks';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import type { CommentBodyType, CommentResType } from '@/types';
 import type { UseFormReturn } from 'react-hook-form';
@@ -57,12 +57,16 @@ export function CommentInput({ movieId }: CommentInputProps) {
     }
   });
 
-  const defaultValues: CommentBodyType = {
-    content: '',
-    movieId: movieId,
-    movieItemId: '',
-    parentId: ''
-  };
+  const defaultValues: CommentBodyType = useMemo(
+    () => ({
+      content: '',
+      movieId,
+      movieItemId: '',
+      parentId: '',
+      replyToId: ''
+    }),
+    [movieId]
+  );
 
   const onSubmit = async (
     values: CommentBodyType,
@@ -127,6 +131,7 @@ export function CommentInput({ movieId }: CommentInputProps) {
   return (
     <BaseForm
       defaultValues={defaultValues}
+      initialValues={defaultValues}
       schema={commentSchema}
       onSubmit={onSubmit}
       onFormChange={onFormChange}

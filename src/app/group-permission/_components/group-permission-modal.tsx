@@ -22,6 +22,10 @@ import { applyFormErrors } from '@/utils';
 import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
+const defaultValues: GroupPermissionBodyType = {
+  name: ''
+};
+
 type GroupPermissionModalProps = {
   open: boolean;
   selectedRow: GroupPermissionResType | null;
@@ -34,6 +38,7 @@ export function GroupPermissionModal({
   onClose
 }: GroupPermissionModalProps) {
   const {
+    data,
     loading,
     isEditing,
     isFormChanged,
@@ -52,15 +57,11 @@ export function GroupPermissionModal({
     }
   });
 
-  const defaultValues: GroupPermissionBodyType = {
-    name: ''
-  };
-
   const initialValues: GroupPermissionBodyType = useMemo(
     () => ({
-      name: selectedRow?.name ?? ''
+      name: data?.name ?? selectedRow?.name ?? defaultValues.name
     }),
-    [selectedRow?.name]
+    [data?.name, selectedRow?.name]
   );
 
   const handleCancel = () => {

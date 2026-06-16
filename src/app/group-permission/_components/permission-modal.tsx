@@ -44,6 +44,7 @@ export function PermissionModal({
   onClose
 }: PermissionModalProps) {
   const {
+    data,
     loading,
     isEditing,
     isFormChanged,
@@ -87,16 +88,45 @@ export function PermissionModal({
 
   const initialValues: PermissionBodyType = useMemo(
     () => ({
-      description: selectedRow?.description ?? '',
-      name: selectedRow?.name ?? '',
+      description:
+        data?.description ??
+        selectedRow?.description ??
+        defaultValues.description,
+      name: data?.name ?? selectedRow?.name ?? defaultValues.name,
       groupPermissionId: isEditing
-        ? (selectedRow?.groupPermission?.id ?? '')
-        : selectedGroupPermissionId,
-      permissionCode: selectedRow?.permissionCode ?? '',
-      action: selectedRow?.action ?? '',
-      showMenu: selectedRow?.showMenu ?? false
+        ? (data?.groupPermission?.id ??
+          selectedRow?.groupPermission?.id ??
+          defaultValues.groupPermissionId)
+        : defaultValues.groupPermissionId,
+      permissionCode:
+        data?.permissionCode ??
+        selectedRow?.permissionCode ??
+        defaultValues.permissionCode,
+      action: data?.action ?? selectedRow?.action ?? defaultValues.action,
+      showMenu:
+        data?.showMenu ?? selectedRow?.showMenu ?? defaultValues.showMenu
     }),
-    [isEditing, selectedGroupPermissionId, selectedRow]
+    [
+      defaultValues.action,
+      defaultValues.description,
+      defaultValues.groupPermissionId,
+      defaultValues.name,
+      defaultValues.permissionCode,
+      defaultValues.showMenu,
+      isEditing,
+      data?.action,
+      data?.description,
+      data?.groupPermission?.id,
+      data?.name,
+      data?.permissionCode,
+      data?.showMenu,
+      selectedRow?.action,
+      selectedRow?.description,
+      selectedRow?.groupPermission?.id,
+      selectedRow?.name,
+      selectedRow?.permissionCode,
+      selectedRow?.showMenu
+    ]
   );
 
   const onSubmit = async (

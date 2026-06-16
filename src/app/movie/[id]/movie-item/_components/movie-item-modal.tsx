@@ -49,6 +49,27 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
+const defaultValues: MovieItemBodyType = {
+  description: '',
+  isLatest: false,
+  kind: 0,
+  label: '',
+  movieId: '',
+  releaseDate: '',
+  sendNotificationConfig: {
+    isSendNotification: false,
+    scheduleAt: '',
+    sendFor: SEND_NOTIFICATION_FOR_ALL_USERS,
+    title: ''
+  },
+  status: STATUS_ACTIVE,
+  title: '',
+  parentId: '',
+  videoId: '',
+  thumbnailUrl: '',
+  totalEpisode: 0
+};
+
 type MovieItemModalProps = {
   open: boolean;
   onClose: () => void;
@@ -75,18 +96,19 @@ export function MovieItemModal({
     useUploadLogoMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
-  const kindOptions =
-    movieType === MOVIE_TYPE_SINGLE
-      ? movieItemSingleKindOptions.filter(
-          (item) =>
-            !movieItemId ||
-            (movieItemId && item.value !== MOVIE_ITEM_KIND_SEASON)
-        )
-      : movieItemSeriesKindOptions.filter(
-          (item) =>
-            !movieItemId ||
-            (movieItemId && item.value !== MOVIE_ITEM_KIND_SEASON)
-        );
+  const kindOptions = useMemo(() => {
+    const options =
+      movieType === MOVIE_TYPE_SINGLE
+        ? movieItemSingleKindOptions
+        : movieItemSeriesKindOptions;
+
+    return options.filter(
+      (item) =>
+        !movieItemId || (movieItemId && item.value !== MOVIE_ITEM_KIND_SEASON)
+    );
+  }, [movieItemId, movieType]);
+
+  const defaultKind = kindOptions?.[0]?.value ?? defaultValues.kind;
 
   let objectName = '';
 
@@ -145,41 +167,23 @@ export function MovieItemModal({
 
   const parentId = movieItemId || data?.parent?.id?.toString();
 
-  const defaultValues: MovieItemBodyType = {
-    description: '',
-    isLatest: false,
-    kind: kindOptions?.[0]?.value,
-    label: '',
-    movieId: movieId,
-    releaseDate: '',
-    sendNotificationConfig: {
-      isSendNotification: false,
-      scheduleAt: '',
-      sendFor: SEND_NOTIFICATION_FOR_ALL_USERS,
-      title: ''
-    },
-    status: STATUS_ACTIVE,
-    title: '',
-    parentId: '',
-    videoId: '',
-    thumbnailUrl: '',
-    totalEpisode: 0
-  };
-
   const initialValues: MovieItemBodyType = useMemo(
     () => ({
-      description: data?.description ?? '',
-      isLatest: data?.isLatest ?? false,
-      kind: data?.kind ?? kindOptions?.[0]?.value,
-      label: data?.label ?? '',
-      movieId: movieId,
-      releaseDate: convertUTCToLocal(data?.releaseDate ?? null) ?? '',
-      status: STATUS_ACTIVE,
-      title: data?.title ?? '',
-      parentId: parentId,
-      thumbnailUrl: data?.thumbnailUrl ?? '',
-      videoId: data?.video?.id?.toString() ?? '',
-      totalEpisode: data?.totalEpisode ?? 0
+      description: data?.description ?? defaultValues.description,
+      isLatest: data?.isLatest ?? defaultValues.isLatest,
+      kind: data?.kind ?? defaultKind,
+      label: data?.label ?? defaultValues.label,
+      movieId: movieId || defaultValues.movieId,
+      releaseDate:
+        convertUTCToLocal(data?.releaseDate ?? null) ??
+        defaultValues.releaseDate,
+      sendNotificationConfig: defaultValues.sendNotificationConfig,
+      status: data?.status ?? defaultValues.status,
+      title: data?.title ?? defaultValues.title,
+      parentId: parentId ?? defaultValues.parentId,
+      thumbnailUrl: data?.thumbnailUrl ?? defaultValues.thumbnailUrl,
+      videoId: data?.video?.id?.toString() ?? defaultValues.videoId,
+      totalEpisode: data?.totalEpisode ?? defaultValues.totalEpisode
     }),
     [
       data?.description,
@@ -187,11 +191,12 @@ export function MovieItemModal({
       data?.kind,
       data?.label,
       data?.releaseDate,
+      data?.status,
       data?.thumbnailUrl,
       data?.title,
       data?.totalEpisode,
       data?.video?.id,
-      kindOptions,
+      defaultKind,
       movieId,
       parentId
     ]

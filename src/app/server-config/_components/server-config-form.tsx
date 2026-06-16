@@ -29,6 +29,15 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
+const defaultValues: ServerConfigBodyType = {
+  hostname: '',
+  ip: '',
+  name: '',
+  port: 0,
+  serverNumber: 0,
+  status: STATUS_ACTIVE
+};
+
 export function ServerConfigForm() {
   const { id } = useParams<{ id: string }>();
 
@@ -63,23 +72,14 @@ export function ServerConfigForm() {
     }
   });
 
-  const defaultValues: ServerConfigBodyType = {
-    hostname: '',
-    ip: '',
-    name: '',
-    port: 0,
-    serverNumber: 0,
-    status: STATUS_ACTIVE
-  };
-
   const initialValues: ServerConfigBodyType = useMemo(
     () => ({
-      hostname: data?.hostname ?? '',
-      ip: data?.ip ?? '',
-      name: data?.name ?? '',
-      port: data?.port ?? 0,
-      serverNumber: data?.serverNumber ?? 0,
-      status: data?.status ?? STATUS_ACTIVE
+      hostname: data?.hostname ?? defaultValues.hostname,
+      ip: data?.ip ?? defaultValues.ip,
+      name: data?.name ?? defaultValues.name,
+      port: data?.port ?? defaultValues.port,
+      serverNumber: data?.serverNumber ?? defaultValues.serverNumber,
+      status: data?.status ?? defaultValues.status
     }),
     [
       data?.hostname,

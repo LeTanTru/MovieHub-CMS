@@ -17,6 +17,11 @@ import type { CategoryBodyType, CategoryResType } from '@/types';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
+const defaultValues: CategoryBodyType = {
+  name: '',
+  status: STATUS_ACTIVE
+};
+
 type CategoryModalProps = {
   open: boolean;
   category: CategoryResType | null;
@@ -49,17 +54,12 @@ export function CategoryModal({ open, category, onClose }: CategoryModalProps) {
     }
   });
 
-  const defaultValues: CategoryBodyType = {
-    name: '',
-    status: STATUS_ACTIVE
-  };
-
   const initialValues: CategoryBodyType = useMemo(
     () => ({
-      name: data?.name ?? '',
-      status: STATUS_ACTIVE
+      name: data?.name ?? defaultValues.name,
+      status: data?.status ?? defaultValues.status
     }),
-    [data?.name]
+    [data?.name, data?.status]
   );
 
   const onSubmit = async (

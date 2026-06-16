@@ -55,6 +55,21 @@ const VideoPlayer = dynamic(
 );
 import { envConfig } from '@/config';
 
+const defaultValues: VideoLibraryBodyType = {
+  content: '',
+  description: '',
+  introEnd: 0,
+  outroStart: 0,
+  introStart: 0,
+  name: '',
+  status: STATUS_ACTIVE,
+  thumbnailUrl: '',
+  sourceType: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
+  duration: 0,
+  vttUrl: '',
+  spriteUrl: ''
+};
+
 export function VideoLibraryForm() {
   const { id } = useParams<{ id: string }>();
   const accessToken = useAuthStore((s) => s.accessToken);
@@ -106,34 +121,20 @@ export function VideoLibraryForm() {
   const isUploading =
     imageManager.isUploading || videoManager.isUploading || uploadLogoLoading;
 
-  const defaultValues: VideoLibraryBodyType = {
-    content: '',
-    description: '',
-    introEnd: 0,
-    outroStart: 0,
-    introStart: 0,
-    name: '',
-    status: STATUS_ACTIVE,
-    thumbnailUrl: '',
-    sourceType: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
-    duration: 0,
-    vttUrl: ''
-  };
-
   const initialValues: VideoLibraryBodyType = useMemo(
     () => ({
-      content: data?.content ?? '',
-      description: data?.description ?? '',
-      introEnd: data?.introEnd ?? 0,
-      introStart: data?.introStart ?? 0,
-      outroStart: data?.outroStart ?? 0,
-      duration: data?.duration ?? 0,
-      name: data?.name ?? '',
-      status: STATUS_ACTIVE,
-      thumbnailUrl: data?.thumbnailUrl ?? '',
-      sourceType: data?.sourceType ?? VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
-      vttUrl: data?.vttUrl ?? '',
-      spriteUrl: data?.spriteUrl ?? ''
+      content: data?.content ?? defaultValues.content,
+      description: data?.description ?? defaultValues.description,
+      introEnd: data?.introEnd ?? defaultValues.introEnd,
+      introStart: data?.introStart ?? defaultValues.introStart,
+      outroStart: data?.outroStart ?? defaultValues.outroStart,
+      duration: data?.duration ?? defaultValues.duration,
+      name: data?.name ?? defaultValues.name,
+      status: data?.status ?? defaultValues.status,
+      thumbnailUrl: data?.thumbnailUrl ?? defaultValues.thumbnailUrl,
+      sourceType: data?.sourceType ?? defaultValues.sourceType,
+      vttUrl: data?.vttUrl ?? defaultValues.vttUrl,
+      spriteUrl: data?.spriteUrl ?? defaultValues.spriteUrl
     }),
     [
       data?.content,
@@ -145,6 +146,7 @@ export function VideoLibraryForm() {
       data?.outroStart,
       data?.sourceType,
       data?.spriteUrl,
+      data?.status,
       data?.thumbnailUrl,
       data?.vttUrl
     ]

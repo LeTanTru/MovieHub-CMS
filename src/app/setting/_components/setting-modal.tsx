@@ -85,36 +85,45 @@ export function SettingModal({
     onOpen: true
   });
 
-  const defaultValues: SettingFormType = {
-    valueData: '',
-    dataType: '',
-    description: '',
-    groupName,
-    isSystem: false,
-    keyName: '',
-    options: ''
-  };
+  const defaultValues: SettingFormType = useMemo(
+    () => ({
+      valueData: '',
+      dataType: '',
+      description: '',
+      groupName,
+      isSystem: false,
+      keyName: '',
+      options: ''
+    }),
+    [groupName]
+  );
 
   const initialValues: SettingFormType = useMemo(
     () => ({
       valueData:
         setting?.dataType === 'Boolean'
           ? parseBooleanValue(setting?.valueData)
-          : (setting?.valueData ?? ''),
-      dataType: setting?.dataType ?? '',
-      description: setting?.description ?? '',
-      groupName,
-      isSystem: setting?.isSystem ?? false,
-      keyName: setting?.keyName ?? '',
+          : (setting?.valueData ?? defaultValues.valueData),
+      dataType: setting?.dataType ?? defaultValues.dataType,
+      description: setting?.description ?? defaultValues.description,
+      groupName: defaultValues.groupName,
+      isSystem: setting?.isSystem ?? defaultValues.isSystem,
+      keyName: setting?.keyName ?? defaultValues.keyName,
       options:
         setting?.dataType === 'Select'
           ? parseSelectOptions(setting?.options)
               .map((option) => option.value)
               .join(',')
-          : (setting?.options ?? '')
+          : (setting?.options ?? defaultValues.options)
     }),
     [
-      groupName,
+      defaultValues.dataType,
+      defaultValues.description,
+      defaultValues.groupName,
+      defaultValues.isSystem,
+      defaultValues.keyName,
+      defaultValues.options,
+      defaultValues.valueData,
       setting?.dataType,
       setting?.description,
       setting?.isSystem,

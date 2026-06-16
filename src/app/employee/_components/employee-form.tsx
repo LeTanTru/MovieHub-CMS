@@ -35,6 +35,20 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
+const defaultValues: EmployeeBodyType = {
+  username: '',
+  email: '',
+  fullName: '',
+  groupId: '',
+  password: '',
+  avatarPath: '',
+  status: STATUS_ACTIVE,
+  confirmPassword: '',
+  phone: '',
+  confirmNewPassword: '',
+  newPassword: ''
+};
+
 export function EmployeeForm() {
   const { id } = useParams<{ id: string }>();
 
@@ -78,34 +92,19 @@ export function EmployeeForm() {
     onOpen: true
   });
 
-  const defaultValues: EmployeeBodyType = {
-    username: '',
-    email: '',
-    fullName: '',
-    groupId: '',
-    password: '',
-    avatarPath: '',
-    status: 0,
-    confirmPassword: '',
-    phone: '',
-    confirmNewPassword: '',
-    newPassword: ''
-  };
-
   const initialValues: EmployeeBodyType = useMemo(
     () => ({
-      username: data?.username ?? '',
-      email: data?.email ?? '',
-      fullName: data?.fullName ?? '',
-      groupId: data?.group?.id?.toString() ?? '',
-      password: '',
-      avatarPath: data?.avatarPath ?? '',
-      status: data?.status ?? STATUS_ACTIVE,
-      confirmPassword: '',
-      phone: data?.phone ?? '',
-      confirmNewPassword: '',
-      newPassword: '',
-      oldPassword: ''
+      username: data?.username ?? defaultValues.username,
+      email: data?.email ?? defaultValues.email,
+      fullName: data?.fullName ?? defaultValues.fullName,
+      groupId: data?.group?.id?.toString() ?? defaultValues.groupId,
+      password: defaultValues.password,
+      avatarPath: data?.avatarPath ?? defaultValues.avatarPath,
+      status: data?.status ?? defaultValues.status,
+      confirmPassword: defaultValues.confirmPassword,
+      phone: data?.phone ?? defaultValues.phone,
+      confirmNewPassword: defaultValues.confirmNewPassword,
+      newPassword: defaultValues.newPassword
     }),
     [
       data?.avatarPath,

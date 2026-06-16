@@ -81,29 +81,37 @@ export function CommentForm({
     }
   });
 
-  const defaultValues: CommentBodyType = {
-    content: '',
-    movieId,
-    movieItemId: '',
-    parentId: parentId,
-    replyToId: ''
-  };
+  const defaultValues: CommentBodyType = useMemo(
+    () => ({
+      content: '',
+      movieId,
+      movieItemId: '',
+      parentId,
+      replyToId: ''
+    }),
+    [movieId, parentId]
+  );
 
   const initialValues: CommentBodyType = useMemo(
     () => ({
-      content: editingComment?.content ?? '',
-      movieId: editingComment?.movieId?.toString() ?? movieId,
-      movieItemId: editingComment?.movieId?.toString() ?? '',
-      parentId: editingComment?.parent?.id?.toString() ?? parentId,
-      replyToId: authorInfo?.id?.toString() ?? ''
+      content: editingComment?.content ?? defaultValues.content,
+      movieId: editingComment?.movieId?.toString() ?? defaultValues.movieId,
+      movieItemId:
+        editingComment?.movieId?.toString() ?? defaultValues.movieItemId,
+      parentId:
+        editingComment?.parent?.id?.toString() ?? defaultValues.parentId,
+      replyToId: authorInfo?.id?.toString() ?? defaultValues.replyToId
     }),
     [
       authorInfo?.id,
+      defaultValues.content,
+      defaultValues.movieId,
+      defaultValues.movieItemId,
+      defaultValues.parentId,
+      defaultValues.replyToId,
       editingComment?.content,
       editingComment?.movieId,
-      editingComment?.parent?.id,
-      movieId,
-      parentId
+      editingComment?.parent?.id
     ]
   );
 

@@ -35,6 +35,18 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
+const defaultValues: AccountBodyType = {
+  username: '',
+  email: '',
+  fullName: '',
+  groupId: '',
+  password: '',
+  avatarPath: '',
+  status: STATUS_ACTIVE,
+  confirmPassword: '',
+  phone: ''
+};
+
 export function AdminForm() {
   const { id } = useParams<{ id: string }>();
 
@@ -75,29 +87,17 @@ export function AdminForm() {
     }
   });
 
-  const defaultValues: AccountBodyType = {
-    username: '',
-    email: '',
-    fullName: '',
-    groupId: '',
-    password: '',
-    avatarPath: '',
-    status: 0,
-    confirmPassword: '',
-    phone: ''
-  };
-
   const initialValues: AccountBodyType = useMemo(
     () => ({
-      username: data?.username ?? '',
-      email: data?.email ?? '',
-      fullName: data?.fullName ?? '',
-      groupId: data?.group?.id?.toString() ?? '',
-      password: '',
-      avatarPath: data?.avatarPath ?? '',
-      status: data?.status ?? STATUS_ACTIVE,
-      confirmPassword: '',
-      phone: data?.phone ?? ''
+      username: data?.username ?? defaultValues.username,
+      email: data?.email ?? defaultValues.email,
+      fullName: data?.fullName ?? defaultValues.fullName,
+      groupId: data?.group?.id?.toString() ?? defaultValues.groupId,
+      password: defaultValues.password,
+      avatarPath: data?.avatarPath ?? defaultValues.avatarPath,
+      status: data?.status ?? defaultValues.status,
+      confirmPassword: defaultValues.confirmPassword,
+      phone: data?.phone ?? defaultValues.phone
     }),
     [
       data?.avatarPath,

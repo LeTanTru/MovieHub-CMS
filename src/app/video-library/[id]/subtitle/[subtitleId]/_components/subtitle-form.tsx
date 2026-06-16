@@ -93,6 +93,12 @@ function getSubtitleOverlapFields(
   return fields;
 }
 
+const defaultValues: SubtitleBodyType = {
+  start: '',
+  end: '',
+  text: ''
+};
+
 export function SubtitleForm() {
   const {
     currentTime,
@@ -128,21 +134,15 @@ export function SubtitleForm() {
 
   const disabled = subtitleFormState?.mode !== 'create' && !subtitle;
 
-  const defaultValues: SubtitleBodyType = {
-    start: '',
-    end: '',
-    text: ''
-  };
-
   const initialValues: SubtitleBodyType = useMemo(() => {
     if (disabled) {
-      return { start: '', end: '', text: '' };
+      return defaultValues;
     }
 
     return {
       start: subtitle?.start ?? SUBTITLE_TIME_PLACEHOLDER,
       end: subtitle?.end ?? SUBTITLE_TIME_PLACEHOLDER,
-      text: subtitle?.text ?? ''
+      text: subtitle?.text ?? defaultValues.text
     };
   }, [subtitle, disabled]);
 
