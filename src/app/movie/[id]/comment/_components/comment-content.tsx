@@ -2,13 +2,13 @@ import { cn } from '@/lib';
 import type { ReactNode } from 'react';
 
 type CommentContentProps = {
-  children: ReactNode;
   isBlurWholeContent: boolean;
+  renderContent: () => ReactNode;
 };
 
 export function CommentContent({
-  children,
-  isBlurWholeContent
+  isBlurWholeContent,
+  renderContent
 }: CommentContentProps) {
   return (
     <p
@@ -16,7 +16,7 @@ export function CommentContent({
         'max-640:text-[13px] blur-xs select-none': isBlurWholeContent
       })}
     >
-      {children}
+      {renderContent()}
     </p>
   );
 }
