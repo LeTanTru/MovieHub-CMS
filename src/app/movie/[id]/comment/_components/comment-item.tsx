@@ -31,6 +31,7 @@ import { CommentContent } from './comment-content';
 import { CommentHeader } from './comment-header';
 import { CommentReplyForm } from './comment-reply-form';
 import { CommentReplyList } from './comment-reply-list';
+import { CommentItemSkeleton } from './comment-item-skeleton';
 
 type CommentItemProps = {
   comment: CommentResType & {
@@ -217,24 +218,42 @@ export function CommentItem({
         </>
       );
 
-    let result = [];
+    const result: ReactNode[] = [];
     let lastIndex = 0;
-    toxicSpans.forEach((span) => {
-      result.push(content.slice(lastIndex, span.start));
+
+    toxicSpans.forEach((span, index) => {
+      const start = Math.min(Math.max(span.start, lastIndex), content.length);
+      const end = Math.min(Math.max(span.end, start), content.length);
+
+      if (start > lastIndex) {
+        result.push(content.slice(lastIndex, start));
+      }
+
+      if (start === end) {
+        lastIndex = start;
+        return;
+      }
+
       result.push(
         <span
           className={cn({ 'blur-xs select-none': !isVisible })}
-          key={`${span.start}-${span.end}`}
+          key={`${start}-${end}-${index}`}
         >
-          {content.slice(span.start, span.end)}
+          {content.slice(start, end)}
         </span>
       );
-      lastIndex = span.end;
+
+      lastIndex = end;
     });
 
     result.push(content.slice(lastIndex));
 
-    return result;
+    return (
+      <>
+        {renderMention()}
+        {result}
+      </>
+    );
   };
 
   const handleViewReplies = (parentId: string) => {
@@ -393,9 +412,10 @@ export function CommentItem({
               onPin={onPin}
             />
 
-            <CommentContent isBlurWholeContent={isBlurWholeContent}>
-              {renderContent()}
-            </CommentContent>
+            <CommentContent
+              isBlurWholeContent={isBlurWholeContent}
+              renderContent={renderContent}
+            />
 
             <CommentAction
               comment={comment}
@@ -451,33 +471,4 @@ export function CommentItem({
   );
 }
 
-CommentItem.Skeleton = function () {
-  return (
-    <div className='gap- flex h-30 w-full items-start rounded-md border p-3 transition hover:bg-gray-50'>
-      <div className='skeleton size-10 rounded-full!'></div>
-      <div className='flex-1'>
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-x-2'>
-            <h4 className='flex items-center gap-x-2 font-medium text-gray-800'>
-              <div className='skeleton h-5 w-30 font-semibold'></div>
-              <div className='skeleton size-5'></div>
-              <div className='skeleton h-5 w-20'></div>
-              <div className='skeleton h-5 w-10'></div>
-              <div className='skeleton size-5'></div>
-            </h4>
-          </div>
-          <div className='skeleton mr-2 size-5'></div>
-        </div>
-        <p className='skeleton mt-4 h-5 w-100 text-gray-700'></p>
-
-        <div className='mt-4 flex items-center gap-x-4 text-sm text-gray-500'>
-          <div className='skeleton h-5 w-10'></div>
-          <div className='skeleton h-5 w-10'></div>
-          <div className='skeleton h-5 w-10'></div>
-          <div className='skeleton h-5 w-10'></div>
-          <div className='skeleton h-5 w-10'></div>
-        </div>
-      </div>
-    </div>
-  );
-};
+CommentItem.Skeleton = CommentItemSkeleton;
