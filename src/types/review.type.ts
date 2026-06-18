@@ -1,4 +1,7 @@
-import { reviewSearchSchema } from '@/schemaValidations';
+import {
+  reviewSearchSchema,
+  reviewToxicSpansSchema
+} from '@/schemaValidations';
 import { ProfileResType } from '@/types/account.type';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
@@ -28,3 +31,5 @@ export type ChangeReviewStatusBodyType = {
   id: string;
   status: number;
 };
+
+export type ReviewToxicSpansBodyType = z.infer<typeof reviewToxicSpansSchema>;

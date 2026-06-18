@@ -3,6 +3,7 @@ import {
   commentPinSchema,
   commentSchema,
   commentSearchSchema,
+  commentToxicSpansSchema,
   commentVoteSchema
 } from '@/schemaValidations';
 import { ProfileResType } from '@/types/account.type';
@@ -52,6 +53,19 @@ export type ChangeCommentStatusBodyType = z.infer<
 export type CommentVoteResType = {
   id: string;
   type: number;
+};
+
+export type CommentToxicSpansBodyType = z.infer<typeof commentToxicSpansSchema>;
+
+export type ToxicSpanPreview = ToxicSpan & {
+  text: string;
+};
+
+export type ToxicSpanSegment = {
+  start: number;
+  end: number;
+  text: string;
+  toxic: boolean;
 };
 
 type CommentStoreState = {

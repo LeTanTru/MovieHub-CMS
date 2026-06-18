@@ -290,6 +290,13 @@ export const apiConfig = defineApiConfig({
       permissionCode: 'CMT_U',
       isRequiredXClientType: true
     },
+    updateToxicSpans: {
+      baseUrl: `${AppConstants.apiUrl}/v1/comment/update-toxic-spans`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'CMT_U_T',
+      isRequiredXClientType: true
+    },
     changeStatus: {
       baseUrl: `${AppConstants.apiUrl}/v1/comment/change-status`,
       method: 'PUT',
@@ -781,6 +788,13 @@ export const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}/v1/review/vote-list/:movieId`,
       method: 'GET',
       headers: baseHeader,
+      isRequiredXClientType: true
+    },
+    updateToxicSpans: {
+      baseUrl: `${AppConstants.apiUrl}/v1/review/update-toxic-spans`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'REV_U_T',
       isRequiredXClientType: true
     }
   },

@@ -4,6 +4,7 @@ import type {
   ApiResponseNoData,
   ChangeCommentStatusBodyType,
   CommentPinBodyType,
+  CommentToxicSpansBodyType,
   CommentVoteBodyType,
   CommentVoteResType
 } from '@/types';
@@ -50,6 +51,16 @@ export const useChangeCommenStatusMutation = () => {
     mutationKey: [queryKeys.CHANGE_COMMENT_STATUS],
     mutationFn: (body: ChangeCommentStatusBodyType) =>
       http.put<ApiResponseNoData>(apiConfig.comment.changeStatus, {
+        body
+      })
+  });
+};
+
+export const useUpdateCommentToxicSpansMutation = () => {
+  return useMutation({
+    mutationKey: [queryKeys.UPDATE_COMMENT_TOXIC_SPANS],
+    mutationFn: (body: CommentToxicSpansBodyType) =>
+      http.put<ApiResponseNoData>(apiConfig.comment.updateToxicSpans, {
         body
       })
   });

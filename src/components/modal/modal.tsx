@@ -261,7 +261,7 @@ function Header({ children, className }: HeaderProps) {
   return (
     <div
       className={cn(
-        'header-title flex items-center justify-between border-b border-solid border-gray-200 py-2 pr-2 pl-4',
+        'header-title flex items-center justify-between border-b border-solid border-gray-200 px-2 py-2',
         className
       )}
     >
