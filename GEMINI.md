@@ -68,11 +68,13 @@ To minimize boilerplate, most pages use one of three base hooks:
 - `src/components/ui/`: Radix UI based low-level components.
 - `src/components/form/`: Shared form primitives (Input, Select, Switch, etc.).
 - `src/queries/`: Custom hooks wrapping TanStack Query.
-- `src/store/`: Zustand stores (auth, etc.).
+- `src/store/`: Zustand stores (`useAuthStore`, `useCommentStore`, `useSidebarStore`, `useVideoLibrarySubtitleStore`).
 - `src/config.ts`: Environment variable validation (Zod).
+- `docs/security-scan.md`: Current static security review and remediation backlog.
 
 ## ⚠️ Important Constraints
 
 - **Testing:** No automated test framework is currently configured. Manual verification is required.
 - **Environment:** New environment variables must be added to `.env.example` and validated in `src/config.ts`.
 - **API Changes:** When adding or modifying features, always update `api-config.ts` and `route.ts` first.
+- **Security-Sensitive Changes:** Review `docs/security-scan.md` before changing auth/session routes, file APIs, token handling, MQTT config, rich text sanitization, CSP, deployment workflow, or dependency versions.

@@ -234,6 +234,8 @@ Security controls visible in this frontend:
 - Next.js security headers and CSP in `next.config.ts`.
 - `frame-ancestors 'none'` and `X-Frame-Options: DENY`.
 
+The current static security review and remediation backlog is `docs/security-scan.md`. Re-check that document before changing auth/session handling, internal file APIs, token exposure, MQTT credentials, rich text sanitization, CSP, deployment SSH, or dependency versions.
+
 ## Performance Model
 
 Notable patterns:

@@ -20,7 +20,7 @@ ANALYZE=true yarn build  # Bundle analysis
 ## Architecture
 
 - Next.js 16 App Router CMS (`src/app`). React Compiler enabled.
-- Providers order: `ThemeProvider` → `QueryProvider` → `AppProvider` → `PermissionGuard`.
+- Core page wrapper: `ThemeProvider` -> `QueryProvider` -> `AppProvider` -> `Suspense` -> `PermissionGuard`; `MqttProvider`, `NextTopLoader`, and `DisclaimerModal` mount inside `AppProvider`, while `ToastContainer` sits at the body level.
 - `QueryProvider`: `staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`.
 - Auth session: `gcTime: 0`, `refetchOnMount: 'always'` (see `src/queries/auth.query.ts`).
 - API endpoints + permissions: `src/constants/api-config.ts`
@@ -51,10 +51,11 @@ Config-driven env validation: `src/config.ts` (Zod v4, uses `.safeParse()`). Add
 
 - `APP_USERNAME`, `APP_PASSWORD` — OAuth credentials
 - `GRANT_TYPE`, `GRANT_TYPE_REFRESH_TOKEN` — OAuth grant types
+- `MINIO_ENDPOINT`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET`, `MINIO_UPLOAD_FOLDER`, `MINIO_UPLOAD_PREFIX` — S3-compatible upload storage
 
 ## Stores
 
-All stores exported from `src/store/index.ts`: `useAuthStore`, `useCommentStore`, `useSidebarStore`, `useVideoLibraryStore`.
+All stores exported from `src/store/index.ts`: `useAuthStore`, `useCommentStore`, `useSidebarStore`, `useVideoLibrarySubtitleStore`.
 
 - Use `useShallow` for selector optimization
 - **Store updates in render**: Compute derived state during render. For store sync in effects, use `useLayoutEffect`, not `useEffect` (causes "update while rendering" error)
@@ -71,7 +72,7 @@ All stores exported from `src/store/index.ts`: `useAuthStore`, `useCommentStore`
 
 - All `useQuery` hooks in `src/queries/` must use `select: (data) => data.data` to extract the response payload.
 - Mutations do not need `select`.
-- Query keys centralized in `queryKeys` (`src/constants/master-data.ts`). Never hardcode query key strings.
+- Query keys centralized in `queryKeys` (`src/constants/master-data/query-keys.ts`, exported via `@/constants`). Never hardcode query key strings.
 
 ## UI Patterns
 

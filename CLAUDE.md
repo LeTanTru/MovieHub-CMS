@@ -26,12 +26,13 @@ yarn lint-staged  # Run on staged files (pre-commit hook)
 ### Provider Chain (in `src/app/layout.tsx`)
 
 ```
-ThemeProvider → QueryProvider → AppProvider → PermissionGuard → children
+ThemeProvider -> QueryProvider -> AppProvider -> Suspense -> PermissionGuard -> children
 ```
 
 - **QueryProvider**: Single shared browser `QueryClient`. Defaults: `staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`.
-- **AppProvider**: Reads auth session from server cookie, loads admin/employee profile, syncs to `useAuthStore`, initializes `LazyMotion` and MQTT subscriptions.
+- **AppProvider**: Reads auth session from server cookie, loads admin/employee profile, syncs to `useAuthStore`, and initializes `LazyMotion`.
 - **PermissionGuard**: Enforces route-level auth and permission checks, shows full-screen loader during session resolution.
+- **MqttProvider**: Mounted alongside guarded content inside `AppProvider`; subscribes to CMS/account notification topics and invalidates query caches.
 
 ### Configuration-Driven Access Control
 
@@ -66,7 +67,7 @@ Use `useShallow` for multi-field selectors to avoid unnecessary re-renders. Alwa
 
 All `useQuery` hooks should use `select: (data) => data.data` to extract the response payload, simplifying data access in components. Mutations don't need `select`.
 
-### Query Key Convention (`src/constants/master-data.ts`)
+### Query Key Convention (`src/constants/master-data/query-keys.ts`)
 
 All `queryKey` strings for TanStack Query mutations/queries are centralized in `queryKeys`. Base keys (e.g., `ADMIN: 'admin'`) define entity names; mutation keys (e.g., `CHANGE_ADMIN_STATUS: 'change-admin-status'`) are explicit strings. Always import and use `queryKeys` instead of hardcoding strings.
 
@@ -83,6 +84,7 @@ Validated through Zod in `src/config.ts`. Add new env vars there (and update `.e
 | `NEXT_PUBLIC_API_URL`      | Main API base URL                                            |
 | `NEXT_PUBLIC_AUTH_API_URL` | Auth API base URL                                            |
 | `NEXT_PUBLIC_CLIENT_TYPE`  | Used as both local storage key and outbound HTTP header name |
+| `NEXT_PUBLIC_URL`          | App URL                                                      |
 | `NEXT_PUBLIC_MQTT_*`       | MQTT broker credentials                                      |
 
 ## Code Conventions
@@ -91,7 +93,7 @@ Validated through Zod in `src/config.ts`. Add new env vars there (and update `.e
 - `'use client'` for components using browser APIs or hooks
 - `m` from `framer-motion` (not `motion`) within existing `LazyMotion` setup
 - `cn()` from `@/lib/utils` for class composition
-- Zod v4: `.check()` for validators
+- Zod v4: use `.safeParse()` for env/config and parsed runtime input validation
 - `FormControl` (Radix `Slot`) requires the actual input as its direct child so `id`/`aria-*` props apply correctly
 - `Col` has no `span` prop — control width via utility classes
 - Grid utilities: `grid-row`, `grid-col`, `grid-c-*` from `src/styles/grid.css`
@@ -112,3 +114,7 @@ Validated through Zod in `src/config.ts`. Add new env vars there (and update `.e
 - Conventional commits enforced: `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`
 - Branch prefixes: `feature/`, `fix/`, `refactor/`
 - Pre-commit hooks auto-fix and format staged files via lint-staged
+
+## Security Review
+
+`docs/security-scan.md` is the current static security review and remediation backlog. Review it before changing auth/session routes, internal file APIs, token handling, MQTT config, rich text sanitization, CSP/security headers, deployment workflow, or runtime dependencies.

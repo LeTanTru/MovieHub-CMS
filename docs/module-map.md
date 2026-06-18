@@ -144,7 +144,7 @@ Use `select: (data) => data.data` for query hooks that return an API response wr
 
 ## Important Cross-Cutting Keys
 
-`queryKeys` in `src/constants/master-data.ts` is the central source for query cache keys. Avoid hardcoded query key strings in feature code.
+`queryKeys` in `src/constants/master-data/query-keys.ts` is the central source for query cache keys and is exported through `@/constants`. Avoid hardcoded query key strings in feature code.
 
 `apiConfig` is the central source for:
 
@@ -182,13 +182,14 @@ Key files:
 - `src/queries/video-library.query.ts`
 - `src/queries/video-library-subtitle.query.ts`
 - `src/store/video-library-subtitle.store.ts`
-- `src/utils/video.util.ts`
-- `src/utils/vtt.util.ts`
+- `src/utils/url.util.ts`
+- `src/utils/text.util.ts`
 - `src/components/video-player`
 
 ## Known Project Notes
 
 - The repository has no automated test framework configured.
+- `docs/security-scan.md` is the current static security review and remediation backlog.
 - The root README is detailed, but terminal output in this environment may show Vietnamese text as mojibake because of PowerShell codepage issues.
 - Some older docs/audit files exist at the root. Treat code as source of truth when docs disagree.
 - Current docs were written without reading restricted files such as `.env`.

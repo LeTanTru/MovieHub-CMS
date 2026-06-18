@@ -31,7 +31,7 @@ There is no test framework configured. Do not invent test commands.
 - Put App Router pages under `src/app`.
 - Put route metadata in `src/routes/route.ts`.
 - Put endpoint metadata and permission codes in `src/constants/api-config.ts`.
-- Put query keys in `queryKeys` in `src/constants/master-data.ts`.
+- Put query keys in `queryKeys` in `src/constants/master-data/query-keys.ts` and import them from `@/constants`.
 - Put server-state hooks in `src/queries`.
 - Put form validation schemas in `src/schemaValidations`.
 - Put DTO/domain types in `src/types`.
@@ -163,6 +163,12 @@ Use the existing upload hooks and file field components:
 - `UploadVideoField`
 
 Do not expose storage credentials to client components. Keep presigning and deletion logic in server API routes.
+
+## Security Review
+
+The latest static security review lives in `docs/security-scan.md`.
+
+Review it before changing auth/session routes, internal file routes, token handling, MQTT configuration, CSP/security headers, rich text sanitization, deployment workflow, or runtime dependencies. Treat it as a remediation backlog until the listed findings are fixed or explicitly accepted.
 
 ## Realtime Updates
 
