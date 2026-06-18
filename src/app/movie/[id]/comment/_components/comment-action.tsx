@@ -14,7 +14,7 @@ import {
 } from '@/constants';
 import { cn } from '@/lib';
 import type { CommentResType } from '@/types';
-import { Ellipsis, Eye, EyeClosed, Reply } from 'lucide-react';
+import { Edit, Ellipsis, Eye, EyeClosed, Reply } from 'lucide-react';
 import {
   AiOutlineDelete,
   AiOutlineEdit,
@@ -36,6 +36,7 @@ type CommentActionProps = {
   canUpdate: boolean;
   canDelete: boolean;
   canChangeStatus: boolean;
+  canUpdateToxicSpans: boolean;
   canViewHiddenContent: boolean;
   changeStatusCommentLoading: boolean;
   onVote: (id: string, type: number) => void;
@@ -44,6 +45,7 @@ type CommentActionProps = {
   onChangeStatus: (id: string, status: number) => void;
   onViewContent: () => void;
   onDelete: () => void;
+  onToxicSpansClick: () => void;
 };
 
 export function CommentAction({
@@ -57,6 +59,7 @@ export function CommentAction({
   canUpdate,
   canDelete,
   canChangeStatus,
+  canUpdateToxicSpans,
   canViewHiddenContent,
   changeStatusCommentLoading,
   onVote,
@@ -64,7 +67,8 @@ export function CommentAction({
   onEdit,
   onChangeStatus,
   onViewContent,
-  onDelete
+  onDelete,
+  onToxicSpansClick
 }: CommentActionProps) {
   return (
     <div className='mt-4 flex items-center gap-x-8 text-sm text-gray-500'>
@@ -123,7 +127,10 @@ export function CommentAction({
         </Button>
       )}
 
-      {(canViewHiddenContent || canChangeStatus || canDelete) && (
+      {(canViewHiddenContent ||
+        canChangeStatus ||
+        canDelete ||
+        canUpdateToxicSpans) && (
         <DropdownMenu>
           <DropdownMenuTrigger
             className='border-none bg-transparent shadow-none'
@@ -133,8 +140,24 @@ export function CommentAction({
               <Ellipsis />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent sideOffset={0} className='w-56' align='start'>
+          <DropdownMenuContent
+            sideOffset={0}
+            className='min-w-56'
+            align='start'
+          >
             <DropdownMenuGroup>
+              {canUpdateToxicSpans && (
+                <DropdownMenuItem className='cursor-pointer' asChild>
+                  <Button
+                    className='hover:bg-accent/80 h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
+                    variant='ghost'
+                    onClick={onToxicSpansClick}
+                  >
+                    <Edit className='size-5' />
+                    Cập nhật nội dung độc hại
+                  </Button>
+                </DropdownMenuItem>
+              )}
               {canChangeStatus && (
                 <DropdownMenuItem className='cursor-pointer' asChild>
                   <Button

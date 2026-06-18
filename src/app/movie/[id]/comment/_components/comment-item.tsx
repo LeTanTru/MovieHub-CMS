@@ -7,10 +7,10 @@ import {
   getLastWord,
   invalidateQueries,
   notify,
-  parseJSON,
+  parseToxicSpans,
   renderImageUrl
 } from '@/utils';
-import type { CommentResType, CommentSearchType, ToxicSpan } from '@/types';
+import type { CommentResType, CommentSearchType } from '@/types';
 import {
   AVATAR_SIZE_COMMENT,
   apiConfig,
@@ -22,16 +22,22 @@ import {
   REACTION_TYPE_DISLIKE,
   REACTION_TYPE_LIKE
 } from '@/constants';
-import { useAuth, useInfiniteListBase, useValidatePermission } from '@/hooks';
-import { useChangeCommenStatusMutation } from '@/queries';
-import { Element, scroller } from 'react-scroll';
-import { logger } from '@/logger';
+import {
+  useAuth,
+  useDisclosure,
+  useInfiniteListBase,
+  useValidatePermission
+} from '@/hooks';
 import { CommentAction } from './comment-action';
 import { CommentContent } from './comment-content';
 import { CommentHeader } from './comment-header';
+import { CommentItemSkeleton } from './comment-item-skeleton';
 import { CommentReplyForm } from './comment-reply-form';
 import { CommentReplyList } from './comment-reply-list';
-import { CommentItemSkeleton } from './comment-item-skeleton';
+import { CommentToxicSpansModal } from './comment-toxic-spans-modal';
+import { Element, scroller } from 'react-scroll';
+import { logger } from '@/logger';
+import { useChangeCommenStatusMutation } from '@/queries';
 
 type CommentItemProps = {
   comment: CommentResType & {
@@ -89,6 +95,12 @@ export function CommentItem({
   const totalChildren = comment.totalChildren || 0;
 
   const {
+    opened: openedCommentToxicSpansModal,
+    open: openCommentToxicSpansModal,
+    close: closeCommentToxicSpansModal
+  } = useDisclosure();
+
+  const {
     data: commentList,
     loading,
     hasMore,
@@ -142,6 +154,10 @@ export function CommentItem({
     requiredPermissions: [apiConfig.comment.vote.permissionCode]
   });
 
+  const canUpdateToxicSpans = hasPermission({
+    requiredPermissions: [apiConfig.comment.updateToxicSpans.permissionCode]
+  });
+
   const commentCount = commentList.length;
   const isOpen = isActiveParent;
 
@@ -149,9 +165,7 @@ export function CommentItem({
   const [isScrollTarget, setIsScrollTarget] = useState(false); // state to trigger highlight effect
 
   const isHidden = comment.status === COMMENT_STATUS_HIDE;
-  const toxicSpans = comment.toxicSpans
-    ? parseJSON<ToxicSpan[]>(comment.toxicSpans) || []
-    : [];
+  const toxicSpans = parseToxicSpans(comment.toxicSpans) ?? [];
   const hasToxicSpans = toxicSpans.length > 0;
   const [isVisible, setIsVisible] = useState(false);
   const canViewHiddenContent = isHidden || !!hasToxicSpans;
@@ -329,6 +343,10 @@ export function CommentItem({
     });
   };
 
+  const handleOpenCommentToxicSpansModal = () => {
+    openCommentToxicSpansModal();
+  };
+
   useEffect(() => {
     if (targetCommentId !== comment.id) return; // only scroll if this comment is the target
 
@@ -385,89 +403,98 @@ export function CommentItem({
   ]);
 
   return (
-    <Element name={scrollTargetName}>
-      <div style={{ marginLeft: level * 0 }} className='pt-4'>
-        <div
-          className={cn(
-            'flex items-start rounded-md border p-3 hover:bg-gray-50',
-            {
-              'ring-sporty-blue ring-2 transition-all duration-200 ease-linear':
-                isScrollTarget
-            }
-          )}
-        >
-          <AvatarField
-            src={renderImageUrl(authorInfo.avatarPath)}
-            previewClassName='rounded-full'
-            size={AVATAR_SIZE_COMMENT}
-            alt={getLastWord(authorInfo.fullName)}
-            className='mr-4'
-          />
-
-          <div className='flex-1'>
-            <CommentHeader
-              comment={comment}
-              level={level}
-              canPin={canPin}
-              onPin={onPin}
+    <>
+      <Element name={scrollTargetName}>
+        <div style={{ marginLeft: level * 0 }} className='pt-4'>
+          <div
+            className={cn(
+              'flex items-start rounded-md border p-3 hover:bg-gray-50',
+              {
+                'ring-sporty-blue ring-2 transition-all duration-200 ease-linear':
+                  isScrollTarget
+              }
+            )}
+          >
+            <AvatarField
+              src={renderImageUrl(authorInfo.avatarPath)}
+              previewClassName='rounded-full'
+              size={AVATAR_SIZE_COMMENT}
+              alt={getLastWord(authorInfo.fullName)}
+              className='mr-4'
             />
 
-            <CommentContent
-              isBlurWholeContent={isBlurWholeContent}
-              renderContent={renderContent}
-            />
+            <div className='flex-1'>
+              <CommentHeader
+                comment={comment}
+                level={level}
+                canPin={canPin}
+                onPin={onPin}
+              />
 
-            <CommentAction
-              comment={comment}
-              isLiked={isLiked}
-              isDisliked={isDisliked}
-              isAuthor={isAuthor}
-              isVisible={isVisible}
-              canVote={canVote}
-              canCreate={canCreate}
-              canUpdate={canUpdate}
-              canDelete={canDelete}
-              canChangeStatus={canChangeStatus}
-              canViewHiddenContent={canViewHiddenContent}
-              changeStatusCommentLoading={changeStatusCommentLoading}
-              onVote={handleVote}
-              onReply={handleReplyComment}
-              onEdit={handleEditComment}
-              onChangeStatus={handleChangeCommentStatus}
-              onViewContent={handleViewContent}
-              onDelete={onDelete}
-            />
+              <CommentContent
+                isBlurWholeContent={isBlurWholeContent}
+                renderContent={renderContent}
+              />
 
-            <CommentReplyForm
-              comment={comment}
-              rootId={rootId}
-              replyingComment={replyingComment}
-              editingComment={editingComment}
-              onSubmitted={handleReplySubmit}
-              onCancel={handleCancelReply}
-            />
+              <CommentAction
+                comment={comment}
+                isLiked={isLiked}
+                isDisliked={isDisliked}
+                isAuthor={isAuthor}
+                isVisible={isVisible}
+                canVote={canVote}
+                canCreate={canCreate}
+                canUpdate={canUpdate}
+                canDelete={canDelete}
+                canUpdateToxicSpans={canUpdateToxicSpans}
+                canChangeStatus={canChangeStatus}
+                canViewHiddenContent={canViewHiddenContent}
+                changeStatusCommentLoading={changeStatusCommentLoading}
+                onVote={handleVote}
+                onReply={handleReplyComment}
+                onEdit={handleEditComment}
+                onChangeStatus={handleChangeCommentStatus}
+                onViewContent={handleViewContent}
+                onDelete={onDelete}
+                onToxicSpansClick={handleOpenCommentToxicSpansModal}
+              />
 
-            <CommentReplyList
-              comment={comment}
-              commentList={commentList}
-              level={level}
-              rootId={rootId}
-              isActiveParent={isActiveParent}
-              commentCount={commentCount}
-              totalChildren={totalChildren}
-              isOpen={isOpen}
-              loading={loading}
-              hasMore={hasMore}
-              isFetchingMore={isFetchingMore}
-              renderChildren={renderChildren}
-              onFetchNextPage={handleFetchNextPage}
-              onViewReplies={handleViewReplies}
-              onHideReplies={handleHideReplies}
-            />
+              <CommentReplyForm
+                comment={comment}
+                rootId={rootId}
+                replyingComment={replyingComment}
+                editingComment={editingComment}
+                onSubmitted={handleReplySubmit}
+                onCancel={handleCancelReply}
+              />
+
+              <CommentReplyList
+                comment={comment}
+                commentList={commentList}
+                level={level}
+                rootId={rootId}
+                isActiveParent={isActiveParent}
+                commentCount={commentCount}
+                totalChildren={totalChildren}
+                isOpen={isOpen}
+                loading={loading}
+                hasMore={hasMore}
+                isFetchingMore={isFetchingMore}
+                renderChildren={renderChildren}
+                onFetchNextPage={handleFetchNextPage}
+                onViewReplies={handleViewReplies}
+                onHideReplies={handleHideReplies}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </Element>
+      </Element>
+      <CommentToxicSpansModal
+        opened={openedCommentToxicSpansModal}
+        onClose={closeCommentToxicSpansModal}
+        comment={comment}
+      />
+    </>
   );
 }
 

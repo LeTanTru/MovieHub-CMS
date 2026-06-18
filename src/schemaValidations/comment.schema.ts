@@ -31,3 +31,8 @@ export const commentChangeStatusSchema = z.object({
   id: z.string().nonempty('Bắt buộc'),
   status: z.number({ error: 'Bắt buộc' })
 });
+
+export const commentToxicSpansSchema = z.object({
+  id: z.string().nonempty('Bắt buộc'),
+  toxic_spans: z.string().nonempty('Bắt buộc')
+});
