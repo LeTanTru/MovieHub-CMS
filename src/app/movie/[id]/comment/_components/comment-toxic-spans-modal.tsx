@@ -117,6 +117,7 @@ export function CommentToxicSpansModal({
               parseToxicSpans(form.watch('toxic_spans')) ?? [],
               content.length
             );
+
             const toxicSpanPreviews = createToxicSpanPreviews(
               content,
               currentToxicSpans

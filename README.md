@@ -12,6 +12,7 @@
   <a href="#-tech-stack">Tech Stack</a> •
   <a href="#-getting-started">Getting Started</a> •
   <a href="#-project-structure">Project Structure</a> •
+  <a href="#documentation">Documentation</a> •
   <a href="#-development">Development</a>
 </p>
 
@@ -176,6 +177,7 @@ Built with **Next.js (App Router)** and **TypeScript**, the system emphasizes ty
    NEXT_PUBLIC_TINYMCE_URL=https://cdn.tiny.cloud
    NEXT_PUBLIC_MEDIA_HOST=https://your-media-host.com
    NEXT_PUBLIC_CLIENT_TYPE=CMS
+   NEXT_PUBLIC_URL=http://localhost:3001
 
    NEXT_PUBLIC_MQTT_BROKER=
    NEXT_PUBLIC_MQTT_USERNAME=
@@ -263,6 +265,15 @@ MovieHub-CMS/
 └── tsconfig.json               # TypeScript strict mode
 ```
 
+## Documentation
+
+- [Project overview](docs/project-overview.md): stack, modules, entry points, and deployment shape.
+- [Architecture](docs/architecture.md): providers, auth, permissions, HTTP, realtime, security, and performance model.
+- [Development guide](docs/development-guide.md): module patterns, forms, queries, uploads, environment changes, and git conventions.
+- [Module map](docs/module-map.md): route modules, internal API routes, hooks, stores, query modules, and cross-cutting keys.
+- [Security scan](docs/security-scan.md): static security review and remediation backlog.
+- Feature notes and plans: [subtitle editor flow](docs/subtitle-editor-flow.md), [comment toxic spans modal](docs/comment-toxic-spans-modal-summary.md), [ArtPlayer V2 plan](docs/artplayer-video-player-v2-plan.md), and [style redesign plan](docs/movie-app-style-redesign-plan.md).
+
 ## 🏗 Architecture Overview
 
 ### Provider Hierarchy
@@ -271,15 +282,20 @@ The application uses this provider chain in `src/app/layout.tsx`:
 
 ```text
 ThemeProvider
-  └─ QueryProvider
-      └─ AppProvider
-          └─ PermissionGuard
-              └─ Page Content
+  -> QueryProvider
+      -> AppProvider
+          -> Suspense
+              -> PermissionGuard
+                  -> Page Content
+          -> MqttProvider
+          -> NextTopLoader
+          -> DisclaimerModal
+ToastContainer
 ```
 
 ### Core Architecture
 
-1. **Query Provider** (`src/components/providers/query-provider/get-query-provider.ts`)
+1. **Query Provider** (`src/components/providers/query-provider/query-provider.tsx`)
    - Uses one shared browser query client
    - Defaults: `staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`
 
@@ -287,21 +303,25 @@ ThemeProvider
    - Reads session (token + user kind) from server cookie via `useSession`
    - Loads profile via `useProfileQuery` or `useEmployeeProfileQuery` (guarded by user kind)
    - Syncs session and profile into `useAuthStore` with `useShallow` selectors
-   - Initializes `LazyMotion` and MQTT subscriptions (per-account topic)
+   - Initializes `LazyMotion`
 
-3. **Config-driven access control**
+3. **MQTT Provider** (`src/components/providers/mqtt-provider/mqtt-provider.tsx`)
+   - Subscribes to CMS and per-account notification topics
+   - Invalidates notification, comment, vote, and video-library query caches from realtime events
+
+4. **Config-driven access control**
    - Endpoints + permission codes: `src/constants/api-config.ts`
    - Route metadata (`auth`, `permissionCode`, `separate`): `src/routes/route.ts`
    - Route checks and redirect/unauthorized handling: `src/components/permission-guard/permission-guard.tsx`
    - Save-page create/edit permission split: `src/utils/validate-permission.util.ts`
 
-4. **HTTP layer** (`src/utils/http.util.ts`)
+5. **HTTP layer** (`src/utils/http.util.ts`)
    - Auth header injection
    - Refresh-token retry queue for concurrent 401 handling (dedup via `isRefreshing` flag)
    - Path param replacement and multipart upload support
    - On invalid refresh token: calls `clearState()` and hard-redirects to login
 
-5. **Shared CRUD hooks**
+6. **Shared CRUD hooks**
    - `useListBase`: list query, filter/query-string sync, pagination, delete flow
    - `useSaveBase`: create/edit fetch + submit, dirty-leave guard, query invalidation
 
@@ -351,7 +371,7 @@ ThemeProvider
 - Use `@/*` path aliases instead of deep relative imports
 - Use `m` from `framer-motion` (not `motion`)
 - Use `cn()` from `@/lib/utils` for class composition
-- Follow Zod v4 form validation patterns (`.check(...)`)
+- Use Zod v4 schemas; validate config and parsed runtime input with `.safeParse()`
 - Prefix intentionally unused variables with `_`
 - Use `grid-row`, `grid-col`, `grid-c-*` utilities from `src/styles/grid.css` for form layout
 - `Col` does not have a `span` prop; control width via classes
@@ -409,6 +429,7 @@ Variables currently validated/used by the app:
 | `NEXT_PUBLIC_TINYMCE_URL`   | TinyMCE CDN URL                                        |
 | `NEXT_PUBLIC_MEDIA_HOST`    | Media hostname (used by `next/image` `remotePatterns`) |
 | `NEXT_PUBLIC_CLIENT_TYPE`   | Client type identifier (used in outbound headers)      |
+| `NEXT_PUBLIC_URL`           | App URL                                                |
 | `NEXT_PUBLIC_MQTT_BROKER`   | MQTT broker URL                                        |
 | `NEXT_PUBLIC_MQTT_USERNAME` | MQTT username                                          |
 | `NEXT_PUBLIC_MQTT_PASSWORD` | MQTT password                                          |

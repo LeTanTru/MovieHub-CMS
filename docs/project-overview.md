@@ -49,7 +49,7 @@ Notes:
 
 ```text
 .
-|-- docs/                         Documentation and planning notes
+|-- docs/                         Documentation, audit, and planning notes
 |-- public/                       Static public assets
 |-- src/
 |   |-- app/                      Next.js App Router routes and API routes
@@ -109,6 +109,15 @@ Main route modules under `src/app`:
 - Query client defaults: `src/components/providers/query-provider/get-query-client.ts`.
 - Auth store: `src/store/auth.store.ts`.
 - Session query: `src/queries/auth.query.ts`.
+
+## Documentation Index
+
+- `docs/architecture.md`: provider tree, auth, permission, HTTP, realtime, security, and performance model.
+- `docs/development-guide.md`: local workflow, module patterns, forms, queries, stores, uploads, and git conventions.
+- `docs/module-map.md`: route modules, internal API routes, shared components, hooks, stores, and query modules.
+- `docs/security-scan.md`: static security review and remediation backlog from 2026-06-17.
+- `docs/subtitle-editor-flow.md`: subtitle editor state and interaction flow.
+- `docs/comment-toxic-spans-modal-summary.md`: toxic-span moderation modal behavior.
 
 ## Environment
 
