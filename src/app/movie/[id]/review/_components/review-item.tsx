@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { AvatarField } from '@/components/form';
+import { cn } from '@/lib';
 import {
   AVATAR_SIZE_COMMENT,
   apiConfig,
@@ -9,14 +10,14 @@ import {
   REVIEW_STATUS_HIDE,
   REVIEW_STATUS_SHOW
 } from '@/constants';
-import { useValidatePermission } from '@/hooks';
+import { useDisclosure, useValidatePermission } from '@/hooks';
 import { useChangeReviewStatusMutation } from '@/queries';
-import type { ReviewResType, ToxicSpan } from '@/types';
+import type { ReviewResType } from '@/types';
 import {
   getLastWord,
   invalidateQueries,
   notify,
-  parseJSON,
+  parseToxicSpans,
   renderImageUrl
 } from '@/utils';
 import { logger } from '@/logger';
@@ -24,6 +25,7 @@ import { ReviewAction } from './review-action';
 import { ReviewContent } from './review-content';
 import { ReviewHeader } from './review-header';
 import { ReviewItemSkeleton } from './review-item-skeleton';
+import { ReviewToxicSpansModal } from './review-toxic-spans-modal';
 
 type ReviewItemProps = {
   review: ReviewResType;
@@ -32,14 +34,18 @@ type ReviewItemProps = {
 
 export function ReviewItem({ review, onDelete }: ReviewItemProps) {
   const isHidden = review.status === REVIEW_STATUS_HIDE;
-  const toxicSpans = review.toxicSpans
-    ? parseJSON<ToxicSpan[]>(review.toxicSpans) || []
-    : [];
+  const toxicSpans = parseToxicSpans(review.toxicSpans) ?? [];
   const hasToxicSpans = toxicSpans.length > 0;
   const [isVisible, setIsVisible] = useState(false);
   const canViewHiddenContent = isHidden || !!hasToxicSpans;
   const isBlurWholeContent = isHidden && !isVisible && !hasToxicSpans;
   const hasPermission = useValidatePermission();
+
+  const {
+    opened: openedReviewToxicSpansModal,
+    open: openReviewToxicSpansModal,
+    close: closeReviewToxicSpansModal
+  } = useDisclosure();
 
   const {
     mutate: changeReviewStatusMutate,
@@ -52,6 +58,10 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
 
   const canChangeStatus = hasPermission({
     requiredPermissions: [apiConfig.review.changeStatus.permissionCode]
+  });
+
+  const canUpdateToxicSpans = hasPermission({
+    requiredPermissions: [apiConfig.review.updateToxicSpans.permissionCode]
   });
 
   const handleChangeReviewStatus = (id: string, status: number) => {
@@ -90,38 +100,86 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
     setIsVisible((prev) => !prev);
   };
 
+  const renderContent = (): ReactNode => {
+    const content = review.content;
+
+    if (!hasToxicSpans) return content;
+
+    const result: ReactNode[] = [];
+    let lastIndex = 0;
+
+    toxicSpans.forEach((span, index) => {
+      const start = Math.min(Math.max(span.start, lastIndex), content.length);
+      const end = Math.min(Math.max(span.end, start), content.length);
+
+      if (start > lastIndex) {
+        result.push(content.slice(lastIndex, start));
+      }
+
+      if (start === end) {
+        lastIndex = start;
+        return;
+      }
+
+      result.push(
+        <span
+          className={cn({ 'blur-xs select-none': !isVisible })}
+          key={`${start}-${end}-${index}`}
+        >
+          {content.slice(start, end)}
+        </span>
+      );
+
+      lastIndex = end;
+    });
+
+    result.push(content.slice(lastIndex));
+
+    return <>{result}</>;
+  };
+
   return (
-    <div className='pt-4'>
-      <div className='flex items-start rounded-md border p-3 transition hover:bg-gray-50'>
-        <AvatarField
-          src={renderImageUrl(review.author.avatarPath)}
-          previewClassName='rounded-full'
-          size={AVATAR_SIZE_COMMENT}
-          alt={getLastWord(review.author.fullName)}
-          className='mr-4'
-        />
-        <div className='flex-1'>
-          <ReviewHeader review={review} />
-
-          <ReviewContent
-            review={review}
-            isBlurWholeContent={isBlurWholeContent}
+    <>
+      <div className='pt-4'>
+        <div className='flex items-start rounded-md border p-3 transition hover:bg-gray-50'>
+          <AvatarField
+            src={renderImageUrl(review.author.avatarPath)}
+            previewClassName='rounded-full'
+            size={AVATAR_SIZE_COMMENT}
+            alt={getLastWord(review.author.fullName)}
+            className='mr-4'
           />
+          <div className='flex-1'>
+            <ReviewHeader review={review} />
 
-          <ReviewAction
-            review={review}
-            isVisible={isVisible}
-            canDelete={canDelete}
-            canChangeStatus={canChangeStatus}
-            canViewHiddenContent={canViewHiddenContent}
-            changeReviewStatusLoading={changeReviewStatusLoading}
-            onChangeStatus={handleChangeReviewStatus}
-            onViewContent={handleViewContent}
-            onDelete={onDelete}
-          />
+            <ReviewContent
+              review={review}
+              isBlurWholeContent={isBlurWholeContent}
+              renderContent={renderContent}
+            />
+
+            <ReviewAction
+              review={review}
+              isVisible={isVisible}
+              canDelete={canDelete}
+              canChangeStatus={canChangeStatus}
+              canUpdateToxicSpans={canUpdateToxicSpans}
+              canViewHiddenContent={canViewHiddenContent}
+              changeReviewStatusLoading={changeReviewStatusLoading}
+              onChangeStatus={handleChangeReviewStatus}
+              onViewContent={handleViewContent}
+              onDelete={onDelete}
+              onToxicSpansClick={openReviewToxicSpansModal}
+            />
+          </div>
         </div>
       </div>
-    </div>
+      <ReviewToxicSpansModal
+        opened={openedReviewToxicSpansModal}
+        onClose={closeReviewToxicSpansModal}
+        review={review}
+      />
+    </>
   );
 }
 
