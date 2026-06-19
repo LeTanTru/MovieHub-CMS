@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { REVIEW_STATUS_SHOW } from '@/constants';
 import type { ReviewResType } from '@/types';
-import { Ellipsis, Eye, EyeClosed } from 'lucide-react';
+import { Edit, Ellipsis, Eye, EyeClosed } from 'lucide-react';
 import {
   AiOutlineDelete,
   AiOutlineEye,
@@ -22,11 +22,13 @@ type ReviewActionProps = {
   isVisible: boolean;
   canDelete: boolean;
   canChangeStatus: boolean;
+  canUpdateToxicSpans: boolean;
   canViewHiddenContent: boolean;
   changeReviewStatusLoading: boolean;
   onChangeStatus: (id: string, status: number) => void;
   onViewContent: () => void;
   onDelete: () => void;
+  onToxicSpansClick: () => void;
 };
 
 export function ReviewAction({
@@ -34,11 +36,13 @@ export function ReviewAction({
   isVisible,
   canDelete,
   canChangeStatus,
+  canUpdateToxicSpans,
   canViewHiddenContent,
   changeReviewStatusLoading,
   onChangeStatus,
   onViewContent,
-  onDelete
+  onDelete,
+  onToxicSpansClick
 }: ReviewActionProps) {
   return (
     <div className='mt-4 flex items-center gap-x-8 text-sm text-gray-500'>
@@ -67,7 +71,10 @@ export function ReviewAction({
           {review.totalDislike}
         </div>
       </div>
-      {(canViewHiddenContent || canChangeStatus || canDelete) && (
+      {(canViewHiddenContent ||
+        canChangeStatus ||
+        canDelete ||
+        canUpdateToxicSpans) && (
         <DropdownMenu>
           <DropdownMenuTrigger
             className='border-none bg-transparent shadow-none'
@@ -77,8 +84,24 @@ export function ReviewAction({
               <Ellipsis />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent sideOffset={0} className='w-56' align='start'>
+          <DropdownMenuContent
+            sideOffset={0}
+            className='min-w-56'
+            align='start'
+          >
             <DropdownMenuGroup>
+              {canUpdateToxicSpans && (
+                <DropdownMenuItem className='cursor-pointer' asChild>
+                  <Button
+                    className='hover:bg-accent/80 h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
+                    variant='ghost'
+                    onClick={onToxicSpansClick}
+                  >
+                    <Edit className='size-5' />
+                    Cập nhật nội dung độc hại
+                  </Button>
+                </DropdownMenuItem>
+              )}
               {canChangeStatus && (
                 <DropdownMenuItem className='cursor-pointer' asChild>
                   <Button

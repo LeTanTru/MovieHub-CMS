@@ -61,6 +61,7 @@ export const queryKeys = {
   TOP_MOVIES_STATISTICS: 'top-movies-statistics',
   UNREAD_NOTIFICATION_COUNT: 'unread-notification-count',
   UPDATE_COMMENT_TOXIC_SPANS: 'update-comment-toxic-spans',
+  UPDATE_REVIEW_TOXIC_SPANS: 'update-review-toxic-spans',
   UPDATE_MOVIE_PERSON: 'update-movie-person',
   UPDATE_READ_NOTIFICATION: 'update-read-notification',
   UPLOAD_AVATAR_FILE: 'upload-avatar-file',
