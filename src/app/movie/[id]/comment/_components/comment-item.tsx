@@ -35,6 +35,7 @@ import { CommentItemSkeleton } from './comment-item-skeleton';
 import { CommentReplyForm } from './comment-reply-form';
 import { CommentReplyList } from './comment-reply-list';
 import { CommentToxicSpansModal } from './comment-toxic-spans-modal';
+import { UserReportListModal } from './user-report-list-modal';
 import { Element, scroller } from 'react-scroll';
 import { logger } from '@/logger';
 import { useChangeCommenStatusMutation } from '@/queries';
@@ -99,6 +100,8 @@ export function CommentItem({
     open: openCommentToxicSpansModal,
     close: closeCommentToxicSpansModal
   } = useDisclosure();
+
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   const {
     data: commentList,
@@ -171,10 +174,8 @@ export function CommentItem({
   const canViewHiddenContent = isHidden || !!hasToxicSpans;
   const isBlurWholeContent = isHidden && !isVisible && !hasToxicSpans;
 
-  const {
-    mutate: changeStatusCommentMutate,
-    isPending: changeStatusCommentLoading
-  } = useChangeCommenStatusMutation();
+  const { mutate: changeStatusComment, isPending } =
+    useChangeCommenStatusMutation();
 
   const handleReplySubmit = async () => {
     closeReply();
@@ -287,7 +288,7 @@ export function CommentItem({
   };
 
   const handleChangeCommentStatus = (id: string, status: number) => {
-    changeStatusCommentMutate(
+    changeStatusComment(
       {
         id,
         status:
@@ -449,7 +450,7 @@ export function CommentItem({
                 canUpdateToxicSpans={canUpdateToxicSpans}
                 canChangeStatus={canChangeStatus}
                 canViewHiddenContent={canViewHiddenContent}
-                changeStatusCommentLoading={changeStatusCommentLoading}
+                changeStatusCommentLoading={isPending}
                 onVote={handleVote}
                 onReply={handleReplyComment}
                 onEdit={handleEditComment}
@@ -457,6 +458,7 @@ export function CommentItem({
                 onViewContent={handleViewContent}
                 onDelete={onDelete}
                 onToxicSpansClick={handleOpenCommentToxicSpansModal}
+                onReportClick={() => setIsReportModalOpen(true)}
               />
 
               <CommentReplyForm
@@ -493,6 +495,11 @@ export function CommentItem({
         opened={openedCommentToxicSpansModal}
         onClose={closeCommentToxicSpansModal}
         comment={comment}
+      />
+      <UserReportListModal
+        commentId={comment.id}
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
       />
     </>
   );

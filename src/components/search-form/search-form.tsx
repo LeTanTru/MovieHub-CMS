@@ -141,6 +141,12 @@ export function SearchForm<S extends FieldValues>({
                         searchParams={sf.searchParams as string[]}
                         initialParams={sf.initialParams}
                         placeholder={sf.placeholder}
+                        onValueChange={(val) => {
+                          if (sf.submitOnChanged) {
+                            form.setValue(sf.key as string, val);
+                            form.handleSubmit(onSubmit)();
+                          }
+                        }}
                       />
                     </Col>
                   );

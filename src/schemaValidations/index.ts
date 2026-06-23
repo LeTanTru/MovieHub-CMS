@@ -23,5 +23,6 @@ export * from './setting.schema';
 export * from './statistics.schema';
 export * from './style.schema';
 export * from './user.schema';
+export * from './user-report.schema';
 export * from './video-library-subtitle.schema';
 export * from './video-library.schema';

@@ -40,8 +40,7 @@ export function SidebarForm() {
     id: string;
   }>();
 
-  const { mutateAsync: uploadImageMutate, isPending: uploadImageLoading } =
-    useUploadLogoMutation();
+  const { mutateAsync: uploadImage, isPending } = useUploadLogoMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const {
@@ -147,13 +146,13 @@ export function SidebarForm() {
                 <Col className='grid-c-6'>
                   <UploadImageField
                     value={renderImageUrl(webImageManager.currentUrl)}
-                    loading={uploadImageLoading}
+                    loading={isPending}
                     control={form.control}
                     name='webThumbnailUrl'
                     onChange={webImageManager.trackUpload}
                     size={150}
                     uploadImageFn={async (file) => {
-                      const res = await uploadImageMutate({
+                      const res = await uploadImage({
                         file
                       });
                       return res.data?.filePath ?? '';
@@ -169,13 +168,13 @@ export function SidebarForm() {
                 <Col className='grid-c-6'>
                   <UploadImageField
                     value={renderImageUrl(mobileImageManager.currentUrl)}
-                    loading={uploadImageLoading}
+                    loading={isPending}
                     control={form.control}
                     name='mobileThumbnailUrl'
                     onChange={mobileImageManager.trackUpload}
                     size={150}
                     uploadImageFn={async (file) => {
-                      const res = await uploadImageMutate({
+                      const res = await uploadImage({
                         file
                       });
                       return res.data?.filePath ?? '';

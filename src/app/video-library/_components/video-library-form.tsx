@@ -74,7 +74,7 @@ export function VideoLibraryForm() {
   const { id } = useParams<{ id: string }>();
   const accessToken = useAuthStore((s) => s.accessToken);
 
-  const { mutateAsync: uploadLogoMutation, isPending: uploadLogoLoading } =
+  const { mutateAsync: uploadLogoMutation, isPending } =
     useUploadLogoMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
@@ -119,7 +119,7 @@ export function VideoLibraryForm() {
   });
 
   const isUploading =
-    imageManager.isUploading || videoManager.isUploading || uploadLogoLoading;
+    imageManager.isUploading || videoManager.isUploading || isPending;
 
   const initialValues: VideoLibraryBodyType = useMemo(
     () => ({
@@ -239,7 +239,7 @@ export function VideoLibraryForm() {
                 <Col className='grid-c-12'>
                   <UploadImageField
                     value={renderImageUrl(imageManager.currentUrl)}
-                    loading={uploadLogoLoading}
+                    loading={isPending}
                     control={form.control}
                     name='thumbnailUrl'
                     onChange={imageManager.trackUpload}

@@ -28,8 +28,7 @@ import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
 export function UserList() {
-  const { mutate: changeStatusMutate, isPending: changeStatusLoading } =
-    useChangeUserStatusMutation();
+  const { mutate: changeStatus, isPending } = useChangeUserStatusMutation();
 
   const { data, pagination, loading, handlers } = useListBase<
     UserResType,
@@ -47,7 +46,7 @@ export function UserList() {
           buttonProps?: Record<string, unknown>
         ) => {
           const handleChangeStatus = (record: UserResType) => {
-            changeStatusMutate(
+            changeStatus(
               {
                 id: record.id,
                 status:
@@ -206,7 +205,7 @@ export function UserList() {
           columns={columns}
           dataSource={data || []}
           pagination={pagination}
-          loading={loading || changeStatusLoading}
+          loading={loading || isPending}
           changePagination={handlers.changePagination}
         />
       </ListPageWrapper>

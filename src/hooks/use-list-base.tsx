@@ -159,13 +159,45 @@ export const useListBase = <
   });
 
   const {
-    searchParams,
-    queryString,
-    setQueryParams,
-    setQueryParam,
+    searchParams: urlSearchParams,
+    queryString: urlQueryString,
+    setQueryParams: urlSetQueryParams,
+    setQueryParam: urlSetQueryParam,
     serializeParams
   } = useQueryParams<S>();
 
+  // store filter params in local state for modal
+  const [localQueryParams, setLocalQueryParams] = useState<Partial<S>>({});
+
+  // get query params
+  const searchParams = syncSearchParams ? urlSearchParams : localQueryParams;
+
+  // get query string
+  const queryString = syncSearchParams
+    ? urlQueryString
+    : serializeParams(localQueryParams as Record<string, unknown>);
+
+  // set query params
+  const setQueryParams = syncSearchParams
+    ? urlSetQueryParams
+    : setLocalQueryParams;
+
+  // set query param
+  const setQueryParam = syncSearchParams
+    ? urlSetQueryParam
+    : (key: keyof S, value: S[keyof S] | null) => {
+        setLocalQueryParams((prev) => {
+          const next = { ...prev };
+          if (value === null || value === '') {
+            delete next[key];
+          } else {
+            next[key] = value;
+          }
+          return next;
+        });
+      };
+
+  // check if param is excluded from query filter
   const isExcluded = useCallback(
     (key: string) =>
       excludeFromQueryFilter.includes(key) ||
@@ -173,6 +205,7 @@ export const useListBase = <
     [excludeFromQueryFilter]
   );
 
+  // check if param is shown in url
   const isShownInUrl = useCallback(
     (key: string) => !notShowFromSearchParams.includes(key),
     [notShowFromSearchParams]
@@ -180,10 +213,8 @@ export const useListBase = <
 
   // Combined current params with default params
   const mergedSearchParams = useMemo(() => {
-    if (!syncSearchParams) return defaultFilters;
-
     return { ...defaultFilters, ...searchParams };
-  }, [searchParams, defaultFilters, syncSearchParams]);
+  }, [searchParams, defaultFilters]);
 
   // Filter params which will not be filtered by
   const queryFilter = useMemo(() => {
@@ -204,8 +235,6 @@ export const useListBase = <
 
   // Clear undefined | null params and remove excluded params
   useEffect(() => {
-    if (!syncSearchParams) return;
-
     let hasChanges = false;
     const newParams = { ...searchParams };
 
@@ -240,8 +269,7 @@ export const useListBase = <
     isShownInUrl,
     notShowFromSearchParams,
     searchParams,
-    setQueryParams,
-    syncSearchParams
+    setQueryParams
   ]);
 
   const additionalPathParams = () => ({});

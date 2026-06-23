@@ -30,8 +30,7 @@ import { logger } from '@/logger';
 import { cn } from '@/lib';
 
 export function AdminList() {
-  const { mutate: changeStatusMutate, isPending: changeStatusLoading } =
-    useChangeAccountStatusMutation();
+  const { mutate: changeStatus, isPending } = useChangeAccountStatusMutation();
 
   const { data, pagination, loading, handlers } = useListBase<
     AccountAutoResType,
@@ -51,7 +50,7 @@ export function AdminList() {
           buttonProps?: Record<string, unknown>
         ) => {
           const handleChangeStatus = (record: AccountAutoResType) => {
-            changeStatusMutate(
+            changeStatus(
               {
                 id: record.id,
                 status:
@@ -225,7 +224,7 @@ export function AdminList() {
           columns={columns}
           dataSource={data || []}
           pagination={pagination}
-          loading={loading || changeStatusLoading}
+          loading={loading || isPending}
           changePagination={handlers.changePagination}
         />
       </ListPageWrapper>

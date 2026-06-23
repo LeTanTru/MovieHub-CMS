@@ -65,7 +65,8 @@ const isValidMqttCMD = (cmd: string) => Object.values(mqttCMDs).includes(cmd);
 const cmsNotificationQueryKeys: Partial<Record<string, QueryKey>> = {
   [mqttCMDs.DONE_CONVERT_AUDIO]: [queryKeys.VIDEO_LIBRARY_LIST],
   [mqttCMDs.DONE_CONVERT_VIDEO]: [queryKeys.VIDEO_LIBRARY_LIST],
-  [mqttCMDs.DONE_PROCESS_SUBTITLE]: [queryKeys.VIDEO_LIBRARY_SUBTITLE_LIST]
+  [mqttCMDs.DONE_PROCESS_SUBTITLE]: [queryKeys.VIDEO_LIBRARY_SUBTITLE_LIST],
+  [mqttCMDs.NEW_USER_REPORT]: [queryKeys.NOTIFICATION_INFINITE]
 };
 
 export function MqttProvider() {

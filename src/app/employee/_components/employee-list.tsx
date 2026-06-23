@@ -31,8 +31,7 @@ import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 export function EmployeeList() {
   const { data: groupListData } = useGroupListQuery({ size: MAX_PAGE_SIZE });
 
-  const { mutate: changeStatusMutate, isPending: changeStatusLoading } =
-    useChangeEmployeeStatusMutation();
+  const { mutate: changeStatus, isPending } = useChangeEmployeeStatusMutation();
 
   const { data, pagination, loading, handlers } = useListBase<
     EmployeeResType,
@@ -50,7 +49,7 @@ export function EmployeeList() {
           buttonProps?: Record<string, unknown>
         ) => {
           const handleChangeStatus = (record: EmployeeResType) => {
-            changeStatusMutate(
+            changeStatus(
               {
                 id: record.id,
                 status:
@@ -244,7 +243,7 @@ export function EmployeeList() {
           columns={columns}
           dataSource={data || []}
           pagination={pagination}
-          loading={loading || changeStatusLoading}
+          loading={loading || isPending}
           changePagination={handlers.changePagination}
         />
       </ListPageWrapper>

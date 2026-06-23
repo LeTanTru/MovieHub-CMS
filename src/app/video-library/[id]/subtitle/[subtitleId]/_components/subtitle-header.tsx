@@ -39,8 +39,7 @@ export function SubtitleHeader({
     }))
   );
 
-  const { mutate: uploadSubtitleMutate, isPending: uploadSubtitleLoading } =
-    useUploadSubtitleMutation();
+  const { mutate: uploadSubtitle, isPending } = useUploadSubtitleMutation();
 
   const canExport = subtitles.some(
     (subtitle) =>
@@ -60,7 +59,7 @@ export function SubtitleHeader({
     !canExport ||
     !videoLibraryHostname ||
     !isSubtitleContentChanged ||
-    uploadSubtitleLoading;
+    isPending;
 
   const handleExport = () => {
     if (!canExport) return;
@@ -92,7 +91,7 @@ export function SubtitleHeader({
       type: 'text/vtt'
     });
 
-    uploadSubtitleMutate(
+    uploadSubtitle(
       { file, videoId, videoLibraryHostname },
       {
         onSuccess: () => {
@@ -120,7 +119,7 @@ export function SubtitleHeader({
           <Button
             variant='ghost'
             className='text-sporty-blue p-0! hover:bg-transparent'
-            disabled={uploadSubtitleLoading}
+            disabled={isPending}
             onClick={handleAddSubtitle}
           >
             <Plus
@@ -138,14 +137,14 @@ export function SubtitleHeader({
               <ConfirmModal
                 message='Bạn có chắc chắn muốn lưu phụ đề không ?'
                 onConfirm={handleUpload}
-                loading={uploadSubtitleLoading}
+                loading={isPending}
                 trigger={
                   <Button
                     variant='ghost'
                     className='text-sporty-blue p-0! hover:bg-transparent'
                     disabled={disabledSave}
                   >
-                    {uploadSubtitleLoading ? (
+                    {isPending ? (
                       <Loader2 size={16} className='animate-spin' />
                     ) : (
                       <Save
@@ -165,7 +164,7 @@ export function SubtitleHeader({
         <ToolTip title='Tải xuống' side='bottom'>
           <Button
             onClick={handleExport}
-            disabled={!canExport || uploadSubtitleLoading}
+            disabled={!canExport || isPending}
             variant='ghost'
             className='text-sporty-blue p-0! hover:bg-transparent'
           >

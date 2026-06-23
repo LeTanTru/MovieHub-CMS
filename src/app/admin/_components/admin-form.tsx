@@ -57,8 +57,7 @@ export function AdminForm() {
     value: item.id.toString()
   }));
 
-  const { mutateAsync: uploadAvatarMutate, isPending: uploadImageLoading } =
-    useUploadAvatarMutation();
+  const { mutateAsync: uploadAvatar, isPending } = useUploadAvatarMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const {
@@ -165,13 +164,13 @@ export function AdminForm() {
               <Col className='grid-c-12 grid-col-no-gutters'>
                 <UploadImageField
                   value={renderImageUrl(imageManager.currentUrl)}
-                  loading={uploadImageLoading}
+                  loading={isPending}
                   control={form.control}
                   name='avatarPath'
                   onChange={imageManager.trackUpload}
                   size={120}
                   uploadImageFn={async (file) => {
-                    const res = await uploadAvatarMutate({ file });
+                    const res = await uploadAvatar({ file });
                     return res.data?.filePath ?? '';
                   }}
                   label='Ảnh đại diện'

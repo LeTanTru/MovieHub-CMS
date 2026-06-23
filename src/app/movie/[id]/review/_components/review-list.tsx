@@ -16,6 +16,9 @@ import type { ReviewResType, ReviewSearchType } from '@/types';
 import { useParams } from 'next/navigation';
 import { ReviewItem } from './review-item';
 import { renderListPageUrl } from '@/utils';
+import { useReviewStore } from '@/store';
+import { useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 export function ReviewList() {
   const { id: movieId } = useParams<{ id: string }>();
@@ -23,6 +26,13 @@ export function ReviewList() {
     useQueryParams<Record<string, string>>();
   const parentParams = deprefixParams(searchParams);
   const { movieTitle, parentPage, ...restParentParams } = parentParams;
+
+  const { targetReviewId, clearScrollTarget } = useReviewStore(
+    useShallow((s) => ({
+      targetReviewId: s.targetReviewId,
+      clearScrollTarget: s.clearScrollTarget
+    }))
+  );
 
   const {
     data: reviewList,
@@ -49,6 +59,13 @@ export function ReviewList() {
   const handleDeleteReview = async (review: ReviewResType) => {
     handlers.handleDeleteClick(review.id);
   };
+
+  // Auto-load-more until target review is visible in the list
+  useEffect(() => {
+    if (!targetReviewId || loading || isFetchingMore || !hasMore) return;
+    if (reviewList.some((r) => r.id === targetReviewId)) return;
+    handlers.loadMore();
+  }, [reviewList, handlers, hasMore, isFetchingMore, loading, targetReviewId]);
 
   return (
     <PageWrapper
@@ -83,6 +100,8 @@ export function ReviewList() {
               <ReviewItem
                 key={item.id}
                 review={item}
+                targetReviewId={targetReviewId}
+                clearScrollTarget={clearScrollTarget}
                 onDelete={() => handleDeleteReview(item)}
               />
             ))}

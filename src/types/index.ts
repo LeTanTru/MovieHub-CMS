@@ -32,6 +32,7 @@ export * from './statisitcs.type';
 export * from './style.type';
 export * from './table.type';
 export * from './user.type';
+export * from './user-report.type';
 export * from './video-library-subtitle.type';
 export * from './video-library.type';
 export * from './video-player.type';

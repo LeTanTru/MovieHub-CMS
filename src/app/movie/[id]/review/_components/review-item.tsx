@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { AvatarField } from '@/components/form';
 import { cn } from '@/lib';
 import {
@@ -26,13 +26,22 @@ import { ReviewContent } from './review-content';
 import { ReviewHeader } from './review-header';
 import { ReviewItemSkeleton } from './review-item-skeleton';
 import { ReviewToxicSpansModal } from './review-toxic-spans-modal';
+import { UserReportListModal } from './user-report-list-modal';
+import { Element, scroller } from 'react-scroll';
 
 type ReviewItemProps = {
   review: ReviewResType;
   onDelete: () => void;
+  targetReviewId?: string | null;
+  clearScrollTarget?: () => void;
 };
 
-export function ReviewItem({ review, onDelete }: ReviewItemProps) {
+export function ReviewItem({
+  review,
+  onDelete,
+  targetReviewId,
+  clearScrollTarget
+}: ReviewItemProps) {
   const isHidden = review.status === REVIEW_STATUS_HIDE;
   const toxicSpans = parseToxicSpans(review.toxicSpans) ?? [];
   const hasToxicSpans = toxicSpans.length > 0;
@@ -41,16 +50,19 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
   const isBlurWholeContent = isHidden && !isVisible && !hasToxicSpans;
   const hasPermission = useValidatePermission();
 
+  const scrollTargetName = `review-${review.id}`;
+  const [isScrollTarget, setIsScrollTarget] = useState(false);
+
   const {
     opened: openedReviewToxicSpansModal,
     open: openReviewToxicSpansModal,
     close: closeReviewToxicSpansModal
   } = useDisclosure();
 
-  const {
-    mutate: changeReviewStatusMutate,
-    isPending: changeReviewStatusLoading
-  } = useChangeReviewStatusMutation();
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
+  const { mutate: changeReviewStatus, isPending } =
+    useChangeReviewStatusMutation();
 
   const canDelete = hasPermission({
     requiredPermissions: [apiConfig.review.delete.permissionCode]
@@ -65,7 +77,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
   });
 
   const handleChangeReviewStatus = (id: string, status: number) => {
-    changeReviewStatusMutate(
+    changeReviewStatus(
       {
         id,
         status:
@@ -99,6 +111,33 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
   const handleViewContent = () => {
     setIsVisible((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (targetReviewId !== review.id) return;
+
+    let clearHighlightTimeout: NodeJS.Timeout | null = null;
+
+    const scrollTimeout = setTimeout(() => {
+      scroller.scrollTo(scrollTargetName, {
+        containerId: 'page-wrapper-scroll-container',
+        duration: 500,
+        smooth: 'easeInOutQuart',
+        offset: -250
+      });
+
+      setIsScrollTarget(true);
+      clearHighlightTimeout = setTimeout(() => {
+        setIsScrollTarget(false);
+        clearScrollTarget?.();
+      }, 2000);
+    }, 100);
+
+    return () => {
+      setIsScrollTarget(false);
+      clearTimeout(scrollTimeout);
+      if (clearHighlightTimeout) clearTimeout(clearHighlightTimeout);
+    };
+  }, [clearScrollTarget, review.id, scrollTargetName, targetReviewId]);
 
   const renderContent = (): ReactNode => {
     const content = review.content;
@@ -140,44 +179,60 @@ export function ReviewItem({ review, onDelete }: ReviewItemProps) {
 
   return (
     <>
-      <div className='pt-4'>
-        <div className='flex items-start rounded-md border p-3 transition hover:bg-gray-50'>
-          <AvatarField
-            src={renderImageUrl(review.author.avatarPath)}
-            previewClassName='rounded-full'
-            size={AVATAR_SIZE_COMMENT}
-            alt={getLastWord(review.author.fullName)}
-            className='mr-4'
-          />
-          <div className='flex-1'>
-            <ReviewHeader review={review} />
-
-            <ReviewContent
-              review={review}
-              isBlurWholeContent={isBlurWholeContent}
-              renderContent={renderContent}
+      <Element name={scrollTargetName}>
+        <div className='pt-4'>
+          <div
+            className={cn(
+              'flex items-start rounded-md border p-3 transition hover:bg-gray-50',
+              {
+                'ring-sporty-blue ring-2 transition-all duration-200 ease-linear':
+                  isScrollTarget
+              }
+            )}
+          >
+            <AvatarField
+              src={renderImageUrl(review.author.avatarPath)}
+              previewClassName='rounded-full'
+              size={AVATAR_SIZE_COMMENT}
+              alt={getLastWord(review.author.fullName)}
+              className='mr-4'
             />
+            <div className='flex-1'>
+              <ReviewHeader review={review} />
 
-            <ReviewAction
-              review={review}
-              isVisible={isVisible}
-              canDelete={canDelete}
-              canChangeStatus={canChangeStatus}
-              canUpdateToxicSpans={canUpdateToxicSpans}
-              canViewHiddenContent={canViewHiddenContent}
-              changeReviewStatusLoading={changeReviewStatusLoading}
-              onChangeStatus={handleChangeReviewStatus}
-              onViewContent={handleViewContent}
-              onDelete={onDelete}
-              onToxicSpansClick={openReviewToxicSpansModal}
-            />
+              <ReviewContent
+                review={review}
+                isBlurWholeContent={isBlurWholeContent}
+                renderContent={renderContent}
+              />
+
+              <ReviewAction
+                review={review}
+                isVisible={isVisible}
+                canDelete={canDelete}
+                canChangeStatus={canChangeStatus}
+                canUpdateToxicSpans={canUpdateToxicSpans}
+                canViewHiddenContent={canViewHiddenContent}
+                changeReviewStatusLoading={isPending}
+                onChangeStatus={handleChangeReviewStatus}
+                onViewContent={handleViewContent}
+                onDelete={onDelete}
+                onToxicSpansClick={openReviewToxicSpansModal}
+                onReportClick={() => setIsReportModalOpen(true)}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </Element>
       <ReviewToxicSpansModal
         opened={openedReviewToxicSpansModal}
         onClose={closeReviewToxicSpansModal}
         review={review}
+      />
+      <UserReportListModal
+        reviewId={review.id}
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
       />
     </>
   );

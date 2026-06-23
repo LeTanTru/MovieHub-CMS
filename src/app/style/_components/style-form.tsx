@@ -41,8 +41,7 @@ const defaultValues: StyleBodyType = {
 export function StyleForm() {
   const { id } = useParams<{ id: string }>();
 
-  const { mutateAsync: uploadImageMutate, isPending: uploadImageLoading } =
-    useUploadLogoMutation();
+  const { mutateAsync: uploadImage, isPending } = useUploadLogoMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const {
@@ -151,13 +150,13 @@ export function StyleForm() {
               <Col className='grid-c-6'>
                 <UploadImageField
                   value={renderImageUrl(imageMobileManager.currentUrl)}
-                  loading={uploadImageLoading}
+                  loading={isPending}
                   control={form.control}
                   name='imageMobileUrl'
                   onChange={imageMobileManager.trackUpload}
                   size={150}
                   uploadImageFn={async (file) => {
-                    const res = await uploadImageMutate({ file });
+                    const res = await uploadImage({ file });
                     return res.data?.filePath ?? '';
                   }}
                   deleteImageFn={imageMobileManager.handleDeleteOnClick}
@@ -171,13 +170,13 @@ export function StyleForm() {
               <Col className='grid-c-6'>
                 <UploadImageField
                   value={renderImageUrl(imageWebManager.currentUrl)}
-                  loading={uploadImageLoading}
+                  loading={isPending}
                   control={form.control}
                   name='imageWebUrl'
                   onChange={imageWebManager.trackUpload}
                   size={150}
                   uploadImageFn={async (file) => {
-                    const res = await uploadImageMutate({ file });
+                    const res = await uploadImage({ file });
                     return res.data?.filePath ?? '';
                   }}
                   deleteImageFn={imageWebManager.handleDeleteOnClick}

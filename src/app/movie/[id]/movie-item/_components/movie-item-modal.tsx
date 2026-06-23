@@ -92,8 +92,7 @@ export function MovieItemModal({
     movieItemId: string;
   }>();
 
-  const { mutateAsync: uploadImageMutate, isPending: updateImageLoading } =
-    useUploadLogoMutation();
+  const { mutateAsync: uploadImage, isPending } = useUploadLogoMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const kindOptions = useMemo(() => {
@@ -264,13 +263,13 @@ export function MovieItemModal({
                   <Col className='grid-c-12'>
                     <UploadImageField
                       value={renderImageUrl(imageManager.currentUrl)}
-                      loading={updateImageLoading}
+                      loading={isPending}
                       control={form.control}
                       name='thumbnailUrl'
                       onChange={imageManager.trackUpload}
                       size={150}
                       uploadImageFn={async (file) => {
-                        const res = await uploadImageMutate({
+                        const res = await uploadImage({
                           file
                         });
                         return res.data?.filePath ?? '';

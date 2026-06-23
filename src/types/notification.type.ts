@@ -107,3 +107,21 @@ export type ToxicCommentLockedNotificationType = {
   };
   toxicSpans: ToxicSpan[];
 };
+
+export type UserReportNotificationType = {
+  id: string;
+  parentId?: string;
+  movieId: string;
+  movieTitle: string;
+  movieThumbnail: string;
+  user: {
+    id: string;
+    username: string;
+    email: string;
+    fullName: string;
+    avatarPath: string;
+  };
+  objectId: string;
+  type: number;
+  content: string;
+};

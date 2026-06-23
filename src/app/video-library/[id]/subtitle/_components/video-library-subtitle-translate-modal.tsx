@@ -31,7 +31,7 @@ export function VideoLibrarySubtitleTranslateModal({
   translatedLanguages,
   onClose
 }: VideoLibrarySubtitleTranslateModalProps) {
-  const { mutateAsync: translateAsync, isPending: loading } =
+  const { mutateAsync: translateAsync, isPending } =
     useVideoSubtitleTranslateMutation();
   const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
 
@@ -164,10 +164,10 @@ export function VideoLibrarySubtitleTranslateModal({
                   </Col>
                   <Col className='w-40'>
                     <Button
-                      disabled={!form.formState.isDirty || loading}
+                      disabled={!form.formState.isDirty || isPending}
                       type='submit'
                       variant='primary'
-                      loading={loading}
+                      loading={isPending}
                     >
                       <Save />
                       Dịch
@@ -175,7 +175,7 @@ export function VideoLibrarySubtitleTranslateModal({
                   </Col>
                 </Row>
               </div>
-              {loading && (
+              {isPending && (
                 <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
                   <CircleLoading className='stroke-sporty-blue mt-10' />
                 </div>

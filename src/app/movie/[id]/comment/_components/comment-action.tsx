@@ -14,7 +14,7 @@ import {
 } from '@/constants';
 import { cn } from '@/lib';
 import type { CommentResType } from '@/types';
-import { Edit, Ellipsis, Eye, EyeClosed, Reply } from 'lucide-react';
+import { Edit, Ellipsis, Eye, EyeClosed, Flag, Reply } from 'lucide-react';
 import {
   AiOutlineDelete,
   AiOutlineEdit,
@@ -46,6 +46,7 @@ type CommentActionProps = {
   onViewContent: () => void;
   onDelete: () => void;
   onToxicSpansClick: () => void;
+  onReportClick: () => void;
 };
 
 export function CommentAction({
@@ -68,7 +69,8 @@ export function CommentAction({
   onChangeStatus,
   onViewContent,
   onDelete,
-  onToxicSpansClick
+  onToxicSpansClick,
+  onReportClick
 }: CommentActionProps) {
   return (
     <div className='mt-4 flex items-center gap-x-8 text-sm text-gray-500'>
@@ -146,6 +148,16 @@ export function CommentAction({
             align='start'
           >
             <DropdownMenuGroup>
+              <DropdownMenuItem className='cursor-pointer' asChild>
+                <Button
+                  className='hover:bg-accent/80 h-fit w-full justify-start p-2! transition-all duration-200 ease-linear [&_svg]:size-5!'
+                  variant='ghost'
+                  onClick={onReportClick}
+                >
+                  <Flag className='size-5' />
+                  Báo cáo vi phạm
+                </Button>
+              </DropdownMenuItem>
               {canUpdateToxicSpans && (
                 <DropdownMenuItem className='cursor-pointer' asChild>
                   <Button

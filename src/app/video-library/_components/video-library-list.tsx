@@ -87,7 +87,7 @@ export function VideoLibraryList() {
       value: sc.id
     })) || [];
 
-  const { mutate: retryProcessMutate, isPending: retryProcessLoading } =
+  const { mutate: retryProcess, isPending } =
     useRetryProcessVideoLibraryMutation();
 
   const { mutate: processAudioMutate } = useProcessAudioVideoLibraryMutation();
@@ -188,7 +188,7 @@ export function VideoLibraryList() {
           buttonProps?: Record<string, unknown>
         ) => {
           const handleRetryProcess = (record: VideoLibraryResType) => {
-            retryProcessMutate(
+            retryProcess(
               {
                 id: record.id,
                 content: record.content
@@ -212,7 +212,7 @@ export function VideoLibraryList() {
             <ToolTip title='Xử lý lại video' sideOffset={0}>
               <span>
                 <Button
-                  disabled={retryProcessLoading}
+                  disabled={isPending}
                   onClick={() => handleRetryProcess(record)}
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   variant='ghost'

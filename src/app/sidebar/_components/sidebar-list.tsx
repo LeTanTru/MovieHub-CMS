@@ -20,8 +20,7 @@ import { convertUTCToLocal, notify, renderImageUrl } from '@/utils';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 export function SidebarList() {
-  const { mutate: changeStatusMutate, isPending: changeStatusPending } =
-    useChangeActiveSidebarMutation();
+  const { mutate: changeStatus, isPending } = useChangeActiveSidebarMutation();
 
   const { data, loading, handlers } = useListBase<
     MovieSidebarResType,
@@ -41,7 +40,7 @@ export function SidebarList() {
           const statusLabel = record.active ? 'Ẩn' : 'Hiện';
 
           const handleChangeStatus = () => {
-            changeStatusMutate(
+            changeStatus(
               {
                 id: record.id,
                 active: !record.active
@@ -245,7 +244,7 @@ export function SidebarList() {
         <DragDropTable
           columns={columns}
           dataSource={sortedData}
-          loading={loading || loadingUpdateOrdering || changeStatusPending}
+          loading={loading || loadingUpdateOrdering || isPending}
           onDragEnd={onDragEnd}
         />
       </ListPageWrapper>

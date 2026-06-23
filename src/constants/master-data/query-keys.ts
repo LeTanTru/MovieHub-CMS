@@ -69,6 +69,7 @@ export const queryKeys = {
   UPLOAD_LOGO_FILE: 'upload-logo-file',
   UPLOAD_SUBTITLE_FILE: 'upload-subtitle-file',
   USER: 'user',
+  USER_REPORT: 'user-report',
   VIDEO_LIBRARY_LIST: 'video-library-list',
   VIDEO_LIBRARY_SUBTITLE_LIST: 'video-library-subtitle-list',
   VIDEO_LIBRARY_SUBTITLE_TRANSLATE: 'video-library-subtitle-translate',

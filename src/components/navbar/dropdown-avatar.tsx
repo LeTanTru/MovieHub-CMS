@@ -48,8 +48,7 @@ export function DropdownAvatar() {
     }))
   );
   const { queryString } = useQueryParams();
-  const { mutate: logoutMutate, isPending: logoutLoading } =
-    useLogoutMutation();
+  const { mutate: logout, isPending } = useLogoutMutation();
 
   const handleAvatarClick = () => {
     toggleDropDown();
@@ -57,7 +56,7 @@ export function DropdownAvatar() {
 
   const handleLogout = () => {
     closeDropDown();
-    logoutMutate(undefined, {
+    logout(undefined, {
       onSuccess: (res) => {
         if (res.result) {
           notify.success('Đăng xuất thành công');
@@ -138,7 +137,7 @@ export function DropdownAvatar() {
                 className='flex w-full cursor-pointer items-center gap-2 rounded bg-transparent p-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
                 onClick={handleLogout}
               >
-                {logoutLoading ? (
+                {isPending ? (
                   <CircleLoading className='stroke-sporty-blue mx-auto size-5' />
                 ) : (
                   <>

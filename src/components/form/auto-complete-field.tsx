@@ -417,6 +417,7 @@ export function AutoCompleteField<
                               return (
                                 <CommandItem
                                   key={opt.value}
+                                  value={opt.value.toString()}
                                   onSelect={() => toggleValue(opt.value)}
                                   onMouseEnter={() => setHighlightedIndex(idx)}
                                   onMouseLeave={() =>
