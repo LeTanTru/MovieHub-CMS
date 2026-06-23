@@ -118,7 +118,7 @@ All stores exported from `src/store/index.ts`: `useAuthStore`, `useCommentStore`
 ## Git
 
 - Branch: `feature/`, `fix/`, `refactor/` prefixes
-- Commits: conventional + `Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
+- Commits: conventional
 - Never commit `.env`, secrets, credentials
 
 ## Restricted Files
