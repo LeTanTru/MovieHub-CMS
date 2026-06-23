@@ -10,7 +10,11 @@ import { SubtitleForm } from './subtitle-form';
 import { SubtitlePreviewPlayer } from './subtitle-preview-player';
 import { SubtitleTranscriptPanel } from './subtitle-transcript-panel';
 import { useElementHeight } from '../_hooks/use-element-height';
-import { useListBase, useQueryParams } from '@/hooks';
+import {
+  useIsomorphicLayoutEffect,
+  useListBase,
+  useQueryParams
+} from '@/hooks';
 import { useVideoLibraryQuery } from '@/queries';
 import { useVideoLibrarySubtitleStore } from '@/store';
 import {
@@ -20,7 +24,6 @@ import {
 import { generatePath, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useShallow } from 'zustand/react/shallow';
-import { useEffect } from 'react';
 
 export function SubtitleEditor() {
   const [playerHeight, playerContainerRef] = useElementHeight();
@@ -82,7 +85,7 @@ export function SubtitleEditor() {
 
   const transcriptPanelHeight = playerHeight + subtitleFormHeight;
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (videoLibrary) {
       setVideoLibraryHostname(videoLibrary.hostname);
     }

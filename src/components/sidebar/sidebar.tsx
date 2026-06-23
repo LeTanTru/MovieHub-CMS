@@ -21,7 +21,12 @@ import { cn } from '@/lib';
 import { AvatarField } from '@/components/form';
 import type { MenuItem } from '@/types';
 import { useSidebarStore } from '@/store';
-import { useAuth, useIsMounted, useValidatePermission } from '@/hooks';
+import {
+  useAuth,
+  useIsomorphicLayoutEffect,
+  useIsMounted,
+  useValidatePermission
+} from '@/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getLastWord, renderImageUrl } from '@/utils';
 import { menuConfig } from '@/constants';
@@ -58,7 +63,7 @@ export function AppSidebar() {
   );
 
   // handle open last opened menu when sidebar changed state from collapsed -> expanded
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (state === 'expanded') {
       openLastMenu();
     }
@@ -151,7 +156,7 @@ export function AppSidebar() {
 
       <SidebarContent
         ref={sidebarContentRef}
-        className='sidebar-content'
+        className='sidebar-content scrollbar-none'
         onScroll={handleSidebarScroll}
       >
         <SidebarGroup className='p-0'>

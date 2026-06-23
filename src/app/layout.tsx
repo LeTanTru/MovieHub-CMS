@@ -1,6 +1,8 @@
 import './globals.css';
 import { AppProvider } from '@/components/providers/app-provider';
 import { Be_Vietnam_Pro } from 'next/font/google';
+import { DevToolsBlockerProvider } from '@/components/providers/devtools-blocker-provider';
+import { DisclaimerModal } from '@/components/modal';
 import { Loader } from 'lucide-react';
 import { MqttProvider } from '@/components/providers/mqtt-provider';
 import { PermissionGuard } from '@/components/permission-guard';
@@ -10,7 +12,6 @@ import { ToastContainer } from 'react-toastify';
 import { type ReactNode, Suspense } from 'react';
 import NextTopLoader from 'nextjs-toploader';
 import type { Metadata } from 'next';
-import { DisclaimerModal } from '@/components/modal';
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['300', '400', '500', '600', '700', '800'],
@@ -70,6 +71,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               <MqttProvider />
               <NextTopLoader showSpinner={false} />
               <DisclaimerModal />
+              <DevToolsBlockerProvider />
             </AppProvider>
           </QueryProvider>
         </ThemeProvider>

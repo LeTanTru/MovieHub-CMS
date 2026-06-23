@@ -16,7 +16,7 @@ import {
 } from 'framer-motion';
 import { cn } from '@/lib';
 import { createPortal } from 'react-dom';
-import { useIsMounted } from '@/hooks/use-is-mounted';
+import { useIsomorphicLayoutEffect, useIsMounted } from '@/hooks';
 import { X, ChevronDown, Info } from 'lucide-react';
 import { Button } from '@/components/form/button';
 
@@ -152,7 +152,7 @@ export function Modal({
   const isMounted = useIsMounted();
   const [showConfirm, setShowConfirm] = useState(false);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!open) return;
 
     lockScroll();
@@ -282,7 +282,7 @@ function Body({ children, className, ref, scrollable }: BodyProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollArrow, setShowScrollArrow] = useState(false);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!scrollable) return;
 
     const checkOverflow = () => {

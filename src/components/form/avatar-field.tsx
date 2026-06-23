@@ -16,6 +16,7 @@ import {
   useRef,
   useState
 } from 'react';
+import { useIsomorphicLayoutEffect, useIsMounted } from '@/hooks';
 import {
   BODY_SCROLL_LOCK_MARGIN,
   IMAGE_PREVIEW_SCALE_MAX,
@@ -24,7 +25,6 @@ import {
 } from '@/constants';
 import { defaultAvatar } from '@/assets';
 import { useImageStatus } from '@/hooks/use-image-status';
-import { useIsMounted } from '@/hooks/use-is-mounted';
 import { createPortal } from 'react-dom';
 
 type AvatarFieldProps = {
@@ -146,7 +146,7 @@ export function AvatarField({
   }, [handleWheel, open]);
 
   // Lock body scroll without layout shift when modal opens
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!open) return;
 
     const hasVerticalScroll =
@@ -173,7 +173,7 @@ export function AvatarField({
     };
   }, [open]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const handleResize = () => setViewportWidth(window.innerWidth);
     handleResize();
 

@@ -10,7 +10,8 @@ import {
   VideoLibrarySubtitleResType
 } from '@/types';
 import { parseVttContent, renderVttUrl } from '@/utils';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useIsomorphicLayoutEffect } from '@/hooks';
 import { useShallow } from 'zustand/react/shallow';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { logger } from '@/logger';
@@ -76,7 +77,7 @@ export function SubtitleTranscriptPanel({
     }))
   );
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setDuration(videoLibrary.duration);
   }, [videoLibrary.duration, setDuration]);
 

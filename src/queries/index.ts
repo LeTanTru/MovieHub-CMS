@@ -12,6 +12,7 @@ export * from './notification.query';
 export * from './permission.query';
 export * from './review.query';
 export * from './server-config.query';
+export * from './setting.query';
 export * from './sidebar.query';
 export * from './statistics.query';
 export * from './user.query';

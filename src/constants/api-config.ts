@@ -1202,7 +1202,8 @@ export const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}/v1/setting/public`,
       method: 'GET',
       headers: baseHeader,
-      isRequiredXClientType: true
+      isRequiredXClientType: true,
+      ignoreAuth: true
     }
   },
   statistics: {

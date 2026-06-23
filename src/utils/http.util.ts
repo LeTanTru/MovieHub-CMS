@@ -1,5 +1,5 @@
 import { envConfig } from '@/config';
-import { apiConfig, storageKeys } from '@/constants';
+import { apiConfig, ENV_DEVELOPMENT, storageKeys } from '@/constants';
 import { logger } from '@/logger';
 import { route } from '@/routes';
 import type { ApiConfig, Payload } from '@/types';
@@ -38,7 +38,7 @@ const processQueue = (error: unknown, token: string | null = null) => {
       prom.resolve(token);
     }
   });
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
     logger.info(failedQueue);
   }
   failedQueue = [];
