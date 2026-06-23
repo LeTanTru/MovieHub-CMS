@@ -22,11 +22,11 @@ description: >-
 
 1. Run `git status` to review changed files.
 2. Run `git diff` or `git diff --cached` to inspect changes.
-3. Stage your changes with `git add <file>`.
-4. Construct your commit message using the following XML structure.
-5. After generating your commit message, run the commit command below.
-6. If the request includes pushing to GitHub, run `git push` after committing.
-   **Do not run `git add` — only commit and push.**
+3. Construct your commit message using the following XML structure.
+4. After generating your commit message, run the commit command below.
+5. If the request includes pushing to GitHub, run `git push` after committing.
+
+> ⚠️ **Do not run `git add` — staging is the user's responsibility.**
 
 ```bash
 git commit -m "type(scope): description"
