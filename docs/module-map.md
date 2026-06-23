@@ -37,6 +37,7 @@
 | Setting             | `src/app/setting`                    | Dynamic platform settings                                     |
 | Notification        | `src/app/notification`               | Notification list and read/delete actions                     |
 | Statistics          | `src/app/statistics`                 | Overview, movie distribution, top movies                      |
+| User report         | `src/app/user-report`                | CMS interface for handling user reports on comments/reviews   |
 | Static public pages | `src/app/contact`, `src/app/privacy` | Public routes with no auth                                    |
 
 ## Internal API Routes
@@ -119,6 +120,7 @@ Query modules live in `src/queries` and map backend domains to TanStack Query ho
 - `sidebar.query.ts`
 - `statistics.query.ts`
 - `user.query.ts`
+- `user-report.query.ts`
 - `video-library.query.ts`
 - `video-library-subtitle.query.ts`
 
@@ -130,6 +132,7 @@ Use `select: (data) => data.data` for query hooks that return an API response wr
 | -------------- | ------------------------------------------- | -------------------------------------------- |
 | Auth           | `src/store/auth.store.ts`                   | Access token, CSRF token, user kind, profile |
 | Comment        | `src/store/comment.store.ts`                | Comment tree/open reply state                |
+| Review         | `src/store/review.store.ts`                 | Review-specific scrolling targets            |
 | Sidebar        | `src/store/sidebar.store.ts`                | Sidebar UI state                             |
 | Video subtitle | `src/store/video-library-subtitle.store.ts` | Subtitle cues and current playback time      |
 

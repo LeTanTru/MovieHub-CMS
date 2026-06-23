@@ -9,7 +9,7 @@ The codebase is a config-driven Next.js CMS. Most feature pages are thin route c
 - `queries` wrap `http` calls in TanStack Query hooks.
 - `useListBase` and `useSaveBase` implement repeatable list and create/edit page behavior.
 - `PermissionGuard` enforces route access globally.
-- Zustand stores hold short-lived client state that does not belong in the URL or query cache.
+- Zustand stores hold short-lived client state that does not belong in the URL or query cache (e.g., auth, comment, review, and sidebar state).
 
 ## Provider Tree
 
@@ -158,7 +158,7 @@ List page modules usually:
 
 - Create/edit mode detection.
 - Get-by-id query for edit pages.
-- Create/update mutation.
+- Create/update mutation (using standard non-aliased `mutate` and `isPending`).
 - Submit success/error handling.
 - Form dirty state tracking.
 - Browser before-unload guard.

@@ -7,7 +7,7 @@ MovieHub CMS is a Next.js App Router administration console for a movie streamin
 The project is a frontend CMS that talks to several backend services:
 
 - Auth API for accounts, employees, groups, permissions, login, logout, and token refresh.
-- Main API for movies, categories, collections, comments, reviews, settings, statistics, subtitles, and platform configuration.
+- Main API for movies, categories, collections, comments, reviews, user reports, settings, statistics, subtitles, and platform configuration.
 - Media API and internal API routes for file deletion and chunked video upload.
 - MQTT broker for realtime notifications and media-processing events.
 
@@ -83,6 +83,7 @@ Main route modules under `src/app`:
 - `admin`: admin account management.
 - `employee`: employee management.
 - `user`: platform user management.
+- `user-report`: user reports for comments and reviews.
 - `group-permission`: groups and permission assignment.
 - `category`: category CRUD.
 - `person`: actor/director CRUD.

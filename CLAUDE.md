@@ -32,7 +32,7 @@ ThemeProvider -> QueryProvider -> AppProvider -> Suspense -> PermissionGuard -> 
 - **QueryProvider**: Single shared browser `QueryClient`. Defaults: `staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`.
 - **AppProvider**: Reads auth session from server cookie, loads admin/employee profile, syncs to `useAuthStore`, and initializes `LazyMotion`.
 - **PermissionGuard**: Enforces route-level auth and permission checks, shows full-screen loader during session resolution.
-- **MqttProvider**: Mounted alongside guarded content inside `AppProvider`; subscribes to CMS/account notification topics and invalidates query caches.
+- **MqttProvider**: Mounted alongside guarded content inside `AppProvider`; subscribes to CMS/account and user report notification topics (including comment/review target highlighting) and invalidates query caches.
 
 ### Configuration-Driven Access Control
 
@@ -65,7 +65,7 @@ Use `useShallow` for multi-field selectors to avoid unnecessary re-renders. Alwa
 
 ### Query Files (`src/queries/*.query.ts`)
 
-All `useQuery` hooks should use `select: (data) => data.data` to extract the response payload, simplifying data access in components. Mutations don't need `select`.
+All `useQuery` hooks should use `select: (data) => data.data` to extract the response payload, simplifying data access in components. Mutations don't need `select`. Do not use destructuring aliases for mutation returns (keep `mutate` and `isPending` without aliases).
 
 ### Query Key Convention (`src/constants/master-data/query-keys.ts`)
 

@@ -4,7 +4,7 @@ This document serves as the primary instructional context for Gemini CLI when wo
 
 ## 🚀 Project Overview
 
-**MovieHub CMS** is a specialized administration console for managing a movie streaming platform. It is a high-performance, type-safe web application built with the latest React and Next.js ecosystem.
+**MovieHub CMS** is a specialized administration console for managing a movie streaming platform, including content, accounts, and user reports. It is a high-performance, type-safe web application built with the latest React and Next.js ecosystem.
 
 - **Main Technologies:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4.
 - **State & Data:** TanStack Query 5 (Server State), Zustand 5 (Client State), Axios (HTTP).
@@ -68,7 +68,7 @@ To minimize boilerplate, most pages use one of three base hooks:
 - `src/components/ui/`: Radix UI based low-level components.
 - `src/components/form/`: Shared form primitives (Input, Select, Switch, etc.).
 - `src/queries/`: Custom hooks wrapping TanStack Query.
-- `src/store/`: Zustand stores (`useAuthStore`, `useCommentStore`, `useSidebarStore`, `useVideoLibrarySubtitleStore`).
+- `src/store/`: Zustand stores (`useAuthStore`, `useCommentStore`, `useReviewStore`, `useSidebarStore`, `useVideoLibrarySubtitleStore`).
 - `src/config.ts`: Environment variable validation (Zod).
 - `docs/security-scan.md`: Current static security review and remediation backlog.
 
