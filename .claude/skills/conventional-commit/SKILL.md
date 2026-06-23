@@ -18,15 +18,14 @@ description: >-
 
 ### Workflow
 
-**Follow these steps:**
+> ⚠️ **Do not run `git add` — staging is the user's responsibility.**
+> **Follow these steps:**
 
 1. Run `git status` to review changed files.
 2. Run `git diff` or `git diff --cached` to inspect changes.
 3. Construct your commit message using the following XML structure.
 4. After generating your commit message, run the commit command below.
 5. If the request includes pushing to GitHub, run `git push` after committing.
-
-> ⚠️ **Do not run `git add` — staging is the user's responsibility.**
 
 ```bash
 git commit -m "type(scope): description"
