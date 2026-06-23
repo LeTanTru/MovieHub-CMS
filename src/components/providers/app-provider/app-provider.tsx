@@ -8,13 +8,8 @@ import {
 } from '@/queries';
 import { useAuthStore } from '@/store';
 import { domAnimation, LazyMotion } from 'framer-motion';
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useLayoutEffect,
-  useState
-} from 'react';
+import { createContext, type ReactNode, useContext, useState } from 'react';
+import { useIsomorphicLayoutEffect } from '@/hooks';
 import { useShallow } from 'zustand/react/shallow';
 
 type AppContextType = {
@@ -74,7 +69,7 @@ export function AppProvider({ children }: AppProviderProps) {
         userKind === GROUP_KIND_EMPLOYEE
     );
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (session) {
       setAccessToken(session.accessToken);
       setCsrfToken(session.csrfToken);
@@ -88,7 +83,7 @@ export function AppProvider({ children }: AppProviderProps) {
 
   const profile = profileData || employeeProfileData;
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (profile) {
       setProfile(profile);
     }

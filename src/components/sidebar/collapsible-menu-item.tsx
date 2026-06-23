@@ -11,12 +11,12 @@ import {
   useSidebar
 } from '@/components/ui/sidebar';
 import { m, AnimatePresence } from 'framer-motion';
-import { type MouseEvent, useEffect, useState } from 'react';
+import { type MouseEvent, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib';
 import type { MenuItem } from '@/types';
 import { useSidebarStore } from '@/store';
-import { useQueryParams } from '@/hooks';
+import { useIsomorphicLayoutEffect, useQueryParams } from '@/hooks';
 import { createPortal } from 'react-dom';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -48,21 +48,21 @@ export function CollapsibleMenuItem({ item }: CollapsibleMenuItemProps) {
     ) ?? false;
 
   const open = storeOpen ?? isInitiallyOpen;
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (isInitiallyOpen) {
       setMenu(item.key, true);
     }
   }, [isInitiallyOpen, item.key, setMenu]);
 
   // state is collapsed -> close all
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (state === 'collapsed') {
       setMenu(item.key, false);
     }
   }, [state, item.key, setMenu]);
 
   // open parent menu if child path match pathname
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (
       item.children?.find(
         (child) => child.path && pathname.startsWith(child.path)

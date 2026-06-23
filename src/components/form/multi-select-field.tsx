@@ -31,6 +31,7 @@ import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/form/button';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
+import { useIsomorphicLayoutEffect } from '@/hooks';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 type MultiSelectFieldProps<
@@ -163,7 +164,7 @@ export function MultiSelectField<
   );
 
   // Measure visible tag count — skip entirely in multiLine mode
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (isMultiLine || !triggerRef.current || !selectedValues.length) {
       setVisibleCount(0);
       return;
@@ -182,7 +183,7 @@ export function MultiSelectField<
   }, [isMultiLine, selectedValues, options, getValue, getLabel]);
 
   // Re-measure on container resize — skip in multiLine mode
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (isMultiLine || !triggerRef.current) return;
 
     const observer = new ResizeObserver(() => {

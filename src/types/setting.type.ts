@@ -20,3 +20,11 @@ export type SettingBodyType = z.infer<typeof settingSchema>;
 
 export type SettingSearchType = z.infer<typeof settingSearchSchema> &
   BaseSearchType;
+
+export type PublicSettingResType = {
+  id: string;
+  groupName: string;
+  description: string;
+  keyName: string;
+  valueData: string;
+};

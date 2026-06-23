@@ -13,6 +13,7 @@ import {
 } from '@/constants';
 import {
   useInfiniteListBase,
+  useIsomorphicLayoutEffect,
   useIsMounted,
   useQueryParams,
   useValidatePermission
@@ -174,7 +175,7 @@ export function CommentList() {
 
   const handleReplySuccess = () => handlers.invalidateQueries();
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!targetParentId) return;
 
     setOpenParentIds((prev) =>

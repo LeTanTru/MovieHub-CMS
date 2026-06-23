@@ -16,6 +16,7 @@ import {
   useRef,
   useState
 } from 'react';
+import { useIsomorphicLayoutEffect, useIsMounted } from '@/hooks';
 import {
   BODY_SCROLL_LOCK_MARGIN,
   IMAGE_PREVIEW_SCALE_MAX,
@@ -23,7 +24,6 @@ import {
   IMAGE_PREVIEW_SCALE_STEP
 } from '@/constants';
 import { useImageStatus } from '@/hooks/use-image-status';
-import { useIsMounted } from '@/hooks/use-is-mounted';
 import { createPortal } from 'react-dom';
 
 type ImageFieldProps = {
@@ -151,7 +151,7 @@ export function ImageField({
   }, [handleWheel, open]);
 
   // Lock body scroll without layout shift when modal opens
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!open) return;
 
     const hasVerticalScroll =
@@ -178,7 +178,7 @@ export function ImageField({
     };
   }, [open]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const handleResize = () => setViewportWidth(window.innerWidth);
     handleResize();
 
