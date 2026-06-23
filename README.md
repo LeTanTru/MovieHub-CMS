@@ -26,7 +26,7 @@
 
 This system serves as the central hub for:
 
-- **Content Management**: Manage movies, categories, people, collections, comments, and reviews
+- **Content Management**: Manage movies, categories, people, collections, comments, reviews, and user reports
 - **User Administration**: Manage admins, employees, groups, and profiles
 - **Media Management**: Manage video library and related media metadata
 - **Platform Configuration**: Manage sidebar, style, and app/server configuration
@@ -41,7 +41,7 @@ Built with **Next.js (App Router)** and **TypeScript**, the system emphasizes ty
 - **Movies & Series**: Manage movies, episodes/items, and related data
 - **Categories & Collections**: Organize content with categories and collections
 - **People Management**: Manage actors/directors and related references
-- **Rich Metadata**: Handle comments, reviews, and classifications
+- **Rich Metadata**: Handle comments, reviews, user reports, and classifications
 - **Media Assets**: Video-library workflows and uploads
 
 ### User & Access Management
@@ -234,6 +234,7 @@ MovieHub-CMS/
 │   │   ├── sidebar/            # Sidebar configuration
 │   │   ├── style/              # Style management
 │   │   ├── user/               # User management
+│   │   ├── user-report/        # User report management
 │   │   └── video-library/      # Video library
 │   ├── assets/                 # Images, fonts, static resources
 │   ├── components/             # Reusable React components

@@ -59,7 +59,7 @@ All query hooks in `src/queries` should:
 - Use `http`.
 - Use `select: (data) => data.data` for `useQuery` response payload extraction.
 
-Mutations do not need `select`.
+Mutations do not need `select`. Do not use destructuring aliases (e.g., `mutate: loginMutate, isPending: loginLoading`); use the standard `mutate` and `isPending` directly.
 
 Recommended query shape:
 
@@ -98,7 +98,8 @@ Important details:
 Zustand stores are small and focused:
 
 - `useAuthStore`: access token, CSRF token, user kind, profile.
-- `useCommentStore`: comment UI state.
+- `useCommentStore`: comment UI state (separated from review state).
+- `useReviewStore`: review-specific scrolling targets.
 - `useSidebarStore`: sidebar UI state.
 - `useVideoLibrarySubtitleStore`: subtitle editor/transcript state.
 

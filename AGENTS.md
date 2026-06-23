@@ -55,7 +55,7 @@ Config-driven env validation: `src/config.ts` (Zod v4, uses `.safeParse()`). Add
 
 ## Stores
 
-All stores exported from `src/store/index.ts`: `useAuthStore`, `useCommentStore`, `useSidebarStore`, `useVideoLibrarySubtitleStore`.
+All stores exported from `src/store/index.ts`: `useAuthStore`, `useCommentStore`, `useReviewStore`, `useSidebarStore`, `useVideoLibrarySubtitleStore`.
 
 - Use `useShallow` for selector optimization
 - **Store updates in render**: Compute derived state during render. For store sync in effects, use `useLayoutEffect`, not `useEffect` (causes "update while rendering" error)
@@ -71,7 +71,7 @@ All stores exported from `src/store/index.ts`: `useAuthStore`, `useCommentStore`
 ## Query Patterns
 
 - All `useQuery` hooks in `src/queries/` must use `select: (data) => data.data` to extract the response payload.
-- Mutations do not need `select`.
+- Mutations do not need `select`. Do not use destructuring aliases for mutation returns (e.g., use `mutate` and `isPending` directly instead of `mutate: loginMutate`).
 - Query keys centralized in `queryKeys` (`src/constants/master-data/query-keys.ts`, exported via `@/constants`). Never hardcode query key strings.
 
 ## UI Patterns
