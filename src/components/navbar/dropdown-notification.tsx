@@ -55,13 +55,11 @@ export function DropdownNotification() {
 
   const { data: totalUnreadData } = useCountUnreadNotificationQuery();
 
-  const {
-    mutate: readAllNotificationMutate,
-    isPending: readAllNotificationLoading
-  } = useReadAllNotificationMutation();
+  const { mutate: readAllNotification, isPending: readAllNotificationLoading } =
+    useReadAllNotificationMutation();
 
   const {
-    mutate: deleteAllNotificationMutate,
+    mutate: deleteAllNotification,
     isPending: deleteAllNotificationLoading
   } = useDeleteAllNotificationMutation();
 
@@ -72,6 +70,7 @@ export function DropdownNotification() {
   const {
     data: notificationList,
     loading,
+    fetching,
     handlers,
     totalElements
   } = useInfiniteListBase<NotificationResType, NotificationSearchType>({
@@ -100,7 +99,7 @@ export function DropdownNotification() {
   };
 
   const handleReadAll = () => {
-    readAllNotificationMutate(undefined, {
+    readAllNotification(undefined, {
       onSuccess: () => {
         invalidateQueries(
           [queryKeys.UNREAD_NOTIFICATION_COUNT],
@@ -116,7 +115,7 @@ export function DropdownNotification() {
   };
 
   const handleDeleteAll = () => {
-    deleteAllNotificationMutate(undefined, {
+    deleteAllNotification(undefined, {
       onSuccess: () => {
         invalidateQueries(
           [queryKeys.UNREAD_NOTIFICATION_COUNT],
@@ -254,7 +253,7 @@ export function DropdownNotification() {
                     notificationList={notificationList}
                     canDelete={canDelete}
                     onDelete={handleDelete}
-                    loading={loading}
+                    loading={loading || fetching}
                     onItemClick={handleItemClick}
                   />
                 </TabsContent>

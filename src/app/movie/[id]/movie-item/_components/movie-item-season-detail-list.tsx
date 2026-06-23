@@ -81,8 +81,7 @@ export function MovieItemSeasonDetailList() {
   } = useDisclosure();
   const [selectedVideo, setSelectedVideo] = useState<VideoLibraryResType>();
 
-  const { mutate: markLatestMutate, isPending: markLatestPending } =
-    useMarkLatestMovieItemMutation();
+  const { mutate: markLatest, isPending } = useMarkLatestMovieItemMutation();
 
   const { data, loading, handlers } = useListBase<
     MovieItemResType,
@@ -161,7 +160,7 @@ export function MovieItemSeasonDetailList() {
             buttonProps?: Record<string, unknown>
           ) => {
             const handleMarkLatest = (record: MovieItemResType) => {
-              markLatestMutate(record.id, {
+              markLatest(record.id, {
                 onSuccess: (res) => {
                   if (res.result) {
                     notify.success(
@@ -415,7 +414,7 @@ export function MovieItemSeasonDetailList() {
         <DragDropTable
           columns={columns}
           dataSource={sortedData}
-          loading={loading || loadingUpdateOrdering || markLatestPending}
+          loading={loading || loadingUpdateOrdering || isPending}
           onDragEnd={onDragEnd}
         />
       </ListPageWrapper>

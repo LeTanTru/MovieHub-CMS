@@ -21,6 +21,7 @@ export const objectNames = {
   SIDEBAR: 'phim',
   STYLE: 'thiết kế',
   SUBTITLE: 'phụ đề',
+  USER_REPORT: 'báo cáo vi phạm',
   USER: 'người dùng',
   VIDEO: 'video'
 } as const;

@@ -943,6 +943,12 @@ export const apiConfig = defineApiConfig({
     }
   },
   user: {
+    autoComplete: {
+      baseUrl: `${AppConstants.authApiUrl}/v1/user/auto-complete`,
+      method: 'GET',
+      headers: baseHeader,
+      isRequiredXClientType: true
+    },
     changeStatus: {
       baseUrl: `${AppConstants.authApiUrl}/v1/user/change-status`,
       method: 'PUT',
@@ -976,6 +982,36 @@ export const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'USR_U',
+      isRequiredXClientType: true
+    }
+  },
+  userReport: {
+    create: {
+      baseUrl: `${AppConstants.apiUrl}/v1/user-report/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'URP_C',
+      isRequiredXClientType: true
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}/v1/user-report/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'URP_D',
+      isRequiredXClientType: true
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}/v1/user-report/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'URP_V',
+      isRequiredXClientType: true
+    },
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}/v1/user-report/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'URP_L',
       isRequiredXClientType: true
     }
   },

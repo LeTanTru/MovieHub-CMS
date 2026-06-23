@@ -19,7 +19,7 @@ const defaultValues: LoginBodyType = {
 };
 
 export function LoginForm() {
-  const { mutate: loginMutate, isPending: loginLoading } = useLoginMutation();
+  const { mutate: login, isPending } = useLoginMutation();
 
   const { setAccessToken, setUserKind } = useAuthStore(
     useShallow((s) => {
@@ -31,7 +31,7 @@ export function LoginForm() {
   );
 
   const onSubmit = (values: LoginBodyType) => {
-    loginMutate(values, {
+    login(values, {
       onSuccess: (res) => {
         if (res.result) {
           const accessToken = res.data?.access_token;
@@ -106,9 +106,9 @@ export function LoginForm() {
           <Row className='mb-0 w-full'>
             <Col className='grid-c-12 grid-col-no-gutters'>
               <Button
-                disabled={!form.formState.isDirty || loginLoading}
+                disabled={!form.formState.isDirty || isPending}
                 variant='primary'
-                loading={loginLoading}
+                loading={isPending}
               >
                 Đăng nhập
               </Button>

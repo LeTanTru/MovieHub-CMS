@@ -33,3 +33,14 @@ export type ChangeReviewStatusBodyType = {
 };
 
 export type ReviewToxicSpansBodyType = z.infer<typeof reviewToxicSpansSchema>;
+
+type ReviewStoreState = {
+  targetReviewId: string | null;
+};
+
+type ReviewStoreActions = {
+  setScrollTarget: (target: { reviewId?: string | null }) => void;
+  clearScrollTarget: () => void;
+};
+
+export type ReviewStoreType = ReviewStoreState & ReviewStoreActions;

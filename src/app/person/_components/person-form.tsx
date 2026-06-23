@@ -59,8 +59,7 @@ export function PersonForm() {
   const { id } = useParams<{ id: string }>();
   const kind = getData(storageKeys.ACTIVE_TAB_PERSON_KIND);
 
-  const { mutateAsync: uploadImageMutate, isPending: uploadImageLoading } =
-    useUploadAvatarMutation();
+  const { mutateAsync: uploadImage, isPending } = useUploadAvatarMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const {
@@ -171,13 +170,13 @@ export function PersonForm() {
               <Col className='grid-c-12'>
                 <UploadImageField
                   value={renderImageUrl(imageManager.currentUrl)}
-                  loading={uploadImageLoading}
+                  loading={isPending}
                   control={form.control}
                   name='avatarPath'
                   onChange={imageManager.trackUpload}
                   size={120}
                   uploadImageFn={async (file) => {
-                    const res = await uploadImageMutate({ file });
+                    const res = await uploadImage({ file });
                     return res.data?.filePath ?? '';
                   }}
                   deleteImageFn={imageManager.handleDeleteOnClick}

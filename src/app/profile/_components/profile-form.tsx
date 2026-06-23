@@ -37,8 +37,7 @@ export function ProfileForm() {
   const navigate = useNavigate();
   const profile = useAuthStore((s) => s.profile);
 
-  const { mutateAsync: uploadAvatarMutate, isPending: uploadAvatarLoading } =
-    useUploadAvatarMutation();
+  const { mutateAsync: uploadAvatar, isPending } = useUploadAvatarMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
   const { onFormChange, handleSubmit, renderActions } = useSaveBase<
@@ -115,13 +114,13 @@ export function ProfileForm() {
             <Col className='grid-c-12'>
               <UploadImageField
                 value={renderImageUrl(avatarImageManager.currentUrl)}
-                loading={uploadAvatarLoading}
+                loading={isPending}
                 name='avatarPath'
                 control={form.control}
                 onChange={avatarImageManager.trackUpload}
                 size={120}
                 uploadImageFn={async (file) => {
-                  const res = await uploadAvatarMutate({
+                  const res = await uploadAvatar({
                     file
                   });
                   return res.data?.filePath ?? '';

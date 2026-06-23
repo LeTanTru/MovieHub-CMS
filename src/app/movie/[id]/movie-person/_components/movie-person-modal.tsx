@@ -47,10 +47,8 @@ export function MoviePersonModal({
   listQuery,
   onClose
 }: MoviePersonModalProps) {
-  const {
-    mutate: createMoviePersonMutate,
-    isPending: createMoviePersonLoading
-  } = useCreateMoviePersonMutation();
+  const { mutate: createMoviePerson, isPending } =
+    useCreateMoviePersonMutation();
   const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
 
   const initialValues: MoviePersonBodyType = useMemo(
@@ -67,7 +65,7 @@ export function MoviePersonModal({
     values: MoviePersonBodyType,
     form: UseFormReturn<MoviePersonBodyType>
   ) => {
-    createMoviePersonMutate(values, {
+    createMoviePerson(values, {
       onSuccess: (res) => {
         if (res.result) {
           notify.success(
@@ -173,7 +171,7 @@ export function MoviePersonModal({
                   />
                 </Col>
               </Row>
-              {createMoviePersonLoading && (
+              {isPending && (
                 <div className='absolute inset-0 z-10 flex justify-center bg-white/80'>
                   <CircleLoading className='stroke-sporty-blue mt-10' />
                 </div>

@@ -45,10 +45,8 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
 
   const { opened, open, close } = useDisclosure();
 
-  const {
-    mutate: updateMoviePersonMutate,
-    isPending: updateMoviePersonLoading
-  } = useUpdateMoviePersonMutation();
+  const { mutate: updateMoviePerson, isPending } =
+    useUpdateMoviePersonMutation();
 
   const { data, loading, handlers, listQuery } = useListBase<
     MoviePersonResType,
@@ -111,7 +109,7 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
                   className='border-none bg-transparent px-2! shadow-none hover:bg-transparent'
                   {...buttonProps}
                 >
-                  {updateMoviePersonLoading && isEditing ? (
+                  {isPending && isEditing ? (
                     <CircleLoading className='stroke-sporty-blue size-4' />
                   ) : isEditing ? (
                     <AiOutlineSave className='text-sporty-blue size-4' />
@@ -185,7 +183,7 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
     );
     handlers.setData(updatedData);
 
-    updateMoviePersonMutate(
+    updateMoviePerson(
       {
         id: record.id,
         kind: record.kind,
