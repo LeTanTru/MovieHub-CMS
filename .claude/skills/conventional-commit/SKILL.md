@@ -7,6 +7,8 @@ description: >-
   including instructions, examples, and validation.
 ---
 
+> ⚠️ **Do not run `git add` — staging is the user's responsibility.**
+
 ### Instructions
 
 ```xml
@@ -18,8 +20,7 @@ description: >-
 
 ### Workflow
 
-> ⚠️ **Do not run `git add` — staging is the user's responsibility.**
-> **Follow these steps:**
+**Follow these steps:**
 
 1. Run `git status` to review changed files.
 2. Run `git diff` or `git diff --cached` to inspect changes.

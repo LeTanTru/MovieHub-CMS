@@ -6,6 +6,9 @@ description: >-
   commit messages in line with the Conventional Commits specification,
   including instructions, examples, and validation.
 ---
+
+> ⚠️ **Do not run `git add` — staging is the user's responsibility.**
+
 ### Instructions
 ```xml
   <description>This file contains a prompt template for generating conventional
@@ -14,14 +17,12 @@ description: >-
   with the Conventional Commits specification.</description>
 ```
 ### Workflow
-> ⚠️ **Do not run `git add` — staging is the user's responsibility.**
 **Follow these steps:**
 1. Run `git status` to review changed files.
 2. Run `git diff` or `git diff --cached` to inspect changes.
 3. Construct your commit message using the following XML structure.
 4. After generating your commit message, run the commit command below.
 5. If the request includes pushing to GitHub, run `git push` after committing.
-
 
 ```bash
 git commit -m "type(scope): description"
