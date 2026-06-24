@@ -5,7 +5,7 @@ import {
   commentSearchSchema,
   commentToxicSpansSchema,
   commentVoteSchema
-} from '@/schemaValidations';
+} from '@/schema-validations';
 import { ProfileResType } from '@/types/account.type';
 import { MovieItemResType } from '@/types/movie-item.type';
 import type { BaseSearchType } from '@/types/search.type';

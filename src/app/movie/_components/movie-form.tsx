@@ -39,7 +39,7 @@ import {
   useUploadLogoMutation
 } from '@/queries';
 import { route } from '@/routes';
-import { movieSchema } from '@/schemaValidations';
+import { movieSchema } from '@/schema-validations';
 import type { MetadataType, MovieBodyType, MovieResType } from '@/types';
 import {
   convertLocalToUTC,

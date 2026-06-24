@@ -1,4 +1,4 @@
-import { userReportSearchSchema } from '@/schemaValidations';
+import { userReportSearchSchema } from '@/schema-validations';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 

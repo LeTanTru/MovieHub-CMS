@@ -1,4 +1,4 @@
-import { permissionSchema } from '@/schemaValidations';
+import { permissionSchema } from '@/schema-validations';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 

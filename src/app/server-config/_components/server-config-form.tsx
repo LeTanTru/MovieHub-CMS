@@ -22,7 +22,7 @@ import {
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { route } from '@/routes';
-import { serverConfigSchema } from '@/schemaValidations';
+import { serverConfigSchema } from '@/schema-validations';
 import { ServerConfigBodyType, ServerConfigResType } from '@/types';
 import { notify, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';

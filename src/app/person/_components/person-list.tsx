@@ -15,7 +15,7 @@ import {
   queryKeys
 } from '@/constants';
 import { useListBase } from '@/hooks';
-import { personSearchSchema } from '@/schemaValidations';
+import { personSearchSchema } from '@/schema-validations';
 import type {
   Column,
   PersonResType,

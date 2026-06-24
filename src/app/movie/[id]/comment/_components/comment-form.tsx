@@ -7,7 +7,7 @@ import { BaseForm } from '@/components/form/base-form';
 import { Send } from 'lucide-react';
 import Image from 'next/image';
 import { useClickOutside, useSaveBase } from '@/hooks';
-import { commentSchema } from '@/schemaValidations';
+import { commentSchema } from '@/schema-validations';
 import {
   EMOJI_ICON_SIZE,
   EMOJI_PICKER_TOP_OFFSET,

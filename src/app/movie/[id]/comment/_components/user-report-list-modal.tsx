@@ -5,7 +5,7 @@ import { Modal } from '@/components/modal';
 import { BaseTable } from '@/components/table';
 import { apiConfig, FieldTypes, objectNames, queryKeys } from '@/constants';
 import { useListBase } from '@/hooks';
-import { userReportSearchSchema } from '@/schemaValidations';
+import { userReportSearchSchema } from '@/schema-validations';
 import type {
   Column,
   SearchFormProps,

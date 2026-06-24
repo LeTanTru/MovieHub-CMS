@@ -21,7 +21,7 @@ import {
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { useGroupPermissionListQuery } from '@/queries';
-import { permissionSchema } from '@/schemaValidations';
+import { permissionSchema } from '@/schema-validations';
 import type {
   GroupPermissionResType,
   PermissionBodyType,

@@ -1,4 +1,4 @@
-import { employeeSchema, employeeSearchSchema } from '@/schemaValidations';
+import { employeeSchema, employeeSearchSchema } from '@/schema-validations';
 import { GroupResType } from '@/types/group.type';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';

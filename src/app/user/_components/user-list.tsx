@@ -17,7 +17,7 @@ import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import { useChangeUserStatusMutation } from '@/queries';
-import { userSearchSchema } from '@/schemaValidations';
+import { userSearchSchema } from '@/schema-validations';
 import type {
   UserResType,
   UserSearchType,

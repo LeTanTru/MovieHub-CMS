@@ -29,7 +29,7 @@ import { useSaveBase } from '@/hooks';
 import { cn } from '@/lib';
 import { useGroupPermissionListQuery, usePermissionListQuery } from '@/queries';
 import { route } from '@/routes';
-import { groupSchema } from '@/schemaValidations';
+import { groupSchema } from '@/schema-validations';
 import type { GroupBodyType, GroupResType, PermissionResType } from '@/types';
 import { renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';

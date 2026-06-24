@@ -1,7 +1,7 @@
 import {
   movieSidebarSchema,
   movieSidebarSearchSchema
-} from '@/schemaValidations';
+} from '@/schema-validations';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 

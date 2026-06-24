@@ -1,4 +1,4 @@
-import { styleSchema, styleSearchSchema } from '@/schemaValidations';
+import { styleSchema, styleSearchSchema } from '@/schema-validations';
 import { z } from 'zod';
 
 export type StyleResType = {

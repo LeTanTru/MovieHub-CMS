@@ -9,7 +9,7 @@ import { useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import { useChangeActiveSidebarMutation } from '@/queries';
-import { movieSidebarSearchSchema } from '@/schemaValidations';
+import { movieSidebarSearchSchema } from '@/schema-validations';
 import type {
   Column,
   MovieSidebarResType,

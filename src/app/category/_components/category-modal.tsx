@@ -12,7 +12,7 @@ import {
   STATUS_ACTIVE
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { categorySchema } from '@/schemaValidations';
+import { categorySchema } from '@/schema-validations';
 import type { CategoryBodyType, CategoryResType } from '@/types';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';

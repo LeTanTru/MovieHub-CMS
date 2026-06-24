@@ -11,7 +11,7 @@ import {
 } from '@/constants';
 import { BaseForm } from '@/components/form/base-form';
 import { Button, Col, Row, TextAreaField } from '@/components/form';
-import { commentSchema } from '@/schemaValidations';
+import { commentSchema } from '@/schema-validations';
 import { emojiIcon } from '@/assets';
 import { Send } from 'lucide-react';
 import { useClickOutside, useSaveBase } from '@/hooks';

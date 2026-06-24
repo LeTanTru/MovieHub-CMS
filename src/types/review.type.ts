@@ -1,7 +1,7 @@
 import {
   reviewSearchSchema,
   reviewToxicSpansSchema
-} from '@/schemaValidations';
+} from '@/schema-validations';
 import { ProfileResType } from '@/types/account.type';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';

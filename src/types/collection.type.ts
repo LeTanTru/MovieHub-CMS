@@ -2,7 +2,7 @@ import {
   collectionFilterSchema,
   collectionSchema,
   collectionSearchSchema
-} from '@/schemaValidations';
+} from '@/schema-validations';
 import type { CollectionItemResType } from '@/types/collection-item.type';
 import type { MovieResType } from '@/types/movie.type';
 import type { BaseSearchType } from '@/types/search.type';

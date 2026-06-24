@@ -1,5 +1,5 @@
 import { isValidClockTime, timeToSeconds } from '@/utils';
-import z from 'zod';
+import { z } from 'zod';
 
 export const videoLibrarySubtitleSearchSchema = z.object({
   videoLibraryId: z.string().nonempty('Bắt buộc'),

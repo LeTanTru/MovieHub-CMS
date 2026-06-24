@@ -1,4 +1,4 @@
-import { movieItemSchema, movieItemSearchSchema } from '@/schemaValidations';
+import { movieItemSchema, movieItemSearchSchema } from '@/schema-validations';
 import type { BaseSearchType } from '@/types/search.type';
 import type { VideoLibraryResType } from '@/types/video-library.type';
 import { z } from 'zod';

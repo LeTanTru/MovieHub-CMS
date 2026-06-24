@@ -22,7 +22,7 @@ import {
 import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
-import { styleSchema } from '@/schemaValidations';
+import { styleSchema } from '@/schema-validations';
 import type { StyleBodyType, StyleResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';

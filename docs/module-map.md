@@ -138,12 +138,12 @@ Use `select: (data) => data.data` for query hooks that return an API response wr
 
 ## Data And Type Layers
 
-| Folder                  | Role                                                                 |
-| ----------------------- | -------------------------------------------------------------------- |
-| `src/types`             | TypeScript DTOs, API response types, form/search/body types          |
-| `src/schemaValidations` | Zod schemas for forms and message validation                         |
-| `src/constants`         | Option lists, query keys, API config, route-independent constants    |
-| `src/utils`             | HTTP, storage, notification, URL, permission, media URL, VTT helpers |
+| Folder                   | Role                                                                 |
+| ------------------------ | -------------------------------------------------------------------- |
+| `src/types`              | TypeScript DTOs, API response types, form/search/body types          |
+| `src/schema-validations` | Zod schemas for forms and message validation                         |
+| `src/constants`          | Option lists, query keys, API config, route-independent constants    |
+| `src/utils`              | HTTP, storage, notification, URL, permission, media URL, VTT helpers |
 
 ## Important Cross-Cutting Keys
 

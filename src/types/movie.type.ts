@@ -1,4 +1,4 @@
-import { movieSchema, movieSearchSchema } from '@/schemaValidations';
+import { movieSchema, movieSearchSchema } from '@/schema-validations';
 import type { CategoryResType } from '@/types/category.type';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';

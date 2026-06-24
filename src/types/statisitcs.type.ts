@@ -2,9 +2,9 @@ import {
   movieDistributonSearchSchema,
   overviewSearchSchema,
   topMoviesSchema
-} from '@/schemaValidations';
+} from '@/schema-validations';
 import { BaseSearchType } from '@/types/search.type';
-import z from 'zod';
+import { z } from 'zod';
 
 export type MovieDistributionResType = {
   label: string;

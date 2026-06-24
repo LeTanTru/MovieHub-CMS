@@ -33,7 +33,7 @@ import {
   useUploadLogoMutation
 } from '@/queries';
 import { route } from '@/routes';
-import { videoLibrarySchema } from '@/schemaValidations';
+import { videoLibrarySchema } from '@/schema-validations';
 import type { VideoLibraryBodyType, VideoLibraryResType } from '@/types';
 import {
   isMobileDevice,

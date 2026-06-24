@@ -253,7 +253,7 @@ MovieHub-CMS/
 │   │   └── use-auth.ts         # Authentication/permission hook
 │   ├── queries/                # TanStack Query hooks
 │   ├── routes/                 # Route definitions + metadata
-│   ├── schemaValidations/      # Zod validation schemas
+│   ├── schema-validations/      # Zod validation schemas
 │   ├── store/                  # Zustand stores
 │   ├── types/                  # TypeScript types
 │   ├── utils/                  # Utility functions

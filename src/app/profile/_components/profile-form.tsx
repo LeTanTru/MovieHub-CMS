@@ -18,7 +18,7 @@ import {
 import { useFileUploadManager, useNavigate, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
-import { profileSchema } from '@/schemaValidations';
+import { profileSchema } from '@/schema-validations';
 import { useAuthStore } from '@/store';
 import type { ProfileBodyType, ProfileResType } from '@/types';
 import { getData, removeData, renderImageUrl } from '@/utils';

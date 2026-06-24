@@ -22,7 +22,7 @@ import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import { useDeleteFileMutation, useUploadFileMutation } from '@/queries';
 import { route } from '@/routes';
-import { appVersionSchema } from '@/schemaValidations';
+import { appVersionSchema } from '@/schema-validations';
 import type { AppVersionBodyType, AppVersionResType } from '@/types';
 import { renderListPageUrl } from '@/utils';
 import type { AxiosProgressEvent } from 'axios';

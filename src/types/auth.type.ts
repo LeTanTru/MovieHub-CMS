@@ -1,4 +1,4 @@
-import { loginSchema } from '@/schemaValidations';
+import { loginSchema } from '@/schema-validations';
 import type { ProfileResType } from '@/types/account.type';
 import { z } from 'zod';
 

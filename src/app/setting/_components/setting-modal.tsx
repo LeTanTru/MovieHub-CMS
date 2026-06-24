@@ -23,7 +23,7 @@ import {
 } from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadFileMutation } from '@/queries';
-import { settingSchema } from '@/schemaValidations';
+import { settingSchema } from '@/schema-validations';
 import type { SettingBodyType, SettingResType } from '@/types';
 import {
   parseBooleanValue,

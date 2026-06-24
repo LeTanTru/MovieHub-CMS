@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 export const serverConfigSchema = z.object({
   hostname: z.string().nonempty('Bắt buộc'),

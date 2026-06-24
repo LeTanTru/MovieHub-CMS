@@ -33,7 +33,7 @@ import {
 } from '@/constants';
 import { useFileUploadManager, useQueryParams, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
-import { movieItemSchema } from '@/schemaValidations';
+import { movieItemSchema } from '@/schema-validations';
 import type {
   MovieItemBodyType,
   MovieItemResType,

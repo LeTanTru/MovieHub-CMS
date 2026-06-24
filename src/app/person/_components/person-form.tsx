@@ -33,7 +33,7 @@ import {
 import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadAvatarMutation } from '@/queries';
 import { route } from '@/routes';
-import { personSchema } from '@/schemaValidations';
+import { personSchema } from '@/schema-validations';
 import type { PersonBodyType, PersonResType } from '@/types';
 import {
   formatDate,

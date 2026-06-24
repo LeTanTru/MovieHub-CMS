@@ -1,7 +1,7 @@
 import {
   collectionItemSchema,
   collectionItemSearchSchema
-} from '@/schemaValidations';
+} from '@/schema-validations';
 import type { MovieResType } from '@/types/movie.type';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';

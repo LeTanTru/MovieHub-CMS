@@ -34,7 +34,7 @@ import {
   useRetryProcessVideoLibraryMutation,
   useServerConfigListQuery
 } from '@/queries';
-import { videoLibrarySearchSchema } from '@/schemaValidations';
+import { videoLibrarySearchSchema } from '@/schema-validations';
 import type {
   Column,
   SearchFormProps,

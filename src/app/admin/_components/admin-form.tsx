@@ -28,7 +28,7 @@ import {
   useUploadAvatarMutation
 } from '@/queries';
 import { route } from '@/routes';
-import { accountSchema } from '@/schemaValidations';
+import { accountSchema } from '@/schema-validations';
 import type { AccountBodyType, AccountResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
 import { useParams } from 'next/navigation';

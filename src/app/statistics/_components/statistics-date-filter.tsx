@@ -2,7 +2,7 @@
 
 import { Button, DateTimePickerField } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
-import { overviewSearchSchema } from '@/schemaValidations';
+import { overviewSearchSchema } from '@/schema-validations';
 import type { OverviewSearchType } from '@/types';
 import { BrushCleaning, Search } from 'lucide-react';
 

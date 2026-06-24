@@ -16,7 +16,7 @@ import { apiConfig, ErrorCode, objectNames, queryKeys } from '@/constants';
 import { useFileUploadManager, useSaveBase } from '@/hooks';
 import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
-import { movieSidebarSchema } from '@/schemaValidations';
+import { movieSidebarSchema } from '@/schema-validations';
 import type {
   MovieResType,
   MovieSidebarBodyType,

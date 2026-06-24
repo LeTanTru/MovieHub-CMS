@@ -32,7 +32,7 @@ import {
 import { useNavigate, useQueryParams, useSaveBase } from '@/hooks';
 import { useCategoryListQuery } from '@/queries';
 import { route } from '@/routes';
-import { collectionSchema } from '@/schemaValidations';
+import { collectionSchema } from '@/schema-validations';
 import {
   CollectionFilterType,
   CollectionSearchType,

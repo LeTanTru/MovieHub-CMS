@@ -13,7 +13,7 @@ import {
   queryKeys
 } from '@/constants';
 import { useListBase } from '@/hooks';
-import { groupSearchSchema } from '@/schemaValidations';
+import { groupSearchSchema } from '@/schema-validations';
 import type {
   Column,
   GroupResType,

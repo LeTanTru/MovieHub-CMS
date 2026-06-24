@@ -3,7 +3,7 @@
 import { BaseForm } from '@/components/form/base-form';
 import { Button, Col, InputField, PasswordField, Row } from '@/components/form';
 import { logger } from '@/logger';
-import { loginSchema } from '@/schemaValidations';
+import { loginSchema } from '@/schema-validations';
 import { logoWithText } from '@/assets';
 import { notify } from '@/utils';
 import { useAuthStore } from '@/store';

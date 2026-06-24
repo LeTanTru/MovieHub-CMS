@@ -2,7 +2,7 @@ import {
   accountSchema,
   accountSearchSchema,
   profileSchema
-} from '@/schemaValidations';
+} from '@/schema-validations';
 import { GroupResType } from '@/types/group.type';
 import { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';

@@ -1,4 +1,4 @@
-import { personSchema, personSearchSchema } from '@/schemaValidations';
+import { personSchema, personSearchSchema } from '@/schema-validations';
 import { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 
