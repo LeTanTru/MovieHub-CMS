@@ -6,7 +6,7 @@ import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
 import { apiConfig, objectNames, queryKeys } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { videoLibrarySubtitleSchema } from '@/schemaValidations';
+import { videoLibrarySubtitleSchema } from '@/schema-validations';
 import type {
   VideoLibrarySubtitleBodyType,
   VideoLibrarySubtitleResType

@@ -33,7 +33,7 @@ There is no test framework configured. Do not invent test commands.
 - Put endpoint metadata and permission codes in `src/constants/api-config.ts`.
 - Put query keys in `queryKeys` in `src/constants/master-data/query-keys.ts` and import them from `@/constants`.
 - Put server-state hooks in `src/queries`.
-- Put form validation schemas in `src/schemaValidations`.
+- Put form validation schemas in `src/schema-validations`.
 - Put DTO/domain types in `src/types`.
 - Export stores from `src/store/index.ts`.
 
@@ -42,7 +42,7 @@ There is no test framework configured. Do not invent test commands.
 1. Add endpoint config to `src/constants/api-config.ts`.
 2. Add a query key to `queryKeys`.
 3. Add route metadata to `src/routes/route.ts`.
-4. Add Zod schema in `src/schemaValidations`.
+4. Add Zod schema in `src/schema-validations`.
 5. Add request/response/search/body types in `src/types`.
 6. Add TanStack Query wrappers in `src/queries`.
 7. Add route folders in `src/app/<module>`.

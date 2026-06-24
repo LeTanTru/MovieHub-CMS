@@ -1,4 +1,4 @@
-import { groupPermissionSchema } from '@/schemaValidations';
+import { groupPermissionSchema } from '@/schema-validations';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 

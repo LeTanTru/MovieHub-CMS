@@ -10,7 +10,7 @@ import {
 } from '@/constants';
 import { logger } from '@/logger';
 import { useCreateMoviePersonMutation } from '@/queries';
-import { moviePersonSchema } from '@/schemaValidations';
+import { moviePersonSchema } from '@/schema-validations';
 import type {
   ApiResponseList,
   MoviePersonBodyType,

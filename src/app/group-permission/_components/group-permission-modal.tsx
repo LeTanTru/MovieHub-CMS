@@ -12,7 +12,7 @@ import {
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
-import { groupPermissionSchema } from '@/schemaValidations';
+import { groupPermissionSchema } from '@/schema-validations';
 import {
   ApiResponseNoData,
   GroupPermissionBodyType,

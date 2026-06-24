@@ -3,9 +3,9 @@ import {
   videoLibrarySubtitleSchema,
   videoLibrarySubtitleSearchSchema,
   videoLibrarySubtitleTranslateSchema
-} from '@/schemaValidations';
+} from '@/schema-validations';
 import { BaseSearchType } from '@/types/search.type';
-import z from 'zod';
+import { z } from 'zod';
 
 export type VideoLibrarySubtitleResType = {
   createdDate: string;

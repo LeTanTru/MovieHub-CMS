@@ -7,7 +7,7 @@ import { ListPageWrapper, PageWrapper } from '@/components/layout';
 import { BaseTable } from '@/components/table';
 import { apiConfig, ErrorCode, objectNames, queryKeys } from '@/constants';
 import { useDisclosure, useListBase } from '@/hooks';
-import { categorySearchSchema } from '@/schemaValidations';
+import { categorySearchSchema } from '@/schema-validations';
 import type {
   CategoryResType,
   CategorySearchType,

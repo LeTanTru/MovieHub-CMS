@@ -17,7 +17,7 @@ import {
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { useChangeAccountStatusMutation } from '@/queries';
-import { accountSearchSchema } from '@/schemaValidations';
+import { accountSearchSchema } from '@/schema-validations';
 import type {
   AccountAutoResType,
   AccountSearchType,

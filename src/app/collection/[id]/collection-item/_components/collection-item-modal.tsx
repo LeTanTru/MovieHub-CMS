@@ -12,7 +12,7 @@ import {
   queryKeys
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { collectionItemSchema } from '@/schemaValidations';
+import { collectionItemSchema } from '@/schema-validations';
 import type {
   CollectionItemBodyType,
   CollectionItemResType,

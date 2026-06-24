@@ -56,7 +56,7 @@ To minimize boilerplate, most pages use one of three base hooks:
 
 - **Path Aliases:** Always use `@/` for internal imports.
 - **Client Components:** Use `'use client'` strictly for interactive logic.
-- **Strict Typing:** No `any`. Utilize Zod schemas in `src/schemaValidations/` for all form and API data.
+- **Strict Typing:** No `any`. Utilize Zod schemas in `src/schema-validations/` for all form and API data.
 - **Animations:** Use `m` from `framer-motion` (with `LazyMotion` in layout) instead of `motion` to reduce bundle size.
 - **Styling:** Use Tailwind CSS 4 with the `cn()` utility for conditional classes. Refer to `src/styles/grid.css` for standardized form layouts.
 - **State Subscription:** Always use `useShallow` when selecting multiple fields from a Zustand store.

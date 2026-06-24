@@ -1,7 +1,7 @@
 import {
   moviePersonSchema,
   moviePersonSearchSchema
-} from '@/schemaValidations';
+} from '@/schema-validations';
 import type { MovieResType } from '@/types/movie.type';
 import type { PersonResType } from '@/types/person.type';
 import type { BaseSearchType } from '@/types/search.type';

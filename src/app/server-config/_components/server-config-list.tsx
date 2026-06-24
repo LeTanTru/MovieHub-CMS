@@ -17,7 +17,7 @@ import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import { useChangeServerConfigStatusMutation } from '@/queries';
-import { serverConfigSearchSchema } from '@/schemaValidations';
+import { serverConfigSearchSchema } from '@/schema-validations';
 import {
   Column,
   SearchFormProps,

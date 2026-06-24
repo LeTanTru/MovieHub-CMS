@@ -20,7 +20,7 @@ import {
 } from '@/hooks';
 import { useVideoLibraryQuery } from '@/queries';
 import { route } from '@/routes';
-import { videoLibrarySubtitleSearchSchema } from '@/schemaValidations';
+import { videoLibrarySubtitleSearchSchema } from '@/schema-validations';
 import { VideoLibrarySubtitleModal } from './video-library-subtitle-modal';
 import { VideoLibrarySubtitleTranslateModal } from './video-library-subtitle-translate-modal';
 import type {

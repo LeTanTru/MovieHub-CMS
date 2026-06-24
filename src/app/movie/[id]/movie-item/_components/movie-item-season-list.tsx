@@ -22,7 +22,7 @@ import {
   useQueryParams
 } from '@/hooks';
 import { route } from '@/routes';
-import { movieItemSearchSchema } from '@/schemaValidations';
+import { movieItemSearchSchema } from '@/schema-validations';
 import type {
   Column,
   MovieItemResType,

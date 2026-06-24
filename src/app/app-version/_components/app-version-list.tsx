@@ -12,7 +12,7 @@ import {
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
-import { appVersionSearchSchema } from '@/schemaValidations';
+import { appVersionSearchSchema } from '@/schema-validations';
 import type {
   AppVersionResType,
   AppVersionSearchType,

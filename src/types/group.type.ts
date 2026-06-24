@@ -1,4 +1,4 @@
-import { groupSchema, groupSearchSchema } from '@/schemaValidations';
+import { groupSchema, groupSearchSchema } from '@/schema-validations';
 import type { PermissionAutoResType } from '@/types/permission.type';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';

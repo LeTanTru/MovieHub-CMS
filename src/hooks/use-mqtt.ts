@@ -1,6 +1,6 @@
 import { getMqttClient } from '@/lib/mqtt';
 import { logger } from '@/logger';
-import { mqttMessageSchema } from '@/schemaValidations';
+import { mqttMessageSchema } from '@/schema-validations';
 import { useEffect, useRef } from 'react';
 
 type UseMqttType<T> = {

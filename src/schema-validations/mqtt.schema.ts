@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 // Base MQTT message envelope schema
 export const mqttMessageSchema = z.object({

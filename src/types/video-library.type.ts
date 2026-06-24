@@ -3,7 +3,7 @@ import {
   retryProcessVideoLibrarySchema,
   videoLibrarySchema,
   videoLibrarySearchSchema
-} from '@/schemaValidations';
+} from '@/schema-validations';
 import { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 

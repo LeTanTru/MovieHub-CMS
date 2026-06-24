@@ -10,7 +10,7 @@ import {
   videoLibrarySubtitleErrorMaps
 } from '@/constants';
 import { useVideoSubtitleTranslateMutation } from '@/queries';
-import { videoLibrarySubtitleTranslateSchema } from '@/schemaValidations';
+import { videoLibrarySubtitleTranslateSchema } from '@/schema-validations';
 import type { VideoLibrarySubtitleTranslateBodyType } from '@/types';
 import { applyFormErrors, invalidateQueries, notify } from '@/utils';
 import { isAxiosError } from 'axios';

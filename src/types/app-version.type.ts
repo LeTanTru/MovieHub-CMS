@@ -1,4 +1,4 @@
-import { appVersionSchema, appVersionSearchSchema } from '@/schemaValidations';
+import { appVersionSchema, appVersionSearchSchema } from '@/schema-validations';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 

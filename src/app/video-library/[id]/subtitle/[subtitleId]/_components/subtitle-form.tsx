@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 import { ConfirmModal } from '@/components/modal';
 import { secondsToVttTime, timeToSeconds } from '@/utils';
 import type { SubtitleBodyType, SubtitleType } from '@/types';
-import { subtitleSchema } from '@/schemaValidations';
+import { subtitleSchema } from '@/schema-validations';
 import { useEffect, useMemo, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useVideoLibrarySubtitleStore } from '@/store';

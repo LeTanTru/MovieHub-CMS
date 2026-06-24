@@ -4,7 +4,7 @@ import { mqttCMDs, mqttTopics, queryKeys } from '@/constants';
 import { useAuth, useMqtt } from '@/hooks';
 import { getMqttClient } from '@/lib/mqtt';
 import { logger } from '@/logger';
-import { mqttMessageSchema } from '@/schemaValidations';
+import { mqttMessageSchema } from '@/schema-validations';
 import type {
   NotificationResType,
   ReplyCommentNotificationType,

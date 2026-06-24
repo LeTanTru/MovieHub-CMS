@@ -25,7 +25,7 @@ import {
   useReadAllNotificationMutation,
   useUpdateReadNotificationMutation
 } from '@/queries';
-import { notificationSearchSchema } from '@/schemaValidations';
+import { notificationSearchSchema } from '@/schema-validations';
 import {
   NotificationResType,
   NotificationSearchType,

@@ -7,7 +7,7 @@ import { queryKeys } from '@/constants';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import { useUpdateCommentToxicSpansMutation } from '@/queries';
-import { commentToxicSpansSchema } from '@/schemaValidations';
+import { commentToxicSpansSchema } from '@/schema-validations';
 import type {
   CommentResType,
   CommentToxicSpansBodyType,

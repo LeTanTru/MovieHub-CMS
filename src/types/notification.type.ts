@@ -1,10 +1,10 @@
 import {
   notificationSearchSchema,
   updateReadNotificationSchema
-} from '@/schemaValidations';
+} from '@/schema-validations';
 import { ToxicSpan } from '@/types/comment.type';
 import { BaseSearchType } from '@/types/search.type';
-import z from 'zod';
+import { z } from 'zod';
 
 export type UnreadCountNotificationResType = {
   totalUnread: number;

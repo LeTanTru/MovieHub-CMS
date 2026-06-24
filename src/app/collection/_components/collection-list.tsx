@@ -22,7 +22,7 @@ import {
 } from '@/hooks';
 import { logger } from '@/logger';
 import { route } from '@/routes';
-import { collectionSearchSchema } from '@/schemaValidations';
+import { collectionSearchSchema } from '@/schema-validations';
 import type {
   CollectionResType,
   CollectionSearchType,

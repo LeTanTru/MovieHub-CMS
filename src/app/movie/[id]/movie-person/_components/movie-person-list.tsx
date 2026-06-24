@@ -18,7 +18,7 @@ import {
 import { useDisclosure, useDragDrop, useListBase } from '@/hooks';
 import { logger } from '@/logger';
 import { useUpdateMoviePersonMutation } from '@/queries';
-import { moviePersonSearchSchema } from '@/schemaValidations';
+import { moviePersonSearchSchema } from '@/schema-validations';
 import type {
   Column,
   MoviePersonResType,

@@ -61,7 +61,7 @@ Notes:
 |   |-- logger/                   Logging helper
 |   |-- queries/                  TanStack Query hooks
 |   |-- routes/                   Central route metadata and route permissions
-|   |-- schemaValidations/        Zod schemas
+|   |-- schema-validations/        Zod schemas
 |   |-- store/                    Zustand stores
 |   |-- styles/                   Global and grid styles
 |   |-- types/                    Shared TypeScript types

@@ -7,7 +7,7 @@ import { queryKeys } from '@/constants';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
 import { useUpdateReviewToxicSpansMutation } from '@/queries';
-import { reviewToxicSpansSchema } from '@/schemaValidations';
+import { reviewToxicSpansSchema } from '@/schema-validations';
 import type {
   ReviewResType,
   ReviewToxicSpansBodyType,

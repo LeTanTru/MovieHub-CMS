@@ -1,4 +1,4 @@
-import { categorySchema, categorySearchSchema } from '@/schemaValidations';
+import { categorySchema, categorySearchSchema } from '@/schema-validations';
 import type { BaseSearchType } from '@/types/search.type';
 import { z } from 'zod';
 
