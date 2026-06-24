@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className='flex min-h-screen flex-col gap-12.5 bg-[#191B24] py-10 max-lg:py-5'>
+    <div className='bg-mirage flex min-h-screen flex-col gap-12.5 py-10 max-lg:py-5'>
       <div className='relative mx-auto w-full max-w-200 px-12.5 max-lg:px-5'>
         <div className='relative mb-5 flex min-h-11 items-center justify-start gap-4 max-lg:hidden'>
           <h1 className='m-0 text-[28px] leading-[1.4] font-semibold text-white'>
