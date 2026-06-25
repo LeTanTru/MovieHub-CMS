@@ -52,8 +52,8 @@ type Part = {
 };
 
 export const useChunkUpload = () => {
-  const [progress, setProgress] = useState(0);
-  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState<number>(0);
+  const [uploading, setUploading] = useState<boolean>(false);
 
   const upload = useCallback(
     async (

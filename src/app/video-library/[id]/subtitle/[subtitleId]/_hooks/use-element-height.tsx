@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 
 export const useElementHeight = () => {
-  const [height, setHeight] = useState(0);
+  const [height, setHeight] = useState<number>(0);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   const elementRef = useCallback((node: HTMLDivElement | null) => {

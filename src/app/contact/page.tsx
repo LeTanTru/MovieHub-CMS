@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className='flex min-h-screen flex-col gap-12.5 bg-[#191B24] py-10 max-lg:py-5'>
+    <div className='bg-mirage flex min-h-screen flex-col gap-12.5 py-10 max-lg:py-5'>
       <div className='relative mx-auto w-full max-w-200 px-12.5 max-lg:px-5'>
         <div className='relative mb-5 flex min-h-11 items-center justify-center gap-4 max-lg:hidden'>
           <h1 className='m-0 text-[28px] leading-[1.4] font-semibold text-white'>
@@ -112,7 +112,7 @@ export default function ContactPage() {
               </div>
               <span>Telegram:</span>
               <Link
-                className='line-clamp-1 block truncate text-left text-[#212529]'
+                className='text-shark line-clamp-1 block truncate text-left'
                 href='https://t.me/congdongrophim'
                 title='Telegram'
                 target='_blank'
@@ -135,7 +135,7 @@ export default function ContactPage() {
               </div>
               <span>Discord:</span>
               <Link
-                className='line-clamp-1 block truncate text-left text-[#212529]'
+                className='text-shark line-clamp-1 block truncate text-left'
                 href='https://discord.gg/rophim'
                 title='Discord'
                 target='_blank'
@@ -158,7 +158,7 @@ export default function ContactPage() {
               </div>
               <span>Facebook:</span>
               <Link
-                className='line-clamp-1 block truncate text-left text-[#212529]'
+                className='text-shark line-clamp-1 block truncate text-left'
                 href='https://www.facebook.com/rogiaitri'
                 title='Facebook'
                 target='_blank'
@@ -204,7 +204,7 @@ export default function ContactPage() {
               </div>
               <span>X:</span>
               <Link
-                className='line-clamp-1 block truncate text-left text-[#212529]'
+                className='text-shark line-clamp-1 block truncate text-left'
                 href='https://x.com/rophimtv'
                 title='X'
                 target='_blank'

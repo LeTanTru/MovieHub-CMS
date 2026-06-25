@@ -38,7 +38,6 @@ export function UserReportListModal({
       defaultFilters: {
         objectId: reviewId
       },
-      notShowFromSearchParams: ['objectId'],
       syncSearchParams: false
     }
   });

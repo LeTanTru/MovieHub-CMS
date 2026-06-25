@@ -1,5 +1,10 @@
 import { useEffect, useRef } from 'react';
 
+/**
+ * Hook to execute a callback function when a user clicks outside the referenced element.
+ *
+ * @param onClickOutside - Callback function invoked when a click occurs outside the referenced element.
+ */
 export const useClickOutside = <T extends HTMLElement>(
   onClickOutside: () => void
 ) => {

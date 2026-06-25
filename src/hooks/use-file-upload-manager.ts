@@ -17,6 +17,15 @@ type UseFileUploadManagerProps = {
   onOpen?: boolean;
 };
 
+/**
+ * Hook to manage uploaded files, track file states during creation/editing, and handle cleanup.
+ *
+ * @param params - The file upload manager configuration options.
+ * @param params.initialUrl - The initial URL of the file (defaults to '').
+ * @param params.deleteFileMutate - The mutation function to call for deleting a file.
+ * @param params.isEditing - Whether the form is currently in edit mode.
+ * @param params.onOpen - Trigger to reset/initialize the manager state when modal/drawer opens (defaults to false).
+ */
 export const useFileUploadManager = ({
   initialUrl = '',
   deleteFileMutate,
@@ -26,7 +35,7 @@ export const useFileUploadManager = ({
   const [currentUrl, setCurrentUrl] = useState<string>('');
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [originalUrl, setOriginalUrl] = useState<string>('');
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   useEffect(() => {
     if (onOpen) {

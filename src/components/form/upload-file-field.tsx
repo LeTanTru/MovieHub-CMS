@@ -75,7 +75,7 @@ export function UploadFileField<T extends FieldValues>({
   const [uploading, setUploading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [sizeError, setSizeError] = useState<string>('');
-  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState<boolean>(false);
 
   const prevFileId = useRef<string | null>(null);
 

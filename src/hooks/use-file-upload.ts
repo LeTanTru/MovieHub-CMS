@@ -56,6 +56,18 @@ type FileUploadActions = {
   };
 };
 
+/**
+ * Hook to manage file uploading lifecycle, validation, drag-and-drop, and state.
+ *
+ * @param options - The file upload configurations.
+ * @param options.maxFiles - The maximum number of files allowed (only for multiple upload).
+ * @param options.maxSize - The maximum allowed size per file in bytes.
+ * @param options.accept - Allowed MIME types or file extensions.
+ * @param options.multiple - Whether multiple file selections are allowed.
+ * @param options.initialFiles - Initial files metadata to populate the upload state.
+ * @param options.onFilesChange - Callback triggered when the overall list of files changes.
+ * @param options.onFilesAdded - Callback triggered when new valid files are added.
+ */
 export const useFileUpload = (
   options: FileUploadOptions = {}
 ): [FileUploadState, FileUploadActions] => {

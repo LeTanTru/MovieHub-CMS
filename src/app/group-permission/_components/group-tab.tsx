@@ -16,7 +16,7 @@ import {
 import { useIsMounted, useQueryParams } from '@/hooks';
 
 export function GroupTab() {
-  const [activeTab, setActiveTab] = useState(
+  const [activeTab, setActiveTab] = useState<string>(
     getData(storageKeys.ACTIVE_GROUP_TAB) || TAB_GROUP
   );
   const { setQueryParams } = useQueryParams();

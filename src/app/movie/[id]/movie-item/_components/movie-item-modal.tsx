@@ -107,6 +107,9 @@ export function MovieItemModal({
     );
   }, [movieItemId, movieType]);
 
+  const isSingle = movieType === MOVIE_TYPE_SINGLE;
+  const isSeries = movieType === MOVIE_TYPE_SERIES;
+
   const defaultKind = kindOptions?.[0]?.value ?? defaultValues.kind;
 
   let objectName = '';
@@ -257,6 +260,9 @@ export function MovieItemModal({
         >
           {(form) => {
             const kind = form.watch('kind');
+
+            const isSeason = kind === MOVIE_ITEM_KIND_SEASON;
+
             return (
               <>
                 <Row>
@@ -326,10 +332,10 @@ export function MovieItemModal({
                     />
                   </Col>
                 </Row>
-                <Row>
-                  {/* Only show for movie type series and kind season */}
-                  {movieType === MOVIE_TYPE_SERIES &&
-                    kind === MOVIE_ITEM_KIND_SEASON && (
+                {(kind !== MOVIE_ITEM_KIND_SEASON || isSeries || isSingle) && (
+                  <Row>
+                    {/* Only show for movie type series and kind season */}
+                    {isSeries && isSeason && (
                       <Col className='grid-c-6'>
                         <NumberField
                           control={form.control}
@@ -341,28 +347,28 @@ export function MovieItemModal({
                         />
                       </Col>
                     )}
-                  {/* Only show for kind not season or movie type single */}
-                  {(kind !== MOVIE_ITEM_KIND_SEASON ||
-                    movieType === MOVIE_TYPE_SINGLE) && (
-                    <Col className='grid-c-6'>
-                      <AutoCompleteField
-                        apiConfig={apiConfig.videoLibrary.autoComplete}
-                        mappingData={(item: VideoLibraryResType) => ({
-                          label: item.name,
-                          value: item.id.toString()
-                        })}
-                        searchParams={['name']}
-                        control={form.control}
-                        name='videoId'
-                        label='Video'
-                        placeholder='Video'
-                        allowClear
-                      />
-                    </Col>
-                  )}
-                </Row>
-                <Row>
-                  {!isEditing && (
+                    {/* Only show for kind not season or movie type single */}
+                    {(kind !== MOVIE_ITEM_KIND_SEASON || isSingle) && (
+                      <Col className='grid-c-6'>
+                        <AutoCompleteField
+                          apiConfig={apiConfig.videoLibrary.autoComplete}
+                          mappingData={(item: VideoLibraryResType) => ({
+                            label: item.name,
+                            value: item.id.toString()
+                          })}
+                          searchParams={['name']}
+                          control={form.control}
+                          name='videoId'
+                          label='Video'
+                          placeholder='Video'
+                          allowClear
+                        />
+                      </Col>
+                    )}
+                  </Row>
+                )}
+                {!isEditing && (
+                  <Row>
                     <Col className='grid-c-6'>
                       <CheckboxField
                         control={form.control}
@@ -370,18 +376,18 @@ export function MovieItemModal({
                         label='Gửi thông báo'
                       />
                     </Col>
-                  )}
-                  {kind !== MOVIE_TYPE_TRAILER && !isEditing && (
-                    <Col className='grid-c-6'>
-                      <CheckboxField
-                        control={form.control}
-                        name='isLatest'
-                        label='Đánh dấu là mới nhất'
-                        required
-                      />
-                    </Col>
-                  )}
-                </Row>
+                    {kind !== MOVIE_TYPE_TRAILER && (
+                      <Col className='grid-c-6'>
+                        <CheckboxField
+                          control={form.control}
+                          name='isLatest'
+                          label='Đánh dấu là mới nhất'
+                          required
+                        />
+                      </Col>
+                    )}
+                  </Row>
+                )}
                 {!isEditing &&
                   form.watch('sendNotificationConfig.isSendNotification') && (
                     <>

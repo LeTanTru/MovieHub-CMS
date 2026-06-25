@@ -128,6 +128,14 @@ const TABLE_STATUS_COLUMN_WIDTH = 150;
 const STATUS_COLOR_ALPHA = 80;
 const STATUS_BACKGROUND_ALPHA = 10;
 
+/**
+ * Hook to manage a paginated list page with filtering, pagination, and delete operations.
+ *
+ * @param params - The list base configurations.
+ * @param params.apiConfig - Endpoints for list, CRUD, and delete operations.
+ * @param params.options - Listing behavior options like page size, filters, permissions, etc.
+ * @param params.override - Callback to override standard event handlers.
+ */
 export const useListBase = <
   T extends { id: string },
   S extends BaseSearchType

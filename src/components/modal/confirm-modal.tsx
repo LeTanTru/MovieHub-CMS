@@ -43,7 +43,7 @@ export function ConfirmModal({
   onOpenChange,
   loading
 }: ConfirmModalProps) {
-  const [internalOpen, setInternalOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState<boolean>(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
   const setOpen = isControlled

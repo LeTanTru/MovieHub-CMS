@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react';
 export function PersonTab() {
   const defaultTab =
     getData(storageKeys.ACTIVE_TAB_PERSON_KIND) || TAB_PERSON_KIND_ACTOR;
-  const [activeTab, setActiveTab] = useState(defaultTab);
+  const [activeTab, setActiveTab] = useState<string>(defaultTab);
   const isMounted = useIsMounted();
 
   const tabs = [

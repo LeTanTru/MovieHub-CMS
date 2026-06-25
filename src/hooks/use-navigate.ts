@@ -1,6 +1,11 @@
 import { useRouter } from 'next/navigation';
 import { useTopLoader } from 'nextjs-toploader';
 
+/**
+ * Hook to wrap router navigation with top progress loader support.
+ *
+ * @param startLoader - Whether to start the top progress loader when navigating (defaults to true).
+ */
 export const useNavigate = (startLoader: boolean = true) => {
   const router = useRouter();
   const loading = useTopLoader();

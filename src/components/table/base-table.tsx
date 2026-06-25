@@ -50,7 +50,7 @@ export function BaseTable<T extends Record<string, unknown>>({
   rowClassName
 }: BaseTableProps<T>) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [scrollAtEnd, setScrollAtEnd] = useState(false);
+  const [scrollAtEnd, setScrollAtEnd] = useState<boolean>(false);
   const { total } = pagination;
 
   useEffect(() => {

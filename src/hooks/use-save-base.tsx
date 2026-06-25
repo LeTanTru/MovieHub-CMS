@@ -48,6 +48,14 @@ type UseSaveBaseProps = {
   override?: (handlers: HandlerType) => HandlerType | void;
 };
 
+/**
+ * Hook to manage creation and updating (saving) operations for form pages.
+ *
+ * @param params - The save base configurations.
+ * @param params.apiConfig - Endpoints for details (getById), create, and update operations.
+ * @param params.options - Options defining object names, redirection URL, query key, path parameters, mode, and notifications.
+ * @param params.override - Callback to override standard event handlers.
+ */
 export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
   apiConfig,
   options: {

@@ -101,7 +101,7 @@ export function CommentItem({
     close: closeCommentToxicSpansModal
   } = useDisclosure();
 
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
 
   const {
     data: commentList,
@@ -121,7 +121,8 @@ export function CommentItem({
       defaultFilters: {
         parentId: comment.id
       },
-      notShowFromSearchParams: ['parentId']
+      notShowFromSearchParams: ['parentId'],
+      syncSearchParams: false
     }
   });
 
@@ -165,12 +166,12 @@ export function CommentItem({
   const isOpen = isActiveParent;
 
   const scrollTargetName = `comment-${comment.id}`; // unique name for scroll target
-  const [isScrollTarget, setIsScrollTarget] = useState(false); // state to trigger highlight effect
+  const [isScrollTarget, setIsScrollTarget] = useState<boolean>(false); // state to trigger highlight effect
 
   const isHidden = comment.status === COMMENT_STATUS_HIDE;
   const toxicSpans = parseToxicSpans(comment.toxicSpans) ?? [];
   const hasToxicSpans = toxicSpans.length > 0;
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const canViewHiddenContent = isHidden || !!hasToxicSpans;
   const isBlurWholeContent = isHidden && !isVisible && !hasToxicSpans;
 

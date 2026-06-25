@@ -9,6 +9,11 @@ type UseImageStatusReturn = {
   isError: boolean;
 };
 
+/**
+ * Hook to track the loading status of an image source.
+ *
+ * @param src - The image URL to load and track.
+ */
 export const useImageStatus = (src?: string): UseImageStatusReturn => {
   const [status, setStatus] = useState<ImageStatus>('loading');
 
