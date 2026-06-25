@@ -164,7 +164,7 @@ export function DragDropTable<T extends Record<string, unknown>>({
   rowStyle
 }: DragDropTableProps<T>) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [scrollAtEnd, setScrollAtEnd] = useState(false);
+  const [scrollAtEnd, setScrollAtEnd] = useState<boolean>(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

@@ -93,9 +93,9 @@ export function MovieForm() {
   const { mutateAsync: uploadImageMutate } = useUploadLogoMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
 
-  const [posterLoading, setPosterLoading] = useState(false);
-  const [thumbnailLoading, setThumbnailLoading] = useState(false);
-  const [imageTitleLoading, setImageTitleLoading] = useState(false);
+  const [posterLoading, setPosterLoading] = useState<boolean>(false);
+  const [thumbnailLoading, setThumbnailLoading] = useState<boolean>(false);
+  const [imageTitleLoading, setImageTitleLoading] = useState<boolean>(false);
 
   const {
     data,

@@ -133,7 +133,7 @@ export function CommentAction({
         canChangeStatus ||
         canDelete ||
         canUpdateToxicSpans) && (
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger
             className='border-none bg-transparent shadow-none'
             asChild
@@ -217,7 +217,10 @@ export function CommentAction({
                 </DropdownMenuItem>
               )}
               {canDelete && (
-                <DropdownMenuItem className='cursor-pointer p-0! transition-all duration-200 ease-linear'>
+                <DropdownMenuItem
+                  className='cursor-pointer p-0! transition-all duration-200 ease-linear'
+                  onSelect={(e) => e.preventDefault()}
+                >
                   <ConfirmModal
                     message='Bạn có chắc chắn muốn xóa bình luận này không ?'
                     onConfirm={onDelete}

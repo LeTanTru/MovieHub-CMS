@@ -36,8 +36,8 @@ export function CollapsibleMenuItem({ item }: CollapsibleMenuItemProps) {
     }))
   );
 
-  const [hovered, setHovered] = useState(false);
-  const [flyoutHovered, setFlyoutHovered] = useState(false);
+  const [hovered, setHovered] = useState<boolean>(false);
+  const [flyoutHovered, setFlyoutHovered] = useState<boolean>(false);
   const showFlyout = hovered || flyoutHovered;
   const [pos, setPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 

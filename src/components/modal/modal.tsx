@@ -150,7 +150,7 @@ export function Modal({
   ...rest
 }: ModalProps) {
   const isMounted = useIsMounted();
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
   useIsomorphicLayoutEffect(() => {
     if (!open) return;
@@ -280,7 +280,7 @@ function Header({ children, className }: HeaderProps) {
 
 function Body({ children, className, ref, scrollable }: BodyProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [showScrollArrow, setShowScrollArrow] = useState(false);
+  const [showScrollArrow, setShowScrollArrow] = useState<boolean>(false);
 
   useIsomorphicLayoutEffect(() => {
     if (!scrollable) return;

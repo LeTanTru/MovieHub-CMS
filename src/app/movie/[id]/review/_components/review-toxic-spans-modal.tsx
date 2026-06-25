@@ -43,7 +43,7 @@ export function ReviewToxicSpansModal({
 }: ReviewToxicSpansModalProps) {
   const content = review.content ?? '';
   const previewRef = useRef<HTMLDivElement>(null);
-  const [isFormChanged, setIsFormChanged] = useState(false);
+  const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
   const { mutate: updateReviewToxicSpans, isPending } =
     useUpdateReviewToxicSpansMutation();
 

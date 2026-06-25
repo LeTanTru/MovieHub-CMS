@@ -172,7 +172,7 @@ export function TopMovies() {
   const [dateFilters, setDateFilters] =
     useState<OverviewSearchType>(defaultDateFilters);
   const [sortBy, setSortBy] = useState<TopMoviesSortBy>('viewCount');
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const params: TopMoviesSearchType = useMemo(
     () => ({

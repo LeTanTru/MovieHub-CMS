@@ -172,7 +172,7 @@ export function UploadImageField<T extends FieldValues>({
   const [keepOriginalSize, setKeepOriginalSize] =
     useState<boolean>(originalSize);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState<boolean>(false);
 
   const {
     field: { value: fieldValue, onChange: fieldOnChange },

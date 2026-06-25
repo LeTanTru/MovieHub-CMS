@@ -9,6 +9,14 @@ type UseMqttType<T> = {
   callback: (data: T) => void;
 };
 
+/**
+ * Hook to subscribe to an MQTT topic and handle messages with a specific command.
+ *
+ * @param params - The MQTT subscription details.
+ * @param params.topic - The MQTT topic to subscribe to.
+ * @param params.cmd - The command key to check in the incoming message.
+ * @param params.callback - The callback function invoked when a message with matching command is received.
+ */
 export const useMqtt = <T>({ topic, cmd, callback }: UseMqttType<T>) => {
   const callbackRef = useRef(callback);
   callbackRef.current = callback;

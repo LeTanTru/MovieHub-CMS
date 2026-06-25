@@ -71,7 +71,7 @@ export function UploadVideoField<T extends FieldValues>({
   const [progress, setProgress] = useState<number>(0);
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
   const [sizeError, setSizeError] = useState<string>('');
-  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState<boolean>(false);
 
   const prevFileId = useRef<string | null>(null);
   const uploadStartTimeRef = useRef<number | null>(null);

@@ -32,18 +32,11 @@ import { invalidateQueries, notify, renderListPageUrl } from '@/utils';
 import { logger } from '@/logger';
 import { NotificationList } from './notification-list';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useState } from 'react';
 
 const NOTIFICATION_BADGE_MAX_DISPLAY = 9;
 
 export function DropdownNotification() {
   const { serializeParams } = useQueryParams();
-
-  const [params, setParams] = useState<NotificationSearchType>({
-    type: String(NOTIFICATION_TYPE_SYSTEM),
-    page: DEFAULT_TABLE_PAGE_START,
-    size: NOTIFICATION_PAGE_SIZE
-  });
 
   const {
     opened: openedDropdown,
@@ -72,7 +65,8 @@ export function DropdownNotification() {
     loading,
     fetching,
     handlers,
-    totalElements
+    totalElements,
+    queryFilter
   } = useInfiniteListBase<NotificationResType, NotificationSearchType>({
     apiConfig: apiConfig.notification,
     options: {
@@ -80,8 +74,11 @@ export function DropdownNotification() {
       queryKey: queryKeys.NOTIFICATION,
       pageSize: NOTIFICATION_PAGE_SIZE,
       enabled: openedDropdown,
-      defaultFilters: params,
-      notShowFromSearchParams: ['type', 'page', 'size'],
+      defaultFilters: {
+        type: String(NOTIFICATION_TYPE_SYSTEM),
+        page: DEFAULT_TABLE_PAGE_START,
+        size: NOTIFICATION_PAGE_SIZE
+      } as NotificationSearchType,
       syncSearchParams: false
     }
   });
@@ -142,7 +139,7 @@ export function DropdownNotification() {
     return null;
 
   const handleChangeTab = (type: string) => {
-    setParams((prev) => ({ ...prev, type }));
+    handlers.setQueryParam('type', type as NotificationSearchType['type']);
   };
 
   return (
@@ -181,7 +178,7 @@ export function DropdownNotification() {
             <div className='z-2 before:absolute before:-top-4 before:left-0 before:h-4 before:w-full before:bg-transparent'></div>
             <div className='absolute -top-2 right-10 border-r-8 border-b-8 border-l-8 border-r-transparent border-b-white border-l-transparent'></div>
             <Tabs
-              value={String(params.type)}
+              value={String(queryFilter.type)}
               className='flex-1 gap-0 rounded'
               onValueChange={handleChangeTab}
             >
@@ -265,7 +262,7 @@ export function DropdownNotification() {
                   className='hover:text-sporty-blue inline-block transition-colors duration-200 ease-linear'
                   href={renderListPageUrl(
                     route.notification.getList.path,
-                    serializeParams({ type: params.type })
+                    serializeParams({ type: queryFilter.type })
                   )}
                 >
                   Xem tất cả

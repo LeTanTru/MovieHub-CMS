@@ -17,7 +17,7 @@ export function SettingTab() {
   const defaultTab =
     getData(storageKeys.ACTIVE_SETTING_TAB) || TAB_SETTING_GENERAL;
 
-  const [activeTab, setActiveTab] = useState(defaultTab);
+  const [activeTab, setActiveTab] = useState<string>(defaultTab);
   const isMounted = useIsMounted();
 
   const tabs = [

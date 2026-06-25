@@ -142,6 +142,14 @@ const STATUS_COLOR_ALPHA = 80;
 const STATUS_BACKGROUND_ALPHA = 10;
 const INFINITE_SCROLL_THRESHOLD = 100;
 
+/**
+ * Hook to manage an infinite scrolling list page with filtering and delete operations.
+ *
+ * @param params - The infinite list base configurations.
+ * @param params.apiConfig - Endpoints for list, CRUD, and delete operations.
+ * @param params.options - Listing behavior options like page size, filters, permissions, etc.
+ * @param params.override - Callback to override standard event handlers.
+ */
 export const useInfiniteListBase = <
   T extends { id: string },
   S extends BaseSearchType

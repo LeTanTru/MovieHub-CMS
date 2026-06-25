@@ -45,13 +45,13 @@ export function ReviewItem({
   const isHidden = review.status === REVIEW_STATUS_HIDE;
   const toxicSpans = parseToxicSpans(review.toxicSpans) ?? [];
   const hasToxicSpans = toxicSpans.length > 0;
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const canViewHiddenContent = isHidden || !!hasToxicSpans;
   const isBlurWholeContent = isHidden && !isVisible && !hasToxicSpans;
   const hasPermission = useValidatePermission();
 
   const scrollTargetName = `review-${review.id}`;
-  const [isScrollTarget, setIsScrollTarget] = useState(false);
+  const [isScrollTarget, setIsScrollTarget] = useState<boolean>(false);
 
   const {
     opened: openedReviewToxicSpansModal,
@@ -59,7 +59,7 @@ export function ReviewItem({
     close: closeReviewToxicSpansModal
   } = useDisclosure();
 
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
 
   const { mutate: changeReviewStatus, isPending } =
     useChangeReviewStatusMutation();

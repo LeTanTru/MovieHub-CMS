@@ -19,7 +19,7 @@ export function PersonTab() {
   const defaultTab =
     getData(storageKeys.ACTIVE_TAB_MOVIE_PERSON_KIND) ||
     TAB_MOVIE_PERSON_KIND_ACTOR;
-  const [activeTab, setActiveTab] = useState(defaultTab);
+  const [activeTab, setActiveTab] = useState<string>(defaultTab);
 
   const isMounted = useIsMounted();
 

@@ -23,6 +23,18 @@ type UseDragDropType<T extends { id: string }> = {
   mappingData?: (record: T, index: number) => Record<string, unknown>;
 };
 
+/**
+ * Hook to manage drag and drop ordering updates for lists.
+ *
+ * @param params - The drag and drop configuration and state parameters.
+ * @param params.key - The query key used for query invalidation after updates.
+ * @param params.objectName - The descriptive name of the entity being ordered.
+ * @param params.data - The raw list data before sorting.
+ * @param params.apiConfig - The API endpoint configuration to update the ordering.
+ * @param params.sortField - The field name by which list items are ordered (defaults to 'ordering').
+ * @param params.updateOnDragEnd - Automatically call the update API when drag ends.
+ * @param params.mappingData - Optional callback to map item attributes for the API payload.
+ */
 export const useDragDrop = <T extends { id: string }>({
   key,
   objectName,
