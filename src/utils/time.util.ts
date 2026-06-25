@@ -8,6 +8,9 @@ import {
 
 const CLOCK_TIME_PATTERN = /^(?:\d{2,}:)?[0-5]\d:[0-5]\d(?:\.\d{1,3})?$/;
 
+/**
+ * @param time The time string to parse
+ */
 function parseClockTime(time: string) {
   const normalizedTime = time.trim();
   if (!normalizedTime) return null;
@@ -39,6 +42,9 @@ function parseClockTime(time: string) {
   };
 }
 
+/**
+ * @param time The time string to convert
+ */
 export const timeToSeconds = (
   time: string | number | null | undefined
 ): number => {
@@ -58,9 +64,15 @@ export const timeToSeconds = (
   );
 };
 
+/**
+ * @param time The time string to validate
+ */
 export const isValidClockTime = (time: string): boolean =>
   CLOCK_TIME_PATTERN.test(time.trim()) && parseClockTime(time) !== null;
 
+/**
+ * @param totalSeconds The total number of seconds
+ */
 export const secondsToTime = (totalSeconds: number): string => {
   if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return DEFAULT_TIME;
 
@@ -74,6 +86,9 @@ export const secondsToTime = (totalSeconds: number): string => {
   return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 };
 
+/**
+ * @param totalSeconds The total number of seconds
+ */
 export const secondsToVttTime = (totalSeconds: number): string => {
   if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) {
     return SUBTITLE_TIME_PLACEHOLDER;
@@ -95,6 +110,9 @@ export const secondsToVttTime = (totalSeconds: number): string => {
   ).padStart(3, '0')}`;
 };
 
+/**
+ * @param n The number to pad
+ */
 function pad(n: number): string {
   return String(n).padStart(2, '0');
 }

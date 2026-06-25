@@ -13,6 +13,7 @@
 | API config       | `src/constants/api-config.ts`                            | Endpoint URLs, methods, headers, permission codes                       |
 | Env config       | `src/config.ts`                                          | Zod-validated public environment                                        |
 | Stores           | `src/store/*`                                            | Zustand client state                                                    |
+| Proxy            | `src/proxy.ts`                                           | Proxy matcher for internal APIs                                         |
 
 ## App Route Modules
 
@@ -20,7 +21,6 @@
 | ------------------- | ------------------------------------ | ------------------------------------------------------------- |
 | Auth                | `src/app/(auth)`                     | Login page and login form                                     |
 | Profile             | `src/app/profile`                    | Current user profile view and edit                            |
-| Actions             | `src/app/actions`                    | Server actions (Next.js server action handlers)               |
 | Admin               | `src/app/admin`                      | Admin account list and create/edit                            |
 | Employee            | `src/app/employee`                   | Employee list and create/edit                                 |
 | User                | `src/app/user`                       | End-user management                                           |
@@ -37,7 +37,6 @@
 | Setting             | `src/app/setting`                    | Dynamic platform settings                                     |
 | Notification        | `src/app/notification`               | Notification list and read/delete actions                     |
 | Statistics          | `src/app/statistics`                 | Overview, movie distribution, top movies                      |
-| User report         | `src/app/user-report`                | CMS interface for handling user reports on comments/reviews   |
 | Static public pages | `src/app/contact`, `src/app/privacy` | Public routes with no auth                                    |
 
 ## Internal API Routes
@@ -112,15 +111,14 @@ Query modules live in `src/queries` and map backend domains to TanStack Query ho
 - `group-permission.query.ts`
 - `movie-item.query.ts`
 - `movie-person.query.ts`
-- `movie-sidebar.query.ts`
 - `notification.query.ts`
 - `permission.query.ts`
 - `review.query.ts`
 - `server-config.query.ts`
+- `setting.query.ts`
 - `sidebar.query.ts`
 - `statistics.query.ts`
 - `user.query.ts`
-- `user-report.query.ts`
 - `video-library.query.ts`
 - `video-library-subtitle.query.ts`
 

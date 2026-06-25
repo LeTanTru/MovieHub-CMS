@@ -1,6 +1,6 @@
-# Utility Hooks Documentation
+# Utility Hooks & Functions Documentation
 
-This document provides a deep dive into the general-purpose utility hooks used throughout the MovieHub CMS application. Each hook is designed to encapsulate complex logic, ensure type safety, and enforce consistent patterns across the codebase.
+This document provides a deep dive into the general-purpose utility hooks and core utility functions used throughout the MovieHub CMS application. Each utility is designed to encapsulate complex logic, ensure type safety, and enforce consistent patterns across the codebase.
 
 ---
 
@@ -200,3 +200,36 @@ Returns a `boolean` indicating whether the component has mounted on the client. 
 
 **File**: `src/hooks/use-isomorphic-layout-effect.ts`
 Resolves to `useLayoutEffect` on the client and `useEffect` on the server. This prevents React from emitting SSR warnings while still maintaining synchronous DOM mutation timing on the client.
+
+---
+
+## Utility Functions
+
+Located in the `src/utils/` directory, these are pure functions and standard side-effect utilities that do not rely on React's component lifecycle.
+
+### `http.util.ts`
+
+Manages the core Axios instance (`axiosInstance`) and handles all outgoing HTTP requests via the exported `sendRequest` and `http` objects.
+
+- **Token Rotation**: Implements a 401 interceptor that pauses failed requests, fetches a new access token via the refresh endpoint, and replays the queued requests.
+- **Atomic Logout**: If token refresh fails, it automatically clears the Zustand `useAuthStore` and redirects the user to the login page.
+
+### `text.util.ts`
+
+Contains string manipulation helpers.
+
+- **`parseSelectOptions(options)`**: Safely parses a stringified JSON array into `{ label, value }` option arrays for Select components.
+- **`parseVttContent(content)`**: Parses standard `.vtt` file content into structured `SubtitleType[]` arrays for the subtitle editor.
+
+### `time.util.ts`
+
+Contains date and time formatting helpers, often wrapping standard JS APIs or `date-fns`.
+
+- **`secondsToVttTime(seconds)`**: Converts a float timestamp into standard `HH:MM:SS.mmm` VTT format.
+- **`timeToSeconds(timeStr)`**: Parses a VTT timestamp back into a float.
+
+### `validate-permission.util.ts`
+
+The pure-function counterpart to `useValidatePermission`.
+
+- **`hasPermission(options)`**: Takes the user's current permissions array and kind, and checks them against the required permission blocks. Useful for checking permissions outside of React components (e.g., inside route definitions or middleware-like checks).

@@ -2,6 +2,9 @@ import { logger } from '@/logger';
 import { JwtType } from '@/types';
 import { jwtDecode } from 'jwt-decode';
 
+/**
+ * @param token The JWT token to decode
+ */
 export const decodeJwt = (token: string): JwtType | null => {
   try {
     return jwtDecode(token);
@@ -11,6 +14,9 @@ export const decodeJwt = (token: string): JwtType | null => {
   return null;
 };
 
+/**
+ * @param token The JWT token to check for expiration
+ */
 export const isTokenExpired = (token: string | null): boolean => {
   if (!token) return true;
 
@@ -21,6 +27,10 @@ export const isTokenExpired = (token: string | null): boolean => {
   return payload.exp < now;
 };
 
+/**
+ * @param token The JWT token to check
+ * @param thresholdMinutes The number of minutes before expiration to consider "expiring soon"
+ */
 export const isTokenExpiringSoon = (
   token: string | null,
   thresholdMinutes = 15

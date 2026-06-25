@@ -2,6 +2,11 @@ import { DATE_TIME_FORMAT } from '@/constants';
 import { logger } from '@/logger';
 import { format as formatFn, isValid, parse } from 'date-fns';
 
+/**
+ * @param date The date string to format
+ * @param outputFormat The desired format string for the output (defaults to DATE_TIME_FORMAT)
+ * @param inputFormat The format string of the input date (defaults to DATE_TIME_FORMAT)
+ */
 export const formatDate = (
   date: string | null | undefined,
   outputFormat: string = DATE_TIME_FORMAT,
@@ -21,6 +26,11 @@ export const formatDate = (
   }
 };
 
+/**
+ * @param date The local date string to convert
+ * @param inputFormat The format string of the input date
+ * @param outputFormat The format string for the UTC output date
+ */
 export const convertLocalToUTC = (
   date: string | null,
   inputFormat: string = DATE_TIME_FORMAT,
@@ -43,6 +53,11 @@ export const convertLocalToUTC = (
   }
 };
 
+/**
+ * @param date The UTC date string to convert
+ * @param inputFormat The format string of the input UTC date
+ * @param outputFormat The format string for the local output date
+ */
 export const convertUTCToLocal = (
   date: string | null,
   inputFormat: string = DATE_TIME_FORMAT,
@@ -65,6 +80,10 @@ export const convertUTCToLocal = (
   }
 };
 
+/**
+ * @param dateStr The date string to calculate the relative time from
+ * @param short Whether to return a shortened time string (e.g., '5m' instead of '5 phút trước')
+ */
 export const timeAgo = (dateStr: string, short = false) => {
   if (!dateStr) return short ? '0s' : 'Vừa xong';
 
@@ -106,6 +125,9 @@ export const timeAgo = (dateStr: string, short = false) => {
   }
 };
 
+/**
+ * @param dateStr The date string to extract the year from
+ */
 export const getYearFromDate = (dateStr?: string) => {
   if (!dateStr) return 'N/A';
 

@@ -16,11 +16,17 @@ import {
 const VTT_HEADER_PATTERN = /^\uFEFF?WEBVTT(?:\s.*)?$/i;
 const VTT_METADATA_BLOCK_PATTERN = /^(NOTE(?:\s.*)?|STYLE|REGION)$/i;
 
+/**
+ * @param text The input string
+ */
 export const getLastWord = (text: string): string => {
   const words = text.trim().split(/\s+/);
   return words[words.length - 1] || '';
 };
 
+/**
+ * @param options The stringified select options
+ */
 export const parseSelectOptions = (options?: null | string): OptionType[] => {
   if (!options) return [];
 
@@ -53,6 +59,9 @@ export const parseSelectOptions = (options?: null | string): OptionType[] => {
   }
 };
 
+/**
+ * @param json The JSON string to parse
+ */
 export const parseJSON = <T>(json: string): T | null => {
   try {
     return JSON.parse(json) as T;
@@ -62,12 +71,20 @@ export const parseJSON = <T>(json: string): T | null => {
   }
 };
 
+/**
+ * @param index The index of the subtitle
+ * @param startTime The start time of the subtitle
+ * @param endTime The end time of the subtitle
+ */
 export const createSubtitleId = (
   index: number,
   startTime: number,
   endTime: number
 ): string => `subtitle-${index}-${startTime}-${endTime}`;
 
+/**
+ * @param content The VTT file content string
+ */
 export const parseVttContent = (content: string): SubtitleType[] => {
   const lines = content.replace(/^\uFEFF/, '').split(/\r?\n/);
   const subtitles: SubtitleType[] = [];
@@ -149,6 +166,9 @@ export const parseVttContent = (content: string): SubtitleType[] => {
   return subtitles;
 };
 
+/**
+ * @param subtitles The array of subtitles to serialize
+ */
 export const serializeVttContent = (subtitles: SubtitleType[]): string => {
   const lines = ['WEBVTT', ''];
 
@@ -172,6 +192,9 @@ export const serializeVttContent = (subtitles: SubtitleType[]): string => {
   return `${lines.join('\n')}\n`;
 };
 
+/**
+ * @param value The value to parse into a boolean
+ */
 export const parseBooleanValue = (
   value: boolean | number | string | undefined
 ) => {
@@ -181,6 +204,9 @@ export const parseBooleanValue = (
   return value?.toLowerCase() === 'true';
 };
 
+/**
+ * @param value The boolean-like value to stringify
+ */
 export const stringifyBooleanValue = (value: boolean | number | string) => {
   if (typeof value === 'boolean') return String(value);
   if (typeof value === 'number') return value === 1 ? 'true' : 'false';
@@ -188,6 +214,9 @@ export const stringifyBooleanValue = (value: boolean | number | string) => {
   return value.toLowerCase() === 'true' ? 'true' : 'false';
 };
 
+/**
+ * @param value The stringified toxic spans
+ */
 export const parseToxicSpans = (
   value: string | null | undefined
 ): ToxicSpan[] | null => {
@@ -216,6 +245,10 @@ export const parseToxicSpans = (
   }
 };
 
+/**
+ * @param spans The array of toxic spans to normalize
+ * @param contentLength The length of the content
+ */
 export const normalizeToxicSpans = (
   spans: ToxicSpan[],
   contentLength: number
@@ -253,6 +286,10 @@ export const normalizeToxicSpans = (
   }, []);
 };
 
+/**
+ * @param content The text content
+ * @param spans The toxic spans
+ */
 export const createToxicSpanPreviews = (
   content: string,
   spans: ToxicSpan[]
@@ -262,6 +299,10 @@ export const createToxicSpanPreviews = (
     text: content.slice(span.start, span.end)
   }));
 
+/**
+ * @param content The text content
+ * @param spans The toxic spans
+ */
 export const createToxicSpanSegments = (
   content: string,
   spans: ToxicSpan[]
@@ -301,6 +342,10 @@ export const createToxicSpanSegments = (
   return segments;
 };
 
+/**
+ * @param node The DOM node
+ * @param container The container HTMLElement
+ */
 export const getSegmentFromNode = (
   node: Node,
   container: HTMLElement
@@ -316,6 +361,11 @@ export const getSegmentFromNode = (
   return segment;
 };
 
+/**
+ * @param container The container HTMLElement
+ * @param boundaryContainer The boundary node from a selection
+ * @param boundaryOffset The offset within the boundary node
+ */
 export const getBoundaryOffset = (
   container: HTMLElement,
   boundaryContainer: Node,
@@ -350,6 +400,9 @@ export const getBoundaryOffset = (
   return segmentStart + localOffset;
 };
 
+/**
+ * @param container The container HTMLElement containing the text
+ */
 export const getSelectedToxicSpan = (
   container: HTMLElement
 ): ToxicSpan | null => {

@@ -2,7 +2,13 @@ import { menuConfig } from '@/constants';
 import type { MenuItem } from '@/types';
 import { validatePermission } from '@/utils/validate-permission.util';
 
+/**
+ * @param userPermissions The list of permission codes the user has
+ */
 export const getFirstActiveRoute = (userPermissions: string[]): string => {
+  /**
+   * @param menu The menu items to filter
+   */
   const filterMenuByPermission = (menu: MenuItem[]): MenuItem[] => {
     return menu.flatMap((item) => {
       let children: MenuItem[] | undefined;
@@ -25,6 +31,9 @@ export const getFirstActiveRoute = (userPermissions: string[]): string => {
 
   const filteredMenu = filterMenuByPermission(menuConfig);
 
+  /**
+   * @param menu The menu items to search
+   */
   const findFirstPath = (menu: MenuItem[]): MenuItem | null => {
     for (const item of menu) {
       if (item.path) return item;
