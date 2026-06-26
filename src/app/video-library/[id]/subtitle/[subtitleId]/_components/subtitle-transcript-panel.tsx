@@ -10,11 +10,11 @@ import {
   VideoLibrarySubtitleResType
 } from '@/types';
 import { parseVttContent, renderVttUrl } from '@/utils';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useIsomorphicLayoutEffect } from '@/hooks';
 import { useShallow } from 'zustand/react/shallow';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { logger } from '@/logger';
+import { useVideoSubtitleContentQuery } from '@/queries';
 import { SubtitleList } from './subtitle-list';
 import { SubtitleHeader } from './subtitle-header';
 
@@ -81,8 +81,40 @@ export function SubtitleTranscriptPanel({
     setDuration(videoLibrary.duration);
   }, [videoLibrary.duration, setDuration]);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const vttUrl = renderVttUrl(
+    videoLibrary.hostname,
+    videoSubtitle.fileUrl,
+    videoLibrary.sourceType
+  );
 
+  const {
+    data: content,
+    isLoading,
+    isError
+  } = useVideoSubtitleContentQuery(vttUrl);
+
+  const parsedSubtitles = useMemo(
+    () => (content ? parseVttContent(content) : undefined),
+    []
+  );
+
+  useIsomorphicLayoutEffect(() => {
+    if (parsedSubtitles) {
+      setSelectedSubtitleId(null);
+      setSubtitles(parsedSubtitles);
+      setOriginalSubtitles(parsedSubtitles);
+    } else if (isError) {
+      setSelectedSubtitleId(null);
+      setSubtitles([]);
+      setOriginalSubtitles([]);
+    }
+  }, [
+    parsedSubtitles,
+    isError,
+    setSelectedSubtitleId,
+    setSubtitles,
+    setOriginalSubtitles
+  ]);
   const parentRef = useRef<HTMLDivElement>(null);
 
   const activeIndexRef = useRef<number>(-1);
@@ -137,60 +169,6 @@ export function SubtitleTranscriptPanel({
     subtitles,
     rowVirtualizer,
     parentRef
-  ]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const getVttContent = async () => {
-      setIsLoading(true);
-      try {
-        const res = await fetch(
-          renderVttUrl(
-            videoLibrary.hostname,
-            videoSubtitle.fileUrl,
-            videoLibrary.sourceType
-          ),
-          { cache: 'no-store', signal: controller.signal }
-        );
-
-        if (!res.ok) {
-          throw new Error(`Failed to fetch VTT content: ${res.status}`);
-        }
-
-        const content = await res.text();
-        const parsedSubtitles = parseVttContent(content);
-
-        setSelectedSubtitleId(null);
-        setSubtitles(parsedSubtitles);
-        setOriginalSubtitles(parsedSubtitles);
-      } catch (error) {
-        if (controller.signal.aborted) return;
-
-        logger.error('[GET_VTT_CONTENT_ERROR]', error);
-
-        setSelectedSubtitleId(null);
-        setSubtitles([]);
-        setOriginalSubtitles([]);
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    getVttContent();
-
-    return () => {
-      controller.abort();
-    };
-  }, [
-    setSubtitles,
-    setOriginalSubtitles,
-    setSelectedSubtitleId,
-    videoSubtitle.fileUrl,
-    videoLibrary.hostname,
-    videoLibrary.sourceType
   ]);
 
   return (

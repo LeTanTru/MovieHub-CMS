@@ -16,78 +16,39 @@ import {
 } from 'framer-motion';
 import { cn } from '@/lib';
 import { createPortal } from 'react-dom';
-import { useIsomorphicLayoutEffect, useIsMounted } from '@/hooks';
+import { useIsMounted, useIsomorphicLayoutEffect } from '@/hooks';
 import { X, ChevronDown, Info } from 'lucide-react';
 import { Button } from '@/components/form/button';
 
 const SCROLL_BOTTOM_THRESHOLD_PX = 10;
 const SCROLL_DOWN_AMOUNT_PX = 200;
 const SCROLL_ARROW_ANIMATION_OFFSET_PX = 10;
-const MODAL_LOCK_ATTRIBUTE = 'data-modal-scroll-lock';
-
 let openModalCount = 0;
-let originalBodyOverflow = '';
-let originalBodyMarginRight = '';
-let originalHeaderPaddingRight: string | null = null;
-
-const getScrollbarCompensation = () => {
-  if (typeof window === 'undefined') return 0;
-
-  return window.innerWidth - document.documentElement.clientWidth;
-};
 
 const lockScroll = () => {
   if (typeof document === 'undefined') return;
 
   openModalCount += 1;
-
   if (openModalCount > 1) return;
 
-  const body = document.body;
-  const header = document.querySelector<HTMLElement>('.header');
-  const hasVerticalScroll =
-    document.documentElement.scrollHeight > window.innerHeight;
-  const scrollbarCompensation = getScrollbarCompensation();
+  const scrollbarWidth =
+    window.innerWidth - document.documentElement.clientWidth;
 
-  originalBodyOverflow = body.style.overflow;
-  originalBodyMarginRight = body.style.marginRight;
-
-  body.style.overflow = 'hidden';
-
-  if (hasVerticalScroll) {
-    body.style.marginRight = `${scrollbarCompensation}px`;
-
-    if (header && getComputedStyle(header).position === 'fixed') {
-      originalHeaderPaddingRight = header.style.paddingRight;
-      header.style.paddingRight = `${scrollbarCompensation}px`;
-      header.setAttribute(MODAL_LOCK_ATTRIBUTE, 'true');
-    }
-  } else {
-    originalHeaderPaddingRight = null;
-  }
+  document.documentElement.style.setProperty(
+    '--scrollbar-width',
+    `${scrollbarWidth}px`
+  );
+  document.documentElement.classList.add('modal-open');
 };
 
 const unlockScroll = () => {
   if (typeof document === 'undefined' || openModalCount === 0) return;
 
   openModalCount -= 1;
-
   if (openModalCount > 0) return;
 
-  const body = document.body;
-  const header = document.querySelector<HTMLElement>('.header');
-
-  body.style.overflow = originalBodyOverflow;
-  body.style.marginRight = originalBodyMarginRight;
-
-  if (header?.getAttribute(MODAL_LOCK_ATTRIBUTE) === 'true') {
-    header.style.paddingRight = originalHeaderPaddingRight ?? '';
-    header.removeAttribute(MODAL_LOCK_ATTRIBUTE);
-  }
-
-  originalBodyOverflow = '';
-  originalBodyMarginRight = '';
-  originalHeaderPaddingRight = null;
+  document.documentElement.classList.remove('modal-open');
+  document.documentElement.style.removeProperty('--scrollbar-width');
 };
 
 type ModalContextType = {
@@ -147,10 +108,11 @@ export function Modal({
     animate: { opacity: 1, scale: 1 },
     exit: { opacity: 0.5, scale: 0.85 }
   },
+  transition,
   ...rest
 }: ModalProps) {
   const isMounted = useIsMounted();
-  const [showConfirm, setShowConfirm] = useState<boolean>(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useIsomorphicLayoutEffect(() => {
     if (!open) return;
@@ -209,7 +171,7 @@ export function Modal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.1, ease: 'linear' }}
+            transition={transition || { duration: 0.1, ease: 'linear' }}
           />
           <ModalContext.Provider
             value={{
@@ -221,17 +183,16 @@ export function Modal({
             }}
           >
             <m.div
+              data-modal-portal=''
               className='fixed inset-0 z-50 overflow-auto'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.1, ease: 'linear' }}
               onClick={(e) => {
                 e.stopPropagation();
                 if (closeOnBackdrop) handleClose();
               }}
             >
               <m.div
+                role='dialog'
+                aria-modal='true'
                 className={cn(
                   'relative top-25 mx-auto w-175 rounded-lg bg-white shadow-black/40',
                   className
@@ -239,7 +200,7 @@ export function Modal({
                 initial={variants.initial}
                 animate={variants.animate}
                 exit={variants.exit}
-                transition={{ duration: 0.15, ease: 'linear' }}
+                transition={transition || { duration: 0.15, ease: 'linear' }}
                 onClick={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
                 {...rest}
@@ -280,7 +241,7 @@ function Header({ children, className }: HeaderProps) {
 
 function Body({ children, className, ref, scrollable }: BodyProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [showScrollArrow, setShowScrollArrow] = useState<boolean>(false);
+  const [showScrollArrow, setShowScrollArrow] = useState(false);
 
   useIsomorphicLayoutEffect(() => {
     if (!scrollable) return;
@@ -351,6 +312,8 @@ function Confirm({ message, className }: ConfirmProps) {
     <AnimatePresence>
       {showConfirm && (
         <m.div
+          data-modal-backdrop=''
+          data-modal-portal=''
           className='fixed inset-0 z-9999 flex items-center justify-center rounded-lg bg-black/40'
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

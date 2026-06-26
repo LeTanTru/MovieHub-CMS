@@ -135,6 +135,7 @@ export const videoLibraryQueryKeys = {
   VIDEO_LIBRARY_LIST: 'video-library-list',
   VIDEO_LIBRARY_SUBTITLE_LIST: 'video-library-subtitle-list',
   VIDEO_LIBRARY_SUBTITLE_TRANSLATE: 'video-library-subtitle-translate',
+  VIDEO_LIBRARY_SUBTITLE_CONTENT: 'video-library-subtitle-content',
   VIDEO_LIBRARY_SUBTITLE: 'video-library-subtitle',
   VIDEO_LIBRARY: 'video-library'
 };

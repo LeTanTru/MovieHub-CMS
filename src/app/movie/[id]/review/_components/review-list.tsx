@@ -25,7 +25,7 @@ export function ReviewList() {
   const { searchParams, serializeParams, deprefixParams } =
     useQueryParams<Record<string, string>>();
   const parentParams = deprefixParams(searchParams);
-  const { movieTitle, parentPage, ...restParentParams } = parentParams;
+  const { movieTitle, page, ...restParentParams } = parentParams;
 
   const { targetReviewId, clearScrollTarget } = useReviewStore(
     useShallow((s) => ({
@@ -74,7 +74,7 @@ export function ReviewList() {
           label: 'Phim',
           href: renderListPageUrl(
             route.movie.getList.path,
-            serializeParams({ ...restParentParams, page: parentPage })
+            serializeParams({ ...restParentParams, page })
           )
         },
         { label: (movieTitle as string) || 'Chi tiết' },
