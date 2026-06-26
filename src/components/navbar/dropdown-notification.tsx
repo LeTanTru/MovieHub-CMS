@@ -245,7 +245,11 @@ export function DropdownNotification() {
                 )}
               </div>
               {notificationTabs.map((tab) => (
-                <TabsContent key={tab.value} value={tab.value.toString()}>
+                <TabsContent
+                  className='mt-0'
+                  key={tab.value}
+                  value={tab.value.toString()}
+                >
                   <NotificationList
                     notificationList={notificationList}
                     canDelete={canDelete}

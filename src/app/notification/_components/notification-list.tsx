@@ -200,7 +200,7 @@ export function NotificationList() {
         })}
       >
         {notificationList.length ? (
-          <List className='scrollbar-none flex flex-col overflow-y-auto rounded bg-white'>
+          <List className='flex flex-col overflow-y-auto rounded bg-white'>
             {notificationList.map((notification) => (
               <NotificationItem
                 key={notification.id}

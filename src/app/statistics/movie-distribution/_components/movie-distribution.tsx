@@ -313,7 +313,7 @@ export function MovieDistribution() {
                       </span>
                     </div>
                   </div>
-                  <div className='scrollbar-none grid max-h-52 gap-2 overflow-y-auto pr-1 text-sm'>
+                  <div className='grid max-h-52 gap-2 overflow-y-auto pr-1 text-sm'>
                     {chartData.map((item, index) => (
                       <div
                         key={`${item.label}-${index}`}
