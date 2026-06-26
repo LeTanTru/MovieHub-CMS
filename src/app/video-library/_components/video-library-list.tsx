@@ -156,7 +156,7 @@ export function VideoLibraryList() {
                   prefixParams({
                     ...resetSearchParams,
                     videoName: video.name,
-                    parentPage: page
+                    page
                   })
                 )
               )

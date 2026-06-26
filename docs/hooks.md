@@ -38,3 +38,12 @@ Contains general-purpose hooks for routing, real-time, UI state, and permissions
 - `useMobile`: Viewport media query tracking.
 - `useIsMounted`: Client hydration state tracking.
 - `useIsomorphicLayoutEffect`: SSR-safe layout effects.
+
+## 4. [Utility Functions](./utility-hooks.md#utility-functions)
+
+Contains core helper functions that are pure or side-effect utilities not bound to the React component lifecycle. Located in `src/utils/`.
+
+- `http.util.ts`: Configures Axios interceptors for JWT token rotation and request deduping.
+- `text.util.ts`: Text formatting, HTML parsing, and VTT subtitle utilities.
+- `time.util.ts`: Time conversions and date formatting.
+- `validate-permission.util.ts`: Pure functions for role-based access control.

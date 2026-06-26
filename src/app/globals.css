@@ -2,6 +2,19 @@
 @import 'tw-animate-css';
 @import '../styles/grid.css';
 
+html.modal-open {
+  overflow: hidden;
+  padding-right: var(--scrollbar-width, 0px);
+}
+
+html.modal-open .header {
+  padding-right: var(--scrollbar-width, 0px);
+}
+
+html.modal-open [data-modal-portal] {
+  padding-right: var(--scrollbar-width, 0px);
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

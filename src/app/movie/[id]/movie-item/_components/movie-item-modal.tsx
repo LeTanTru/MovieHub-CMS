@@ -82,10 +82,10 @@ export function MovieItemModal({
   movieItem
 }: MovieItemModalProps) {
   const {
-    searchParams: { type }
-  } = useQueryParams<{ type: string }>();
+    searchParams: { p_type }
+  } = useQueryParams<{ p_type: string }>();
 
-  const movieType = Number(type || 0);
+  const movieType = Number(p_type || 0);
 
   const { id: movieId, movieItemId } = useParams<{
     id: string;

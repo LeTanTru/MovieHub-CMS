@@ -87,7 +87,7 @@ export function MovieList() {
                   prefixParams({
                     ...resetSearchParams,
                     movieTitle: record.title,
-                    parentPage: page
+                    page
                   })
                 )
               )
@@ -122,7 +122,7 @@ export function MovieList() {
                   prefixParams({
                     ...resetSearchParams,
                     movieTitle: record.title,
-                    parentPage: page
+                    page
                   })
                 )
               )
@@ -157,7 +157,7 @@ export function MovieList() {
                   prefixParams({
                     ...resetSearchParams,
                     movieTitle: record.title,
-                    parentPage: page
+                    page
                   })
                 )
               )
@@ -227,7 +227,7 @@ export function MovieList() {
                 ...resetSearchParams,
                 type: record.type,
                 movieTitle: record.title,
-                parentPage: page
+                page
               })
             )}`}
             className={cn(

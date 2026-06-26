@@ -15,7 +15,8 @@ import {
   movieItemKindOptions,
   movieItemSeriesKindOptions,
   movieItemSingleKindOptions,
-  queryKeys
+  queryKeys,
+  VIDEO_LIBRARY_STATE_COMPLETE
 } from '@/constants';
 import {
   useDisclosure,
@@ -23,7 +24,6 @@ import {
   useListBase,
   useQueryParams
 } from '@/hooks';
-import { cn } from '@/lib';
 import { route } from '@/routes';
 import { movieItemSearchSchema } from '@/schema-validations';
 import type {
@@ -62,8 +62,7 @@ export function MovieItemSeasonDetailList() {
   const { searchParams, serializeParams, deprefixParams, prefixParams } =
     useQueryParams<Record<string, string>>();
   const parentParams = deprefixParams(searchParams);
-  const { type, season, movieTitle, parentPage, ...restParentParams } =
-    parentParams;
+  const { type, season, movieTitle, page, ...restParentParams } = parentParams;
 
   const movieType = Number(type || 0);
 
@@ -264,28 +263,32 @@ export function MovieItemSeasonDetailList() {
     {
       title: `Tiêu đề ${getMovieTypeLabel(type as string)}`,
       dataIndex: 'title',
-      render: (value, record) => (
-        <span
-          className={cn('line-clamp-1 block truncate', {
-            italic: record.kind === MOVIE_ITEM_KIND_TRAILER
-          })}
-          title={`${record.kind === MOVIE_ITEM_KIND_EPISODE ? `${record.label}. ` : ''}${value as string}`}
-        >
-          {record.kind === MOVIE_ITEM_KIND_EPISODE && `Tập ${record.label}. `}
-          {record.kind === MOVIE_ITEM_KIND_TRAILER && `${record.label}: `}
-          {value as string}
-          <span className='ml-2'>
-            {record.isLatest && (
-              <Badge
-                variant='outline'
-                className='border-emerald-500 bg-emerald-50 text-emerald-500'
-              >
-                Mới nhất
-              </Badge>
-            )}
+      render: (value, record) => {
+        const isTrailer = record.kind === MOVIE_ITEM_KIND_TRAILER;
+        const isEpisode = record.kind === MOVIE_ITEM_KIND_EPISODE;
+        return (
+          <span
+            className='line-clamp-1 block truncate'
+            title={`${isEpisode ? `${record.label}. ` : ''}${value as string}`}
+          >
+            <span className='font-bold'>
+              {isEpisode && `Tập ${record.label}. `}
+              {isTrailer && `${record.label}: `}
+            </span>
+            {value as string}
+            <span className='ml-2'>
+              {record.isLatest && (
+                <Badge
+                  variant='outline'
+                  className='border-emerald-500 bg-emerald-50 text-emerald-500'
+                >
+                  Mới nhất
+                </Badge>
+              )}
+            </span>
           </span>
-        </span>
-      )
+        );
+      }
     },
     {
       title: 'Ngày phát hành',
@@ -298,7 +301,10 @@ export function MovieItemSeasonDetailList() {
       title: 'Thời lượng',
       width: 120,
       render: (_, record) => {
-        if (record.video) {
+        if (
+          record.video &&
+          record.video.state === VIDEO_LIBRARY_STATE_COMPLETE
+        ) {
           return secondsToTime(record.video.duration);
         }
         return 'N/A';
@@ -379,7 +385,7 @@ export function MovieItemSeasonDetailList() {
           label: 'Phim',
           href: renderListPageUrl(
             route.movie.getList.path,
-            serializeParams({ ...restParentParams, page: parentPage })
+            serializeParams({ ...restParentParams, page })
           )
         },
         {
@@ -393,7 +399,7 @@ export function MovieItemSeasonDetailList() {
                 ...restParentParams,
                 type: type,
                 movieTitle: movieTitle,
-                parentPage
+                page
               })
             )
           )

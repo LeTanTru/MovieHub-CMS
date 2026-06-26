@@ -71,7 +71,7 @@ export function VideoLibrarySubtitleList() {
   const { searchParams, serializeParams, deprefixParams } =
     useQueryParams<Record<string, string>>();
   const parentParams = deprefixParams(searchParams);
-  const { videoName, parentPage, ...restParentParams } = parentParams;
+  const { videoName, page, ...restParentParams } = parentParams;
 
   const { data, pagination, loading, handlers } = useListBase<
     VideoLibrarySubtitleResType,
@@ -266,7 +266,7 @@ export function VideoLibrarySubtitleList() {
           label: 'Video',
           href: renderListPageUrl(
             route.videoLibrary.getList.path,
-            serializeParams({ ...restParentParams, page: parentPage })
+            serializeParams({ ...restParentParams, page })
           )
         },
         ...(videoName

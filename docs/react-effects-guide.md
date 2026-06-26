@@ -70,53 +70,58 @@ import { useIsomorphicLayoutEffect } from '@/hooks';
 
 ## Real Codebase Examples
 
-Here are common scenarios where we replaced `useEffect` with `useIsomorphicLayoutEffect` in MovieHub to prevent visual flickering:
+Here are common scenarios where we replaced `useEffect` with `useIsomorphicLayoutEffect` in MovieHub CMS to prevent visual flickering:
 
-### A. Measuring DOM Elements (Tabs Indicator)
+### A. Modal Scroll Locking (`modal.tsx`)
 
-In `movie-tabs.tsx`, we need to measure the active tab's width to position the glowing underline indicator. If we used `useEffect`, the indicator would render at width 0, then flash into position _after_ the paint.
-
-```tsx
-// Correct
-useIsomorphicLayoutEffect(() => {
-  const activeTab = tabRefs.current[activeKey];
-  if (activeTab) {
-    const tabRect = activeTab.getBoundingClientRect();
-    setIndicatorStyle({
-      left: tabRect.left - containerRect.left,
-      width: activeTab.offsetWidth
-    });
-  }
-}, [activeKey]);
-```
-
-### B. Syncing Data to Zustand Before Paint
-
-In `watch-series.tsx`, we extract the `season` from the URL parameters and need to set it in our global `useMovieStore`. If we used `useEffect`, child components relying on `selectedSeason` would render once with `undefined` (or the previous state), then instantly re-render with the correct data, causing layout shift.
+When a modal opens, we need to lock the document body scroll to prevent the background from scrolling. If we used `useEffect`, the user might see a flash of the scrollbar disappearing and the page content shifting _after_ the modal is painted. By using `useIsomorphicLayoutEffect`, we lock the scroll and apply padding compensation synchronously before the browser paints.
 
 ```tsx
 // Correct
 useIsomorphicLayoutEffect(() => {
-  if (searchParams.season) {
-    setSelectedSeason(searchParams.season);
-  } else if (latestSeason) {
-    setSelectedSeason(latestSeason);
-  }
-}, [searchParams.season, latestSeason, setSelectedSeason]);
-```
+  if (!open) return;
 
-### C. Reading/Setting Scroll Position
+  lockScroll();
 
-In `header.tsx`, we make the header sticky based on `window.scrollY`. Using `useEffect` would cause the header to render transparently, then flash to a solid background after paint if the user loaded the page midway down.
-
-```tsx
-// Correct
-useIsomorphicLayoutEffect(() => {
-  const handleOnScroll = () => {
-    setIsFixed(window.scrollY > 0);
+  return () => {
+    unlockScroll();
   };
-  handleOnScroll(); // Calculate immediately before paint
-  window.addEventListener('scroll', handleOnScroll);
-  return () => window.removeEventListener('scroll', handleOnScroll);
-}, []);
+}, [open]);
+```
+
+### B. Syncing Sidebar State (`sidebar.tsx`)
+
+When the sidebar transitions from collapsed to expanded, we need to re-open the last active accordion menu. Using `useEffect` would cause the sidebar to animate open with all menus closed, and then suddenly flash the active menu open a frame later.
+
+```tsx
+// Correct
+useIsomorphicLayoutEffect(() => {
+  if (state === 'expanded') {
+    openLastMenu();
+  }
+}, [state, openLastMenu]);
+```
+
+### C. Measuring DOM Overflow (`modal.tsx` Body)
+
+To show a "Scroll down" indicator arrow in long modal bodies, we need to measure the `scrollHeight` versus the `clientHeight`. Doing this before paint prevents the arrow from flashing in and out unnecessarily on load.
+
+```tsx
+// Correct
+useIsomorphicLayoutEffect(() => {
+  if (!scrollable) return;
+
+  const checkOverflow = () => {
+    if (scrollRef.current) {
+      const { scrollHeight, clientHeight, scrollTop } = scrollRef.current;
+      const hasOverflow = scrollHeight > clientHeight;
+      // ... update state
+    }
+  };
+
+  checkOverflow(); // Calculate immediately before paint
+  const scrollElement = scrollRef.current;
+  scrollElement?.addEventListener('scroll', checkOverflow, { passive: true });
+  // ...
+}, [scrollable]);
 ```

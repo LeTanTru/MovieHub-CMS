@@ -30,6 +30,10 @@ type RequestConfigWithRetry = InternalAxiosRequestConfig & {
   _retry?: boolean;
 };
 
+/**
+ * @param error The error that caused the queue to process, or null if successful
+ * @param token The new access token to resolve the queue with, or null on error
+ */
 const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -44,6 +48,8 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
+/**
+ */
 const refreshToken = async () => {
   const res = await authAxios.post(
     apiConfig.api.auth.refreshToken.baseUrl,
@@ -167,6 +173,10 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+/**
+ * @param apiConfig The API configuration (url, method, headers, etc.)
+ * @param payload The request payload (body, params, pathParams, etc.)
+ */
 export const sendRequest = async <T>(
   apiConfig: ApiConfig,
   payload: Payload = {}
@@ -315,6 +325,9 @@ export const http = {
   }
 };
 
+/**
+ * @param error The error object to check
+ */
 export function isAxiosError(error: unknown): error is AxiosError {
   return (error as AxiosError)?.isAxiosError === true;
 }

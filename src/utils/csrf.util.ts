@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { storageKeys } from '@/constants';
 
+/**
+ * @param request The Next.js request object containing headers and cookies
+ */
 export const validateCsrfToken = (request: NextRequest): boolean => {
   const headerToken = request.headers.get(storageKeys.X_CSRF_TOKEN);
   const cookieToken = request.cookies.get(storageKeys.CSRF_TOKEN)?.value;

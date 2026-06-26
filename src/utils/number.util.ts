@@ -1,5 +1,9 @@
 const numberFormatter = new Intl.NumberFormat('vi-VN');
 
+/**
+ * @param value The monetary value to format
+ * @param suffix The suffix to append (defaults to ' ₫')
+ */
 export const formatMoney = (
   value: string | number,
   suffix: string = ' ₫'
@@ -12,6 +16,10 @@ export const formatMoney = (
   return numberFormatter.format(num) + suffix;
 };
 
+/**
+ * @param input The number to format
+ * @param decimal The number of decimal places (defaults to 2)
+ */
 export const formatNumber = (input: unknown, decimal = 2): string => {
   const value = Number(input);
 

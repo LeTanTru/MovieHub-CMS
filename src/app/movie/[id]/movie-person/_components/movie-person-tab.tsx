@@ -26,7 +26,7 @@ export function PersonTab() {
   const { searchParams, serializeParams, deprefixParams } =
     useQueryParams<Record<string, string>>();
   const parentParams = deprefixParams(searchParams);
-  const { movieTitle, parentPage, ...restParentParams } = parentParams;
+  const { movieTitle, page, ...restParentParams } = parentParams;
 
   const tabs = [
     {
@@ -64,7 +64,7 @@ export function PersonTab() {
           label: 'Phim',
           href: renderListPageUrl(
             route.movie.getList.path,
-            serializeParams({ ...restParentParams, page: parentPage })
+            serializeParams({ ...restParentParams, page })
           )
         },
         {

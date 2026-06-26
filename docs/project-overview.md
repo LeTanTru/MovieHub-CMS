@@ -65,7 +65,8 @@ Notes:
 |   |-- store/                    Zustand stores
 |   |-- styles/                   Global and grid styles
 |   |-- types/                    Shared TypeScript types
-|   `-- utils/                    HTTP, URL, storage, permission, media utilities
+|   |-- utils/                    HTTP, URL, storage, permission, media utilities
+|   `-- proxy.ts                  Proxy matcher for internal APIs
 |-- Dockerfile                    Multi-stage standalone Next.js image
 |-- next.config.ts                Security headers, image config, React Compiler, bundle analyzer
 |-- package.json                  Scripts and dependencies
@@ -79,11 +80,9 @@ Main route modules under `src/app`:
 
 - `(auth)`: login flow.
 - `profile`: current user profile.
-- `actions`: Next.js server action handlers.
 - `admin`: admin account management.
 - `employee`: employee management.
 - `user`: platform user management.
-- `user-report`: user reports for comments and reviews.
 - `group-permission`: groups and permission assignment.
 - `category`: category CRUD.
 - `person`: actor/director CRUD.

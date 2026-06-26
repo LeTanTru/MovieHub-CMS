@@ -9,11 +9,20 @@ import { DistributionGroupBy, TopMoviesSortBy } from '@/types';
 
 const numberFormatter = new Intl.NumberFormat('vi-VN');
 
+/**
+ * @param value The value to format as a statistic
+ */
 export const formatStatisticsValue = (value?: number) =>
   numberFormatter.format(value ?? 0);
 
+/**
+ * @param value The rating value to format
+ */
 export const formatRating = (value?: number) => (value ?? 0).toFixed(1);
 
+/**
+ * @param value The value to convert to a number for chart consumption
+ */
 export const toChartNumber = (value: unknown) => {
   if (typeof value === 'number') return value;
   if (typeof value === 'string') return Number(value) || 0;
@@ -21,6 +30,10 @@ export const toChartNumber = (value: unknown) => {
   return 0;
 };
 
+/**
+ * @param label The distribution label value
+ * @param groupBy The grouping dimension (e.g. 'type', 'ageRating', 'country')
+ */
 export const getDistributionLabel = (
   label: string,
   groupBy: DistributionGroupBy
@@ -39,6 +52,10 @@ export const getDistributionLabel = (
   return label;
 };
 
+/**
+ * @param movie The movie record
+ * @param sortBy The metric to extract and format
+ */
 export const getMetricBySort = (
   movie: Record<TopMoviesSortBy, number>,
   sortBy: TopMoviesSortBy

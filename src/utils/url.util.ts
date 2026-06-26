@@ -1,6 +1,10 @@
 import { AppConstants, VIDEO_LIBRARY_SOURCE_TYPE_EXTERNAL } from '@/constants';
 import { route } from '@/routes';
 
+/**
+ * @param path The base path
+ * @param queryString The optional query string to append
+ */
 export const renderListPageUrl = (path: string, queryString?: string) => {
   if (queryString) {
     return `${path}?${queryString}`;
@@ -8,6 +12,10 @@ export const renderListPageUrl = (path: string, queryString?: string) => {
   return path;
 };
 
+/**
+ * @param template The route template containing path parameters
+ * @param params The values to substitute into the template
+ */
 export const generatePath = (
   template: string,
   params: Record<string, string | number>
@@ -20,6 +28,11 @@ export const generatePath = (
   });
 };
 
+/**
+ * @param hostname The server hostname
+ * @param url The relative URL path
+ * @param sourceType The source type of the video
+ */
 export const renderVideoUrl = (
   hostname: string,
   url: string,
@@ -35,11 +48,19 @@ export const renderVideoUrl = (
   return `https://${hostname}/v1/file/download-video-resource${url}`;
 };
 
+/**
+ * @param url The relative image URL path
+ */
 export const renderImageUrl = (url: string | undefined | null) => {
   if (!url) return '';
   return url.startsWith('https') ? url : `${AppConstants.contentRootUrl}${url}`;
 };
 
+/**
+ * @param hostname The server hostname
+ * @param url The relative URL path
+ * @param sourceType The source type of the video
+ */
 export const renderVttUrl = (
   hostname: string,
   url: string,
@@ -55,6 +76,10 @@ export const renderVttUrl = (
   return `https://${hostname}/v1/file/public-download${url}`;
 };
 
+/**
+ * @param url The file URL
+ * @param isPublic Whether it is a public file
+ */
 export const renderFileUrl = (url: string, isPublic?: boolean) => {
   if (!url) return '';
 
@@ -63,6 +88,9 @@ export const renderFileUrl = (url: string, isPublic?: boolean) => {
     : `${isPublic ? AppConstants.publicContentUrl : AppConstants.contentRootUrl}${url}`;
 };
 
+/**
+ * @param path The path to validate
+ */
 export const isSafeInternalPath = (path: unknown): path is string => {
   if (typeof path !== 'string' || !path.startsWith('/')) return false;
   if (path.startsWith('//')) return false;
@@ -70,6 +98,10 @@ export const isSafeInternalPath = (path: unknown): path is string => {
   return true;
 };
 
+/**
+ * @param pathname The pathname to redirect to after login
+ * @param queryString The query string to persist after login
+ */
 export const buildLoginRedirectPath = (
   pathname: string,
   queryString?: string
@@ -89,6 +121,10 @@ export const buildLoginRedirectPath = (
   return `${route.login.path}?${params.toString()}`;
 };
 
+/**
+ * @param hostname The upload server hostname
+ * @param path The upload endpoint path
+ */
 export const renderVideoLibraryUploadUrl = (hostname: string, path: string) => {
   const normalizedHostname = hostname.startsWith('http')
     ? hostname

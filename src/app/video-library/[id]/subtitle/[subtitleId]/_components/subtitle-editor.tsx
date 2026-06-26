@@ -54,7 +54,7 @@ export function SubtitleEditor() {
   const parentParams = deprefixParams(searchParams);
   const {
     videoName,
-    parentPage,
+    page,
     language: _language,
     ...restParentParams
   } = parentParams;
@@ -98,7 +98,7 @@ export function SubtitleEditor() {
           label: 'Video',
           href: renderListPageUrl(
             route.videoLibrary.getList.path,
-            serializeParams({ ...restParentParams, page: parentPage })
+            serializeParams({ ...restParentParams, page })
           )
         },
         ...(videoName

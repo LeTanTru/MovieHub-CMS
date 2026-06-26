@@ -21,18 +21,34 @@ const defaultOptions: ToastOptions = {
   `
 };
 
+/**
+ * @param message The success message to display
+ * @param options Optional toast configuration
+ */
 const showSuccess = (message: string | ReactNode, options?: ToastOptions) => {
   toast.success(message, { ...defaultOptions, ...options });
 };
 
+/**
+ * @param message The error message to display
+ * @param options Optional toast configuration
+ */
 const showError = (message: string | ReactNode, options?: ToastOptions) => {
   toast.error(message, { ...defaultOptions, ...options });
 };
 
+/**
+ * @param message The info message to display
+ * @param options Optional toast configuration
+ */
 const showInfo = (message: string | ReactNode, options?: ToastOptions) => {
   toast.info(message, { ...defaultOptions, ...options });
 };
 
+/**
+ * @param message The warning message to display
+ * @param options Optional toast configuration
+ */
 const showWarning = (message: string | ReactNode, options?: ToastOptions) => {
   toast.warn(message, { ...defaultOptions, ...options });
 };
