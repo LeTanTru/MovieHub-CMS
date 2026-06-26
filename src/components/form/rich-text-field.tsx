@@ -14,6 +14,7 @@ import {
 import type { Editor as TinyMCEEditor } from 'tinymce';
 import { envConfig } from '@/config';
 import dynamic from 'next/dynamic';
+import DOMPurify from 'dompurify';
 
 const TINYMCE_DEFAULT_HEIGHT = 450;
 
@@ -99,7 +100,19 @@ export function RichTextField<T extends FieldValues>({
               <TinyEditor
                 tinymceScriptSrc={envConfig.NEXT_PUBLIC_TINYMCE_URL}
                 licenseKey='gpl'
-                value={field.value ?? ''}
+                value={
+                  field.value
+                    ? DOMPurify.sanitize(field.value, {
+                        ADD_TAGS: ['iframe'],
+                        ADD_ATTR: [
+                          'allow',
+                          'allowfullscreen',
+                          'frameborder',
+                          'scrolling'
+                        ]
+                      })
+                    : ''
+                }
                 disabled={disabled || readOnly}
                 init={{
                   height: height ?? TINYMCE_DEFAULT_HEIGHT,
@@ -113,14 +126,12 @@ export function RichTextField<T extends FieldValues>({
                     // 'autosave',
                     'save',
                     'directionality',
-                    'code',
                     'visualblocks',
                     'visualchars',
                     'fullscreen',
                     'image',
                     'link',
                     'media',
-                    'codesample',
                     'table',
                     'charmap',
                     'pagebreak',
@@ -130,11 +141,14 @@ export function RichTextField<T extends FieldValues>({
                     'advlist',
                     'lists',
                     'wordcount',
-                    'charmap',
                     'emoticons'
                   ],
                   toolbar:
-                    'undo redo | bold italic underline strikethrough | fontfamily fontsizeinput blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample code | ltr rtl',
+                    'undo redo | bold italic underline strikethrough | fontfamily fontsizeinput blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor | ltr rtl',
+                  valid_elements:
+                    'p,h1,h2,h3,h4,h5,h6,a[href|target|rel],strong,b,em,i,strike,u,ul,ol,li,br,img[src|alt|width|height],table,thead,tbody,tr,th,td,span[style],div[style],figure,figcaption,iframe[src|width|height|allow|allowfullscreen|title],blockquote',
+                  extended_valid_elements:
+                    'iframe[src|width|height|allow|allowfullscreen|title]',
                   placeholder: placeholder,
                   content_style: `
                   body { 
@@ -191,7 +205,18 @@ export function RichTextField<T extends FieldValues>({
                     });
                   }
                 }}
-                onEditorChange={(content) => field.onChange(content)}
+                onEditorChange={(content) => {
+                  const sanitizedContent = DOMPurify.sanitize(content, {
+                    ADD_TAGS: ['iframe'],
+                    ADD_ATTR: [
+                      'allow',
+                      'allowfullscreen',
+                      'frameborder',
+                      'scrolling'
+                    ]
+                  });
+                  field.onChange(sanitizedContent);
+                }}
               />
               {fieldState.error && (
                 <div className='animate-in fade-in -mb-6 ml-2 flex min-h-6 items-end'>
