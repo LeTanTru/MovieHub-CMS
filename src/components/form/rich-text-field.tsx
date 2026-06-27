@@ -1,7 +1,13 @@
 'use client';
 
 import './rich-text-field.css';
-import type { Control, FieldPath, FieldValues } from 'react-hook-form';
+import {
+  type Control,
+  type ControllerRenderProps,
+  type FieldPath,
+  type FieldValues,
+  type Path
+} from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import {
   FormField,
@@ -14,7 +20,7 @@ import {
 import type { Editor as TinyMCEEditor } from 'tinymce';
 import { envConfig } from '@/config';
 import dynamic from 'next/dynamic';
-import DOMPurify from 'dompurify';
+import { useRef } from 'react';
 
 const TINYMCE_DEFAULT_HEIGHT = 450;
 
@@ -57,6 +63,41 @@ export function RichTextField<T extends FieldValues>({
   labelClassName,
   formItemClassName
 }: RichTextFieldProps<T>) {
+  const hasInitialized = useRef<boolean>(false);
+  const initialValueRef = useRef<string>('');
+
+  const handleEditorChange = (
+    content: string,
+    editor: TinyMCEEditor,
+    field: ControllerRenderProps<T, Path<T>>
+  ) => {
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      initialValueRef.current = content;
+      return;
+    }
+    editor.setDirty(true);
+    field.onChange(content);
+  };
+
+  const handleUndoRedo = (
+    editor: TinyMCEEditor,
+    field: ControllerRenderProps<T, Path<T>>
+  ) => {
+    const currentContent = editor.getContent();
+    if (currentContent === initialValueRef.current) {
+      const rhfDefault = (name as string)
+        .split('.')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .reduce((obj: any, key) => obj?.[key], control._defaultValues) as
+        | string
+        | undefined;
+      field.onChange(rhfDefault ?? initialValueRef.current);
+      return;
+    }
+    field.onChange(currentContent);
+  };
+
   return (
     <FormField
       control={control}
@@ -100,19 +141,7 @@ export function RichTextField<T extends FieldValues>({
               <TinyEditor
                 tinymceScriptSrc={envConfig.NEXT_PUBLIC_TINYMCE_URL}
                 licenseKey='gpl'
-                value={
-                  field.value
-                    ? DOMPurify.sanitize(field.value, {
-                        ADD_TAGS: ['iframe'],
-                        ADD_ATTR: [
-                          'allow',
-                          'allowfullscreen',
-                          'frameborder',
-                          'scrolling'
-                        ]
-                      })
-                    : ''
-                }
+                value={field.value}
                 disabled={disabled || readOnly}
                 init={{
                   height: height ?? TINYMCE_DEFAULT_HEIGHT,
@@ -205,17 +234,14 @@ export function RichTextField<T extends FieldValues>({
                     });
                   }
                 }}
-                onEditorChange={(content) => {
-                  const sanitizedContent = DOMPurify.sanitize(content, {
-                    ADD_TAGS: ['iframe'],
-                    ADD_ATTR: [
-                      'allow',
-                      'allowfullscreen',
-                      'frameborder',
-                      'scrolling'
-                    ]
-                  });
-                  field.onChange(sanitizedContent);
+                onEditorChange={(content, editor) => {
+                  handleEditorChange(content, editor, field);
+                }}
+                onUndo={(_evt, editor) => {
+                  handleUndoRedo(editor, field);
+                }}
+                onRedo={(_evt, editor) => {
+                  handleUndoRedo(editor, field);
                 }}
               />
               {fieldState.error && (
