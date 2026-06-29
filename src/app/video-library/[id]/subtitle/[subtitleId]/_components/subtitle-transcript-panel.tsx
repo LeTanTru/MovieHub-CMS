@@ -95,7 +95,7 @@ export function SubtitleTranscriptPanel({
 
   const parsedSubtitles = useMemo(
     () => (content ? parseVttContent(content) : undefined),
-    []
+    [content]
   );
 
   useIsomorphicLayoutEffect(() => {
