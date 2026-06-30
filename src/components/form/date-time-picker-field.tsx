@@ -171,10 +171,13 @@ export function DateTimePickerField<T extends FieldValues>({
                       aria-expanded={open}
                       aria-label='Select date and time'
                       className={cn(
-                        'hover:border-input focus-visible:border-input focus-visible:ring-sporty-blue w-full justify-between border px-3! py-0 text-black hover:text-black focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none',
+                        'w-full justify-between text-left font-normal text-black opacity-100',
+                        'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
+                        'data-[state=open]:border-sporty-blue data-[state=open]:ring-sporty-blue hover:border-input px-3! shadow-none hover:text-black data-[state=open]:ring-1',
                         {
-                          'ring-sporty-blue border-transparent! ring-2': open,
-                          'border-rose-500 ring-rose-500': !!fieldState.error
+                          'text-gray-300 hover:text-gray-300': !field.value,
+                          'border-rose-500 hover:border-rose-500 focus-visible:border-rose-500 focus-visible:ring-[1px] focus-visible:ring-rose-500 data-[state=open]:border-rose-500 data-[state=open]:ring-1 data-[state=open]:ring-rose-500':
+                            fieldState.error
                         },
                         className
                       )}

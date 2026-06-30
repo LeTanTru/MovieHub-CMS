@@ -1,6 +1,5 @@
 'use client';
 
-import './auto-complete-field.css';
 import {
   FormControl,
   FormDescription,
