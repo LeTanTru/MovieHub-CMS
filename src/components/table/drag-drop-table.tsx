@@ -223,7 +223,7 @@ export function DragDropTable<T extends Record<string, unknown>>({
             collisionDetection={closestCorners}
             onDragEnd={onDragEnd}
           >
-            <Table className='w-full'>
+            <Table className='w-full table-fixed'>
               <TableHeader className='bg-gray-50'>
                 <TableRow className='border-b-gray-100 not-last:border-b-[0.2px]'>
                   {columns.map((col, idx) => {

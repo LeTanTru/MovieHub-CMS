@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Button,
   CheckboxField,
   Col,
   InputField,
@@ -30,8 +31,10 @@ import {
   parseSelectOptions,
   stringifyBooleanValue
 } from '@/utils';
+import { Input } from '@/components/ui/input';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
+import { Plus, Trash2 } from 'lucide-react';
 
 type SettingModalProps = {
   open: boolean;
@@ -105,9 +108,6 @@ export function SettingModal({
           ? parseBooleanValue(setting?.valueData)
           : setting?.dataType === 'List'
             ? String(setting?.valueData ?? '')
-                .split(';')
-                .filter(Boolean)
-                .join('\n')
             : (setting?.valueData ?? defaultValues.valueData),
       dataType: setting?.dataType ?? defaultValues.dataType,
       description: setting?.description ?? defaultValues.description,
@@ -154,8 +154,8 @@ export function SettingModal({
           : values.dataType === 'Boolean'
             ? stringifyBooleanValue(values.valueData)
             : values.dataType === 'List'
-              ? String(values.valueData)
-                  .split('\n')
+              ? String(values.valueData || '')
+                  .split(';')
                   .map((v) => v.trim())
                   .filter(Boolean)
                   .join(';')
@@ -182,7 +182,7 @@ export function SettingModal({
       onClose={handleCancel}
       aria-labelledby='setting-modal-title'
       confirmOnClose={isFormChanged}
-      className='w-200 max-[1537px]:top-10'
+      className='top-1/2 left-1/2 mx-0 w-200 -translate-x-1/2 -translate-y-1/2'
     >
       <Modal.Header>
         {`${isEditing ? 'Cập nhật' : 'Thêm'} cài đặt`}
@@ -287,16 +287,69 @@ export function SettingModal({
                     />
                   );
 
-                case 'List':
+                case 'List': {
+                  const rawValue = (form.watch('valueData') as string) ?? '';
+                  const items = rawValue ? rawValue.split(';') : [];
+
+                  const setItems = (newItems: string[]) => {
+                    form.setValue('valueData', newItems.join(';'), {
+                      shouldDirty: true
+                    });
+                  };
+
                   return (
-                    <TextAreaField
-                      control={form.control}
-                      name='valueData'
-                      label='Giá trị'
-                      placeholder='Nhập các giá trị (mỗi giá trị trên một dòng)'
-                      required
-                    />
+                    <div className='w-full space-y-3'>
+                      <div className='flex items-center justify-between'>
+                        <span className='text-sm font-medium'>Từ khóa</span>
+                        <Button
+                          type='button'
+                          variant='primary'
+                          size='sm'
+                          onClick={() => setItems([...items, ''])}
+                        >
+                          <Plus className='size-4' />
+                          Thêm
+                        </Button>
+                      </div>
+                      {items.length === 0 ? (
+                        <p className='text-muted-foreground text-sm'>
+                          Chưa có từ nào
+                        </p>
+                      ) : (
+                        <div className='grid h-50 grid-cols-2 gap-3 overflow-y-auto py-2'>
+                          {items.map((item, index) => (
+                            <div
+                              key={index}
+                              className='flex items-center gap-2'
+                            >
+                              <Input
+                                value={item}
+                                onChange={(e) => {
+                                  const newItems = [...items];
+                                  newItems[index] = e.target.value;
+                                  setItems(newItems);
+                                }}
+                                placeholder='Từ khóa'
+                                className='focus-visible:ring-sporty-blue text-sm font-normal shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 disabled:select-none'
+                              />
+                              <Button
+                                type='button'
+                                variant='ghost'
+                                size='icon'
+                                onClick={() =>
+                                  setItems(items.filter((_, i) => i !== index))
+                                }
+                                className='text-destructive hover:text-destructive shrink-0'
+                              >
+                                <Trash2 className='size-4' />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   );
+                }
 
                 case 'String':
                 default:

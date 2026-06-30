@@ -96,7 +96,7 @@ export function BaseTable<T extends Record<string, unknown>>({
           className='scroll-wrapper bg-base-table w-full [&>div]:overflow-y-hidden'
           ref={scrollRef}
         >
-          <Table className='w-full'>
+          <Table className='w-full table-fixed'>
             <TableHeader className='bg-gray-50'>
               <TableRow className='border-b-[0.2px] border-b-gray-100'>
                 {columns.map((col, idx) => {
