@@ -8,6 +8,7 @@ import {
   apiConfig,
   employeeStatusOptions,
   FieldTypes,
+  GROUP_KIND_EMPLOYEE,
   MAX_PAGE_SIZE,
   objectNames,
   queryKeys,
@@ -29,7 +30,10 @@ import { getLastWord, notify, renderImageUrl } from '@/utils';
 import { AiOutlineCheck, AiOutlineLock } from 'react-icons/ai';
 
 export function EmployeeList() {
-  const { data: groupListData } = useGroupListQuery({ size: MAX_PAGE_SIZE });
+  const { data: groupListData } = useGroupListQuery({
+    size: MAX_PAGE_SIZE,
+    kind: GROUP_KIND_EMPLOYEE
+  });
 
   const { mutate: changeStatus, isPending } = useChangeEmployeeStatusMutation();
 
@@ -211,12 +215,12 @@ export function EmployeeList() {
       placeholder: 'Số điện thoại'
     },
     {
-      key: 'kind',
+      key: 'groupId',
       placeholder: 'Vai trò',
       type: FieldTypes.SELECT,
       options: groupListData?.content.map((group) => ({
         label: group.name,
-        value: group.kind
+        value: group.id
       })),
       submitOnChanged: true
     },

@@ -5,7 +5,8 @@ export const employeeSearchSchema = z.object({
   kind: z.number().optional().nullable(),
   phone: z.string().optional().nullable(),
   status: z.number().optional().nullable(),
-  username: z.string().optional().nullable()
+  username: z.string().optional().nullable(),
+  groupId: z.string().optional().nullable()
 });
 
 export const employeeSchema = (isEditing: boolean) =>
