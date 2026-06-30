@@ -119,7 +119,7 @@ export function SettingList({ groupName }: { groupName: string }) {
         );
       },
       align: 'center',
-      width: 150
+      width: 500
     },
     handlers.renderActionColumn({
       actions: {
