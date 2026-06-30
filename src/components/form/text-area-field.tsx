@@ -53,6 +53,7 @@ export function TextAreaField<T extends FieldValues>({
   readOnly = false,
   maxLength,
   rows = TEXTAREA_DEFAULT_ROWS,
+  maxRows,
   ref,
   formItemClassName,
   ...rest
@@ -85,7 +86,6 @@ export function TextAreaField<T extends FieldValues>({
               {required && <span className='text-destructive'>*</span>}
             </FormLabel>
           )}
-
           <FormControl>
             <div>
               <Textarea
@@ -95,6 +95,12 @@ export function TextAreaField<T extends FieldValues>({
                 readOnly={readOnly}
                 maxLength={maxLength}
                 rows={rows}
+                style={{
+                  ...(maxRows
+                    ? { maxHeight: `calc(${maxRows} * 1.5rem + 2rem)` }
+                    : {}),
+                  ...rest.style
+                }}
                 className={cn(
                   'focus-visible:ring-sporty-blue scrollbar-none field-sizing-fixed w-full pt-4 break-all shadow-none transition-all duration-200 ease-linear placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-2 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-transparent',
                   {

@@ -27,7 +27,6 @@ export const useVideoSubtitleContentQuery = (vttUrl: string) => {
       const content = await res.text();
       return content;
     },
-    staleTime: Number.POSITIVE_INFINITY,
     enabled: !!vttUrl
   });
 };

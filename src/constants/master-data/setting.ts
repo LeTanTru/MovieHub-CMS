@@ -31,6 +31,10 @@ export const settingDataTypes = [
   {
     label: 'Upload',
     value: 'Upload'
+  },
+  {
+    label: 'List',
+    value: 'List'
   }
 ];
 

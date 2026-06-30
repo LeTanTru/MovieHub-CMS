@@ -103,7 +103,12 @@ export function SettingModal({
       valueData:
         setting?.dataType === 'Boolean'
           ? parseBooleanValue(setting?.valueData)
-          : (setting?.valueData ?? defaultValues.valueData),
+          : setting?.dataType === 'List'
+            ? String(setting?.valueData ?? '')
+                .split(';')
+                .filter(Boolean)
+                .join('\n')
+            : (setting?.valueData ?? defaultValues.valueData),
       dataType: setting?.dataType ?? defaultValues.dataType,
       description: setting?.description ?? defaultValues.description,
       groupName: defaultValues.groupName,
@@ -148,7 +153,13 @@ export function SettingModal({
           ? imageManager.currentUrl
           : values.dataType === 'Boolean'
             ? stringifyBooleanValue(values.valueData)
-            : String(values.valueData)
+            : values.dataType === 'List'
+              ? String(values.valueData)
+                  .split('\n')
+                  .map((v) => v.trim())
+                  .filter(Boolean)
+                  .join(';')
+              : String(values.valueData)
     };
 
     await imageManager.handleSubmit();
@@ -276,6 +287,17 @@ export function SettingModal({
                     />
                   );
 
+                case 'List':
+                  return (
+                    <TextAreaField
+                      control={form.control}
+                      name='valueData'
+                      label='Giá trị'
+                      placeholder='Nhập các giá trị (mỗi giá trị trên một dòng)'
+                      required
+                    />
+                  );
+
                 case 'String':
                 default:
                   return (
@@ -322,12 +344,13 @@ export function SettingModal({
                       label='Kiểu dữ liệu'
                       placeholder='Kiểu dữ liệu'
                       required
-                      disabled={isEditing}
                     />
                   </Col>
-                  {dataType !== 'RichText' && dataType !== 'Upload' && (
-                    <Col className='grid-c-6'>{renderValueField()}</Col>
-                  )}
+                  {dataType !== 'RichText' &&
+                    dataType !== 'Upload' &&
+                    dataType !== 'List' && (
+                      <Col className='grid-c-6'>{renderValueField()}</Col>
+                    )}
                 </Row>
 
                 {/* Options input — only shown for Select type */}
@@ -345,7 +368,9 @@ export function SettingModal({
                   </Row>
                 )}
 
-                {(dataType === 'RichText' || dataType === 'Upload') && (
+                {(dataType === 'RichText' ||
+                  dataType === 'Upload' ||
+                  dataType === 'List') && (
                   <Row>
                     <Col className='grid-c-12'>{renderValueField()}</Col>
                   </Row>
