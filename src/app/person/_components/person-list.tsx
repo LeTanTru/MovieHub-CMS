@@ -39,7 +39,7 @@ export function PersonList({ kind }: PersonListProps) {
           ? objectNames.PERSON_ACTOR
           : objectNames.PERSON_DIRECTOR,
       defaultFilters: { kind },
-      notShowFromSearchParams: ['kind', 'page', 'size']
+      notShowFromSearchParams: ['kind']
     },
     override: (handlers) => {
       handlers.handleDeleteError = (code) => {
