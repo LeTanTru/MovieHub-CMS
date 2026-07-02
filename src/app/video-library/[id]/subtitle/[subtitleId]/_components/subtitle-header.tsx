@@ -133,12 +133,12 @@ export function SubtitleHeader({
 
         {canUpload && (
           <>
-            <ToolTip title='Lưu phụ đề' side='bottom'>
-              <ConfirmModal
-                message='Bạn có chắc chắn muốn lưu phụ đề không ?'
-                onConfirm={handleUpload}
-                loading={isPending}
-                trigger={
+            <ConfirmModal
+              message='Bạn có chắc chắn muốn lưu phụ đề không ?'
+              onConfirm={handleUpload}
+              loading={isPending}
+              trigger={
+                <ToolTip title='Lưu phụ đề' side='bottom'>
                   <Button
                     variant='ghost'
                     className='text-sporty-blue p-0! hover:bg-transparent'
@@ -153,9 +153,9 @@ export function SubtitleHeader({
                       />
                     )}
                   </Button>
-                }
-              />
-            </ToolTip>
+                </ToolTip>
+              }
+            />
 
             <Separator className='h-4! w-px!' />
           </>

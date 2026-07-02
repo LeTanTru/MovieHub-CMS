@@ -1,15 +1,23 @@
 'use client';
 
-import { mqttCMDs, mqttTopics, queryKeys } from '@/constants';
+import {
+  AUDIO_STATE_ERROR,
+  mqttCMDs,
+  mqttTopics,
+  queryKeys,
+  VIDEO_LIBRARY_STATE_ERROR
+} from '@/constants';
 import { useAuth, useMqtt } from '@/hooks';
 import { getMqttClient } from '@/lib/mqtt';
 import { logger } from '@/logger';
 import { mqttMessageSchema } from '@/schema-validations';
-import type {
-  NotificationResType,
-  ReplyCommentNotificationType,
-  ToxicCommentLockedNotificationType,
-  VoteCommentNotificationType
+import {
+  AudioNotificationType,
+  type ConvertVideoNotificationType,
+  type NotificationResType,
+  type ReplyCommentNotificationType,
+  type ToxicCommentLockedNotificationType,
+  type VoteCommentNotificationType
 } from '@/types';
 import {
   generateMqttTopic,
@@ -128,9 +136,10 @@ export function MqttProvider() {
         const parsed = mqttMessageSchema.safeParse(raw);
 
         if (parsed.success) {
-          logger.info(`[MQTT] Received MQTT message on topic: ${topic}`, {
-            cmd: parsed.data.cmd
-          });
+          logger.info(
+            `[MQTT] Received MQTT message on topic: ${topic}`,
+            parsed.data
+          );
         } else {
           logger.warn(`[MQTT] Received invalid message on topic: ${topic}`);
         }
@@ -158,6 +167,23 @@ export function MqttProvider() {
       if (!queryKey) return;
 
       invalidateNotificationQueries(queryKey);
+
+      if (data.cmd === mqttCMDs.DONE_CONVERT_VIDEO) {
+        const body = parseJSON<ConvertVideoNotificationType>(data.body);
+        if (body?.state === VIDEO_LIBRARY_STATE_ERROR) {
+          notify.error(data.title);
+          return;
+        }
+      }
+
+      if (data.cmd === mqttCMDs.DONE_CONVERT_AUDIO) {
+        const body = parseJSON<AudioNotificationType>(data.body);
+        if (body?.state === AUDIO_STATE_ERROR) {
+          notify.error(data.title);
+          return;
+        }
+      }
+
       notify.success(data.title);
     }
   });
