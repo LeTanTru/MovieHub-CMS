@@ -5,13 +5,13 @@ import { ConfirmModal } from '@/components/modal';
 import { Separator } from '@/components/ui/separator';
 import { useVideoLibrarySubtitleStore } from '@/store';
 import { SubtitleType, VideoLibrarySubtitleResType } from '@/types';
-import { notify, serializeVttContent } from '@/utils';
+import { invalidateQueries, notify, serializeVttContent } from '@/utils';
 import { useUploadSubtitleMutation } from '@/queries';
 import { Download, Loader2, Plus, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useShallow } from 'zustand/react/shallow';
 import { useValidatePermission } from '@/hooks';
-import { apiConfig } from '@/constants';
+import { apiConfig, queryKeys } from '@/constants';
 
 type SubtitleHeaderProps = {
   subtitles: SubtitleType[];
@@ -96,6 +96,7 @@ export function SubtitleHeader({
       {
         onSuccess: () => {
           setOriginalSubtitles(subtitles);
+          invalidateQueries([queryKeys.VIDEO_LIBRARY_SUBTITLE_CONTENT]);
           notify.success('Lưu phụ đề thành công');
         },
         onError: () => {
