@@ -316,7 +316,7 @@ export function SettingModal({
                           Chưa có từ nào
                         </p>
                       ) : (
-                        <div className='grid h-50 grid-cols-2 gap-3 overflow-y-auto py-2'>
+                        <div className='grid h-50 grid-cols-2 gap-3 overflow-y-auto px-1 py-2'>
                           {items.map((item, index) => (
                             <div
                               key={index}

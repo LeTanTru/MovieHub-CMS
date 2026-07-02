@@ -1,5 +1,6 @@
 'use client';
 
+import { SettingListValueModal } from './setting-list-value-modal';
 import { SettingModal } from './setting-modal';
 import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
@@ -8,15 +9,21 @@ import { BaseTable } from '@/components/table';
 import { apiConfig, objectNames, queryKeys } from '@/constants';
 import { useDisclosure, useListBase } from '@/hooks';
 import type { Column, SettingResType, SettingSearchType } from '@/types';
-import { PlusIcon } from 'lucide-react';
+import { List, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 
 export function SettingList({ groupName }: { groupName: string }) {
   const { opened, open, close } = useDisclosure();
+  const {
+    opened: listValueOpened,
+    open: openListValue,
+    close: closeListValue
+  } = useDisclosure();
   const [selectedSetting, setSelectedSetting] = useState<SettingResType | null>(
     null
   );
+  const [selectedListValue, setSelectedListValue] = useState('');
 
   const { data, pagination, loading, handlers } = useListBase<
     SettingResType,
@@ -110,8 +117,23 @@ export function SettingList({ groupName }: { groupName: string }) {
     {
       title: 'Giá trị',
       dataIndex: 'valueData',
-      render: (val) => {
+      render: (val, record) => {
         const value = val as string;
+
+        if (record.dataType === 'List') {
+          const handleViewListValue = () => {
+            setSelectedListValue(value);
+            openListValue();
+          };
+
+          return (
+            <Button variant='outline' size='sm' onClick={handleViewListValue}>
+              <List className='size-4' />
+              Xem danh sách
+            </Button>
+          );
+        }
+
         return (
           <span className='line-clamp-1 block truncate' title={value}>
             {value}
@@ -154,6 +176,11 @@ export function SettingList({ groupName }: { groupName: string }) {
         setting={selectedSetting}
         groupName={groupName}
         onClose={close}
+      />
+      <SettingListValueModal
+        open={listValueOpened}
+        value={selectedListValue}
+        onClose={closeListValue}
       />
     </>
   );
