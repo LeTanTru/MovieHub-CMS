@@ -138,22 +138,20 @@ export function SubtitleHeader({
               onConfirm={handleUpload}
               loading={isPending}
               trigger={
-                <ToolTip title='Lưu phụ đề' side='bottom'>
-                  <Button
-                    variant='ghost'
-                    className='text-sporty-blue p-0! hover:bg-transparent'
-                    disabled={disabledSave}
-                  >
-                    {isPending ? (
-                      <Loader2 size={16} className='animate-spin' />
-                    ) : (
-                      <Save
-                        size={16}
-                        className='transition-all duration-200 ease-linear hover:text-gray-400'
-                      />
-                    )}
-                  </Button>
-                </ToolTip>
+                <Button
+                  variant='ghost'
+                  className='text-sporty-blue p-0! hover:bg-transparent'
+                  disabled={disabledSave}
+                >
+                  {isPending ? (
+                    <Loader2 size={16} className='animate-spin' />
+                  ) : (
+                    <Save
+                      size={16}
+                      className='transition-all duration-200 ease-linear hover:text-gray-400'
+                    />
+                  )}
+                </Button>
               }
             />
 
