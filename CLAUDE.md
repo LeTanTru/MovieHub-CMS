@@ -12,14 +12,15 @@ MovieHub CMS is a Next.js App Router administration console for managing a movie
 yarn            # Install dependencies
 yarn dev        # Dev server on port 3001 (Turbopack)
 yarn clean-dev  # Clear .next cache, then dev
-yarn build      # Production build
+yarn build      # Production build (output: 'standalone')
 yarn start      # Production server on port 3001
 yarn lint       # ESLint on .ts/.tsx/.js/.jsx
 yarn format     # Prettier write all files
 yarn lint-staged  # Run on staged files (pre-commit hook)
+ANALYZE=true yarn build  # Build with bundle analyzer
 ```
 
-**No test framework is configured.** Do not add test infrastructure.
+**No test framework is configured.** Do not add test infrastructure or a `test` script.
 
 ## Architecture
 
@@ -30,7 +31,7 @@ ThemeProvider -> QueryProvider -> AppProvider -> Suspense -> PermissionGuard -> 
 ```
 
 - **QueryProvider**: Single shared browser `QueryClient`. Defaults: `staleTime: 60s`, `refetchOnWindowFocus: false`, `retry: false`.
-- **AppProvider**: Reads auth session from server cookie, loads admin/employee profile, syncs to `useAuthStore`, and initializes `LazyMotion`.
+- **AppProvider**: Reads auth session from server cookie (session query uses `gcTime: 0`, `refetchOnMount: 'always'` — see `src/queries/auth.query.ts`), loads admin/employee profile, syncs to `useAuthStore`, and initializes `LazyMotion`.
 - **PermissionGuard**: Enforces route-level auth and permission checks, shows full-screen loader during session resolution.
 - **MqttProvider**: Mounted alongside guarded content inside `AppProvider`; subscribes to CMS/account and user report notification topics (including comment/review target highlighting) and invalidates query caches.
 
@@ -53,9 +54,11 @@ Permissions and API endpoints are centralized:
 - Path param replacement (`/:id` style) and multipart upload support
 - On refresh failure: calls `clearState()` and redirects to login
 
-### Auth State — `useAuthStore` (Zustand)
+### Stores (`src/store/index.ts`, Zustand)
 
-Use `useShallow` for multi-field selectors to avoid unnecessary re-renders. Always use `clearState()` (not individual setters) to reset auth on logout or token expiry.
+`useAuthStore`, `useCommentStore`, `useReviewStore`, `useSidebarStore`, `useVideoLibrarySubtitleStore`. Use `useShallow` for multi-field selectors to avoid unnecessary re-renders. For `useAuthStore`, always use `clearState()` (not individual setters) to reset auth on logout or token expiry.
+
+Compute derived state during render, not in `useEffect`. When a store must be synced from a ref/DOM value in an effect, use `useLayoutEffect` — `useEffect` here triggers a React "update while rendering" error.
 
 ### CRUD Hooks
 
@@ -74,6 +77,11 @@ All `queryKey` strings for TanStack Query mutations/queries are centralized in `
 ### API Base URLs — `AppConstants` (`src/constants/app.ts`)
 
 API base URLs use `AppConstants.authApiUrl`, `AppConstants.apiUrl`, and `AppConstants.mediaUrl` rather than raw env vars. Do not hardcode `process.env.NEXT_PUBLIC_*` in `src/constants/api-config.ts`.
+
+### Table Components
+
+- `BaseTable` and `DragDropTable` apply `w-auto min-w-fit` to `<Table>` so columns don't collapse on resize. The base `Table` UI primitive (`src/components/ui/table.tsx`) intentionally does not force `w-full` — columns size to content and the wrapper scrolls.
+- `DragDropTable` uses a module-level `EMPTY_DATA_SOURCE` constant instead of an inline `[]` to avoid recreating the array every render (which would retrigger drag-and-drop setup).
 
 ### Environment Variables
 
@@ -98,6 +106,17 @@ Validated through Zod in `src/config.ts`. Add new env vars there (and update `.e
 - `Col` has no `span` prop — control width via utility classes
 - Grid utilities: `grid-row`, `grid-col`, `grid-c-*` from `src/styles/grid.css`
 - Prefix intentionally unused variables with `_`
+
+## Common Lint/Review Findings
+
+These recur in review even though not all are raw ESLint errors — check for them proactively:
+
+- Add an `onKeyDown` (Enter/Space) handler on any element with `role='button'` or a click handler (`jsx-a11y/click-events-have-key-events`).
+- Don't wrap trivial expressions (string concat, property access, ternaries) in `useMemo`.
+- Use `.flatMap()` instead of `.map().filter(Boolean)`.
+- Heavy libraries (e.g. `recharts`, chart/editor components) must be loaded via `next/dynamic` with `ssr: false`.
+- Use a custom `cubic-bezier(0.16, 1, 0.3, 1)` transition instead of Tailwind's `animate-bounce`.
+- For external SVGs, use `next/image` with `fill` + `unoptimized` rather than a raw `<img>`.
 
 ## Modal Pattern
 
