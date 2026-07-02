@@ -47,7 +47,7 @@ export function ConfirmModal({
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
   const setOpen = isControlled
-    ? (v: boolean) => onOpenChange?.(v)
+    ? (open: boolean) => onOpenChange?.(open)
     : setInternalOpen;
 
   const handleConfirm = () => {

@@ -305,8 +305,8 @@ export const useSaveBase = <R extends FieldValues, T extends FieldValues>({
         {/* Dialog for asking before leaving page */}
         <ConfirmModal
           open={openedDialog}
-          onOpenChange={(v) => {
-            if (!v) handleCancelLeave();
+          onOpenChange={(open) => {
+            if (!open) handleCancelLeave();
           }}
           message='Bạn có chắc chắn muốn rời khỏi trang này không ?'
           onConfirm={handleConfirmLeave}

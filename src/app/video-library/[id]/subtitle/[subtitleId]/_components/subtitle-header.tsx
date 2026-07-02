@@ -7,10 +7,10 @@ import { useVideoLibrarySubtitleStore } from '@/store';
 import { SubtitleType, VideoLibrarySubtitleResType } from '@/types';
 import { invalidateQueries, notify, serializeVttContent } from '@/utils';
 import { useUploadSubtitleMutation } from '@/queries';
-import { Download, Loader2, Plus, Save } from 'lucide-react';
+import { Download, Plus, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useShallow } from 'zustand/react/shallow';
-import { useValidatePermission } from '@/hooks';
+import { useDisclosure, useValidatePermission } from '@/hooks';
 import { apiConfig, queryKeys } from '@/constants';
 
 type SubtitleHeaderProps = {
@@ -24,6 +24,12 @@ export function SubtitleHeader({
 }: SubtitleHeaderProps) {
   const { id: videoId } = useParams<{ id: string }>();
   const hasPermission = useValidatePermission();
+
+  const {
+    opened: openedSaveModal,
+    open: openSaveModal,
+    close: closeSaveModal
+  } = useDisclosure();
 
   const {
     originalSubtitles,
@@ -95,6 +101,7 @@ export function SubtitleHeader({
       { file, videoId, videoLibraryHostname },
       {
         onSuccess: () => {
+          closeSaveModal();
           setOriginalSubtitles(subtitles);
           invalidateQueries([queryKeys.VIDEO_LIBRARY_SUBTITLE_CONTENT]);
           notify.success('Lưu phụ đề thành công');
@@ -104,6 +111,10 @@ export function SubtitleHeader({
         }
       }
     );
+  };
+
+  const handleOpenSaveModal = () => {
+    openSaveModal();
   };
 
   return (
@@ -135,24 +146,27 @@ export function SubtitleHeader({
         {canUpload && (
           <>
             <ConfirmModal
+              open={openedSaveModal}
+              onOpenChange={(open) => {
+                if (!open) closeSaveModal();
+              }}
               message='Bạn có chắc chắn muốn lưu phụ đề không ?'
               onConfirm={handleUpload}
               loading={isPending}
               trigger={
-                <Button
-                  variant='ghost'
-                  className='text-sporty-blue p-0! hover:bg-transparent'
-                  disabled={disabledSave}
-                >
-                  {isPending ? (
-                    <Loader2 size={16} className='animate-spin' />
-                  ) : (
+                <ToolTip title='Lưu phụ đề' side='bottom'>
+                  <Button
+                    variant='ghost'
+                    className='text-sporty-blue p-0! hover:bg-transparent'
+                    disabled={disabledSave}
+                    onClick={handleOpenSaveModal}
+                  >
                     <Save
                       size={16}
                       className='transition-all duration-200 ease-linear hover:text-gray-400'
                     />
-                  )}
-                </Button>
+                  </Button>
+                </ToolTip>
               }
             />
 
