@@ -7,6 +7,7 @@ import { BaseTable } from '@/components/table';
 import {
   apiConfig,
   FieldTypes,
+  languageOptions,
   objectNames,
   queryKeys,
   SUBTITLE_COMPLETE,
@@ -189,10 +190,17 @@ export function VideoLibrarySubtitleList() {
       dataIndex: 'label',
       render: (val, record) => {
         const value = val as string;
+        const label = languageOptions.find(
+          (lange) => lange.value === value
+        )?.label;
+
         return (
           <div className='flex items-center gap-x-2'>
-            <span className='line-clamp-1 block truncate' title={value}>
-              {value}
+            <span
+              className='line-clamp-1 block truncate'
+              title={label || value}
+            >
+              {label || value}
             </span>
             {record.isDefault && (
               <ToolTip title='Mặc định'>
