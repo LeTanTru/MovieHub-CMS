@@ -121,8 +121,7 @@ export function CommentItem({
       defaultFilters: {
         parentId: comment.id
       },
-      notShowFromSearchParams: ['parentId'],
-      syncSearchParams: false
+      notShowFromSearchParams: ['parentId']
     }
   });
 

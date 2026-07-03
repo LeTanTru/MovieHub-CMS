@@ -25,7 +25,12 @@ import type {
   MoviePersonSearchType,
   SearchFormProps
 } from '@/types';
-import { getLastWord, notify, renderImageUrl } from '@/utils';
+import {
+  getLastWord,
+  invalidateQueries,
+  notify,
+  renderImageUrl
+} from '@/utils';
 import { PlusIcon, X } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -48,7 +53,7 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
   const { mutate: updateMoviePerson, isPending } =
     useUpdateMoviePersonMutation();
 
-  const { data, loading, handlers, listQuery } = useListBase<
+  const { data, loading, handlers } = useListBase<
     MoviePersonResType,
     MoviePersonSearchType
   >({
@@ -194,6 +199,7 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
           if (res.result) {
             notify.success('Cập nhật tên nhân vật thành công');
             setSelectedRow('');
+            invalidateQueries([queryKeys.MOVIE_PERSON_LIST, { kind, movieId }]);
           } else {
             notify.error('Cập nhật tên nhân vật thất bại');
             handlers.setData(data);
@@ -410,7 +416,6 @@ export function MoviePersonList({ kind }: MoviePersonListProps) {
         open={opened}
         onClose={close}
         movieId={movieId}
-        listQuery={listQuery}
       />
     </>
   );

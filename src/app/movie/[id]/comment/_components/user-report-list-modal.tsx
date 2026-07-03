@@ -38,7 +38,7 @@ export function UserReportListModal({
       defaultFilters: {
         objectId: commentId
       },
-      syncSearchParams: false
+      showSearchParams: false
     }
   });
 

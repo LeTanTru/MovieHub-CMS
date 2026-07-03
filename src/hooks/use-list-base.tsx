@@ -36,13 +36,7 @@ import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { PlusIcon, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
 type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
@@ -96,7 +90,6 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
     separate?: boolean | undefined;
   }) => boolean;
   setData: (data: T[]) => void;
-  mappingData: (response: ApiResponseList<T>) => ApiResponseList<T>;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -117,8 +110,8 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
     enabled?: boolean;
     excludeFromQueryFilter?: string[];
     notShowFromSearchParams?: string[];
-    syncSearchParams?: boolean;
     showNotify?: boolean;
+    showSearchParams?: boolean;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
@@ -152,8 +145,8 @@ export const useListBase = <
     enabled = true,
     excludeFromQueryFilter = [],
     notShowFromSearchParams = [],
-    syncSearchParams = true,
-    showNotify = true
+    showNotify = true,
+    showSearchParams = true
   } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
@@ -161,72 +154,59 @@ export const useListBase = <
   const hasPermission = useValidatePermission();
 
   const [pagination, setPagination] = useState<PaginationType>({
-    current: DEFAULT_TABLE_PAGE_START,
+    currentPage: DEFAULT_TABLE_PAGE_START,
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
-    total: 0
+    totalPages: 0
   });
 
   const {
-    searchParams: urlSearchParams,
-    queryString: urlQueryString,
-    setQueryParams: urlSetQueryParams,
-    setQueryParam: urlSetQueryParam,
+    searchParams,
+    queryString,
+    setQueryParams,
+    setQueryParam,
     serializeParams
   } = useQueryParams<S>();
 
-  // store filter params in local state for modal
-  const [localQueryParams, setLocalQueryParams] = useState<Partial<S>>({});
+  const [internalSearchParams, setInternalSearchParams] =
+    useState<Partial<S>>(defaultFilters);
 
-  // get query params
-  const searchParams = syncSearchParams ? urlSearchParams : localQueryParams;
+  // Backing store for search state: the URL when showSearchParams is true,
+  // otherwise local state private to this hook instance.
+  const activeSearchParams = showSearchParams
+    ? searchParams
+    : internalSearchParams;
 
-  // get query string
-  const queryString = syncSearchParams
-    ? urlQueryString
-    : serializeParams(localQueryParams as Record<string, unknown>);
+  const applySearchParams = (next: Partial<S>) => {
+    if (showSearchParams) {
+      setQueryParams(next);
+    } else {
+      setInternalSearchParams(next);
+    }
+  };
 
-  // set query params
-  const setQueryParams = syncSearchParams
-    ? urlSetQueryParams
-    : setLocalQueryParams;
-
-  // set query param
-  const setQueryParam = syncSearchParams
-    ? urlSetQueryParam
-    : (key: keyof S, value: S[keyof S] | null) => {
-        setLocalQueryParams((prev) => {
-          const next = { ...prev };
-          if (value === null || value === '') {
-            delete next[key];
-          } else {
-            next[key] = value;
-          }
-          return next;
-        });
-      };
+  const applySearchParam = (key: keyof S, value: S[keyof S] | null) => {
+    if (showSearchParams) {
+      setQueryParam(key, value);
+    } else {
+      setInternalSearchParams((prev) => {
+        const next = { ...prev };
+        if (value === null || value === '') delete next[key];
+        else next[key] = value;
+        return next;
+      });
+    }
+  };
 
   // check if param is excluded from query filter
-  const isExcluded = useCallback(
-    (key: string) =>
-      excludeFromQueryFilter.includes(key) ||
-      key.startsWith(PARENT_PREFIX_PARAM),
-    [excludeFromQueryFilter]
-  );
-
-  // check if param is shown in url
-  const isShownInUrl = useCallback(
-    (key: string) => !notShowFromSearchParams.includes(key),
-    [notShowFromSearchParams]
-  );
+  const isExcluded = (key: string) =>
+    excludeFromQueryFilter.includes(key) || key.startsWith(PARENT_PREFIX_PARAM);
 
   // Combined current params with default params
-  const mergedSearchParams = useMemo(() => {
-    return { ...defaultFilters, ...searchParams };
-  }, [searchParams, defaultFilters]);
+  const mergedSearchParams = { ...defaultFilters, ...activeSearchParams };
 
   // Filter params which will not be filtered by
-  const queryFilter = useMemo(() => {
-    const filteredParams = Object.fromEntries(
+  const queryFilter = {
+    ...Object.fromEntries(
       Object.entries({
         ...mergedSearchParams,
         page: mergedSearchParams.page
@@ -234,15 +214,14 @@ export const useListBase = <
           : DEFAULT_TABLE_PAGE_START,
         size: pageSize
       }).filter(([key]) => !isExcluded(key))
-    );
-
-    return {
-      ...filteredParams
-    } as S;
-  }, [mergedSearchParams, pageSize, isExcluded]);
+    )
+  } as S;
 
   // Clear undefined | null params and remove excluded params
+  // (URL mode only — local state is already seeded from defaultFilters)
   useEffect(() => {
+    if (!showSearchParams) return;
+
     let hasChanges = false;
     const newParams = { ...searchParams };
 
@@ -252,7 +231,7 @@ export const useListBase = <
         newParams[key as keyof S] === undefined ||
         newParams[key as keyof S] === null;
 
-      if (isMissing && isShownInUrl(key)) {
+      if (isMissing && !notShowFromSearchParams.includes(key)) {
         newParams[key as keyof S] = value as S[keyof S];
         hasChanges = true;
       }
@@ -274,10 +253,10 @@ export const useListBase = <
     setQueryParams(newParams as Partial<S>);
   }, [
     defaultFilters,
-    isShownInUrl,
     notShowFromSearchParams,
     searchParams,
-    setQueryParams
+    setQueryParams,
+    showSearchParams
   ]);
 
   const additionalPathParams = () => ({});
@@ -297,7 +276,8 @@ export const useListBase = <
         signal
       }),
     enabled,
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
+    select: (data) => data.data
   });
 
   const deleteMutation = useMutation({
@@ -312,33 +292,33 @@ export const useListBase = <
 
   // Update data from query results
   useEffect(() => {
-    setData(listQuery.data?.data?.content || []);
-  }, [listQuery.data?.data?.content]);
+    setData(listQuery.data?.content || []);
+  }, [listQuery.data?.content]);
 
   // Pagination
-  const current = searchParams['page'];
+  const currentPage = activeSearchParams['page'];
   useEffect(() => {
     setPagination((p) => ({
       ...p,
-      current: current ? Number(current) : DEFAULT_TABLE_PAGE_START + 1,
-      total: listQuery.data?.data?.totalPages ?? 0
+      currentPage: currentPage
+        ? Number(currentPage)
+        : DEFAULT_TABLE_PAGE_START + 1,
+      totalPages: listQuery.data?.totalPages ?? 0
     }));
-  }, [current, listQuery.data]);
+  }, [currentPage, listQuery.data?.totalPages]);
 
   const changePagination = (page: number) => {
-    setPagination((prev) => ({ ...prev, current: page }));
+    setPagination((prev) => ({ ...prev, currentPage: page }));
 
-    setQueryParams({
-      ...searchParams,
-      page
+    // page === 1, not show on query params
+    applySearchParams({
+      ...activeSearchParams,
+      page: page === 1 ? null : page
     } as Partial<S>);
-    if (page === 1) {
-      setQueryParam('page', null);
-    }
   };
 
   const handleEditClick = (id: string) => {
-    const query = serializeParams(searchParams);
+    const query = showSearchParams ? serializeParams(searchParams) : '';
     const path = query ? `${pathname}/${id}?${query}` : `${pathname}/${id}`;
     navigate.push(path);
   };
@@ -505,7 +485,7 @@ export const useListBase = <
   const renderAddButton = () => {
     if (!apiConfig.create || !apiConfig.create.permissionCode) return null;
     let path = `${pathname}/create`;
-    if (Object.keys(searchParams).length > 0)
+    if (showSearchParams && Object.keys(searchParams).length > 0)
       path = `${path}?${serializeParams(searchParams)}`;
     return (
       <HasPermission requiredPermissions={[apiConfig.create.permissionCode]}>
@@ -521,14 +501,16 @@ export const useListBase = <
 
   const changeQueryFilter = (filters: Partial<S>) => {
     const preservedParams = Object.fromEntries(
-      Object.entries(searchParams).filter(([key]) => isExcluded(key))
+      Object.entries(activeSearchParams).filter(([key]) => isExcluded(key))
     );
 
     const filteredValues = Object.fromEntries(
-      Object.entries(filters).filter(([key]) => isShownInUrl(key))
+      Object.entries(filters).filter(
+        ([key]) => !notShowFromSearchParams.includes(key)
+      )
     );
 
-    setQueryParams({ ...filteredValues, ...preservedParams } as Partial<S>);
+    applySearchParams({ ...filteredValues, ...preservedParams } as Partial<S>);
   };
 
   const renderSearchForm = ({
@@ -542,7 +524,7 @@ export const useListBase = <
     const mergedValues = {
       ...queryFilter,
       ...Object.fromEntries(
-        Object.entries(searchParams)
+        Object.entries(activeSearchParams)
           .filter(([key]) => !key.startsWith(PARENT_PREFIX_PARAM))
           .map(([key, value]) => {
             const field = searchFields.find((f) => f.key === key);
@@ -577,13 +559,15 @@ export const useListBase = <
     };
 
     const resetSearchValues = Object.fromEntries(
-      Object.entries(defaultFilters).filter(([key]) => isShownInUrl(key))
+      Object.entries(defaultFilters).filter(
+        ([key]) => !notShowFromSearchParams.includes(key)
+      )
     ) as Partial<S>;
 
     // Handle reset
     const handleSearchReset = () => {
       const preservedParams = Object.fromEntries(
-        Object.entries(searchParams).filter(([key]) => isExcluded(key))
+        Object.entries(activeSearchParams).filter(([key]) => isExcluded(key))
       );
 
       const resetParams = {
@@ -591,16 +575,16 @@ export const useListBase = <
         ...preservedParams
       };
 
-      if (serializeParams(searchParams) === serializeParams(resetParams))
+      if (serializeParams(activeSearchParams) === serializeParams(resetParams))
         return;
 
       setPagination({
-        current: DEFAULT_TABLE_PAGE_START + 1,
+        currentPage: DEFAULT_TABLE_PAGE_START + 1,
         pageSize: DEFAULT_TABLE_PAGE_SIZE,
-        total: 0
+        totalPages: 0
       });
 
-      setQueryParams(resetParams);
+      applySearchParams(resetParams);
     };
 
     return (
@@ -631,17 +615,9 @@ export const useListBase = <
     </Button>
   );
 
-  const totalElements = useMemo(() => {
-    return listQuery.data?.data?.totalElements ?? 0;
-  }, [listQuery.data]);
+  const totalElements = listQuery.data?.totalElements ?? 0;
 
-  const totalPages = useMemo(() => {
-    return listQuery.data?.data?.totalPages ?? 0;
-  }, [listQuery.data]);
-
-  const mappingData = (response: ApiResponseList<T>) => {
-    return response;
-  };
+  const totalPages = listQuery.data?.totalPages ?? 0;
 
   const extendableHandlers = (): HandlerType<T, S> => {
     const handlers: HandlerType<T, S> = {
@@ -653,7 +629,7 @@ export const useListBase = <
       renderAddButton,
       renderSearchForm,
       renderStatusColumn,
-      setQueryParam,
+      setQueryParam: applySearchParam,
       handleEditClick,
       handleDeleteClick,
       invalidateQueries,
@@ -661,8 +637,7 @@ export const useListBase = <
       changeQueryFilter,
       handleDeleteError,
       hasPermission,
-      setData,
-      mappingData
+      setData
     };
 
     override?.(handlers);

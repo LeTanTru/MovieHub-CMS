@@ -38,7 +38,7 @@ export function UserReportListModal({
       defaultFilters: {
         objectId: reviewId
       },
-      syncSearchParams: false
+      showSearchParams: false
     }
   });
 
@@ -102,7 +102,7 @@ export function UserReportListModal({
     {
       title: 'Ngày báo cáo',
       dataIndex: 'createdDate',
-      width: 180,
+      width: 300,
       align: 'center',
       render: (val) => {
         const dateStr = val as string;

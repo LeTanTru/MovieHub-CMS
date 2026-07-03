@@ -51,7 +51,7 @@ export function BaseTable<T extends Record<string, unknown>>({
 }: BaseTableProps<T>) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollAtEnd, setScrollAtEnd] = useState<boolean>(false);
-  const { total } = pagination;
+  const { totalPages } = pagination;
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -199,12 +199,12 @@ export function BaseTable<T extends Record<string, unknown>>({
             </TableBody>
           </Table>
         </div>
-        {!(!total || total <= 1) && (
+        {!(!totalPages || totalPages <= 1) && (
           <div className='flex justify-end'>
             <Pagination
               changePagination={changePagination}
-              currentPage={pagination.current}
-              totalPages={total}
+              currentPage={pagination.currentPage}
+              totalPages={totalPages}
             />
           </div>
         )}

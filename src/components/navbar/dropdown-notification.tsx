@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  DEFAULT_TABLE_PAGE_START,
   NOTIFICATION_PAGE_SIZE,
   NOTIFICATION_TYPE_SYSTEM,
   apiConfig,
@@ -75,11 +74,9 @@ export function DropdownNotification() {
       pageSize: NOTIFICATION_PAGE_SIZE,
       enabled: openedDropdown,
       defaultFilters: {
-        type: String(NOTIFICATION_TYPE_SYSTEM),
-        page: DEFAULT_TABLE_PAGE_START,
-        size: NOTIFICATION_PAGE_SIZE
-      } as NotificationSearchType,
-      syncSearchParams: false
+        type: String(NOTIFICATION_TYPE_SYSTEM)
+      },
+      showSearchParams: false
     }
   });
 

@@ -6,19 +6,23 @@ import { Modal } from '@/components/modal';
 import {
   apiConfig,
   INITIAL_AUTO_COMPLETE_SIZE,
-  PERSON_KIND_ACTOR
+  PERSON_KIND_ACTOR,
+  queryKeys
 } from '@/constants';
 import { logger } from '@/logger';
 import { useCreateMoviePersonMutation } from '@/queries';
 import { moviePersonSchema } from '@/schema-validations';
 import type {
-  ApiResponseList,
   MoviePersonBodyType,
   MoviePersonResType,
   PersonResType
 } from '@/types';
-import { getLastWord, notify, renderImageUrl } from '@/utils';
-import { UseQueryResult } from '@tanstack/react-query';
+import {
+  getLastWord,
+  invalidateQueries,
+  notify,
+  renderImageUrl
+} from '@/utils';
 import type { UseFormReturn } from 'react-hook-form';
 import { useMemo, useState } from 'react';
 import { CircleLoading } from '@/components/loading';
@@ -28,7 +32,6 @@ type MoviePersonModalProps = {
   movieId: string;
   kind: number;
   open: boolean;
-  listQuery: UseQueryResult<ApiResponseList<MoviePersonResType>, Error>;
   onClose: () => void;
 };
 
@@ -44,7 +47,6 @@ export function MoviePersonModal({
   kind,
   movieId,
   open,
-  listQuery,
   onClose
 }: MoviePersonModalProps) {
   const { mutate: createMoviePerson, isPending } =
@@ -71,7 +73,7 @@ export function MoviePersonModal({
           notify.success(
             `Thêm ${kind === PERSON_KIND_ACTOR ? 'diễn viên' : 'đạo diễn'} thành công`
           );
-          listQuery.refetch();
+          invalidateQueries([queryKeys.MOVIE_PERSON_LIST, { kind, movieId }]);
           form.reset();
         } else {
           notify.error(

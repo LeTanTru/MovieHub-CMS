@@ -40,14 +40,7 @@ import {
 import { PlusIcon, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  type ReactNode,
-  type UIEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import { type ReactNode, type UIEvent, useEffect, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
 type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
@@ -106,7 +99,6 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   setData: (data: T[]) => void;
   loadMore: () => void;
   handleScrollLoadMore: (e: UIEvent<HTMLElement>) => void;
-  mappingData: (response: ApiResponseList<T>) => ApiResponseList<T>;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -130,8 +122,8 @@ type UseInfiniteListBaseProps<
     enabled?: boolean;
     excludeFromQueryFilter?: string[];
     notShowFromSearchParams?: string[];
-    syncSearchParams?: boolean;
     showNotify?: boolean;
+    showSearchParams?: boolean;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
@@ -166,8 +158,8 @@ export const useInfiniteListBase = <
     enabled = true,
     excludeFromQueryFilter = [],
     notShowFromSearchParams = [],
-    syncSearchParams = true,
-    showNotify = true
+    showNotify = true,
+    showSearchParams = true
   } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
@@ -175,71 +167,59 @@ export const useInfiniteListBase = <
   const hasPermission = useValidatePermission();
 
   const [pagination, setPagination] = useState<PaginationType>({
-    current: DEFAULT_TABLE_PAGE_START,
+    currentPage: DEFAULT_TABLE_PAGE_START,
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
-    total: 0
+    totalPages: 0
   });
+
   const {
-    searchParams: urlSearchParams,
-    queryString: urlQueryString,
-    setQueryParams: urlSetQueryParams,
-    setQueryParam: urlSetQueryParam,
+    searchParams,
+    queryString,
+    setQueryParams,
+    setQueryParam,
     serializeParams
   } = useQueryParams<S>();
 
-  // store filter params in local state for modal
-  const [localQueryParams, setLocalQueryParams] = useState<Partial<S>>({});
+  const [internalSearchParams, setInternalSearchParams] =
+    useState<Partial<S>>(defaultFilters);
 
-  // get query params
-  const searchParams = syncSearchParams ? urlSearchParams : localQueryParams;
+  // Backing store for search state: the URL when showSearchParams is true,
+  // otherwise local state private to this hook instance.
+  const activeSearchParams = showSearchParams
+    ? searchParams
+    : internalSearchParams;
 
-  // get query string
-  const queryString = syncSearchParams
-    ? urlQueryString
-    : serializeParams(localQueryParams as Record<string, unknown>);
+  const applySearchParams = (next: Partial<S>) => {
+    if (showSearchParams) {
+      setQueryParams(next);
+    } else {
+      setInternalSearchParams(next);
+    }
+  };
 
-  // set query params
-  const setQueryParams = syncSearchParams
-    ? urlSetQueryParams
-    : setLocalQueryParams;
-
-  // set query param
-  const setQueryParam = syncSearchParams
-    ? urlSetQueryParam
-    : (key: keyof S, value: S[keyof S] | null) => {
-        setLocalQueryParams((prev) => {
-          const next = { ...prev };
-          if (value === null || value === '') {
-            delete next[key];
-          } else {
-            next[key] = value;
-          }
-          return next;
-        });
-      };
+  const applySearchParam = (key: keyof S, value: S[keyof S] | null) => {
+    if (showSearchParams) {
+      setQueryParam(key, value);
+    } else {
+      setInternalSearchParams((prev) => {
+        const next = { ...prev };
+        if (value === null || value === '') delete next[key];
+        else next[key] = value;
+        return next;
+      });
+    }
+  };
 
   // check if param is excluded from query filter
-  const isExcluded = useCallback(
-    (key: string) =>
-      excludeFromQueryFilter.includes(key) ||
-      key.startsWith(PARENT_PREFIX_PARAM),
-    [excludeFromQueryFilter]
-  );
-
-  // check if param is shown in url
-  const isShownInUrl = useCallback(
-    (key: string) => !notShowFromSearchParams.includes(key),
-    [notShowFromSearchParams]
-  );
+  const isExcluded = (key: string) =>
+    excludeFromQueryFilter.includes(key) || key.startsWith(PARENT_PREFIX_PARAM);
 
   // Combined current params with default params
-  const mergedSearchParams = useMemo(() => {
-    return { ...defaultFilters, ...searchParams };
-  }, [searchParams, defaultFilters]);
+  const mergedSearchParams = { ...defaultFilters, ...activeSearchParams };
 
   // Filter params which will not be filtered by
-  const queryFilter = useMemo(() => {
-    const filteredParams = Object.fromEntries(
+  const queryFilter = {
+    ...Object.fromEntries(
       Object.entries({
         ...mergedSearchParams,
         page: mergedSearchParams.page
@@ -247,15 +227,14 @@ export const useInfiniteListBase = <
           : DEFAULT_TABLE_PAGE_START,
         size: pageSize
       }).filter(([key]) => !isExcluded(key))
-    );
-
-    return {
-      ...filteredParams
-    } as S;
-  }, [mergedSearchParams, pageSize, isExcluded]);
+    )
+  } as S;
 
   // Clear undefined | null params and remove excluded params
+  // (URL mode only — local state is already seeded from defaultFilters)
   useEffect(() => {
+    if (!showSearchParams) return;
+
     let hasChanges = false;
     const newParams = { ...searchParams };
 
@@ -265,7 +244,7 @@ export const useInfiniteListBase = <
         newParams[key as keyof S] === undefined ||
         newParams[key as keyof S] === null;
 
-      if (isMissing && isShownInUrl(key)) {
+      if (isMissing && !notShowFromSearchParams.includes(key)) {
         newParams[key as keyof S] = value as S[keyof S];
         hasChanges = true;
       }
@@ -287,10 +266,10 @@ export const useInfiniteListBase = <
     setQueryParams(newParams as Partial<S>);
   }, [
     defaultFilters,
-    isShownInUrl,
     notShowFromSearchParams,
     searchParams,
-    setQueryParams
+    setQueryParams,
+    showSearchParams
   ]);
 
   const additionalPathParams = () => ({});
@@ -340,19 +319,17 @@ export const useInfiniteListBase = <
   }, [infiniteQuery.data]);
 
   const changePagination = (page: number) => {
-    setPagination((prev) => ({ ...prev, current: page }));
+    setPagination((prev) => ({ ...prev, currentPage: page }));
 
-    setQueryParams({
-      ...searchParams,
-      page
+    // page === 1, not show on query params
+    applySearchParams({
+      ...activeSearchParams,
+      page: page === 1 ? null : page
     } as Partial<S>);
-    if (page === 1) {
-      setQueryParam('page', null);
-    }
   };
 
   const handleEditClick = (id: string) => {
-    const query = serializeParams(searchParams);
+    const query = showSearchParams ? serializeParams(searchParams) : '';
     const path = query ? `${pathname}/${id}?${query}` : `${pathname}/${id}`;
     navigate.push(path);
   };
@@ -519,7 +496,7 @@ export const useInfiniteListBase = <
   const renderAddButton = () => {
     if (!apiConfig.create || !apiConfig.create.permissionCode) return null;
     let path = `${pathname}/create`;
-    if (Object.keys(searchParams).length > 0)
+    if (showSearchParams && Object.keys(searchParams).length > 0)
       path = `${path}?${serializeParams(searchParams)}`;
     return (
       <HasPermission requiredPermissions={[apiConfig.create.permissionCode]}>
@@ -535,14 +512,16 @@ export const useInfiniteListBase = <
 
   const changeQueryFilter = (filters: Partial<S>) => {
     const preservedParams = Object.fromEntries(
-      Object.entries(searchParams).filter(([key]) => isExcluded(key))
+      Object.entries(activeSearchParams).filter(([key]) => isExcluded(key))
     );
 
     const filteredValues = Object.fromEntries(
-      Object.entries(filters).filter(([key]) => isShownInUrl(key))
+      Object.entries(filters).filter(
+        ([key]) => !notShowFromSearchParams.includes(key)
+      )
     );
 
-    setQueryParams({ ...filteredValues, ...preservedParams } as Partial<S>);
+    applySearchParams({ ...filteredValues, ...preservedParams } as Partial<S>);
   };
 
   const renderSearchForm = ({
@@ -556,7 +535,7 @@ export const useInfiniteListBase = <
     const mergedValues = {
       ...queryFilter,
       ...Object.fromEntries(
-        Object.entries(searchParams)
+        Object.entries(activeSearchParams)
           .filter(([key]) => !key.startsWith(PARENT_PREFIX_PARAM))
           .map(([key, value]) => {
             const field = searchFields.find((f) => f.key === key);
@@ -591,13 +570,15 @@ export const useInfiniteListBase = <
     };
 
     const resetSearchValues = Object.fromEntries(
-      Object.entries(defaultFilters).filter(([key]) => isShownInUrl(key))
+      Object.entries(defaultFilters).filter(
+        ([key]) => !notShowFromSearchParams.includes(key)
+      )
     ) as Partial<S>;
 
     // Handle reset
     const handleSearchReset = () => {
       const preservedParams = Object.fromEntries(
-        Object.entries(searchParams).filter(([key]) => isExcluded(key))
+        Object.entries(activeSearchParams).filter(([key]) => isExcluded(key))
       );
 
       const resetParams = {
@@ -605,16 +586,16 @@ export const useInfiniteListBase = <
         ...preservedParams
       };
 
-      if (serializeParams(searchParams) === serializeParams(resetParams))
+      if (serializeParams(activeSearchParams) === serializeParams(resetParams))
         return;
 
       setPagination({
-        current: DEFAULT_TABLE_PAGE_START + 1,
+        currentPage: DEFAULT_TABLE_PAGE_START + 1,
         pageSize: DEFAULT_TABLE_PAGE_SIZE,
-        total: 0
+        totalPages: 0
       });
 
-      setQueryParams(resetParams);
+      applySearchParams(resetParams);
     };
 
     return (
@@ -663,26 +644,18 @@ export const useInfiniteListBase = <
     }
   };
 
-  const totalElements = useMemo(() => {
-    return infiniteQuery.data?.pages[0]?.data?.totalElements ?? 0;
-  }, [infiniteQuery.data]);
+  const totalElements = infiniteQuery.data?.pages[0]?.data?.totalElements ?? 0;
 
-  const totalPages = useMemo(() => {
-    return infiniteQuery.data?.pages[0]?.data?.totalPages ?? 0;
-  }, [infiniteQuery.data]);
+  const totalPages = infiniteQuery.data?.pages[0]?.data?.totalPages ?? 0;
 
-  const totalLeft = useMemo(() => {
+  const totalLeft = (() => {
     const currentPageList = infiniteQuery.data?.pageParams;
     if (currentPageList?.length) {
       const currentPage = currentPageList[currentPageList.length - 1] as number;
       return totalElements - (currentPage + 1) * pageSize;
     }
     return 0;
-  }, [infiniteQuery.data?.pageParams, pageSize, totalElements]);
-
-  const mappingData = (response: ApiResponseList<T>) => {
-    return response;
-  };
+  })();
 
   const extendableHandlers = (): HandlerType<T, S> => {
     const handlers: HandlerType<T, S> = {
@@ -694,7 +667,7 @@ export const useInfiniteListBase = <
       renderAddButton,
       renderSearchForm,
       renderStatusColumn,
-      setQueryParam,
+      setQueryParam: applySearchParam,
       handleEditClick,
       handleDeleteClick,
       invalidateQueries,
@@ -704,8 +677,7 @@ export const useInfiniteListBase = <
       hasPermission,
       setData,
       loadMore,
-      handleScrollLoadMore,
-      mappingData
+      handleScrollLoadMore
     };
 
     override?.(handlers);
