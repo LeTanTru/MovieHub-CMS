@@ -75,7 +75,8 @@ export function DropdownNotification() {
       enabled: openedDropdown,
       defaultFilters: {
         type: String(NOTIFICATION_TYPE_SYSTEM)
-      }
+      },
+      showSearchParams: false
     }
   });
 

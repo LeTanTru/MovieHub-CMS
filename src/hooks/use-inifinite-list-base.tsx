@@ -123,6 +123,7 @@ type UseInfiniteListBaseProps<
     excludeFromQueryFilter?: string[];
     notShowFromSearchParams?: string[];
     showNotify?: boolean;
+    showSearchParams?: boolean;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
@@ -157,7 +158,8 @@ export const useInfiniteListBase = <
     enabled = true,
     excludeFromQueryFilter = [],
     notShowFromSearchParams = [],
-    showNotify = true
+    showNotify = true,
+    showSearchParams = true
   } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
@@ -178,12 +180,42 @@ export const useInfiniteListBase = <
     serializeParams
   } = useQueryParams<S>();
 
+  const [internalSearchParams, setInternalSearchParams] =
+    useState<Partial<S>>(defaultFilters);
+
+  // Backing store for search state: the URL when showSearchParams is true,
+  // otherwise local state private to this hook instance.
+  const activeSearchParams = showSearchParams
+    ? searchParams
+    : internalSearchParams;
+
+  const applySearchParams = (next: Partial<S>) => {
+    if (showSearchParams) {
+      setQueryParams(next);
+    } else {
+      setInternalSearchParams(next);
+    }
+  };
+
+  const applySearchParam = (key: keyof S, value: S[keyof S] | null) => {
+    if (showSearchParams) {
+      setQueryParam(key, value);
+    } else {
+      setInternalSearchParams((prev) => {
+        const next = { ...prev };
+        if (value === null || value === '') delete next[key];
+        else next[key] = value;
+        return next;
+      });
+    }
+  };
+
   // check if param is excluded from query filter
   const isExcluded = (key: string) =>
     excludeFromQueryFilter.includes(key) || key.startsWith(PARENT_PREFIX_PARAM);
 
   // Combined current params with default params
-  const mergedSearchParams = { ...defaultFilters, ...searchParams };
+  const mergedSearchParams = { ...defaultFilters, ...activeSearchParams };
 
   // Filter params which will not be filtered by
   const queryFilter = {
@@ -199,7 +231,10 @@ export const useInfiniteListBase = <
   } as S;
 
   // Clear undefined | null params and remove excluded params
+  // (URL mode only — local state is already seeded from defaultFilters)
   useEffect(() => {
+    if (!showSearchParams) return;
+
     let hasChanges = false;
     const newParams = { ...searchParams };
 
@@ -229,7 +264,13 @@ export const useInfiniteListBase = <
     if (!hasChanges) return;
 
     setQueryParams(newParams as Partial<S>);
-  }, [defaultFilters, notShowFromSearchParams, searchParams, setQueryParams]);
+  }, [
+    defaultFilters,
+    notShowFromSearchParams,
+    searchParams,
+    setQueryParams,
+    showSearchParams
+  ]);
 
   const additionalPathParams = () => ({});
 
@@ -281,14 +322,14 @@ export const useInfiniteListBase = <
     setPagination((prev) => ({ ...prev, currentPage: page }));
 
     // page === 1, not show on query params
-    setQueryParams({
-      ...searchParams,
+    applySearchParams({
+      ...activeSearchParams,
       page: page === 1 ? null : page
     } as Partial<S>);
   };
 
   const handleEditClick = (id: string) => {
-    const query = serializeParams(searchParams);
+    const query = showSearchParams ? serializeParams(searchParams) : '';
     const path = query ? `${pathname}/${id}?${query}` : `${pathname}/${id}`;
     navigate.push(path);
   };
@@ -455,7 +496,7 @@ export const useInfiniteListBase = <
   const renderAddButton = () => {
     if (!apiConfig.create || !apiConfig.create.permissionCode) return null;
     let path = `${pathname}/create`;
-    if (Object.keys(searchParams).length > 0)
+    if (showSearchParams && Object.keys(searchParams).length > 0)
       path = `${path}?${serializeParams(searchParams)}`;
     return (
       <HasPermission requiredPermissions={[apiConfig.create.permissionCode]}>
@@ -471,7 +512,7 @@ export const useInfiniteListBase = <
 
   const changeQueryFilter = (filters: Partial<S>) => {
     const preservedParams = Object.fromEntries(
-      Object.entries(searchParams).filter(([key]) => isExcluded(key))
+      Object.entries(activeSearchParams).filter(([key]) => isExcluded(key))
     );
 
     const filteredValues = Object.fromEntries(
@@ -480,7 +521,7 @@ export const useInfiniteListBase = <
       )
     );
 
-    setQueryParams({ ...filteredValues, ...preservedParams } as Partial<S>);
+    applySearchParams({ ...filteredValues, ...preservedParams } as Partial<S>);
   };
 
   const renderSearchForm = ({
@@ -494,7 +535,7 @@ export const useInfiniteListBase = <
     const mergedValues = {
       ...queryFilter,
       ...Object.fromEntries(
-        Object.entries(searchParams)
+        Object.entries(activeSearchParams)
           .filter(([key]) => !key.startsWith(PARENT_PREFIX_PARAM))
           .map(([key, value]) => {
             const field = searchFields.find((f) => f.key === key);
@@ -537,7 +578,7 @@ export const useInfiniteListBase = <
     // Handle reset
     const handleSearchReset = () => {
       const preservedParams = Object.fromEntries(
-        Object.entries(searchParams).filter(([key]) => isExcluded(key))
+        Object.entries(activeSearchParams).filter(([key]) => isExcluded(key))
       );
 
       const resetParams = {
@@ -545,7 +586,7 @@ export const useInfiniteListBase = <
         ...preservedParams
       };
 
-      if (serializeParams(searchParams) === serializeParams(resetParams))
+      if (serializeParams(activeSearchParams) === serializeParams(resetParams))
         return;
 
       setPagination({
@@ -554,7 +595,7 @@ export const useInfiniteListBase = <
         totalPages: 0
       });
 
-      setQueryParams(resetParams);
+      applySearchParams(resetParams);
     };
 
     return (
@@ -626,7 +667,7 @@ export const useInfiniteListBase = <
       renderAddButton,
       renderSearchForm,
       renderStatusColumn,
-      setQueryParam,
+      setQueryParam: applySearchParam,
       handleEditClick,
       handleDeleteClick,
       invalidateQueries,
