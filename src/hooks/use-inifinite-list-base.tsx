@@ -40,14 +40,7 @@ import {
 import { PlusIcon, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  type ReactNode,
-  type UIEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import { type ReactNode, type UIEvent, useEffect, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
 type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
@@ -106,7 +99,6 @@ type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   setData: (data: T[]) => void;
   loadMore: () => void;
   handleScrollLoadMore: (e: UIEvent<HTMLElement>) => void;
-  mappingData: (response: ApiResponseList<T>) => ApiResponseList<T>;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -180,66 +172,23 @@ export const useInfiniteListBase = <
     totalPages: 0
   });
   const {
-    searchParams: urlSearchParams,
-    queryString: urlQueryString,
-    setQueryParams: urlSetQueryParams,
-    setQueryParam: urlSetQueryParam,
+    searchParams,
+    queryString,
+    setQueryParams,
+    setQueryParam,
     serializeParams
   } = useQueryParams<S>();
 
-  // store filter params in local state for modal
-  const [localQueryParams, setLocalQueryParams] = useState<Partial<S>>({});
-
-  // get query params
-  const searchParams = syncSearchParams ? urlSearchParams : localQueryParams;
-
-  // get query string
-  const queryString = syncSearchParams
-    ? urlQueryString
-    : serializeParams(localQueryParams as Record<string, unknown>);
-
-  // set query params
-  const setQueryParams = syncSearchParams
-    ? urlSetQueryParams
-    : setLocalQueryParams;
-
-  // set query param
-  const setQueryParam = syncSearchParams
-    ? urlSetQueryParam
-    : (key: keyof S, value: S[keyof S] | null) => {
-        setLocalQueryParams((prev) => {
-          const next = { ...prev };
-          if (value === null || value === '') {
-            delete next[key];
-          } else {
-            next[key] = value;
-          }
-          return next;
-        });
-      };
-
   // check if param is excluded from query filter
-  const isExcluded = useCallback(
-    (key: string) =>
-      excludeFromQueryFilter.includes(key) ||
-      key.startsWith(PARENT_PREFIX_PARAM),
-    [excludeFromQueryFilter]
-  );
-
-  // check if param is shown in url
-  const isShownInUrl = useCallback(
-    (key: string) => !notShowFromSearchParams.includes(key),
-    [notShowFromSearchParams]
-  );
+  const isExcluded = (key: string) =>
+    excludeFromQueryFilter.includes(key) || key.startsWith(PARENT_PREFIX_PARAM);
 
   // Combined current params with default params
-  const mergedSearchParams = useMemo(() => {
-    return { ...defaultFilters, ...searchParams };
-  }, [searchParams, defaultFilters]);
+  const mergedSearchParams = { ...defaultFilters, ...searchParams };
 
   // Filter params which will not be filtered by
-  const queryFilter = useMemo(() => {
-    const filteredParams = Object.fromEntries(
+  const queryFilter = {
+    ...Object.fromEntries(
       Object.entries({
         ...mergedSearchParams,
         page: mergedSearchParams.page
@@ -247,12 +196,8 @@ export const useInfiniteListBase = <
           : DEFAULT_TABLE_PAGE_START,
         size: pageSize
       }).filter(([key]) => !isExcluded(key))
-    );
-
-    return {
-      ...filteredParams
-    } as S;
-  }, [mergedSearchParams, pageSize, isExcluded]);
+    )
+  } as S;
 
   // Clear undefined | null params and remove excluded params
   useEffect(() => {
@@ -265,7 +210,7 @@ export const useInfiniteListBase = <
         newParams[key as keyof S] === undefined ||
         newParams[key as keyof S] === null;
 
-      if (isMissing && isShownInUrl(key)) {
+      if (isMissing && !notShowFromSearchParams.includes(key)) {
         newParams[key as keyof S] = value as S[keyof S];
         hasChanges = true;
       }
@@ -285,13 +230,7 @@ export const useInfiniteListBase = <
     if (!hasChanges) return;
 
     setQueryParams(newParams as Partial<S>);
-  }, [
-    defaultFilters,
-    isShownInUrl,
-    notShowFromSearchParams,
-    searchParams,
-    setQueryParams
-  ]);
+  }, [defaultFilters, notShowFromSearchParams, searchParams, setQueryParams]);
 
   const additionalPathParams = () => ({});
 
@@ -340,15 +279,13 @@ export const useInfiniteListBase = <
   }, [infiniteQuery.data]);
 
   const changePagination = (page: number) => {
-    setPagination((prev) => ({ ...prev, current: page }));
+    setPagination((prev) => ({ ...prev, currentPage: page }));
 
+    // page === 1, not show on query params
     setQueryParams({
       ...searchParams,
-      page
+      page: page === 1 ? null : page
     } as Partial<S>);
-    if (page === 1) {
-      setQueryParam('page', null);
-    }
   };
 
   const handleEditClick = (id: string) => {
@@ -539,7 +476,9 @@ export const useInfiniteListBase = <
     );
 
     const filteredValues = Object.fromEntries(
-      Object.entries(filters).filter(([key]) => isShownInUrl(key))
+      Object.entries(filters).filter(
+        ([key]) => !notShowFromSearchParams.includes(key)
+      )
     );
 
     setQueryParams({ ...filteredValues, ...preservedParams } as Partial<S>);
@@ -591,7 +530,9 @@ export const useInfiniteListBase = <
     };
 
     const resetSearchValues = Object.fromEntries(
-      Object.entries(defaultFilters).filter(([key]) => isShownInUrl(key))
+      Object.entries(defaultFilters).filter(
+        ([key]) => !notShowFromSearchParams.includes(key)
+      )
     ) as Partial<S>;
 
     // Handle reset
@@ -609,7 +550,7 @@ export const useInfiniteListBase = <
         return;
 
       setPagination({
-        currentPage: DEFAULT_TABLE_PAGE_START,
+        currentPage: DEFAULT_TABLE_PAGE_START + 1,
         pageSize: DEFAULT_TABLE_PAGE_SIZE,
         totalPages: 0
       });
@@ -663,26 +604,18 @@ export const useInfiniteListBase = <
     }
   };
 
-  const totalElements = useMemo(() => {
-    return infiniteQuery.data?.pages[0]?.data?.totalElements ?? 0;
-  }, [infiniteQuery.data]);
+  const totalElements = infiniteQuery.data?.pages[0]?.data?.totalElements ?? 0;
 
-  const totalPages = useMemo(() => {
-    return infiniteQuery.data?.pages[0]?.data?.totalPages ?? 0;
-  }, [infiniteQuery.data]);
+  const totalPages = infiniteQuery.data?.pages[0]?.data?.totalPages ?? 0;
 
-  const totalLeft = useMemo(() => {
+  const totalLeft = (() => {
     const currentPageList = infiniteQuery.data?.pageParams;
     if (currentPageList?.length) {
       const currentPage = currentPageList[currentPageList.length - 1] as number;
       return totalElements - (currentPage + 1) * pageSize;
     }
     return 0;
-  }, [infiniteQuery.data?.pageParams, pageSize, totalElements]);
-
-  const mappingData = (response: ApiResponseList<T>) => {
-    return response;
-  };
+  })();
 
   const extendableHandlers = (): HandlerType<T, S> => {
     const handlers: HandlerType<T, S> = {
@@ -704,8 +637,7 @@ export const useInfiniteListBase = <
       hasPermission,
       setData,
       loadMore,
-      handleScrollLoadMore,
-      mappingData
+      handleScrollLoadMore
     };
 
     override?.(handlers);
