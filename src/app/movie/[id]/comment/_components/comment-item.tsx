@@ -133,34 +133,6 @@ export function CommentItem({
   const isLiked = voteMap[comment.id] === REACTION_TYPE_LIKE;
   const isDisliked = voteMap[comment.id] === REACTION_TYPE_DISLIKE;
 
-  const canCreate = hasPermission({
-    requiredPermissions: [apiConfig.comment.create.permissionCode]
-  });
-
-  const canUpdate = hasPermission({
-    requiredPermissions: [apiConfig.comment.update.permissionCode]
-  });
-
-  const canDelete = hasPermission({
-    requiredPermissions: [apiConfig.comment.delete.permissionCode]
-  });
-
-  const canChangeStatus = hasPermission({
-    requiredPermissions: [apiConfig.comment.changeStatus.permissionCode]
-  });
-
-  const canPin = hasPermission({
-    requiredPermissions: [apiConfig.comment.pin.permissionCode]
-  });
-
-  const canVote = hasPermission({
-    requiredPermissions: [apiConfig.comment.vote.permissionCode]
-  });
-
-  const canUpdateToxicSpans = hasPermission({
-    requiredPermissions: [apiConfig.comment.updateToxicSpans.permissionCode]
-  });
-
   const commentCount = commentList.length;
   const isOpen = isActiveParent;
 
@@ -173,6 +145,35 @@ export function CommentItem({
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const canViewHiddenContent = isHidden || !!hasToxicSpans;
   const isBlurWholeContent = isHidden && !isVisible && !hasToxicSpans;
+
+  const canCreate = hasPermission({
+    requiredPermissions: [apiConfig.comment.create.permissionCode]
+  });
+
+  const canUpdate = hasPermission({
+    requiredPermissions: [apiConfig.comment.update.permissionCode]
+  });
+
+  const canDelete = hasPermission({
+    requiredPermissions: [apiConfig.comment.delete.permissionCode]
+  });
+
+  const canChangeStatus =
+    hasPermission({
+      requiredPermissions: [apiConfig.comment.changeStatus.permissionCode]
+    }) && !hasToxicSpans;
+
+  const canPin = hasPermission({
+    requiredPermissions: [apiConfig.comment.pin.permissionCode]
+  });
+
+  const canVote = hasPermission({
+    requiredPermissions: [apiConfig.comment.vote.permissionCode]
+  });
+
+  const canUpdateToxicSpans = hasPermission({
+    requiredPermissions: [apiConfig.comment.updateToxicSpans.permissionCode]
+  });
 
   const { mutate: changeStatusComment, isPending } =
     useChangeCommenStatusMutation();

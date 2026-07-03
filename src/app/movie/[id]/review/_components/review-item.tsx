@@ -68,9 +68,10 @@ export function ReviewItem({
     requiredPermissions: [apiConfig.review.delete.permissionCode]
   });
 
-  const canChangeStatus = hasPermission({
-    requiredPermissions: [apiConfig.review.changeStatus.permissionCode]
-  });
+  const canChangeStatus =
+    hasPermission({
+      requiredPermissions: [apiConfig.review.changeStatus.permissionCode]
+    }) && !hasToxicSpans;
 
   const canUpdateToxicSpans = hasPermission({
     requiredPermissions: [apiConfig.review.updateToxicSpans.permissionCode]
