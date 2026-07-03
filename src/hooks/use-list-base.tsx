@@ -161,9 +161,9 @@ export const useListBase = <
   const hasPermission = useValidatePermission();
 
   const [pagination, setPagination] = useState<PaginationType>({
-    current: DEFAULT_TABLE_PAGE_START,
+    currentPage: DEFAULT_TABLE_PAGE_START,
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
-    total: 0
+    totalPages: 0
   });
 
   const {
@@ -316,14 +316,14 @@ export const useListBase = <
   }, [listQuery.data?.data?.content]);
 
   // Pagination
-  const current = searchParams['page'];
+  const currentPage = searchParams['page'];
   useEffect(() => {
     setPagination((p) => ({
       ...p,
-      current: current ? Number(current) : DEFAULT_TABLE_PAGE_START + 1,
+      current: currentPage ? Number(currentPage) : DEFAULT_TABLE_PAGE_START + 1,
       total: listQuery.data?.data?.totalPages ?? 0
     }));
-  }, [current, listQuery.data]);
+  }, [currentPage, listQuery.data]);
 
   const changePagination = (page: number) => {
     setPagination((prev) => ({ ...prev, current: page }));
@@ -595,9 +595,9 @@ export const useListBase = <
         return;
 
       setPagination({
-        current: DEFAULT_TABLE_PAGE_START + 1,
+        currentPage: DEFAULT_TABLE_PAGE_START + 1,
         pageSize: DEFAULT_TABLE_PAGE_SIZE,
-        total: 0
+        totalPages: 0
       });
 
       setQueryParams(resetParams);

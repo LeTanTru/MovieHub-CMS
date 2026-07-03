@@ -175,9 +175,9 @@ export const useInfiniteListBase = <
   const hasPermission = useValidatePermission();
 
   const [pagination, setPagination] = useState<PaginationType>({
-    current: DEFAULT_TABLE_PAGE_START,
+    currentPage: DEFAULT_TABLE_PAGE_START,
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
-    total: 0
+    totalPages: 0
   });
   const {
     searchParams: urlSearchParams,
@@ -609,9 +609,9 @@ export const useInfiniteListBase = <
         return;
 
       setPagination({
-        current: DEFAULT_TABLE_PAGE_START + 1,
+        currentPage: DEFAULT_TABLE_PAGE_START,
         pageSize: DEFAULT_TABLE_PAGE_SIZE,
-        total: 0
+        totalPages: 0
       });
 
       setQueryParams(resetParams);
