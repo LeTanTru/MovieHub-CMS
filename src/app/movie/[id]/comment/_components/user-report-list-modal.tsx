@@ -37,8 +37,7 @@ export function UserReportListModal({
       enabled: isOpen,
       defaultFilters: {
         objectId: commentId
-      },
-      syncSearchParams: false
+      }
     }
   });
 

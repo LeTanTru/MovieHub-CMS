@@ -110,7 +110,6 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
     enabled?: boolean;
     excludeFromQueryFilter?: string[];
     notShowFromSearchParams?: string[];
-    syncSearchParams?: boolean;
     showNotify?: boolean;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
@@ -145,7 +144,6 @@ export const useListBase = <
     enabled = true,
     excludeFromQueryFilter = [],
     notShowFromSearchParams = [],
-    syncSearchParams = true,
     showNotify = true
   } = options;
   const navigate = useNavigate();

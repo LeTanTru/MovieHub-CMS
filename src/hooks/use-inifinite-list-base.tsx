@@ -122,7 +122,6 @@ type UseInfiniteListBaseProps<
     enabled?: boolean;
     excludeFromQueryFilter?: string[];
     notShowFromSearchParams?: string[];
-    syncSearchParams?: boolean;
     showNotify?: boolean;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
@@ -158,7 +157,6 @@ export const useInfiniteListBase = <
     enabled = true,
     excludeFromQueryFilter = [],
     notShowFromSearchParams = [],
-    syncSearchParams = true,
     showNotify = true
   } = options;
   const navigate = useNavigate();
@@ -171,6 +169,7 @@ export const useInfiniteListBase = <
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
     totalPages: 0
   });
+
   const {
     searchParams,
     queryString,

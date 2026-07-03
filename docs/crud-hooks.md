@@ -34,7 +34,6 @@ Configures the behavior of the list, pagination, and URL sync.
 - **`enabled`** (`boolean`, optional): Whether the `getList` query should run immediately. Defaults to `true`.
 - **`excludeFromQueryFilter`** (`string[]`, optional): Array of parameter keys that should exist in the URL/state but should **not** be sent to the backend API.
 - **`notShowFromSearchParams`** (`string[]`, optional): Array of parameter keys that should be sent to the API but should **not** appear in the browser's URL bar.
-- **`syncSearchParams`** (`boolean`, optional): If `true`, search filters and pagination state are synchronized bidirectionally with the URL query string. Defaults to `true`.
 - **`showNotify`** (`boolean`, optional): Whether to display standard success/error toast notifications for actions like deletion. Defaults to `true`.
 
 #### `override(handlers)`
@@ -59,8 +58,7 @@ const { data, pagination, loading, handlers, renderSearchForm, listQuery } =
       queryKey: 'your-unique-query-key',
       objectName: 'Item Name',
       pageSize: 10,
-      defaultFilters: { status: 1 },
-      syncSearchParams: true
+      defaultFilters: { status: 1 }
     },
     override: (handlers) => {
       // Override any handlers to customize logic or table columns
