@@ -5,9 +5,9 @@ import { BaseForm } from '@/components/form/base-form';
 import {
   Button,
   Col,
-  InputField,
   Row,
   TextAreaField,
+  TimeMaskField,
   ToolTip
 } from '@/components/form';
 import { cn } from '@/lib/utils';
@@ -281,7 +281,7 @@ export function SubtitleForm() {
             <Row>
               <Col className='grid-c-6'>
                 <div className='flex items-end gap-2'>
-                  <InputField
+                  <TimeMaskField
                     control={form.control}
                     name='start'
                     label='Thời gian bắt đầu'
@@ -290,7 +290,6 @@ export function SubtitleForm() {
                     disabled={disabled}
                     tabIndex={-1}
                     formItemClassName='grow'
-                    autoComplete='off'
                   />
                   <ToolTip title='Áp dụng thời gian hiện tại' side='bottom'>
                     <Button
@@ -309,7 +308,7 @@ export function SubtitleForm() {
               </Col>
               <Col className='grid-c-6'>
                 <div className='flex items-end gap-2'>
-                  <InputField
+                  <TimeMaskField
                     control={form.control}
                     name='end'
                     label='Thời gian kết thúc'
@@ -318,7 +317,6 @@ export function SubtitleForm() {
                     disabled={disabled}
                     tabIndex={-1}
                     formItemClassName='grow'
-                    autoComplete='off'
                   />
                   <ToolTip title='Áp dụng thời gian hiện tại' side='bottom'>
                     <Button
