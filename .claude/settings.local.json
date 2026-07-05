@@ -19,7 +19,30 @@
       "Bash(git status *)",
       "Bash(git check-ignore *)",
       "Bash(echo \"exit:$?\")",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(netstat -ano)",
+      "Bash(yarn start *)",
+      "Bash(tee /tmp/movie-cms-start.log)",
+      "Bash(echo \"started with PID $!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3001/video-library?sourceType=1)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(disown)",
+      "Bash(curl -s -D - -o /dev/null http://localhost:3001/video-library?sourceType=1)",
+      "Bash(curl -s -o /dev/null -w \"login page: %{http_code}\\\\n\" http://localhost:3001/login)",
+      "Bash(curl -s http://localhost:3001/login)",
+      "Bash(curl -s http://localhost:3001/login -o /tmp/login.html)",
+      "Read(//tmp/**)",
+      "Bash(npx eslint *)",
+      "Bash(curl -s -o /dev/null -w \"status: %{http_code}\\\\n\" http://localhost:3001/login)",
+      "Bash(npx --yes playwright install chromium --with-deps)",
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(grep -n \"arrowParens\" .prettierrc*)",
+      "Bash(cat .prettierrc.json)",
+      "Bash(cat .prettierrc)",
+      "Bash(npx prettier *)",
+      "Bash(xxd)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001)",
+      "Bash(taskkill //PID 19544 //T //F)"
     ]
   }
 }

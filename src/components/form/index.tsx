@@ -24,6 +24,7 @@ export { Row } from './row';
 export { SelectField } from './select-field';
 export { SliderField } from './slider-field';
 export { TextAreaField } from './text-area-field';
+export { TimeMaskField } from './time-mask-field';
 export { TimePickerField } from './time-picker-field';
 export { ToolTip } from './tooltip';
 export { UploadFileField } from './upload-file-field';
