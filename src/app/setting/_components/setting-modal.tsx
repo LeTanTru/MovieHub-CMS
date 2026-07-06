@@ -32,7 +32,7 @@ import {
   stringifyBooleanValue
 } from '@/utils';
 import { Input } from '@/components/ui/input';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { Plus, Trash2 } from 'lucide-react';
 
@@ -56,6 +56,18 @@ export function SettingModal({
 }: SettingModalProps) {
   const { mutateAsync: uploadFileMutate } = useUploadFileMutation();
   const { mutateAsync: deleteFileMutate } = useDeleteFileMutation();
+
+  const listContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollListToNewItem = () => {
+    requestAnimationFrame(() => {
+      const container = listContainerRef.current;
+      if (!container) return;
+      container.scrollTop = container.scrollHeight;
+      const inputs = container.querySelectorAll('input');
+      inputs[inputs.length - 1]?.focus();
+    });
+  };
 
   const {
     loading,
@@ -305,7 +317,10 @@ export function SettingModal({
                           type='button'
                           variant='primary'
                           size='sm'
-                          onClick={() => setItems([...items, ''])}
+                          onClick={() => {
+                            setItems([...items, '']);
+                            scrollListToNewItem();
+                          }}
                         >
                           <Plus className='size-4' />
                           Thêm
@@ -316,7 +331,10 @@ export function SettingModal({
                           Chưa có từ nào
                         </p>
                       ) : (
-                        <div className='grid h-50 grid-cols-2 gap-3 overflow-y-auto px-1 py-2'>
+                        <div
+                          ref={listContainerRef}
+                          className='grid max-h-50 grid-cols-2 gap-3 overflow-y-auto px-1 py-2'
+                        >
                           {items.map((item, index) => (
                             <div
                               key={index}
