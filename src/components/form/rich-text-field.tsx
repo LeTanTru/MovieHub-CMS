@@ -73,8 +73,10 @@ export function RichTextField<T extends FieldValues>({
   ) => {
     if (!hasInitialized.current) {
       hasInitialized.current = true;
-      initialValueRef.current = content;
-      return;
+      if (content === (field.value ?? '')) {
+        initialValueRef.current = content;
+        return;
+      }
     }
     editor.setDirty(true);
     field.onChange(content);
