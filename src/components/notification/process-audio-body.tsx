@@ -1,8 +1,7 @@
 import { ImageField } from '@/components/form';
-import { VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL } from '@/constants';
 import { useQueryParams } from '@/hooks';
 import { route } from '@/routes';
-import { AudioNotificationType, NotificationResType } from '@/types';
+import { ProcessAudioNotificationType, NotificationResType } from '@/types';
 import {
   convertUTCToLocal,
   parseJSON,
@@ -13,7 +12,7 @@ import {
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-export function AudioBody({
+export function ProcessAudioBody({
   notification
 }: {
   notification: NotificationResType;
@@ -21,7 +20,7 @@ export function AudioBody({
   const { serializeParams } = useQueryParams();
 
   const body = useMemo(
-    () => parseJSON<AudioNotificationType>(notification.body),
+    () => parseJSON<ProcessAudioNotificationType>(notification.body),
     [notification.body]
   );
 
@@ -31,7 +30,7 @@ export function AudioBody({
       href={renderListPageUrl(
         route.videoLibrary.getList.path,
         serializeParams({
-          sourceType: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
+          sourceType: body?.sourceType,
           name: body?.name ?? ''
         })
       )}

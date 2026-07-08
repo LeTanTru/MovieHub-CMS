@@ -1,8 +1,9 @@
-import { AudioBody } from './audio-body';
 import { ConvertVideoBody } from './convert-video-body';
 import { mqttCMDs } from '@/constants';
 import { NotificationResType } from '@/types';
+import { ProcessAudioBody } from './process-audio-body';
 import { ReplyCommentBody } from './reply-comment-body';
+import { ReportVideoBody } from './report-video-body';
 import { SubtitleBody } from './subtitle-body';
 import { ToxicCommentLockedBody } from './toxic-comment-locked-body';
 import { UserReportBody } from './user-report-body';
@@ -15,7 +16,7 @@ export function NotificationBody({
 }) {
   switch (notification.cmd) {
     case mqttCMDs.DONE_CONVERT_AUDIO: {
-      return <AudioBody notification={notification} />;
+      return <ProcessAudioBody notification={notification} />;
     }
 
     case mqttCMDs.DONE_CONVERT_VIDEO: {
@@ -28,6 +29,10 @@ export function NotificationBody({
 
     case mqttCMDs.NEW_USER_REPORT: {
       return <UserReportBody notification={notification} />;
+    }
+
+    case mqttCMDs.NEW_VIDEO_REPORT: {
+      return <ReportVideoBody notification={notification} />;
     }
 
     case mqttCMDs.REPLY_COMMENT: {

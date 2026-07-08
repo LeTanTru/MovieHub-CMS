@@ -1,5 +1,4 @@
 import { ImageField } from '@/components/form';
-import { VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL } from '@/constants';
 import { useQueryParams } from '@/hooks';
 import { route } from '@/routes';
 import { ConvertVideoNotificationType, NotificationResType } from '@/types';
@@ -31,7 +30,7 @@ export function ConvertVideoBody({
       href={renderListPageUrl(
         route.videoLibrary.getList.path,
         serializeParams({
-          sourceType: VIDEO_LIBRARY_SOURCE_TYPE_INTERNAL,
+          sourceType: body?.sourceType,
           name: body?.name ?? ''
         })
       )}
