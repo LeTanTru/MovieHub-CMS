@@ -63,21 +63,31 @@ export function RichTextField<T extends FieldValues>({
   labelClassName,
   formItemClassName
 }: RichTextFieldProps<T>) {
-  const hasInitialized = useRef<boolean>(false);
-  const initialValueRef = useRef<string>('');
+  const lastSyncedValueRef = useRef<string>('');
+  const normalizedBaselineRef = useRef<string>('');
+
+  const getRhfDefaultValue = (): string | undefined =>
+    (name as string)
+      .split('.')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .reduce((obj: any, key) => obj?.[key], control._defaultValues) as
+      | string
+      | undefined;
 
   const handleEditorChange = (
     content: string,
     editor: TinyMCEEditor,
     field: ControllerRenderProps<T, Path<T>>
   ) => {
-    if (!hasInitialized.current) {
-      hasInitialized.current = true;
-      if (content === (field.value ?? '')) {
-        initialValueRef.current = content;
-        return;
-      }
+    const currentValue = field.value ?? '';
+
+    if (currentValue !== lastSyncedValueRef.current) {
+      lastSyncedValueRef.current = currentValue;
+      normalizedBaselineRef.current = content;
+      return;
     }
+
+    lastSyncedValueRef.current = content;
     editor.setDirty(true);
     field.onChange(content);
   };
@@ -87,16 +97,15 @@ export function RichTextField<T extends FieldValues>({
     field: ControllerRenderProps<T, Path<T>>
   ) => {
     const currentContent = editor.getContent();
-    if (currentContent === initialValueRef.current) {
-      const rhfDefault = (name as string)
-        .split('.')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .reduce((obj: any, key) => obj?.[key], control._defaultValues) as
-        | string
-        | undefined;
-      field.onChange(rhfDefault ?? initialValueRef.current);
+
+    if (currentContent === normalizedBaselineRef.current) {
+      const restored = getRhfDefaultValue() ?? currentContent;
+      lastSyncedValueRef.current = restored;
+      field.onChange(restored);
       return;
     }
+
+    lastSyncedValueRef.current = currentContent;
     field.onChange(currentContent);
   };
 
