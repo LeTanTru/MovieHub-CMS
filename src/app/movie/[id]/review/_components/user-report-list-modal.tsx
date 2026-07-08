@@ -77,17 +77,6 @@ export function UserReportListModal({
       }
     },
     {
-      title: 'Loại vi phạm',
-      dataIndex: 'type',
-      width: 140,
-      align: 'center',
-      render: (val) => (
-        <span className='line-clamp-1 block truncate'>
-          {String(val ?? 'N/A')}
-        </span>
-      )
-    },
-    {
       title: 'Nội dung báo cáo',
       dataIndex: 'content',
       render: (val) => {
