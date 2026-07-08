@@ -31,7 +31,7 @@ export function ConvertVideoBody({
         route.videoLibrary.getList.path,
         serializeParams({
           sourceType: body?.sourceType,
-          name: body?.name ?? ''
+          id: body?.id ?? ''
         })
       )}
     >

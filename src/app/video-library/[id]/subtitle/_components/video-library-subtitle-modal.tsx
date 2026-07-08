@@ -4,7 +4,12 @@ import { BooleanField, Col, InputField, Row } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
-import { apiConfig, objectNames, queryKeys } from '@/constants';
+import {
+  apiConfig,
+  languageOptions,
+  objectNames,
+  queryKeys
+} from '@/constants';
 import { useSaveBase } from '@/hooks';
 import { videoLibrarySubtitleSchema } from '@/schema-validations';
 import type {
@@ -50,13 +55,17 @@ export function VideoLibrarySubtitleModal({
       }
     });
 
+  const label =
+    languageOptions.find((lange) => lange.value === subtitle?.language)
+      ?.label || subtitle?.label;
+
   const initialValues: VideoLibrarySubtitleBodyType = useMemo(
     () => ({
       id: subtitle?.id ?? defaultValues.id,
-      label: subtitle?.label ?? defaultValues.label,
+      label: label ?? defaultValues.label,
       isDefault: subtitle?.isDefault ?? defaultValues.isDefault
     }),
-    [subtitle?.id, subtitle?.isDefault, subtitle?.label]
+    [label, subtitle?.id, subtitle?.isDefault]
   );
 
   const onSubmit = async (

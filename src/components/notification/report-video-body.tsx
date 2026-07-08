@@ -31,7 +31,7 @@ export function ReportVideoBody({
         route.videoLibrary.getList.path,
         serializeParams({
           sourceType: body?.videoSourceType,
-          name: body?.videoName ?? ''
+          id: body?.videoId ?? ''
         })
       )}
     >

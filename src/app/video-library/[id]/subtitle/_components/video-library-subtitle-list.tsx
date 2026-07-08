@@ -187,20 +187,17 @@ export function VideoLibrarySubtitleList() {
   const columns: Column<VideoLibrarySubtitleResType>[] = [
     {
       title: 'Ngôn ngữ',
-      dataIndex: 'label',
+      dataIndex: 'language',
       render: (val, record) => {
         const value = val as string;
-        const label = languageOptions.find(
-          (lange) => lange.value === value
-        )?.label;
+        const label =
+          languageOptions.find((lang) => lang.value === value)?.label ||
+          record.label;
 
         return (
           <div className='flex items-center gap-x-2'>
-            <span
-              className='line-clamp-1 block truncate'
-              title={label || value}
-            >
-              {label || value}
+            <span className='line-clamp-1 block truncate' title={label}>
+              {label}
             </span>
             {record.isDefault && (
               <ToolTip title='Mặc định'>

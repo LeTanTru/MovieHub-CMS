@@ -300,6 +300,7 @@ export function MovieList() {
         const label = languageOptions.find(
           (language) => language.value === value
         )?.label;
+
         return (
           <span className='line-clamp-1 block truncate' title={label}>
             {label || 'N/A'}
