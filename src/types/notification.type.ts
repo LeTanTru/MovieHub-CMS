@@ -30,9 +30,10 @@ export type NotificationSearchType = z.infer<typeof notificationSearchSchema> &
   BaseSearchType;
 
 export type ConvertVideoNotificationType = {
+  duration: number;
   id: string;
   name: string;
-  duration: number;
+  sourceType: number;
   state: number;
   thumbnailUrl: string;
 };
@@ -70,10 +71,11 @@ export type VoteCommentNotificationType = {
   };
 };
 
-export type AudioNotificationType = {
+export type ProcessAudioNotificationType = {
+  duration: number;
   id: string;
   name: string;
-  duration: number;
+  sourceType: number;
   state: number;
   thumbnailUrl: string;
 };
@@ -124,4 +126,24 @@ export type UserReportNotificationType = {
   objectId: string;
   type: number;
   content: string;
+};
+
+export type ReportVideoNotificationType = {
+  id: string;
+  user: {
+    id: string;
+    username: string;
+    email: string;
+    fullName: string;
+    avatarPath: string;
+  };
+  objectId: string;
+  type: number;
+  content: string;
+  videoId: string;
+  videoName: string;
+  videoDuration: number;
+  videoSourceType: number;
+  videoState: number;
+  videoThumbnailUrl: string;
 };

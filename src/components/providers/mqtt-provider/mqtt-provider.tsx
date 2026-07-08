@@ -11,13 +11,13 @@ import { useAuth, useMqtt } from '@/hooks';
 import { getMqttClient } from '@/lib/mqtt';
 import { logger } from '@/logger';
 import { mqttMessageSchema } from '@/schema-validations';
-import {
-  AudioNotificationType,
-  type ConvertVideoNotificationType,
-  type NotificationResType,
-  type ReplyCommentNotificationType,
-  type ToxicCommentLockedNotificationType,
-  type VoteCommentNotificationType
+import type {
+  ProcessAudioNotificationType,
+  ConvertVideoNotificationType,
+  NotificationResType,
+  ReplyCommentNotificationType,
+  ToxicCommentLockedNotificationType,
+  VoteCommentNotificationType
 } from '@/types';
 import {
   generateMqttTopic,
@@ -74,7 +74,8 @@ const cmsNotificationQueryKeys: Partial<Record<string, QueryKey>> = {
   [mqttCMDs.DONE_CONVERT_AUDIO]: [queryKeys.VIDEO_LIBRARY_LIST],
   [mqttCMDs.DONE_CONVERT_VIDEO]: [queryKeys.VIDEO_LIBRARY_LIST],
   [mqttCMDs.DONE_PROCESS_SUBTITLE]: [queryKeys.VIDEO_LIBRARY_SUBTITLE_LIST],
-  [mqttCMDs.NEW_USER_REPORT]: [queryKeys.NOTIFICATION_INFINITE]
+  [mqttCMDs.NEW_USER_REPORT]: [queryKeys.NOTIFICATION_INFINITE],
+  [mqttCMDs.NEW_VIDEO_REPORT]: [queryKeys.NOTIFICATION_INFINITE]
 };
 
 export function MqttProvider() {
@@ -177,7 +178,7 @@ export function MqttProvider() {
       }
 
       if (data.cmd === mqttCMDs.DONE_CONVERT_AUDIO) {
-        const body = parseJSON<AudioNotificationType>(data.body);
+        const body = parseJSON<ProcessAudioNotificationType>(data.body);
         if (body?.state === AUDIO_STATE_ERROR) {
           notify.error(data.title);
           return;
