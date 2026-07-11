@@ -45,7 +45,8 @@ import {
   convertLocalToUTC,
   convertUTCToLocal,
   renderImageUrl,
-  renderListPageUrl
+  renderListPageUrl,
+  sanitizeRichText
 } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -160,7 +161,9 @@ export function MovieForm() {
           .map((category) => category.id.toString()) ??
         defaultValues.categoryIds,
       country: data?.country ?? defaultValues.country,
-      description: data?.description ?? defaultValues.description,
+      description: sanitizeRichText(
+        data?.description ?? defaultValues.description
+      ),
       duration: getDuration(data?.metadata ?? ''),
       imageTitleUrl: data?.imageTitleUrl ?? defaultValues.imageTitleUrl,
       isFeatured: data?.isFeatured ?? defaultValues.isFeatured,

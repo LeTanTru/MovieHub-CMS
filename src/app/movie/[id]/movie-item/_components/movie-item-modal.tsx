@@ -43,12 +43,12 @@ import {
   convertLocalToUTC,
   convertUTCToLocal,
   notify,
-  renderImageUrl
+  renderImageUrl,
+  sanitizeRichText
 } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import DOMPurify from 'dompurify';
 
 const defaultValues: MovieItemBodyType = {
   description: '',
@@ -172,12 +172,8 @@ export function MovieItemModal({
 
   const initialValues: MovieItemBodyType = useMemo(
     () => ({
-      description: DOMPurify.sanitize(
-        data?.description ?? defaultValues.description,
-        {
-          ADD_TAGS: ['iframe'],
-          ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling']
-        }
+      description: sanitizeRichText(
+        data?.description ?? defaultValues.description
       ),
       isLatest: data?.isLatest ?? defaultValues.isLatest,
       kind: data?.kind ?? defaultKind,

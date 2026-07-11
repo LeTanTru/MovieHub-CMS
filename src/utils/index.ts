@@ -11,6 +11,7 @@ export * from './mqtt.util';
 export * from './notify.util';
 export * from './number.util';
 export * from './query.util';
+export * from './sanitize.util';
 export * from './statistics.util';
 export * from './storage.util';
 export * from './text.util';

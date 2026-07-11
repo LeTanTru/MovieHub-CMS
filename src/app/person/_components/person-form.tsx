@@ -39,7 +39,8 @@ import {
   formatDate,
   getData,
   renderImageUrl,
-  renderListPageUrl
+  renderListPageUrl,
+  sanitizeRichText
 } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
@@ -104,7 +105,7 @@ export function PersonForm() {
   const initialValues: PersonBodyType = useMemo(
     () => ({
       avatarPath: data?.avatarPath ?? defaultValues.avatarPath,
-      bio: data?.bio ?? defaultValues.bio,
+      bio: sanitizeRichText(data?.bio ?? defaultValues.bio),
       country: data?.country ?? defaultValues.country,
       dateOfBirth:
         formatDate(data?.dateOfBirth, DATE_FORMAT) ?? defaultValues.dateOfBirth,

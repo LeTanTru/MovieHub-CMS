@@ -29,6 +29,7 @@ import type { SettingBodyType, SettingResType } from '@/types';
 import {
   parseBooleanValue,
   parseSelectOptions,
+  sanitizeRichText,
   stringifyBooleanValue
 } from '@/utils';
 import { Input } from '@/components/ui/input';
@@ -120,7 +121,9 @@ export function SettingModal({
           ? parseBooleanValue(setting?.valueData)
           : setting?.dataType === 'List'
             ? String(setting?.valueData ?? '')
-            : (setting?.valueData ?? defaultValues.valueData),
+            : setting?.dataType === 'RichText'
+              ? sanitizeRichText(String(setting?.valueData ?? ''))
+              : (setting?.valueData ?? defaultValues.valueData),
       dataType: setting?.dataType ?? defaultValues.dataType,
       description: setting?.description ?? defaultValues.description,
       groupName: defaultValues.groupName,
