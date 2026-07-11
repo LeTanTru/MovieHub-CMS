@@ -42,6 +42,7 @@ import {
   renderListPageUrl,
   renderVideoUrl,
   renderVttUrl,
+  sanitizeRichText,
   timeToSeconds
 } from '@/utils';
 import { useParams } from 'next/navigation';
@@ -124,7 +125,9 @@ export function VideoLibraryForm() {
   const initialValues: VideoLibraryBodyType = useMemo(
     () => ({
       content: data?.content ?? defaultValues.content,
-      description: data?.description ?? defaultValues.description,
+      description: sanitizeRichText(
+        data?.description ?? defaultValues.description
+      ),
       introEnd: data?.introEnd ?? defaultValues.introEnd,
       introStart: data?.introStart ?? defaultValues.introStart,
       outroStart: data?.outroStart ?? defaultValues.outroStart,

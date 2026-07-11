@@ -20,7 +20,6 @@ import {
 import type { Editor as TinyMCEEditor } from 'tinymce';
 import { envConfig } from '@/config';
 import dynamic from 'next/dynamic';
-import { useRef } from 'react';
 
 const TINYMCE_DEFAULT_HEIGHT = 450;
 
@@ -63,32 +62,10 @@ export function RichTextField<T extends FieldValues>({
   labelClassName,
   formItemClassName
 }: RichTextFieldProps<T>) {
-  const lastSyncedValueRef = useRef<string>('');
-  const normalizedBaselineRef = useRef<string>('');
-
-  const getRhfDefaultValue = (): string | undefined =>
-    (name as string)
-      .split('.')
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .reduce((obj: any, key) => obj?.[key], control._defaultValues) as
-      | string
-      | undefined;
-
   const handleEditorChange = (
     content: string,
-    editor: TinyMCEEditor,
     field: ControllerRenderProps<T, Path<T>>
   ) => {
-    const currentValue = field.value ?? '';
-
-    if (currentValue !== lastSyncedValueRef.current) {
-      lastSyncedValueRef.current = currentValue;
-      normalizedBaselineRef.current = content;
-      return;
-    }
-
-    lastSyncedValueRef.current = content;
-    editor.setDirty(true);
     field.onChange(content);
   };
 
@@ -97,15 +74,6 @@ export function RichTextField<T extends FieldValues>({
     field: ControllerRenderProps<T, Path<T>>
   ) => {
     const currentContent = editor.getContent();
-
-    if (currentContent === normalizedBaselineRef.current) {
-      const restored = getRhfDefaultValue() ?? currentContent;
-      lastSyncedValueRef.current = restored;
-      field.onChange(restored);
-      return;
-    }
-
-    lastSyncedValueRef.current = currentContent;
     field.onChange(currentContent);
   };
 
@@ -156,6 +124,7 @@ export function RichTextField<T extends FieldValues>({
                 disabled={disabled || readOnly}
                 init={{
                   height: height ?? TINYMCE_DEFAULT_HEIGHT,
+                  entity_encoding: 'raw',
                   menubar: 'file edit view insert format tools table help',
                   language: 'vi',
                   plugins: [
@@ -186,7 +155,7 @@ export function RichTextField<T extends FieldValues>({
                   toolbar:
                     'undo redo | bold italic underline strikethrough | fontfamily fontsizeinput blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor | ltr rtl',
                   valid_elements:
-                    'p,h1,h2,h3,h4,h5,h6,a[href|target|rel],strong,b,em,i,strike,u,ul,ol,li,br,img[src|alt|width|height],table,thead,tbody,tr,th,td,span[style],div[style],figure,figcaption,iframe[src|width|height|allow|allowfullscreen|title],blockquote',
+                    'p[style],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],a[href|target|rel],strong,b,em,i,s,strike,u,ul[style],ol[style],li[style],br,img[src|alt|width|height|style],table[style|border],thead,tbody,tr[style],th[style|colspan|rowspan],td[style|colspan|rowspan],span[style],div[style],figure[class],figcaption,iframe[src|width|height|allow|allowfullscreen|title],blockquote',
                   extended_valid_elements:
                     'iframe[src|width|height|allow|allowfullscreen|title]',
                   placeholder: placeholder,
@@ -245,8 +214,8 @@ export function RichTextField<T extends FieldValues>({
                     });
                   }
                 }}
-                onEditorChange={(content, editor) => {
-                  handleEditorChange(content, editor, field);
+                onEditorChange={(content) => {
+                  handleEditorChange(content, field);
                 }}
                 onUndo={(_evt, editor) => {
                   handleUndoRedo(editor, field);

@@ -24,7 +24,7 @@ import { useDeleteFileMutation, useUploadLogoMutation } from '@/queries';
 import { route } from '@/routes';
 import { styleSchema } from '@/schema-validations';
 import type { StyleBodyType, StyleResType } from '@/types';
-import { renderImageUrl, renderListPageUrl } from '@/utils';
+import { renderImageUrl, renderListPageUrl, sanitizeRichText } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
@@ -82,7 +82,9 @@ export function StyleForm() {
 
   const initialValues: StyleBodyType = useMemo(
     () => ({
-      description: data?.description ?? defaultValues.description,
+      description: sanitizeRichText(
+        data?.description ?? defaultValues.description
+      ),
       imageMobileUrl: data?.imageMobileUrl ?? defaultValues.imageMobileUrl,
       imageWebUrl: data?.imageWebUrl ?? defaultValues.imageWebUrl,
       isDefault: data?.isDefault ?? defaultValues.isDefault,

@@ -22,7 +22,7 @@ import type {
   MovieSidebarBodyType,
   MovieSidebarResType
 } from '@/types';
-import { renderImageUrl, renderListPageUrl } from '@/utils';
+import { renderImageUrl, renderListPageUrl, sanitizeRichText } from '@/utils';
 import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -81,7 +81,9 @@ export function SidebarForm() {
 
   const initialValues: MovieSidebarBodyType = useMemo(
     () => ({
-      description: data?.description ?? defaultValues.description,
+      description: sanitizeRichText(
+        data?.description ?? defaultValues.description
+      ),
       active: data?.active ?? defaultValues.active,
       mainColor: data?.mainColor ?? defaultValues.mainColor,
       mobileThumbnailUrl:
