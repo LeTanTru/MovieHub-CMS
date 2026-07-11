@@ -7,7 +7,7 @@ import {
   queryKeys,
   VIDEO_LIBRARY_STATE_ERROR
 } from '@/constants';
-import { useAuth, useMqtt } from '@/hooks';
+import { useAuth, useMqtt, useMqttSubscribe } from '@/hooks';
 import { getMqttClient } from '@/lib/mqtt';
 import { logger } from '@/logger';
 import { mqttMessageSchema } from '@/schema-validations';
@@ -80,54 +80,16 @@ const cmsNotificationQueryKeys: Partial<Record<string, QueryKey>> = {
 
 export function MqttProvider() {
   const { profile } = useAuth();
+  // Subscribe to general CMS notifications (handles reconnection internally)
+  useMqttSubscribe(mqttTopics.CMS);
+
+  // Subscribe to per-account notifications (enabled only when profile is loaded)
+  useMqttSubscribe(
+    generateMqttTopic(mqttTopics.ACCOUNT, { accountId: profile?.id || '' }),
+    !!profile?.id
+  );
+
   const client = getMqttClient();
-
-  // Subscribe to general CMS notification
-  useEffect(() => {
-    client.subscribe(mqttTopics.CMS, (err) => {
-      if (!err)
-        logger.info(`[MQTT] Subscribed to MQTT topic: ${mqttTopics.CMS}`);
-      else logger.error('[MQTT_SUBSCRIBE_ERROR]', mqttTopics.CMS, err);
-    });
-
-    return () => {
-      client.unsubscribe(mqttTopics.CMS);
-    };
-  }, [client]);
-
-  // Subscribe to account notification
-  useEffect(() => {
-    if (profile?.id) {
-      client.subscribe(
-        generateMqttTopic(mqttTopics.ACCOUNT, {
-          accountId: profile.id
-        }),
-        (err) => {
-          if (!err)
-            logger.info(
-              `[MQTT] Subscribed to MQTT topic: ${mqttTopics.ACCOUNT.replace(
-                ':accountId',
-                profile.id
-              )}`
-            );
-          else
-            logger.error(
-              '[MQTT_SUBSCRIBE_ERROR]',
-              mqttTopics.ACCOUNT.replace(':accountId', profile.id),
-              err
-            );
-        }
-      );
-    }
-
-    return () => {
-      if (profile?.id) {
-        client.unsubscribe(
-          mqttTopics.ACCOUNT.replace(':accountId', profile.id)
-        );
-      }
-    };
-  }, [profile?.id, client]);
 
   // Log all incoming MQTT messages for debugging
   useEffect(() => {

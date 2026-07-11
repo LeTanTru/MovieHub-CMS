@@ -13,7 +13,7 @@ export { useIsMobile } from './use-mobile';
 export { useIsMounted } from './use-is-mounted';
 export { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect';
 export { useListBase } from './use-list-base';
-export { useMqtt } from './use-mqtt';
+export { useMqtt, useMqttSubscribe } from './use-mqtt';
 export { useNavigate } from './use-navigate';
 export { useQueryParams } from './use-query-params';
 export { useSaveBase } from './use-save-base';

@@ -166,6 +166,9 @@ export const useInfiniteListBase = <
   const [data, setData] = useState<T[]>([]);
   const hasPermission = useValidatePermission();
 
+  // Local filter state used when showSearchParams is false (keeps URL clean)
+  const [localFilters, setLocalFilters] = useState<Partial<S>>({});
+
   const [pagination, setPagination] = useState<PaginationType>({
     currentPage: DEFAULT_TABLE_PAGE_START,
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
@@ -180,42 +183,15 @@ export const useInfiniteListBase = <
     serializeParams
   } = useQueryParams<S>();
 
-  const [internalSearchParams, setInternalSearchParams] =
-    useState<Partial<S>>(defaultFilters);
-
-  // Backing store for search state: the URL when showSearchParams is true,
-  // otherwise local state private to this hook instance.
-  const activeSearchParams = showSearchParams
-    ? searchParams
-    : internalSearchParams;
-
-  const applySearchParams = (next: Partial<S>) => {
-    if (showSearchParams) {
-      setQueryParams(next);
-    } else {
-      setInternalSearchParams(next);
-    }
-  };
-
-  const applySearchParam = (key: keyof S, value: S[keyof S] | null) => {
-    if (showSearchParams) {
-      setQueryParam(key, value);
-    } else {
-      setInternalSearchParams((prev) => {
-        const next = { ...prev };
-        if (value === null || value === '') delete next[key];
-        else next[key] = value;
-        return next;
-      });
-    }
-  };
-
   // check if param is excluded from query filter
   const isExcluded = (key: string) =>
     excludeFromQueryFilter.includes(key) || key.startsWith(PARENT_PREFIX_PARAM);
 
   // Combined current params with default params
-  const mergedSearchParams = { ...defaultFilters, ...activeSearchParams };
+  // When showSearchParams is false, use localFilters instead of URL searchParams
+  const mergedSearchParams = showSearchParams
+    ? { ...defaultFilters, ...searchParams }
+    : { ...defaultFilters, ...localFilters };
 
   // Filter params which will not be filtered by
   const queryFilter = {
@@ -231,7 +207,7 @@ export const useInfiniteListBase = <
   } as S;
 
   // Clear undefined | null params and remove excluded params
-  // (URL mode only — local state is already seeded from defaultFilters)
+  // (skipped when showSearchParams is false to keep defaults out of the URL)
   useEffect(() => {
     if (!showSearchParams) return;
 
@@ -321,9 +297,11 @@ export const useInfiniteListBase = <
   const changePagination = (page: number) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
 
+    if (!showSearchParams) return;
+
     // page === 1, not show on query params
-    applySearchParams({
-      ...activeSearchParams,
+    setQueryParams({
+      ...searchParams,
       page: page === 1 ? null : page
     } as Partial<S>);
   };
@@ -511,8 +489,18 @@ export const useInfiniteListBase = <
   };
 
   const changeQueryFilter = (filters: Partial<S>) => {
+    if (!showSearchParams) {
+      const filteredValues = Object.fromEntries(
+        Object.entries(filters).filter(
+          ([key]) => !notShowFromSearchParams.includes(key)
+        )
+      );
+      setLocalFilters(filteredValues as Partial<S>);
+      return;
+    }
+
     const preservedParams = Object.fromEntries(
-      Object.entries(activeSearchParams).filter(([key]) => isExcluded(key))
+      Object.entries(searchParams).filter(([key]) => isExcluded(key))
     );
 
     const filteredValues = Object.fromEntries(
@@ -521,7 +509,7 @@ export const useInfiniteListBase = <
       )
     );
 
-    applySearchParams({ ...filteredValues, ...preservedParams } as Partial<S>);
+    setQueryParams({ ...filteredValues, ...preservedParams } as Partial<S>);
   };
 
   const renderSearchForm = ({
@@ -532,10 +520,12 @@ export const useInfiniteListBase = <
     schema: SearchFormProps<S>['schema'];
   }) => {
     // Set value for search fields
+    // Use localFilters as the source when showSearchParams is false
+    const activeParams = showSearchParams ? searchParams : localFilters;
     const mergedValues = {
       ...queryFilter,
       ...Object.fromEntries(
-        Object.entries(activeSearchParams)
+        Object.entries(activeParams)
           .filter(([key]) => !key.startsWith(PARENT_PREFIX_PARAM))
           .map(([key, value]) => {
             const field = searchFields.find((f) => f.key === key);
@@ -577,8 +567,19 @@ export const useInfiniteListBase = <
 
     // Handle reset
     const handleSearchReset = () => {
+      setPagination({
+        currentPage: DEFAULT_TABLE_PAGE_START + 1,
+        pageSize: DEFAULT_TABLE_PAGE_SIZE,
+        totalPages: 0
+      });
+
+      if (!showSearchParams) {
+        setLocalFilters({});
+        return;
+      }
+
       const preservedParams = Object.fromEntries(
-        Object.entries(activeSearchParams).filter(([key]) => isExcluded(key))
+        Object.entries(searchParams).filter(([key]) => isExcluded(key))
       );
 
       const resetParams = {
@@ -586,16 +587,10 @@ export const useInfiniteListBase = <
         ...preservedParams
       };
 
-      if (serializeParams(activeSearchParams) === serializeParams(resetParams))
+      if (serializeParams(searchParams) === serializeParams(resetParams))
         return;
 
-      setPagination({
-        currentPage: DEFAULT_TABLE_PAGE_START + 1,
-        pageSize: DEFAULT_TABLE_PAGE_SIZE,
-        totalPages: 0
-      });
-
-      applySearchParams(resetParams);
+      setQueryParams(resetParams);
     };
 
     return (
@@ -667,7 +662,7 @@ export const useInfiniteListBase = <
       renderAddButton,
       renderSearchForm,
       renderStatusColumn,
-      setQueryParam: applySearchParam,
+      setQueryParam,
       handleEditClick,
       handleDeleteClick,
       invalidateQueries,
