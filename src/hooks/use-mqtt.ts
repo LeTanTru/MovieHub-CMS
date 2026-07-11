@@ -56,3 +56,38 @@ export const useMqtt = <T>({ topic, cmd, callback }: UseMqttType<T>) => {
     };
   }, [topic, cmd, client]);
 };
+
+export const useMqttSubscribe = (topic: string, enabled: boolean = true) => {
+  const client = getMqttClient();
+
+  useEffect(() => {
+    if (!enabled || !topic) return;
+
+    const subscribe = () => {
+      client.subscribe(topic, (err) => {
+        if (!err) {
+          logger.info(`[MQTT] Subscribed to MQTT topic: ${topic}`);
+        } else {
+          logger.error(`[MQTT_SUBSCRIBE_ERROR] ${topic}`, err);
+        }
+      });
+    };
+
+    // If already connected, subscribe immediately; otherwise wait for connect
+    if (client.connected) {
+      subscribe();
+    } else {
+      client.once('connect', subscribe);
+    }
+
+    // Re-subscribe after every reconnect
+    client.on('connect', subscribe);
+
+    return () => {
+      client.off('connect', subscribe);
+      if (client.connected) {
+        client.unsubscribe(topic);
+      }
+    };
+  }, [client, enabled, topic]);
+};

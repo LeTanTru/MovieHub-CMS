@@ -15,6 +15,7 @@ import {
   useQueryParams
 } from '@/hooks';
 import { NotificationResType, NotificationSearchType } from '@/types';
+import { useState } from 'react';
 import { AnimatePresence, m } from 'framer-motion';
 import { Bell, CheckCheck, Trash } from 'lucide-react';
 import Link from 'next/link';
@@ -59,6 +60,10 @@ export function DropdownNotification() {
     ? Number(totalUnreadData.totalUnread)
     : 0;
 
+  const [activeType, setActiveType] = useState<NotificationSearchType['type']>(
+    String(NOTIFICATION_TYPE_SYSTEM) as NotificationSearchType['type']
+  );
+
   const {
     data: notificationList,
     loading,
@@ -74,7 +79,7 @@ export function DropdownNotification() {
       pageSize: NOTIFICATION_PAGE_SIZE,
       enabled: openedDropdown,
       defaultFilters: {
-        type: String(NOTIFICATION_TYPE_SYSTEM)
+        type: activeType
       },
       showSearchParams: false
     }
@@ -136,7 +141,7 @@ export function DropdownNotification() {
     return null;
 
   const handleChangeTab = (type: string) => {
-    handlers.setQueryParam('type', type as NotificationSearchType['type']);
+    setActiveType(type as NotificationSearchType['type']);
   };
 
   return (
