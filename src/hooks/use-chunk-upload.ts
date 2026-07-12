@@ -21,6 +21,11 @@ const CHUNK_UPLOAD_MEDIUM_CONCURRENCY = 6;
 const CHUNK_UPLOAD_LARGE_CONCURRENCY = 9;
 const CHUNK_UPLOAD_XL_CONCURRENCY = 12;
 
+const MAX_CHUNK_RETRIES = 3;
+const CHUNK_RETRY_BASE_DELAY_MS = 500;
+const CHUNK_TIMEOUT_BASE_MS = 30_000;
+const CHUNK_TIMEOUT_MIN_THROUGHPUT_BYTES_PER_MS = 512; // ~500 KB/s floor
+
 function getChunkConfig(fileSize: number) {
   if (fileSize < CHUNK_UPLOAD_SMALL_FILE_LIMIT) {
     return {
@@ -51,6 +56,86 @@ type Part = {
   etag: string;
 };
 
+const delay = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+// Generous per-attempt ceiling: catches a stalled connection so it gets retried
+// instead of hanging forever, without killing slow-but-alive uploads.
+function getChunkTimeout(chunkSize: number) {
+  return Math.ceil(
+    CHUNK_TIMEOUT_BASE_MS +
+      chunkSize / CHUNK_TIMEOUT_MIN_THROUGHPUT_BYTES_PER_MS
+  );
+}
+
+/**
+ * PUT a single chunk to MinIO with a per-attempt timeout and exponential
+ * backoff retries. A transient network blip or stalled request no longer aborts
+ * the whole upload — only an exhausted retry budget (or a sibling chunk failing,
+ * surfaced via `shouldAbort`) does.
+ */
+async function putChunkWithRetry(
+  url: string,
+  chunk: Blob,
+  partNumber: number,
+  timeoutMs: number,
+  shouldAbort: () => boolean
+): Promise<string> {
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt <= MAX_CHUNK_RETRIES; attempt++) {
+    if (shouldAbort()) {
+      throw new Error(`Upload aborted before part ${partNumber}`);
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const res = await fetch(url, {
+        method: 'PUT',
+        body: chunk,
+        signal: controller.signal
+      });
+
+      if (!res.ok) {
+        throw new Error(`Part ${partNumber} failed with status ${res.status}`);
+      }
+
+      const etagHeader = res.headers.get('ETag');
+      if (!etagHeader) {
+        throw new Error(
+          `Missing ETag in part ${partNumber}. Check MinIO CORS ExposeHeaders.`
+        );
+      }
+
+      return etagHeader.replace(/"/g, '');
+    } catch (error) {
+      lastError = error;
+
+      // No point retrying if the budget is spent or the upload already failed.
+      if (attempt === MAX_CHUNK_RETRIES || shouldAbort()) {
+        break;
+      }
+
+      const backoffMs = CHUNK_RETRY_BASE_DELAY_MS * 2 ** attempt;
+      logger.warn(
+        `[ChunkUpload] Part ${partNumber} attempt ${attempt + 1}/${
+          MAX_CHUNK_RETRIES + 1
+        } failed; retrying in ${backoffMs}ms`,
+        error
+      );
+      await delay(backoffMs);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(`Part ${partNumber} failed after retries`);
+}
+
 export const useChunkUpload = () => {
   const [progress, setProgress] = useState<number>(0);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -64,6 +149,7 @@ export const useChunkUpload = () => {
       setProgress(0);
 
       const { chunkSize, concurrency } = getChunkConfig(file.size);
+      const chunkTimeoutMs = getChunkTimeout(chunkSize);
 
       let uploadId = '';
       let objectName = '';
@@ -115,17 +201,15 @@ export const useChunkUpload = () => {
               throw new Error(`Missing presigned URL for part ${partNumber}`);
             }
 
-            // 3. PUT chunk directly to MinIO — not through Next.js
-            const res = await fetch(url, { method: 'PUT', body: chunk });
-            if (!res.ok) throw new Error(`Part ${partNumber} failed`);
-
-            const etagHeader = res.headers.get('ETag');
-            if (!etagHeader) {
-              throw new Error(
-                `Missing ETag in part ${partNumber}. Check MinIO CORS ExposeHeaders.`
-              );
-            }
-            const etag = etagHeader.replace(/"/g, '');
+            // 3. PUT chunk directly to MinIO — not through Next.js.
+            // Retries transient failures/timeouts with backoff before giving up.
+            const etag = await putChunkWithRetry(
+              url,
+              chunk,
+              partNumber,
+              chunkTimeoutMs,
+              () => isAborted
+            );
             parts.push({ partNumber, etag });
 
             done++;

@@ -15,6 +15,7 @@ import { cn } from '@/lib';
 import { useFileUpload, formatBytes } from '@/hooks/use-file-upload';
 import { CircleLoading } from '@/components/loading';
 import { logger } from '@/logger';
+import { notify } from '@/utils';
 import type { ApiResponse } from '@/types';
 import { ConfirmModal } from '@/components/modal';
 
@@ -125,6 +126,12 @@ export function UploadVideoField<T extends FieldValues>({
       onChange?.(url);
     } catch (error) {
       logger.error('[UPLOAD_VIDEO_ERROR]', error);
+      notify.error(
+        'Tải video lên thất bại. Vui lòng kiểm tra kết nối mạng và thử lại.'
+      );
+      setProgress(0);
+      setElapsedSeconds(0);
+      clearFiles();
     } finally {
       setUploading(false);
       uploadStartTimeRef.current = null;
